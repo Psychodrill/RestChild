@@ -1,0 +1,80 @@
+﻿@model string
+@{
+   ViewBag.Title = "Перенос детей";
+   Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+   <div class="col-md-12">
+      <h2>Перенос детей</h2>
+   </div>
+</div>
+@if (RestChild.Web.Controllers.ChildTransferQueue.InProgress)
+{
+   <div class="progress-msg row text-center"></div>
+   <div class="progress">
+      <div class="progress-bar" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+   </div>
+}
+else
+{
+   if (!string.IsNullOrWhiteSpace(Model))
+   {
+      <div class="row form-group">
+         <div class="col-md-3 col-md-offset-1">
+            <h4 style="color: red;">@Html.Raw(Model)</h4>
+         </div>
+
+      </div>
+   }
+
+   using (Html.BeginForm("StartProcess", "ChildTransfer", null, FormMethod.Post, new { @class = "form-horizontal", role = "form", @enctype = "multipart/form-data" }))
+   {
+      <div class="row form-group file-upload-div">
+         <div class="col-md-12">
+            <label>Выберите файл для загрузки</label>
+            <input type="file" class="form-control-file" name="ufile">
+         </div>
+      </div>
+      <div class="row">
+         <div class="form-group">
+            <div class="col-md-offset-1 col-md-10">
+               <button type="submit" class="btn btn-default btn-primary">
+                  <i class="glyphicon glyphicon-ok"></i> загрузить
+               </button>
+            </div>
+         </div>
+      </div>
+   }
+}
+
+
+
+@section scripts
+{
+   @if (RestChild.Web.Controllers.ChildTransferQueue.InProgress)
+   {
+      <script type="text/javascript">
+      function GetStatus() {
+         $.ajax({
+            url: '@Url.Action("GetStatus", "ChildTransfer")',
+            type: 'GET',
+            data: { Index: '@System.Guid.NewGuid().ToString()' },
+            success: function (result) {
+               var percent = (result.Percent).toFixed();
+               $(".progress-msg").html(result.Message);
+               $(".progress-bar").width(percent + '%');
+               if (result.IsError == false && result.IsComplete == false) {
+                  setTimeout(function () { GetStatus(); }, 1500);
+               }
+            }
+         });
+      }
+
+      $(function () {
+         GetStatus();
+      });
+      </script>
+   }
+}
+

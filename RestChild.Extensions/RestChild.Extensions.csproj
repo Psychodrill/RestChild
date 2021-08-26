@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B7B0418C-522E-45D4-BC36-99E70984A1AD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RestChild.Extensions</RootNamespace>
+    <AssemblyName>RestChild.Extensions</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ExcelExport\ExcelExportExtensions.cs" />
+    <Compile Include="Extensions\AddonServiceExtension.cs" />
+    <Compile Include="Extensions\CounselorTaskExtension.cs" />
+    <Compile Include="Extensions\DirectoryFlightExtensions.cs" />
+    <Compile Include="Extensions\ExchangeBaseRegistryExtension.cs" />
+    <Compile Include="Extensions\OrganizationBankExtension.cs" />
+    <Compile Include="Extensions\ResponsibilityForTaskExtension.cs" />
+    <Compile Include="Extensions\TourExtensions.cs" />
+    <Compile Include="Extensions\TrainingCounselorsExtension.cs" />
+    <Compile Include="Extensions\TypeOfRestExtension.cs" />
+    <Compile Include="Filter\AddonServiceFilterModel.cs" />
+    <Compile Include="Filter\AdministratorTourFilterModel.cs" />
+    <Compile Include="Filter\AnalyticReportFilter.cs" />
+    <Compile Include="Filter\BookingMosgorturReestrFilterModel.cs" />
+    <Compile Include="Filter\BookingMosgorturReestrFilterResultModel.cs" />
+    <Compile Include="Filter\BookingMosgorturReestrWorkingDaysFilterModel.cs" />
+    <Compile Include="Filter\BoutFilterModel.cs" />
+    <Compile Include="Filter\CityFilterModel.cs" />
+    <Compile Include="Filter\CommonPagedList.cs" />
+    <Compile Include="Filter\ContractFilterModel.cs" />
+    <Compile Include="Filter\CounselorGroupFilterModel.cs" />
+    <Compile Include="Filter\CounselorsFilterModel.cs" />
+    <Compile Include="Filter\CounselorTaskListModel.cs" />
+    <Compile Include="Filter\CounselorTestFilterModel.cs" />
+    <Compile Include="Filter\Coworker.cs" />
+    <Compile Include="Filter\CoworkersFilterModel.cs" />
+    <Compile Include="Filter\DirectoryFlightsFilterModel.cs" />
+    <Compile Include="Filter\HotelsFilterModel.cs" />
+    <Compile Include="Filter\RequestFilterModel.cs" />
+    <Compile Include="Filter\RequestSearchFilterModel.cs" />
+    <Compile Include="Filter\RestManFilterModel.cs" />
+    <Compile Include="Filter\SubjectOfRestClassificationFilterModel.cs" />
+    <Compile Include="Filter\TagFilterModel.cs" />
+    <Compile Include="Filter\ToursFilterModel.cs" />
+    <Compile Include="Filter\TransportFilterModel.cs" />
+    <Compile Include="Models\SpecializedCampsCampersReport.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\IRequestSaver.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RestChild.Comon\RestChild.Comon.csproj">
+      <Project>{4f2d7102-41a3-4a1a-86a7-b7bdd743de98}</Project>
+      <Name>RestChild.Comon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.DAL\RestChild.DAL.csproj">
+      <Project>{4c7c2237-1cd7-477d-b930-c375295317d8}</Project>
+      <Name>RestChild.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Domain\RestChild.Domain.csproj">
+      <Project>{2efdfafb-1b53-451a-be0e-2088dfff27c4}</Project>
+      <Name>RestChild.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.MPGUIntegration\RestChild.MPGUIntegration.csproj">
+      <Project>{42f5f670-36b0-46dd-b40e-3f9a0d382f36}</Project>
+      <Name>RestChild.MPGUIntegration</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

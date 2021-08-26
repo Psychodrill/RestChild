@@ -1,0 +1,122 @@
+﻿@using System.Collections
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Domain
+@model RestChild.Admin.Web.Models.SecurityJournalEntranceFilterModel
+@{
+   ViewBag.Title = "Журнал безопасности. Вход в систему.";
+   Layout = "~/Views/Shared/_SearchLayout.cshtml";
+   ViewBag.SearchAction = "JournalEntrance";
+   ViewBag.Controller = "SecurityJournal";
+   ViewBag.Caption = "Журнал безопасности. Вход в систему.";
+   ViewBag.SearchPanelCaption = "Поиск";
+   ViewBag.NeedInsertButton = false;
+}
+
+@section searchForm
+{
+   <div class="form-group">
+      <label class="col-md-2 control-label text-right">Дата с</label>
+      <div class="col-md-4">
+         <div class='input-group date datepicker-anytime'>
+            @Html.TextBoxFor(m => m.DateFrom, new { @class = "form-control input-mask-date-anytime" })
+            <span class="input-group-addon">
+               <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+         </div>
+      </div>
+      <label class="col-md-2 control-label text-right">Дата по</label>
+      <div class="col-md-4">
+         <div class='input-group date datepicker-anytime'>
+            @Html.TextBoxFor(m => m.DateTo, new { @class = "form-control input-mask-date-anytime" })
+            <span class="input-group-addon">
+               <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+         </div>
+      </div>
+   </div>
+   <div class="form-group">
+      <label class="col-md-2 control-label text-right">Результат</label>
+      <div class="col-md-4">
+         @Html.DropDownListFor(m => m.LoginStatus, new SelectList(new List<object>() {
+          new { Id = (ushort?)null, Name = "-- Все -- " },
+          new { Id = (ushort?)1, Name = "Успешно" },
+          new { Id = (ushort?)2, Name = "Ошибка" },
+          }, "Id", "Name"), new { @class = "form-control" })
+      </div>
+   </div>
+}
+
+@section searchResult
+{
+   @if (Model.Result != null && Model.Result.Any())
+   {
+      <table class="table table-striped table-hover">
+         <thead>
+            <tr>
+               <th class="text-center" width="5%">№</th>
+               @*<th>Номер</th>*@
+               <th>Дата/время</th>
+               <th>Адрес подключения</th>
+               <th>Браузер</th>
+               <th>Результат</th>
+               <th>Логин</th>
+            </tr>
+         </thead>
+         <tbody>
+            @{int rowNumber = Model.Result.FirstItemOnPage;}
+            @foreach (var row in Model.Result)
+            {
+               <tr>
+                  <td class="text-center">@(rowNumber++)</td>
+                  <td>@string.Format("{0:dd.MM.yyyy HH:mm}", row.DateEnter)</td>
+                  <td>@row.RemoteAddr</td>
+                  <td>@row.UserAgent</td>
+                  <td>@(row.IsAuthorized ? "Успешно" : "Ошибка")</td>
+                  <td>@row.Login</td>
+               </tr>
+            }
+         </tbody>
+      </table>
+      <div class="row">
+         <div class="col-md-12">
+            @Html.PagedListPager(Model.Result, page =>
+                  {
+                     Model.Result = null;
+                     Model.PageNumber = page;
+                     return Url.Action("JournalEntrance", Model);
+                  }, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+         </div>
+      </div>
+   }
+   else
+   {
+      <div class="row">
+         <div class="col-md-12">
+            <p>Поиск не дал результатов</p>
+         </div>
+      </div>
+   }
+}
+
+
+
+@section styles
+{
+   @Styles.Render("~/Content/css/select2.css")
+   @Styles.Render("~/Content/css/select2-bootstrap.css")
+   @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+}
+
+@section scripts
+{
+   <script type="text/javascript" src="~/Scripts/moment.js"></script>
+   <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+   <script type="text/javascript">
+      moment.locale('ru');
+   </script>
+   <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+   @Scripts.Render("~/Scripts/select2.min.js")
+   @Scripts.Render("~/Scripts/select2_locale_ru.js")
+   <script type="text/javascript" src="~/Scripts/Vocabulary/SecurityJournal.js"></script>
+}

@@ -1,0 +1,13 @@
+﻿@model RestChild.Comon.Dto.BaseRegistryCheckResult
+
+
+@if (Model != null)
+{
+    <div class="row form-group">
+        <div class="col-md-9 col-md-offset-3">
+            <div class="@((Model.Approved ?? true) && (Model.ApprovedLowIncome ?? true) ? "bg-success" : (!Model.ResultAbsent ? "bg-danger" : "bg-warning")) panel-approve">
+                @Html.Partial("BaseRegistryBenefitResultData")
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,176 @@
+﻿@model RestChild.Web.Models.Gift.ListModel
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Web.Models.Gift
+@{
+    ViewBag.Title = "Реестр подарков";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.SearchAction = "List";
+    ViewBag.Controller = "Gift";
+    ViewBag.Caption = "Реестр подарков";
+    ViewBag.SearchPanelCaption = "Поиск подарков";
+    ViewBag.NeedInsertButton = true;
+    ViewBag.InsertButtonCaption = "Добавить";
+    ViewBag.InsertAction = "Manage";
+    var states = new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = @"-- Не выбрано --"}};
+    states.AddRange(Model.States.Select(v => new SelectListItem {Value = v.Id.ToString(), Text = v.Name}));
+}
+
+@section searchForm
+{
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Название подарка</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.Name, new {@class = "form-control", maxlength = 100, autocomplete = "off"})
+        </div>
+        <label class="col-md-2 control-label text-right">Стоимость от</label>
+        <div class="col-md-4 form-inline">
+            <div class='input-group' style="width: 35%">
+                @Html.TextBoxFor(r => r.PriceFrom, new {@class = "form-control money", autocomplete = "off"})
+            </div>
+            <label class="text-right input-label">до</label>
+            <div class='input-group' style="width: 35%">
+                @Html.TextBoxFor(r => r.PriceTo, new {@class = "form-control money", autocomplete = "off"})
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Статус</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(m => m.StateId, states, new {@class = "form-control select2", autocomplete = "off"})
+        </div>
+        <label class="col-md-2 control-label text-right">Остаток штук от</label>
+        <div class="col-md-4 form-inline">
+            <div class='input-group' style="width: 35%">
+                @Html.TextBoxFor(r => r.CountFrom, new {@class = "form-control integer", autocomplete = "off"})
+            </div>
+            <label class="text-right input-label">до</label>
+            <div class='input-group' style="width: 35%">
+                @Html.TextBoxFor(r => r.CountTo, new {@class = "form-control integer", autocomplete = "off"})
+            </div>
+        </div>
+
+    </div>
+}
+
+@section additionalFilters
+{
+    <a class="btn btn-default" href="@Url.Action("ExcelList", "Gift", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
+}
+
+@section searchResult
+{
+    @if (Model.Result != null && Model.Result.Any())
+    {
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="text-center" style="width: 5%">№</th>
+                <th class="text-center">Название подарка</th>
+                <th class="text-center">Стоимость</th>
+                <th class="text-center">Реализовано/Остаток (шт.)</th>
+                <th class="text-center">Общее кол-во на складе</th>
+                <th class="text-center">Место выдачи</th>
+                <th class="text-center">Рейтинг</th>
+                <th class="text-center">Статус</th>
+            </tr>
+            </thead>
+            <tbody>
+            @{ var rowNumber = Model.Result.FirstItemOnPage; }
+            @foreach (var task in Model.Result)
+            {
+                long totalLeft = 0;
+                <tr>
+                    <td class="text-center">@(rowNumber++)</td>
+                    <td class="text-left">
+                        <a href="@Url.Action("Manage", new {id = task.Id})" target="_blank">
+                            @(task.Name ?? "Не указано")
+                        </a>
+                    </td>
+                    <td class="text-right">
+                        @Html.Raw(task.Price.FormatEx())
+                    </td>
+                    <td class="text-left">
+                        @if (task.GiftParameters.Any(g => !string.IsNullOrWhiteSpace(g.Name)) || task.GiftParameters.Count > 1)
+                        {
+                            <ul>
+                                @foreach (var p in task.GiftParameters.OrderBy(p => p.Name).ToList())
+                                {
+                                    totalLeft += p.Count - (Model.Counts.ContainsKey(p.Id) ? Model.Counts[p.Id] : 0);
+                                    <li>
+                                        @p.Name - @(Model.Counts.ContainsKey(p.Id) ? Model.Counts[p.Id] : 0) / @(p.Count - (Model.Counts.ContainsKey(p.Id) ? Model.Counts[p.Id] : 0))
+                                    </li>
+
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            var p = task.GiftParameters.FirstOrDefault();
+                            if (p != null)
+                            {
+                                totalLeft += p.Count - (Model.Counts.ContainsKey(p.Id) ? Model.Counts[p.Id] : 0);
+
+                                <div>
+                                    @(Model.Counts.ContainsKey(p.Id) ? Model.Counts[p.Id] : 0) / @(p.Count - (Model.Counts.ContainsKey(p.Id) ? Model.Counts[p.Id] : 0))
+                                </div>
+                            }
+                        }
+                    </td>
+                    <td class="text-center">
+                        @totalLeft
+                    </td>
+                    <td class="text-center">
+                        ГАУК "Мосгортур"
+                    </td>
+                    <td class="text-center">
+                        @(task.GiftParameters.SelectMany(p=>p.Reserved.Select(z => z.Rating)).DefaultIfEmpty().Average().FormatEx())
+                    </td>
+                    <td class="text-center">
+                        @(task.State != null ? task.State.Name : "-")
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.PagedListPager(Model.Result, page =>
+                {
+                    var item = new ListModel
+                    {
+                        PageNumber = page,
+                        Name = Model.Name,
+                        CountFrom = Model.CountFrom,
+                        CountTo = Model.CountTo,
+                        PriceFrom = Model.PriceFrom,
+                        PriceTo = Model.PriceTo,
+                        StateId = Model.StateId
+                    };
+                    return Url.Action("List", item);
+                }, new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/Gift/List.js")
+}

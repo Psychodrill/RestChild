@@ -1,0 +1,27 @@
+﻿@using RestChild.Web.Extensions
+@model RestChild.Web.Models.MGTWorkingDayWindowTimeIntervalModel
+
+@{ bool _dis = (ViewData["HasBookings"] as bool?) ?? false; }
+
+<div class="time-interval" @(Html.Raw(Model.IsDeleted ? " style=\"display: none;\"" : string.Empty))>
+   @Html.HiddenFor(m => m.Id)
+   @Html.HiddenFor(m => m.IsDeleted, new { @class = "interval-deleted" })
+   <div class="form-group">
+      <label class="col-md-2 control-label text-right">Режим работы с</label>
+      <div class="col-md-2">
+          @Html.HiddenFor(r => r.TimeFromString, new { @class = "form-control select2 time-selection-interval", autocomplete = "off" }).DisableIf(() => _dis)
+          @Html.ValidationMessageFor(m => m.TimeFromString)
+      </div>
+      <label class="col-md-2 control-label text-right">по</label>
+      <div class="col-md-2">
+         @Html.HiddenFor(r => r.TimeToString, new { @class = "form-control select2 time-selection-interval", autocomplete = "off" }).DisableIf(() => _dis)
+         @Html.ValidationMessageFor(m => m.TimeToString)
+      </div>
+      @if (!_dis)
+      {
+         <div class="col-md-4" style="text-align: right;">
+            <a class="delete-time-interval" style="cursor: pointer;">Удалить интервал</a>
+         </div>
+      }
+   </div>
+</div>

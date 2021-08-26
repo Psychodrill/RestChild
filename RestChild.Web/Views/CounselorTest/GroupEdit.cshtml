@@ -1,0 +1,541 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.CounselorTestModels.GroupModel
+@{
+	ViewBag.Title = "Группа вожатых";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Группа вожатых</h2>
+
+<a href="@Url.Action("GroupList", "CounselorTest")">Вернуться</a>
+<div class="row">&nbsp;</div>
+
+@Html.Partial("Assets/_StatePanel", Model.State)
+
+<div class="row">
+	<div class="col-md-12">
+		@using (Html.BeginForm("SaveGroup", "CounselorTest", FormMethod.Post, new { @id = "form" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.Data.Id)
+			@Html.HiddenFor(m => m.Data.StateId)
+			@Html.HiddenFor(m => m.StateMachineActionString)
+			@Html.HiddenFor(m => m.Data.HistoryLinkId)
+			@Html.HiddenFor(m => m.Data.LastUpdateTick)
+			if (!ViewData.ModelState.IsValid)
+			{
+				<div class="alert alert-danger" role="alert">
+					@Html.ValidationSummary(false)
+				</div>
+			}
+			<fieldset class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Наименование<span class="requared">*</span></label>
+					<div class="col-md-9 line-height35">
+						@if (!Model.IsEditable)
+						{
+							@Html.Raw(Model.Data.Name.FormatEx())
+							@Html.HiddenFor(m => m.Data.Name)
+						}
+						else
+						{
+							@Html.TextBoxFor(m => m.Data.Name, new {@class = "form-control", maxlength = 1000})
+						}
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Описание группы</label>
+					<div class="col-md-9 line-height35">
+						@if (!Model.IsEditable)
+						{
+							@Html.Raw(Model.Data.Description.FormatEx())
+							@Html.HiddenFor(m => m.Data.Description)
+						}
+						else
+						{
+							@Html.TextBoxFor(m => m.Data.Description, new {@class = "form-control", maxlength = 1000})
+						}
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Количество мест</label>
+					<div class="col-md-9 line-height35">
+						@if (!Model.IsEditable)
+						{
+							@Html.Raw(Model.Data.Value.FormatEx())
+							@Html.HiddenFor(m => m.Data.Value)
+						}
+						else
+						{
+							@Html.TextBoxFor(m => m.Data.Value, new { @class = "form-control integer", maxlength = 5 })
+						}
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Продолжительность обучения(часов)</label>
+					<div class="col-md-9 line-height35">
+						@if (!Model.IsEditable)
+						{
+							@Html.Raw(Model.Data.Duration.FormatEx())
+							@Html.HiddenFor(m => m.Data.Duration)
+						}
+						else
+						{
+							@Html.TextBoxFor(m => m.Data.Duration, new { @class = "form-control integer", maxlength = 5 })
+						}
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Дата начала обучения</label>
+					<div class="col-md-2 line-height35">
+						@if (!Model.IsEditable)
+						{
+							@Html.Raw(Model.Data.StartTraining.FormatEx())
+							@Html.HiddenFor(m => m.Data.StartTraining)
+						}
+						else
+						{
+							<div class='input-group date datepicker-anytime'>
+								@Html.TextBoxFor(r => r.Data.StartTraining, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.Data.StartTraining.FormatEx(string.Empty, string.Empty) })
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						}
+
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Дата окончания обучения</label>
+					<div class="col-md-2 line-height35">
+						@if (!Model.IsEditable)
+						{
+							@Html.Raw(Model.Data.EndTraining.FormatEx())
+							@Html.HiddenFor(m => m.Data.EndTraining)
+						}
+						else
+						{
+							<div class='input-group date datepicker-anytime'>
+								@Html.TextBoxFor(r => r.Data.EndTraining, new {@class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.Data.EndTraining.FormatEx(string.Empty, string.Empty)})
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						}
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-offset-3 col-md-5 checkbox">
+						<label>
+							@if (!Model.IsEditable)
+							{
+								@Html.HiddenFor(m => m.Data.ForSite)
+								<input type="checkbox" @Html.Raw(Model.Data.ForSite ? "checked='checked'" : string.Empty) disabled="disabled" id="firstStage"/>
+							}
+							else
+							{
+								@Html.CheckBoxFor(m => m.Data.ForSite, new { @id = "firstStage" })
+							}
+							Первоначальное обучение
+						</label>
+					</div>
+				</div>
+			</fieldset>
+
+			<h4>
+				Вожатые
+				@if (Model.IsEditable)
+				{
+					<a class="btn btn-sm btn-default glyphicon glyphicon-plus" title="Добавить вожатого" id="add-conselor"></a>
+				}
+			</h4>
+			<table class="table table-striped" id="tbl-add-conselor">
+				<thead>
+					<tr>
+						<th>Обучающийся</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					@for (var i = 0; i < Model.Results.Count; i++)
+				{
+						<tr>
+							<td>
+								<div class="form-group">
+									<label>ФИО:</label>
+									@Html.HiddenFor(m => m.Results[i].Data.Id, new { @class = "result-id" })
+									@Html.HiddenFor(m => m.Results[i].Data.TrainingCounselorsId)
+									@Html.HiddenFor(m => m.Results[i].Data.AdministratorTourId, new { @class = "administratorTourId" })
+									@Html.HiddenFor(m => m.Results[i].Data.CounselorsId, new { @class = "counselorsId" })
+									@if (!Model.IsEditable)
+									{
+										@Html.Raw(Model.Results[i].Name.FormatEx())
+										<a class="btn-link" onclick="showStudentTest(@Model.Results[i].Data.Id);" style="cursor: pointer">(Результаты тестирования)</a>
+									}
+									else
+									{
+										<input type="text" class="form-control fio-control" maxlength="1000" value="@(Model.Results[i].Name)" />
+									}
+								</div>
+								<div class="row">
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Дата зачисления</label>
+											@if (Model.IsEditable)
+											{
+												<div class='input-group date datepicker-anytime col-md-11'>
+													@Html.TextBoxFor(r => r.Results[i].Data.DateInclude, new { @class = "form-control input-mask-date-anytime", autocomplete = "off", @Value = Model.Results[i].Data.DateInclude.FormatEx(string.Empty, string.Empty) })
+													<span class="input-group-addon">
+														<span class="glyphicon glyphicon-calendar"></span>
+													</span>
+												</div>
+											}
+											else
+											{
+												@Html.HiddenFor(r => r.Results[i].Data.DateInclude)
+												@Html.Raw(Model.Results[i].Data.DateInclude.FormatEx())
+											}
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label>Дата отчисления</label>
+											@if (Model.IsEditableFormed)
+											{
+												<div class='input-group date datepicker-anytime col-md-11'>
+													@Html.TextBoxFor(r => r.Results[i].Data.DateExclude, new { @class = "form-control input-mask-date-anytime", autocomplete = "off", @Value = Model.Results[i].Data.DateExclude.FormatEx(string.Empty, string.Empty) })
+													<span class="input-group-addon">
+														<span class="glyphicon glyphicon-calendar"></span>
+													</span>
+												</div>
+											}
+											else
+											{
+												@Html.HiddenFor(r => r.Results[i].Data.DateExclude)
+												@Html.Raw(Model.Results[i].Data.DateExclude.FormatEx())
+											}
+										</div>
+									</div>
+
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group">
+											<label>Комментарий</label>
+											@if (Model.IsEditable || Model.IsEditableFormed)
+											{
+												@Html.TextBoxFor(m => m.Results[i].Data.Comment, new { @class = "form-control", maxlength = 1000 })
+											}
+											else
+											{
+												@Html.HiddenFor(r => r.Results[i].Data.Comment)
+												@Html.Raw(Model.Results[i].Data.Comment.FormatEx())
+											}
+										</div>
+									</div>
+								</div>
+								@if (Model.IsEditableFormed || Model.Data.StateId == StateMachineStateEnum.TrainingCounselors.EducationFinished)
+								{
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+												<label>
+													@if (Model.Data.StateId == StateMachineStateEnum.TrainingCounselors.EducationFinished || !Security.HasRight(AccessRightEnum.TrainingCounselors.SetEducationFinished))
+													{
+														@Html.HiddenFor(m => m.Results[i].Data.IsSuccess)
+														<input type="checkbox" @Html.Raw(Model.Results[i].Data.IsSuccess ? "checked='checked'" : string.Empty) disabled="disabled" />
+													}
+													else
+													{
+														@Html.CheckBoxFor(m => m.Results[i].Data.IsSuccess)
+													}
+													Обучение успешно завершено
+												</label>
+											</div>
+										</div>
+									</div>
+								}
+								else
+								{
+									@Html.HiddenFor(m=>m.Results[i].Data.IsSuccess)
+								}
+							</td>
+							<td style="text-align: center; width: 55px;">
+								@if (Model.IsEditable)
+								{
+									<button class="btn btn-default btn-xs glyphicon glyphicon-remove remove-counselor" title="Удалить"></button>
+								}
+							</td>
+						</tr>
+				}
+				</tbody>
+			</table>
+			if (Model.IsEditable)
+			{
+				<a class="btn btn-sm btn-default" title="Добавить вожатого" id="add-conselor-bottom"><i class="glyphicon glyphicon-plus"></i>Добавить вожатого</a>
+			}
+			<h4>
+				Тестирование
+				@if (Model.IsEditable || Model.IsEditableFormed)
+				{
+					<a class="btn btn-sm btn-default glyphicon glyphicon-plus" title="Добавить тестирование" id="add-test"></a>
+				}
+			</h4>
+				<table class="table table-striped" id="tbl-add-test">
+					<thead>
+						<tr>
+							<th>Тестирование</th>
+							<th>Дата начала тестирования</th>
+							<th>Дата окончания тестирования</th>
+							<th>Количество попыток</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (var i = 0; i < Model.Tests.Count; i++)
+						{
+							<tr>
+								<td>
+									@Html.HiddenFor(m => m.Tests[i].Data.Id)
+									@if (Model.IsEditable || Model.IsEditableFormed && Model.Tests[i].Data.DateStart >= DateTime.Now.Date)
+									{
+										@Html.HiddenFor(m => m.Tests[i].Data.CounselorTestId, new { @class = "form-control counselor-input", @testname = Model.Tests[i].Data.CounselorTest != null ? Model.Tests[i].Data.CounselorTest.Name : string.Empty })
+									}
+									else
+									{
+										@Html.HiddenFor(m => m.Tests[i].Data.CounselorTestId)
+										@Html.Raw(Model.Tests[i].Data.CounselorTest != null ? Model.Tests[i].Data.CounselorTest.Name.FormatEx() : "-")
+									}
+									@Html.HiddenFor(m => m.Tests[i].Data.TrainingCounselorsId)
+									@Html.HiddenFor(m => m.Tests[i].Data.LastUpdateTick)
+								</td>
+								<td style="width: 200px; max-width: 200px">
+									@if (Model.IsEditable || Model.IsEditableFormed && Model.Tests[i].Data.DateStart >= DateTime.Now.Date)
+									{
+										<div class='input-group date datepicker-anytime'>
+											@Html.TextBoxFor(r => r.Tests[i].Data.DateStart, new { @class = "form-control input-mask-date-anytime", autocomplete = "off", @Value = Model.Tests[i].Data.DateStart.FormatEx(string.Empty, string.Empty) })
+											<span class="input-group-addon">
+												<span class="glyphicon glyphicon-calendar"></span>
+											</span>
+										</div>
+									}
+									else
+									{
+										@Html.HiddenFor(r => r.Tests[i].Data.DateStart)
+										@Html.Raw(Model.Tests[i].Data.DateStart.FormatEx())
+									}
+								</td>
+								<td style="width: 200px; max-width: 200px">
+									@if (Model.IsEditable || Model.IsEditableFormed && Model.Tests[i].Data.DateStart >= DateTime.Now.Date)
+									{
+										<div class='input-group date datepicker-anytime'>
+											@Html.TextBoxFor(r => r.Tests[i].Data.DateEnd, new {@class = "form-control input-mask-date-anytime", autocomplete = "off", @Value = Model.Tests[i].Data.DateEnd.FormatEx(string.Empty, string.Empty)})
+											<span class="input-group-addon">
+												<span class="glyphicon glyphicon-calendar"></span>
+											</span>
+										</div>
+									}
+									else
+									{
+										@Html.HiddenFor(r => r.Tests[i].Data.DateEnd)
+										@Html.Raw(Model.Tests[i].Data.DateEnd.FormatEx())
+									}
+								</td>
+								<td>
+									@if (Model.IsEditable || Model.IsEditableFormed && Model.Tests[i].Data.DateStart >= DateTime.Now.Date)
+									{
+										<div class="inline-block">
+											<label class="checkbox-inline">@Html.CheckBoxFor(m => m.Tests[i].Data.IsCountLimited, new {@class = "count-attempt"})Количество попыток ограничено</label>
+											@Html.TextBoxFor(m => m.Tests[i].Data.CountAttempts, new {@class = "inline-edit integer form-control " + (Model.Tests[i].Data.IsCountLimited ? string.Empty : "hidden"), maxlength = 3})
+										</div>
+									}
+									else
+									{
+										@Html.HiddenFor(m => m.Tests[i].Data.IsCountLimited)
+										@Html.HiddenFor(m => m.Tests[i].Data.CountAttempts)
+										@Html.Raw(!Model.Tests[i].Data.IsCountLimited ? "Количество попыток не ограничено" : string.Format("Количество попыток ограничено {0}.", Model.Tests[i].Data.CountAttempts))
+									}
+								</td>
+								<td style="width: 55px; max-width: 100px">
+									@if (Model.IsEditable || (Model.IsEditableFormed && Model.Tests[i].Data.DateStart >= DateTime.Now.Date))
+									{
+										<a class="btn btn-xs btn-default glyphicon glyphicon-remove remove-test" title="Удалить"></a>
+									}
+									else
+									{
+										<a class="btn-link" onclick="showGroupTest(@Model.Tests[i].Data.Id);" style="cursor: pointer">Результаты тестирования</a>
+									}
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			if (Model.IsEditable || Model.IsEditableFormed)
+			{
+				<a class="btn btn-sm btn-default" title="Добавить тестирование" id="add-test-bottom"><i class="glyphicon glyphicon-plus"></i>Добавить тестирование</a>
+			}
+		}
+	</div>
+</div>
+
+<div class="modal fade" id="counselorTestingDialog">
+	<div class="modal-dialog big-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>
+				<h4 class="modal-title">Тестирования обучающего</h4>
+			</div>
+			<div class="modal-body modal-body-autosize" id="counselorTestingData">
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
+@section scripts
+{
+	@Scripts.Render("~/Scripts/jquery.validate.min.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale("ru");
+
+		function confirmStateButtonTask(formSelector, actionSelector, actionCode, buttonName, description, commentSelector) {
+			if (!$('#@Html.IdFor(m => m.Data.Name)').val()) {
+				ShowAlert('Наименование должно быть заполнено!', "alert-danger", "glyphicon-ok", true);
+				return false;
+			}
+
+			confirmStateButton(formSelector, actionSelector, actionCode, buttonName, description, commentSelector);
+			return false;
+		}
+
+	</script>
+	@Scripts.Render("~/Scripts/CounselorTests/GroupEdit.js")
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+	@Html.Partial("Assets/HistoryLinkTemplate")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	<script type="dot/template" id="row-add-conselor">
+		<tr>
+			<td>
+				<div class="form-group">
+					<label>ФИО</label>
+					<input class="administratorTourId" data-val="true" data-val-number="The field AdministratorTourId must be a number." name="Results[0].Data.AdministratorTourId" type="hidden" value="">
+					<input class="counselorsId" data-val="true" data-val-number="The field CounselorsId must be a number." name="Results[0].Data.CounselorsId" type="hidden" value="">
+					<input type="text" class="form-control fio-control" maxlength="1000" value="" autocomplete="off">
+				</div>
+				<div class="row">
+					<div class="col-md-3">
+						<div class="form-group">
+							<label>Дата зачисления</label>
+							<div class="input-group date datepicker-anytime col-md-11">
+								<input value="@DateTime.Now.Date.ToString("dd.MM.yyyy")" autocomplete="off" class="form-control input-mask-date-anytime" data-val="true" data-val-date="The field DateInclude must be a date." name="Results[0].Data.DateInclude" type="text">
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group">
+							<label>Дата отчисления</label>
+							<div class="input-group date datepicker-anytime col-md-11">
+								<input value="" autocomplete="off" class="form-control input-mask-date-anytime" data-val="true" data-val-date="The field DateExclude must be a date." name="Results[0].Data.DateExclude" type="text">
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+					</div>
+					@*<div class="col-md-3">
+						<div class="form-group">
+							<label>Дата финального теста</label>
+							<div class="input-group date datepicker-anytime col-md-11">
+								<input value="" autocomplete="off" class="form-control input-mask-date-anytime" data-val="true" data-val-date="The field DateOfFinalTest must be a date." name="Results[0].Data.DateOfFinalTest" type="text">
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group">
+							<label>Оценка финального теста</label>
+							<input class="form-control decimal" data-val="true" data-val-number="The field Rank must be a number." maxlength="10" name="Results[0].Data.Rank" type="text" value="" autocomplete="off">
+						</div>
+					</div>*@
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<label>Комментарий</label>
+							<input class="form-control" maxlength="1000" name="Results[0].Data.Comment" type="text" value="" autocomplete="off">
+						</div>
+					</div>
+				</div>
+			</td>
+			<td style="text-align: center; width: 55px;">
+				<button class="btn btn-default btn-xs glyphicon glyphicon-remove remove-counselor" title="Удалить"></button>
+			</td>
+		</tr>
+	</script>
+	<script type="dot/template" id="row-add-test">
+		<tr>
+			<td>
+				<input class="form-control counselor-input" data-val="true" data-val-number="The field CounselorTestId must be a number." id="Tests_0__Data_CounselorTestId" name="Tests[0].Data.CounselorTestId" type="hidden" value="">
+				<input data-val="true" data-val-number="The field TrainingCounselorsId must be a number." name="Tests[0].Data.TrainingCounselorsId" type="hidden" value="">
+				<input data-val="true" data-val-number="The field LastUpdateTick must be a number." data-val-required="The LastUpdateTick field is required." id="Tests_0__Data_LastUpdateTick" name="Tests[0].Data.LastUpdateTick" type="hidden" value="0">
+			</td>
+			<td style="width: 200px; max-width: 200px">
+				<div class="input-group date datepicker-anytime">
+					<input value="" autocomplete="off" class="form-control input-mask-date-anytime" data-val="true" data-val-date="The field DateStart must be a date." data-val-required="&quot;Дата начала тестирования&quot; должно быть заполнено" id="Tests_0__Data_DateStart" name="Tests[0].Data.DateStart" type="text">
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+			</td>
+			<td style="width: 200px; max-width: 200px">
+				<div class="input-group date datepicker-anytime">
+					<input value="" autocomplete="off" class="form-control input-mask-date-anytime" data-val="true" data-val-date="The field DateEnd must be a date." data-val-required="&quot;Крайняя дата тестирования&quot; должно быть заполнено" id="Tests_0__Data_DateEnd" name="Tests[0].Data.DateEnd" type="text">
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+			</td>
+			<td>
+				<div class="inline-block">
+					<label class="checkbox-inline"><input class="count-attempt" data-val="true" data-val-required="&quot;Ограничение на комчество попыток&quot; должно быть заполнено" id="Tests_0__Data_IsCountLimited" name="Tests[0].Data.IsCountLimited" type="checkbox" value="true"><input name="Tests[0].Data.IsCountLimited" type="hidden" value="false">Количество попыток ограничено</label>
+					<input class="inline-edit integer form-control  hidden" data-val="true" data-val-number="The field CountAttempts must be a number." id="Tests_0__Data_CountAttempts" maxlength="3" name="Tests[0].Data.CountAttempts" type="text" value="" autocomplete="off">
+				</div>
+			</td>
+			<td style="width: 55px; max-width: 100px">
+				<a class="btn btn-xs btn-default glyphicon glyphicon-remove remove-test" title="Удалить"></a>
+			</td>
+		</tr>
+	</script>
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	<style type="text/css">
+		.inline-edit {
+			display: inline-block;
+			width: 50px;
+			max-width: 50px;
+		}
+	</style>
+}

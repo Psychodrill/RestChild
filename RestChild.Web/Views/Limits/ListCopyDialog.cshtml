@@ -1,0 +1,48 @@
+﻿@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.Models
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@model IList<RestChild.Web.Models.Limits.ListofLimitsToCopy>
+
+<div class="modal fade" id="dialogLimitsToCopy">
+   <div class="modal-dialog big-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>
+            <h4 class="modal-title">Копирование отдыхающих</h4>
+         </div>
+         <div class="modal-body big-dialog">
+            <table border="0" cellpadding="1" cellspacing="0" width="100%">
+               <thead>
+                  <tr>
+                     <td align="center">Место отдыха</td>
+                     @*<td align="center">Смена</td>*@
+                     <td align="center">Размер квоты / Кол-во отдыхающих</td>
+                     <td align="center">Вид квоты</td>
+                     <td></td>
+                  </tr>
+               </thead>
+               <tbody>
+                  @if (Model != null && Model.Count() > 0)
+                  {
+                     foreach (var l in Model)
+                     {
+                        <tr>
+                           <td>@l.PlaceOfRest</td>
+                           @*<td align="center">@Html.Raw(string.Format("{0} - {1}", l.NullSafe(d => d.DateIncome).FormatEx(), l.NullSafe(d => d.DateOutcome).FormatEx()))</td>*@
+                           <td align="center">@l.LimitVolume / @l.Childreninlist</td>
+                           <td align="center">@l.LimitType</td>
+                           <td align="center"><button data-list-id="@l.ListId" type="button" class="btn btn-primary save-button" style="margin: 1px 0;">Скопировать</button></td>
+                        </tr>
+                     }
+                  }
+               </tbody>
+            </table>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+         </div>
+      </div>
+   </div>
+</div>

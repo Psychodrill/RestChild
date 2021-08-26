@@ -1,0 +1,59 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ assembly name="$(SolutionDir)\RestChild.Mobile.Domain\bin\Debug\RestChild.Comon.dll"#>
+<#@ assembly name="$(SolutionDir)\RestChild.Mobile.Domain\bin\Debug\RestChild.Mobile.Domain.dll"#>
+<#@ import namespace="System"#>
+<#@ import namespace="System.IO"#>
+<#@ import namespace="System.Reflection"#>
+<#@ output extension=".cs" #>
+namespace RestChild.Mobile.DAL
+{
+	using System;
+	using System.Data.Entity;
+	using System.Data.Entity.ModelConfiguration.Conventions;
+	using System.Data.Entity.ModelConfiguration.Configuration;
+	using System.Linq;
+	using System.Linq.Expressions;
+	using System.Reflection;
+	using RestChild.Mobile.Domain;
+
+	public partial class Context : DbContext
+	{
+		static Context()
+		{
+			//Database.SetInitializer(new MigrateDatabaseToLatestVersion<Context, Configuration>());
+		}
+
+		public Context()
+			: base("RestChild.Mobile")
+		{
+		}
+
+		public Context(string connString)
+			: base(connString)
+		{
+		}
+
+<#
+			var assembly = Assembly.GetAssembly(typeof(RestChild.Mobile.Domain.Account));
+			var types = assembly.GetTypes().Where(t=>t.Name!="IEntityBase" && t.Name != "IStateEntity" && t.IsClass && !t.IsAbstract && !t.IsInterface && !t.IsSealed);
+			foreach (var type in types)
+			{#>
+		//<#=type.ToString()#>
+		public DbSet<<#=type.Name#>> <#=type.Name#> { get; set; }
+<#}
+#>
+
+		protected override void OnModelCreating(DbModelBuilder modelBuilder)
+		{
+			modelBuilder.Properties<Decimal>().Configure(c => c.HasPrecision(32,4));
+			modelBuilder.Properties<Decimal>().Where(e=>e.Name  == "Latitude" || e.Name == "Longitude").Configure(c => c.HasPrecision(32, 10));
+			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+			modelBuilder.Properties<DateTime>().Configure(c => c.HasColumnType("datetime2"));
+			modelBuilder.Properties().Where(e => e.Name == "RowVersion").Configure(c => c.IsRowVersion());
+		}
+	}
+}

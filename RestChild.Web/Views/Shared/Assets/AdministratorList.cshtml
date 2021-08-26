@@ -1,0 +1,116 @@
+﻿@using System.Collections
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Domain
+@model RestChild.Extensions.Filter.AdministratorTourFilterModel
+@{
+	Layout = null;
+}
+
+@Html.Hidden("CounselorsUrl", Url.Action("AdministratorsForAdd", "AdministratorTour"), new { Id = "CounselorsUrl" })
+<!-- Сворачиваемая панель "Поиск"-->
+<div class="panel-group" role="tablist">
+	<div class="panel panel-default">
+		<div class="panel-heading" role="tab" id="collapseListGroupHeading">
+			<h4 class="panel-title">
+				<a class="" data-toggle="collapse" href="#searchCriteriaPanel">
+					Поиск
+				</a>
+			</h4>
+		</div>
+		<div class="panel-collapse collapse in" role="tabpanel">
+			<div class="panel">
+				<div class="panel-body">
+					<div id="searchCriteriaPanel" class="panel-collapse collapse in" role="tabpanel">
+						<div class="row">
+							<div class="col-md-12">
+								<fieldset class="form-horizontal">
+									<div class="form-group">
+										<label class="col-md-2 control-label text-right">ФИО</label>
+										<div class="col-md-4">
+											@Html.TextBoxFor(m => m.Name, new { @class = "form-control", autocomplete = "off" })
+										</div>
+										<label class="col-md-2 control-label text-right">Возраст</label>
+										<div class="col-md-4">
+											<label class="col-md-1 control-label text-right">С</label>
+											<div class="col-md-4">@Html.TextBoxFor(m => m.AgeFrom, new { @class = "form-control col-md-6", autocomplete = "off" })</div>
+											<label class="col-md-1 control-label text-right">По</label>
+											<div class="col-md-4">@Html.TextBoxFor(m => m.AgeTo, new { @class = "form-control col-md-6", autocomplete = "off" })</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-2 control-label text-right">Пол</label>
+										<div class="col-md-4">
+											@Html.DropDownListFor(model => model.IsMale, new SelectList(new ArrayList() { new { Id = string.Empty, Name = "-- Не выбрано --" }, new { Id = "True", Name = "Мужской" }, new { Id = "False", Name = "Женский" } }, "Id", "Name"), new { @class = "form-control" })
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-md-9 col-md-offset-3">
+											<button type="button" class="btn btn-default btn-primary dialog-search-button">
+												<i class="glyphicon glyphicon-search"></i>Поиск
+											</button>
+											<button type="button" class="btn btn-default btn-primary dialog-clear-button">
+												Очистить фильтр
+											</button>
+										</div>
+									</div>
+									@Html.HiddenFor(model => model.AddButtonClass)
+									@Html.HiddenFor(model => model.VacantForBoutId)
+									@Html.HiddenFor(model => model.OnlyVacant)
+								</fieldset>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+@if (Model.Result != null && Model.Result.Any())
+{
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th class="text-center" width="5%">№</th>
+				<th>ФИО</th>
+				<th>Дата рождения</th>
+				<th>Пол</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@{int rowNumber = Model.Result.FirstItemOnPage;}
+			@foreach (var administratorTour in Model.Result)
+			{
+				<tr>
+					<td class="text-center counselor-id">@(rowNumber++)</td>
+					<td class="counselor-dialog-name">@((administratorTour.LastName + " " + administratorTour.FirstName + " " + administratorTour.MiddleName).FormatEx())</td>
+					<td>@administratorTour.DateOfBirth.FormatEx()</td>
+					<td>@(administratorTour.Male ? "Мужской" : "Женский")</td>
+					<td class="text-center"><button type="button" class="btn btn-primary @Model.AddButtonClass" data-id="@administratorTour.Id">Добавить</button></td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	<div class="row">
+		<div class="col-md-12">
+			@Html.PagedListPager(Model.Result, page =>
+						{
+							Model.Result = null;
+							Model.PageNumber = page;
+							Model.States = null;
+							return Url.Action("AdministratorsForAdd", "AdministratorTour", Model);
+						}, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+		</div>
+	</div>
+}
+else
+{
+	<div class="row">
+		<div class="col-md-12">
+			<p>Поиск не дал результатов</p>
+		</div>
+	</div>
+}

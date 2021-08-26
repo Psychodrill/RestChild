@@ -1,0 +1,73 @@
+﻿@using RestChild.Comon.Enumeration
+@model RestChild.Web.Models.SelectPlaceModel
+
+<div id="ThridEnterMoneyAccount" @Html.Raw(Model.SelectPlaceStep != SelectPlaceStepEnum.ThridEnterMoneyAccount ? "style='display:none'" : string.Empty)>
+	<div class="form-group row">
+		<div class="col-md-12">
+			<h3>Укажите банковские реквизиты для перечисления субсидии</h3>
+			<div class="row form-group">
+				<label class="col-md-3 control-label">Наименование банка<span class="requared">*</span></label>
+				<div class="col-md-9">
+					@Html.TextBoxFor(m=>m.BankName, new {@class="form-control", maxlenght="500", @id="bankName"})
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-md-3 control-label">БИК</label>
+				<div class="col-md-9">
+					@Html.TextBoxFor(m => m.BankBik, new { @class = "form-control", maxlenght = "10" })
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-md-3 control-label">ИНН</label>
+				<div class="col-md-9">
+					@Html.TextBoxFor(m => m.BankInn, new { @class = "form-control", maxlenght = "10" })
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-md-3 control-label">КПП</label>
+				<div class="col-md-9">
+					@Html.TextBoxFor(m => m.BankKpp, new { @class = "form-control", maxlenght = "9" })
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-md-3 control-label">Расчетный счет<span class="requared">*</span></label>
+				<div class="col-md-9">
+					@Html.TextBoxFor(m => m.BankAccount, new { @class = "form-control", maxlenght = "500", @id = "bankAccount" })
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-md-3 control-label">Корреспондентский счёт</label>
+				<div class="col-md-9">
+					@Html.TextBoxFor(m => m.BankCorr, new { @class = "form-control", maxlenght = "500" })
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-md-3 control-label">Номер карты</label>
+				<div class="col-md-9">
+					@Html.TextBoxFor(m => m.BankCardNumber, new { @class = "form-control", maxlenght = "500" })
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-md-3 control-label">Фамилия получателя</label>
+				<div class="col-md-9">
+					@Html.TextBoxFor(r => r.BankLastName, new { @class = "form-control ", maxlength = "100" })
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-md-3 control-label">Имя получателя</label>
+				<div class="col-md-9">
+					@Html.TextBoxFor(r => r.BankFirstName, new { @class = "form-control", maxlength = "100" })
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-md-3 control-label">Отчество получателя</label>
+				<div class="col-md-9">
+					@Html.TextBoxFor(r => r.BankMiddleName, new { @class = "form-control", maxlength = "100" })
+				</div>
+			</div>
+			<div class="row">
+				<button type="button" class="btn btn-primary btn-default" onclick="bankSetted()">Подтвердить</button>
+			</div>
+		</div>
+	</div>
+</div>

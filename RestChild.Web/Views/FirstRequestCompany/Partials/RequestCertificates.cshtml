@@ -1,0 +1,138 @@
+﻿@using RestChild.Comon
+@model RestChild.Web.Models.RequestViewModel
+
+@if (Model.Data.ParentRequest != null)
+{
+    <fieldset class="bs-callout bs-callout-info">
+        <h3 id="ParentRequest" class="anchor bs-callout-info">Сведения о заявлении на основании которого создано текущее</h3>
+        <div class="row form-group">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Номер заявления</th>
+                    <th>Льготники</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <a href="@Url.Action("RequestEdit", new {@id = Model.Data.ParentRequest.Id})" target="_blank">@Model.Data.ParentRequest.RequestNumber</a>
+                    </td>
+                    <td>
+                        @if (Model.Data.ParentRequest.Child.Any())
+                        {
+                            <ul>
+                                @foreach (var c in Model.Data.ParentRequest.Child.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ThenBy(c => c.MiddleName).ToList())
+                                {
+                                    <li>
+                                        @(string.Format("{0} {1} {2}", c.LastName, c.FirstName, c.MiddleName))
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            var applicant = Model.Data.ParentRequest.Applicant;
+                            @(string.Format("{0} {1} {2}", applicant.LastName, applicant.FirstName, applicant.MiddleName))
+                        }
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+}
+
+@if (Model.Data.AddonRequests != null && Model.Data.AddonRequests.Any(a => !a.TypeOfRest.Commercial && !a.IsDeleted))
+{
+    <fieldset class="bs-callout bs-callout-info">
+        <h3 id="ChildrenRequests" class="anchor bs-callout-info">Сведения о созданных заявлениях</h3>
+        <div class="row form-group">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Номер заявление</th>
+                    <th>Льготники</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var r in Model.Data.AddonRequests.Where(a => !a.TypeOfRest.Commercial && !a.IsDeleted))
+                {
+                    <tr>
+                        <td>
+                            <a href="@Url.Action("RequestEdit", new {@id = r.Id})" target="_blank">@r.RequestNumber</a>
+                        </td>
+                        <td>
+                            @if (r.Child.Any())
+                            {
+                                <ul>
+                                    @foreach (var c in r.Child.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ThenBy(c => c.MiddleName).ToList())
+                                    {
+                                        <li>
+                                            @(string.Format("{0} {1} {2}", c.LastName, c.FirstName, c.MiddleName))
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                @(string.Format("{0} {1} {2}", r.Applicant.LastName, r.Applicant.FirstName, r.Applicant.MiddleName))
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+}
+
+
+@if (Model.Data.Certificates != null && Model.Data.Certificates.Any(ss => ss.StateMachineStateId != RestChild.Comon.Enumeration.StateMachineStateEnum.Deleted))
+{
+    var cert = Model.Data.Certificates.First(ss => ss.StateMachineStateId != RestChild.Comon.Enumeration.StateMachineStateEnum.Deleted);
+
+    <fieldset class="bs-callout bs-callout-info">
+        <h3 id="RequestCertificates" class="anchor bs-callout-info">Сведения о погашенном сертификате</h3>
+        <div class="row form-group">
+            <label class="col-md-2 control-label">Номер договора с отдыхающим</label>
+            <div class="col-md-4 line-height35">
+                @cert.ContractNumber.FormatEx()
+            </div>
+            <label class="col-md-2 control-label">Дата заключения договора с отдыхающим</label>
+            <div class="col-md-4 line-height35">
+                @cert.ContractDate.FormatEx()
+            </div>
+        </div>
+        <div class="row form-group">
+            <label class="col-md-2 control-label">Период отдыха c</label>
+            <div class="col-md-4 line-height35">
+                @cert.RestDateFrom.FormatEx()
+            </div>
+            <label class="col-md-2 control-label">Период отдыха по</label>
+            <div class="col-md-4 line-height35">
+                @cert.RestDateTo.FormatEx()
+            </div>
+        </div>
+        <div class="row form-group">
+            <label class="col-md-2 control-label">Наименование организации отдыха и оздоровления</label>
+            <div class="col-md-4 line-height35">
+                @Html.Raw(cert.Place.FormatEx())
+            </div>
+            <label class="col-md-2 control-label">Место отдыха (регион)</label>
+            <div class="col-md-4 line-height35">
+                @Html.Raw(cert.Region.FormatEx())
+            </div>
+        </div>
+        <div class="row form-group">
+            <label class="col-md-2 control-label">Стоимость договора общая</label>
+            <div class="col-md-4 line-height35">
+                @cert.FullPrice.FormatEx() &#8381;
+            </div>
+            <label class="col-md-2 control-label">Сумма отдыха ребёнка согласно калькуляции</label>
+            <div class="col-md-4 line-height35">
+                @cert.PriceForChild.FormatEx() &#8381;
+            </div>
+        </div>
+    </fieldset>
+}

@@ -1,0 +1,44 @@
+﻿@model RestChild.Web.Models.Monitoring.FilledFormModel
+@{
+    ViewBag.Title = "Выгрузка сводных форм";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Caption = "Выгрузка сводных форм";
+    ViewBag.SearchPanelCaption = "Поиск";
+    ViewBag.NeedInsertButton = false;
+}
+<div class="form-horizontal">
+    <h1>Выгрузка сводных форм</h1>
+    <div class="form-group">
+        <label class="control-label col-md-4">Год формы</label>
+        <div class="col-md-8">
+            @Html.DropDownListFor(r => r.YearOfRest, new SelectList(Model.YearsOfRest.Select(o => new {Id = (long?) o.Id, Name = o.Name}).OrderBy(ss => ss.Name).ToList(), "Id", "Name"), new {@class = "form-control select2", @id = "year"})
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-4">Вид формы</label>
+        <div class="col-md-8">
+            <select class="select2 form-control" id="formType">
+                <option value="@Url.Action("FinancialInformationExcel")">Сведения о финансировании оздоровительной кампании</option>
+                <option value="@Url.Action("ChildrenNumberInformationExcel")">Сведения о численности детей, направленных на отдых и оздоровление</option>
+                <option value="@Url.Action("SmallLeisureInfoEditExcel")">Сведения о малых формах досуга (занятости) детей</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-8 col-md-offset-4">
+            <button class="btn btn-primary" id="btnExcel">Выгрузить форму</button>
+        </div>
+    </div>
+</div>
+
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/Vocabulary/Monitoring.CompleteForms.js")
+}

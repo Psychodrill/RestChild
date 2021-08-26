@@ -1,0 +1,126 @@
+﻿@model RestChild.Web.Models.NewBout.ChildListModel
+@using PagedList.Mvc
+@using RestChild.Web.Models.NewBout
+
+
+@{
+    ViewBag.Title = "Реестр статистики по детям";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.SearchAction = "ChildList";
+    ViewBag.Controller = "NewBout";
+    ViewBag.Caption = "Реестр статистики по детям";
+    ViewBag.SearchPanelCaption = "Поиск";
+    ViewBag.NeedInsertButton = false;
+    var items = new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = "-- Не выбрано --"}};
+    items.AddRange(Model.Times.Where(t => !t.IsDeleted).Select(v => new SelectListItem {Value = v.Id.ToString(), Text = v.Name}));
+}
+
+@section searchForm
+{
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">ФИО</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.Name, new {@class = "form-control", maxlength = 100, autocomplete = "off"})
+        </div>
+        <label class="col-md-2 control-label text-right">Место отдыха</label>
+        <div class="col-md-4">
+            @Html.HiddenFor(m => m.CampId, new {@class = "form-control CampId", titletext = Model.Camp != null ? Model.Camp.Name : string.Empty})
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Смена</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(m => m.GroupedTime, items, new {@class = "form-control select2", autocomplete = "off"})
+        </div>
+        <label class="col-md-2 control-label text-right">Город</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.City, new {@class = "form-control", maxlength = 100, autocomplete = "off"})
+        </div>
+    </div>
+}
+
+@section additionalFilters
+{
+    <a class="btn btn-default" href="@Url.Action("ExcelChildList", "NewBout", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
+}
+
+@section searchResult
+{
+    @if (Model.Result != null && Model.Result.Any())
+    {
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th class="text-center" width="5%">№</th>
+                <th>Псевдоним</th>
+                <th>ФИО</th>
+                <th>Количество выполненных заданий</th>
+                <th>Сумма баллов всего</th>
+                <th>Баллов можно потратить</th>
+            </tr>
+            </thead>
+            <tbody>
+            @{ var rowNumber = Model.Result.FirstItemOnPage; }
+            @foreach (var account in Model.Result)
+            {
+                var campers = account.Campers.Select(c => c.Name).Distinct().ToArray();
+                <tr>
+                    <td class="text-center">@(rowNumber++)</td>
+                    <td class="text-left">
+                        <a href="@Url.Action("ManageChild", new {id = account.Id})" target="_blank">
+                            @account.Name
+                        </a>
+                    </td>
+                    <td class="text-left"><ul><li>@(string.Join("</li><li>", campers))</li></ul></td>
+                    <td class="text-center">
+                        @account.TaskCount
+                    </td>
+                    <td class="text-center">
+                        @account.Points.ToString("0")
+                    </td>
+                    <td class="text-center">
+                        @account.PointsOnAccount.ToString("0")
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.PagedListPager(Model.Result, page =>
+                {
+                    var item = new ChildListModel
+                    {
+                        CampId = Model.CampId,
+                        City = Model.City,
+                        Name = Model.Name,
+                        GroupedTime = Model.GroupedTime,
+                        PageNumber = page,
+                    };
+                    return Url.Action("ChildList", item);
+                }, new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/NewBout/List.js")
+}

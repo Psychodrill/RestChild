@@ -1,0 +1,92 @@
+﻿@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.Models
+@model RestChild.Web.Models.RequestViewModel
+<script type="text/dot-template" id="childTemplate">
+	@Html.Partial("EditorTemplates/ChildsTemplate", new List<ChildViewModel> {new ChildViewModel(new Child {IsDeleted = false, Payed = true, IsLast = true}) {StatusByChild = Model.StatusByChild}})
+</script>
+
+<script type="text/dot-template" id="attendantTemplate">
+	@Html.Partial("EditorTemplates/AttendatsTemplate", new List<ApplicantViewModel> {new ApplicantViewModel(new Applicant {IsAccomp = true, Payed = true, IsLast = true, Request = Model.Data})})
+</script>
+
+<script type="text/dot-template" id="voucherTemplate">
+	@{ Html.RenderPartial("Partials/RequestVoucher", new RequestViewModel(new Request {InformationVouchers = new List<RequestInformationVoucher> {new RequestInformationVoucher()}, TypeOfRestId = Model.Data.TypeOfRestId}) {TypeInformationVoucher = Model.TypeInformationVoucher}); }
+
+</script>
+
+<script type="text/dot-template" id="voucherTemplateAttendant">
+	<tr>
+		<td>
+			<input class="form-control child-attendant-fio" name="InformationVouchers[0].AttendantsPrice[0].AttendantGuid" type="text" value="" autocomplete="off">
+		</td>
+		<td>
+			<input class="form-control decimal" name="InformationVouchers[0].AttendantsPrice[0].Price" type="text" maxlength="10" autocomplete="off">
+		</td>
+		<td>
+			<input class="form-control decimal" maxlength="10" name="InformationVouchers[0].AttendantsPrice[0].CostOfRide" type="text" autocomplete="off">
+		</td>
+		<td>
+			<input class="form-control decimal" maxlength="10" name="InformationVouchers[0].AttendantsPrice[0].AmountOfCompensation" type="text" autocomplete="off">
+		</td>
+		<td>
+			<button class="btn btn-danger btn-xs" title="Удалить" type="button" onclick="removeInformationVoucherAttendantElement(this);"><i class="glyphicon glyphicon-remove"></i></button>
+		</td>
+	</tr>
+</script>
+
+<script type="text/dot-template" id="timeOfRestTemplate">
+	{{~it.data :value:index}}
+	<option value="{{=value.id}}" {{=it.selected==value.id?'selected':''}}>{{=value.name}}</option>
+	{{~}}
+</script>
+
+@foreach (var group in Model.DeclineReason.GroupBy(g => g.StatusId ?? 0))
+{
+    <script type="text/dot-template" id="declineReasons@(group.Key)">
+	<div class='row'>
+		<div style='margin-left:10px;margin-right:10px;'>Причина:</div><div style='margin-left:10px;margin-right:10px;'>
+			<select class='declineReasonsSelect' style='width: 100%'>
+				@foreach (var item in group)
+				{
+				    <text>
+						<option value="@item.Id">@item.Name</option>
+					</text>
+				}
+			</select>
+		</div>
+	</div>
+	<div class='row field-validation-error declineReasonsSelectMessage' style="display:none">
+		<div style='margin-left:10px;margin-right:10px;'>Необходимо указать причину</div>
+	</div>
+	<div class='row'>
+		<div style='margin-left:10px;margin-right:10px;'>{{=it.name}}</div>
+	</div>
+</script>
+}
+
+<script type="text/dot-template" id="historyTableTemplate">
+	{{~it :res:ri}}
+	{{~res.History :h:hi}}
+	<tr>
+		<td>{{=h.Operation}}</td>
+		<td>{{=h.DateTime}}</td>
+		<td>{{=h.AccountName?h.AccountName:'-'}}</td>
+		<td>{{=h.AccountPhone?h.AccountPhone:'-'}}</td>
+		<td>{{=h.AccountEmail?h.AccountEmail:'-'}}</td>
+		<td>{{? hi === 0}}<a target="_blank" class="glyphicon glyphicon-chevron-right" href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = (long?) null})/{{=res.RequestId}}"></a>{{?}}</td>
+	</tr>
+	{{~}}
+	{{~}}
+</script>
+<script type="text/dot-template" id="fileRowTemplate">
+	<tr>
+		<td>
+			<a target="_blank" class="href-file" href="/Upload.ashx?f={{=encodeURIComponent(it.fileName)}}&t={{=encodeURIComponent(it.fileTitle)}}">{{=it.fileTitle}}</a>
+		</td>
+		<td style="width:50px">
+			<span class="glyphicon glyphicon-remove-circle text-danger request-file-remove" aria-hidden="true" title="Удалить" style="cursor: pointer"></span>
+			<input type="hidden" value="{{=it.fileTitle}}" name="FileTypes[{{=it.fileTypesIndex}}].Files[{{=it.fileIndex}}].Data.FileTitle" />
+			<input type="hidden" value="{{=it.fileName}}" name="FileTypes[{{=it.fileTypesIndex}}].Files[{{=it.fileIndex}}].Data.FileName" />
+	</tr>
+</script>

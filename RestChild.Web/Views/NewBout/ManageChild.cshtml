@@ -1,0 +1,159 @@
+﻿@using Newtonsoft.Json
+@using RestChild.Comon
+@using RestChild.Mobile.DAL.Enum
+@using RestChild.Mobile.Domain
+@using RestChild.Web.Models.Task
+@model RestChild.Web.Models.NewBout.ChildModel
+
+@{
+    ViewBag.Title = "Ребёнок";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var camper = Model.Data.Campers.OrderByDescending(c => c.Id).FirstOrDefault();
+    var tasks = Model.Data.Campers.SelectMany(c => c.Tasks).ToList();
+}
+<div class="form-group row">
+    <div class="col-md-12">
+        <h2>Ребёнок</h2>
+        @Html.ActionLink("Вернуться", "ChildList")
+    </div>
+</div>
+
+<div role="tabpanel" id="MainTabs">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="@(Model.ActiveTab == "common" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)">
+            <a href="#common" aria-controls="common" role="tab" data-toggle="tab">Основные данные</a>
+        </li>
+        <li role="presentation" class="@(Model.ActiveTab == "task" ? "active" : string.Empty)">
+            <a href="#task" aria-controls="task" role="tab" data-toggle="tab">Статистика по заданиям</a>
+        </li>
+        <li role="presentation" class="@(Model.ActiveTab == "gift" ? "active" : string.Empty)">
+            <a href="#gift" aria-controls="gift" role="tab" data-toggle="tab">Статистика по подаркам</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane @(Model.ActiveTab == "common" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)" id="common">
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-md-4">Псевдоним</label>
+                    <div class="form-control-static col-md-8">@Model.Data.Name</div>
+                </div>
+                @if (camper != null)
+                {
+                    <div class="form-group">
+                        <label class="control-label col-md-4">ФИО</label>
+                        <div class="form-control-static col-md-8">@camper.Name</div>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Data.Email))
+                {
+                    <div class="form-group">
+                        <label class="control-label col-md-4">Email</label>
+                        <div class="form-control-static col-md-8">@Model.Data.Email</div>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.Data.Phone))
+                {
+                    <div class="form-group">
+                        <label class="control-label col-md-4">Телефон</label>
+                        <div class="form-control-static col-md-8">@Model.Data.Phone</div>
+                    </div>
+                }
+                <div class="form-group">
+                    <label class="control-label col-md-4">Количество выполненных заданий</label>
+                    <div class="form-control-static col-md-8">@Model.Data.TaskCount</div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-4">Количество заработанных балов</label>
+                    <div class="form-control-static col-md-8">@Model.Data.Points.ToString("0")</div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-4">Количество балов на счете</label>
+                    <div class="form-control-static col-md-8">@Model.Data.PointsOnAccount.ToString("0")</div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-4">Количество подарков получено</label>
+                    <div class="form-control-static col-md-8">@Model.Data.Gifts.Count(g => g.StateId == StateEnum.GiftReserved.Issued)</div>
+                </div>
+            </fieldset>
+        </div>
+        <div role="tabpanel" class="tab-pane @(Model.ActiveTab == "task" ? "active" : string.Empty)" id="task">
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    <label class="control-label col-md-4">Текущее кол-во баллов</label>
+                    <div class="form-control-static col-md-8">@Model.Data.PointsOnAccount.ToString("0")</div>
+                </div>
+                <h3>Задания</h3>
+                <table class="table-bordered table">
+                    <thead>
+                    <tr>
+                        <th class="text-center">Наименование задания</th>
+                        <th class="text-center">Лагерь / смена</th>
+                        <th class="text-center">Дата задания</th>
+                        <th class="text-center">Дата выполнения</th>
+                        <th class="text-center">Дата отказа от задания</th>
+                        <th class="text-center">Кол-во баллов за задание</th>
+                        <th class="text-center">Рейтинг</th>
+                        <th class="text-center">Статус задания</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var task in tasks.OrderBy(c => c.TaskDate).ToList())
+                    {
+                        <tr>
+                            <td>@task.BoutTask.Name</td>
+                            <td>@task.BoutTask.Bout.Name</td>
+                            <td class="text-center">@task.TaskDate.FormatEx()</td>
+                            <td class="text-center">@task.CompliteDate.FormatEx()</td>
+                            <td class="text-center">@task.RefuseDate.FormatEx()</td>
+                            <td class="text-center">@task.Price.ToString("0")</td>
+                            <td class="text-center">@task.Rating.FormatEx("0")</td>
+                            <td class="text-center">@task.State.Name</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </fieldset>
+        </div>
+
+        <div role="tabpanel" class="tab-pane @(Model.ActiveTab == "gift" ? "active" : string.Empty)" id="gift">
+            <fieldset class="form-horizontal">
+                <h3>Подарки</h3>
+                <table class="table-bordered table">
+                    <thead>
+                    <tr>
+                        <th class="text-center">Подарок</th>
+                        <th class="text-center">Параметр подарка</th>
+                        <th class="text-center">Лагерь/ период отдыха</th>
+                        <th class="text-center">Дата приобретения/Дата отказа</th>
+                        <th class="text-center">Кол-во</th>
+                        <th class="text-center">Сумма баллов</th>
+                        <th class="text-center">Рейтинг</th>
+                        <th class="text-center">Статус</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var task in Model.Data.Gifts.OrderBy(c => c.Gift.Name).ToList() ?? new List<GiftReserved>())
+                    {
+                        <tr>
+                            <td>@task.Gift.Gift.Name</td>
+                            <td>@task.Gift.Name</td>
+                            <td class="text-center">@(camper != null && camper.Bout != null ? camper.Bout.Name : "")</td>
+                            <td>@(task.StateId != StateEnum.GiftReserved.Reserved ? new DateTime(task.LastUpdateTick).FormatEx() : "-")</td>
+                            <td class="text-center">@task.Count</td>
+                            <td class="text-center">@task.Price.FormatEx()</td>
+                            <td class="text-center">@task.Rating.FormatEx("0")</td>
+                            <td class="text-center">@task.State.Name</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/newBout/manage.js")
+}

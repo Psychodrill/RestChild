@@ -1,0 +1,53 @@
+﻿@model RestChild.Web.Models.BoutModel
+	@{
+		var lastChange = Model.Data != null && Model.Data.HistoryLink != null && Model.Data.HistoryLink.Historys != null ? Model.Data.HistoryLink.Historys.OrderByDescending(h => h.Id).FirstOrDefault() : null;
+		var count = Model.Data != null && Model.Data.Chidren != null ? Model.Data.Chidren.Count() : 0;
+		var countNotIn = Model.Data == null || Model.Data.Chidren == null ? 0 : Model.Data.Chidren.Count(c =>
+		{
+			var toTransport = c.LinkToPeoples.FirstOrDefault(l => l.TransportId == Model.Data.TransportInfoToId);
+			return toTransport == null || toTransport.NotComeInPlaceOfRest;
+		});
+	}
+<div class="form-group row">
+	<div class="col-md-6">
+		<h3>Формирование отрядов</h3>
+	</div>
+	@if (lastChange != null)
+	{
+	<div class="col-md-6 text-right">
+		Последнее изменение: <b>@lastChange.DateChange.ToString("dd.MM.yyyy в HH:mm")@(lastChange.Account != null ? ", " + lastChange.Account.Name : "")</b>
+	</div>
+	}
+</div>
+
+<div class="form-group row">
+	<label class="col-md-2 control-label text-right">Всего:</label>
+	<div class="col-md-1" id="countTotal">@(count)</div>
+	<label class="col-md-2 control-label text-right">Заехало:</label>
+	<div class="col-md-1" id="countIn">@(count- countNotIn)</div>
+</div>
+
+<div class="form-group row">
+	<label class="col-md-2 control-label text-right">Не распределено:</label>
+	<div class="col-md-1" id="countUngrouped" >@(Model.Data != null && Model.Data.Chidren != null ? Model.Data.Chidren.Count(c => !c.PartyId.HasValue) : 0)</div>
+	<label class="col-md-2 control-label text-right">Не заехало:</label>
+	<div class="col-md-1" id="countNotIn">@(countNotIn)</div>
+</div>
+
+
+<div class="panel panel-default">
+	<div class="panel-heading"><h4 class="panel-title">Отряды</h4></div>
+	<div class="panel-body form-horizontal">
+		<div class="row col-md-12" id="PartiesBlock">
+		</div>
+	</div>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading"><h4 class="panel-title">Дети</h4></div>
+	<div class="panel-body form-horizontal">
+		<div class="row col-md-12" id="ChildsBlock">
+		</div>
+	</div>
+</div>
+

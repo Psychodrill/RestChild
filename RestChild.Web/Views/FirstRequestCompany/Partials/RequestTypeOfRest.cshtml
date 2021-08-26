@@ -1,0 +1,127 @@
+﻿@using DocumentFormat.OpenXml.EMMA
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Common
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.RequestViewModel
+@{
+    var typeOfRest = Model.Data.TypeOfRest ?? new TypeOfRest();
+
+    var transfer = (ViewBag.Transfers as IEnumerable<TypeOfTransfer>) ?? new List<TypeOfTransfer>();
+}
+<fieldset class="bs-callout bs-callout-info request-block">
+    <h3 id="TypeAndTime" class="anchor bs-callout-info">@(typeOfRest.Id == (long) TypeOfRestEnum.Compensation || typeOfRest.Id == (long) TypeOfRestEnum.CompensationYouthRest || typeOfRest.ParentId == (long) TypeOfRestEnum.Money ? "Цель обращения" : "Цель обращения и время отдыха")</h3>
+    @if (Model.HasBooking)
+    {
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Цель обращения</label>
+            <div class="col-md-9 line-height35">
+                @Model.NullSafe(m => m.Data.TypeOfRest.Name).FormatEx()
+                @Html.HiddenFor(m => m.Data.TypeOfRestId)
+                @Html.HiddenFor(m => m.Data.TimeOfRestId)
+                @Html.HiddenFor(m => m.Data.SubjectOfRestId)
+                @Html.HiddenFor(m => m.Data.YearOfRestId)
+                @Html.HiddenFor(r => r.Data.PlaceOfRestId, new {@class = "PlaceOfRestId"})
+            </div>
+        </div>
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Время отдыха</label>
+            <div class="col-md-9 line-height35">
+                @if (Security.HasRight(AccessRightEnum.BoutManage) && Model.NullSafe(m => m.Data.Tour.BoutId) > 0)
+                {
+                    <a href="@Url.Action("Update", "Bout", new {@id = Model.NullSafe(m => m.Data.Tour.BoutId)})" target="_blank">@Html.Raw(Model.NullSafe(m => m.Data.Tour.TimeOfRest.Name).FormatEx())</a>
+                }
+                else
+                {
+                    @Html.Raw(Model.NullSafe(m => m.Data.Tour.TimeOfRest.Name).FormatEx())
+                }
+                , c
+                @if (Security.HasRight(AccessRightEnum.ToursView) && Model.NullSafe(m => m.Data.TourId) > 0)
+                {
+                    <a href="@Url.Action("Update", "Tours", new {@id = Model.NullSafe(m => m.Data.TourId)})" target="_blank">@Model.NullSafe(m => m.Data.Tour.DateIncome).FormatEx() по @Model.NullSafe(m => m.Data.Tour.DateOutcome).FormatEx()</a>
+                }
+                else
+                {
+                    <text>
+                        @Model.NullSafe(m => m.Data.Tour.DateIncome).FormatEx() по @Model.NullSafe(m => m.Data.Tour.DateOutcome).FormatEx()
+                    </text>
+                }
+                @Html.HiddenFor(m => m.Data.TourId)
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Цель обращения<span class="requared">*</span></label>
+            <div class="col-md-9">
+                <input id="manualTypeOfRest" value="1" type="hidden"/>
+                @{
+                    var items = Model.TypeOfRests.Where(t=>t != null).ToList();
+                    @Html.DropDownList("typeOfRest-select2", new SelectList(items.Select(x => new {Val = x.Id == 0 ? string.Empty : x.Id.ToString(), Text = x.Name, x.Parent}), "Val", "Text", "Parent.Name", Model.Data.TypeOfRestId, new object[0]), new {@class = "form-control type-of-rest select2"}).DisableIf(() => Model.Data.Id > 0)
+                }
+                @Html.HiddenFor(r => r.Data.TypeOfRestId, new {@class = "TypeOfRestId"})
+                <span class="field-validation-error">@Model.TypeOfRestEm.FormatEx(string.Empty)</span>
+            </div>
+        </div>
+        <div class="row form-group" id="YearDiv">
+            <label class="col-md-3 control-label">Год кампании<span class="requared">*</span></label>
+            <div class="col-md-9">
+                @Html.HiddenFor(r => r.Data.YearOfRestId, new {@class = "YearOfRestId form-control", id = "YearOfRestId", YearName = Model.Data.YearOfRest != null ? Model.Data.YearOfRest.Name : string.Empty}).ReadonlyIf(() => Model.Data.Id > 0)
+            </div>
+        </div>
+
+        <div class="row time-div form-group @(Model.Data.TypeOfRestId == (long) TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId == (long) TypeOfRestEnum.CompensationYouthRest || typeOfRest.ParentId == (long) TypeOfRestEnum.Money ? "hidden" : string.Empty)">
+            <label class="col-md-3 control-label">Время отдыха<span class="requared">*</span></label>
+            <div class="col-md-9">
+                @Html.HiddenFor(r => r.Data.TimeOfRestId, new {@class = "time-of-rest form-control", TimeName = Model.Data.TimeOfRest != null ? Model.Data.TimeOfRest.Name : string.Empty})
+                <span class="field-validation-error">@Model.TimeOfRestEm.FormatEx(string.Empty)</span>
+            </div>
+        </div>
+        <div class="row time-div form-group @(Model.Data.TypeOfRestId == (long) TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId == (long) TypeOfRestEnum.CompensationYouthRest || typeOfRest.ParentId == (long) TypeOfRestEnum.Money ? " hidden" : string.Empty)">
+            <label class="col-md-3 control-label">Дополнительное<span class="requared">*</span></label>
+            <div class="col-md-9">
+                @Html.HiddenFor(r => r.TimeOfRestAddon1Id, new { @class = "time-of-rest form-control", TimeName = Model.TimeOfRestAddon1 != null ? Model.TimeOfRestAddon1.Name : string.Empty })
+                @Html.HiddenFor(r => r.TimeOfRestAddon1LinkId)
+            </div>
+        </div>
+        <div class="row time-div form-group @(Model.Data.TypeOfRestId == (long) TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId == (long) TypeOfRestEnum.CompensationYouthRest || typeOfRest.ParentId == (long) TypeOfRestEnum.Money ? " hidden" : string.Empty)">
+            <div class="col-md-9 col-md-offset-3">
+                @Html.HiddenFor(r => r.TimeOfRestAddon2Id, new { @class = "time-of-rest form-control", TimeName = Model.TimeOfRestAddon2 != null ? Model.TimeOfRestAddon2.Name : string.Empty })
+                @Html.HiddenFor(r => r.TimeOfRestAddon2LinkId)
+                <span class="field-validation-error">@Model.TimeOfRestAddonEm.FormatEx(string.Empty)</span>
+            </div>
+        </div>
+        <div class="row form-group hidden @(Model.Data.TypeOfRest.NullSafe(v => v.NeedSubject) ? string.Empty : "hidden")">
+            <label class="col-md-3 control-label">Тематика смены<span class="requared">*</span></label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(r => r.Data.SubjectOfRestId, new SelectList(ViewBag.SubjectsOfRest, "Id", "Name"), new {@class = "form-control select2 subject-of-rest"})
+                <span class="field-validation-error">@Model.SubjectOfRestEm.FormatEx(string.Empty)</span>
+            </div>
+        </div>
+    }
+
+    <div class="row form-group statusApplicantBlock">
+        <label class="col-md-3 control-label">Заявление подает<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.DropDownListFor(r => r.Data.StatusApplicant, StatusApplicantList.Data, new {@class = "form-control select2", @id = "statusApplicant"})
+        </div>
+    </div>
+    <h4 class="transfers @(Model.Data.TypeOfRest.NullSafe(v => v.NeedPlace) ? string.Empty : "hidden")">Трансфер</h4>
+    <div class="row form-group transfers @(Model.Data.TypeOfRest.NullSafe(v => v.NeedPlace) ? string.Empty : "hidden")">
+        <label class="col-md-3 control-label">Проезд из города Москвы к месту отдыха<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.DropDownListFor(r => r.Data.TransferToId, new SelectList(transfer.Select(ss => new {ss.Id, @Name = ss.Name.Replace("Самостоятельно", "Отказываюсь от бесплатного проезда в составе организованной группы отдыхающих. Проезд в организацию отдыха и оздоровления будет осуществлен самостоятельно за счет собственных средств, не позднее 3 дней с начала периода отдыха и оздоровления (ознакомлен, что компенсация затраченных средств не предусмотрена)")}), "Id", "Name"), new {@class = "form-control select2"})
+            <span class="field-validation-error">@Model.TransferToEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group transfers @(Model.Data.TypeOfRest.NullSafe(v => v.NeedPlace) ? string.Empty : "hidden")">
+        <label class="col-md-3 control-label">Проезд из места отдыха в город Москву<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.DropDownListFor(r => r.Data.TransferFromId, new SelectList(transfer.Select(ss => new {ss.Id, @Name = ss.Name.Replace("Самостоятельно", "Отказываюсь от бесплатного проезда в составе организованной группы отдыхающих. Проезд из организации отдыха и оздоровления будет осуществлен самостоятельно за счет собственных средств, не позднее дня окончания периода отдыха и оздоровления (ознакомлен, что компенсация затраченных средств не предусмотрена)")}), "Id", "Name"), new {@class = "form-control select2"})
+            <span class="field-validation-error">@Model.TransferFromEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+</fieldset>

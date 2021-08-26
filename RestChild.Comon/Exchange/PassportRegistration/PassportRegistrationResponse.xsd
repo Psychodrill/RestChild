@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://asur/fms/" targetNamespace="http://asur/fms/" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+ <xs:element name="Registration" type="ns1:RegistrationType"/>
+ <xs:complexType name="RegistrationType">
+  <xs:all>
+   <xs:element name="LastName" type="xs:string" minOccurs="0"/>
+   <xs:element name="FirstName" type="xs:string" minOccurs="0"/>
+   <xs:element name="GivenName" type="xs:string" minOccurs="0"/>
+   <xs:element name="BirthDate" type="xs:string" minOccurs="0"/>
+   <xs:element name="SNILS" type="xs:string" minOccurs="0"/>
+   <xs:element name="RegionCode" type="xs:string" minOccurs="0"/>
+   <xs:element name="DocumentSeries" type="xs:string" minOccurs="0"/>
+   <xs:element name="DocumentNumber" type="xs:string" minOccurs="0"/>
+   <xs:element name="DocumentDate" type="xs:string" minOccurs="0"/>
+   <xs:element name="LocationRegion" type="xs:string" minOccurs="0"/>
+   <xs:element name="LocationDistrict" type="xs:string" minOccurs="0"/>
+   <xs:element name="LocationCity" type="xs:string" minOccurs="0"/>
+   <xs:element name="LocationStreet" type="xs:string" minOccurs="0"/>
+   <xs:element name="LocationHouse" type="xs:string" minOccurs="0"/>
+   <xs:element name="LocationBuilding" type="xs:string" minOccurs="0"/>
+   <xs:element name="LocationFlat" type="xs:string" minOccurs="0"/>
+   <xs:element name="DateTill" type="xs:string" minOccurs="0"/>
+   <xs:element name="DocumentStatus" type="xs:string" minOccurs="0"/>
+   <xs:element name="DocType" type="xs:string" minOccurs="0"/>
+  </xs:all>
+ </xs:complexType>
+</xs:schema>

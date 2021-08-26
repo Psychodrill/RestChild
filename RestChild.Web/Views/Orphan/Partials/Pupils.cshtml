@@ -1,0 +1,19 @@
+﻿@using RestChild.Web.Models.Orphans
+@model RestChild.Web.Models.Orphans.OrphanageModel
+
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "Pupils" ? "active" : string.Empty)" id="Pupils">
+    @if (Model.OrphanageAddress.Any(ss => ss.Value.Id > 0))
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p class="panel-operation-button">
+                    <a class="btn btn-primary" href="@Url.Action("OrphanagePupilNew", new {orphanageId = Model.Data.Id})" target="_blank"><i class="glyphicon glyphicon-plus"></i> Добавить воспитанника </a>
+                </p>
+            </div>
+        </div>
+    }
+    @using (Ajax.BeginForm("OrphanagePupilsSearch", null, new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "PupilsForm", InsertionMode = InsertionMode.Replace }, new { id = "PupilsForm" }))
+    {
+        @Html.Partial("Partials/PupilList", Model.Pupils != null && Model.Pupils.Any() ? new OrphanagePupilsFilterModel(Model.Pupils.Values) : new OrphanagePupilsFilterModel(Model.Data.Id))
+    }
+</div>

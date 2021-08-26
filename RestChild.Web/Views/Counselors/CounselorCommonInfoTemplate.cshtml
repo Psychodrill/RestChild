@@ -1,0 +1,86 @@
+﻿
+<script type="x-dot-template" id="ForeignPassportTemplate">
+	<tr>
+		<td>@Html.TextBox("Data.ForeginPassports[].LastName", string.Empty, new { @class = "form-control" })</td>
+		<td>@Html.TextBox("Data.ForeginPassports[].FirstName", string.Empty, new { @class = "form-control" })</td>
+		<td>@Html.TextBox("Data.ForeginPassports[].PassportNumber", string.Empty, new { @class = "form-control" })</td>
+		<td>
+			<div class='input-group date datepicker-anytime'>
+				@Html.TextBox("Data.ForeginPassports[].PassportIssueDate", string.Empty, new { @class = "form-control input-mask-date-anytime" })
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+			</div>
+		</td>
+		<td>
+			<div class='input-group date datepicker-anytime'>
+				@Html.TextBox("Data.ForeginPassports[].PassportValidityEndDate", string.Empty, new { @class = "form-control input-mask-date-anytime" })
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+			</div>
+		</td>
+		<td>@Html.TextBox("Data.ForeginPassports[].PassportIssue", string.Empty, new { @class = "form-control" })</td>
+		<td>
+			@Html.Hidden("Data.ForeginPassports[].Id", 0)
+			<a href="javascript:void(0);"><span class="glyphicon glyphicon-remove remove-foreign-passport"></span></a>
+		</td>
+	</tr>
+</script>
+
+<script type="x-dot-template" id="HighSchoolGraduationTemplate">
+	<tr>
+		<td>@Html.TextBox("Data.HighSchoolGraduations[].EducationInstitutionName", string.Empty, new { @class = "form-control" })</td>
+		<td>@Html.TextBox("Data.HighSchoolGraduations[].Department", string.Empty, new { @class = "form-control" })</td>
+		<td>@Html.TextBox("Data.HighSchoolGraduations[].Speciality", string.Empty, new { @class = "form-control" })</td>
+		<td>@Html.TextBox("Data.HighSchoolGraduations[].Course", string.Empty, new { @class = "form-control integer" })</td>
+		<td>@Html.TextBox("Data.HighSchoolGraduations[].GraduationYear", string.Empty, new { @class = "form-control year-inputmask" })</td>
+		<td>
+			@Html.Hidden("Data.HighSchoolGraduations[].Id", 0)
+			<a href="javascript:void(0);"><span class="glyphicon glyphicon-remove remove-highschool-graduation"></span></a>
+		</td>
+	</tr>
+</script>
+
+
+<script type="x-dot-template" id="CounselorCourseTemplate">
+	<tr>
+		<td>@Html.TextBox("Data.CounselorCources[].Year", string.Empty, new { @class = "form-control year-inputmask" })</td>
+		<td>@Html.TextBox("Data.CounselorCources[].Name", string.Empty, new { @class = "form-control" })</td>
+		<td>
+			@Html.Hidden("Data.CounselorCources[].Id", 0)
+			<a href="javascript:void(0);"><span class="glyphicon glyphicon-remove remove-counselor-cource"></span></a>
+		</td>
+	</tr>
+</script>
+
+<script type="x-dot-template" id="CounselorPracticeTemplate">
+	<tr>
+		<td>@Html.TextBox("Data.CounselorPractices[].Camp", string.Empty, new { @class = "form-control" })</td>
+		<td>@Html.TextBox("Data.CounselorPractices[].Year", string.Empty, new { @class = "form-control year-inputmask" })</td>
+		<td>@Html.TextBox("Data.CounselorPractices[].Tour", string.Empty, new { @class = "form-control" })</td>
+		<td>@Html.TextBox("Data.CounselorPractices[].Party", string.Empty, new { @class = "form-control" })</td>
+		<td>
+			@Html.Hidden("Data.CounselorPractices[].Id", 0)
+			<a href="javascript:void(0);"><span class="glyphicon glyphicon-remove remove-counselor-practice"></span></a>
+		</td>
+	</tr>
+</script>
+
+<script type="x-dot-template" id="CounselorCommentTemplate">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<label>{{=it.author}}</label>
+		</div>
+		<div class="panel-body">
+			{{=it.comment}}
+		</div>
+	</div>
+</script>
+
+<script type="x-dot-template" id="CounselorCommentHiddenTemplate">
+	<div class="hidden hidden-comment">
+		<input type="hidden" name="Data.Comments[].Author" value="{{=it.author}}" />
+		<input type="hidden" name="Data.Comments[].Comment" value="{{=it.comment}}" />
+	</div>
+</script>

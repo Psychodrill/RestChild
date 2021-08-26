@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" />
+  <xs:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+  <xs:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" />
+  <xs:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging.GetOperationInfo" />
+  <xs:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.AppServices.Contracts.OperationService" />
+  <xs:complexType name="CreateUIToSingRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q1:RequestBase">
+        <xs:sequence>
+          <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClienSignatureFormat" type="q2:ClientSignatureFormat" />
+          <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClientSignatureKind" type="q3:SignatureKind" />
+          <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClientSigningMode" type="q4:ClientSigningMode" />
+          <xs:element xmlns:q5="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="FileAccessCodes" nillable="true" type="q5:ArrayOfstring" />
+          <xs:element xmlns:q6="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Oids" nillable="true" type="q6:ArrayOfstring" />
+          <xs:element minOccurs="0" name="ReturnUrl" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ServerSignRequired" type="xs:boolean" />
+          <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ServerSignatureFormat" type="q7:ServerSignatureFormat" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateUIToSingRequest" nillable="true" type="tns:CreateUIToSingRequest" />
+  <xs:complexType name="CreateUIToSingResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q8="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q8:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="OperationID" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Url" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateUIToSingResponse" nillable="true" type="tns:CreateUIToSingResponse" />
+  <xs:complexType name="CreateUIToSignDocumentRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q9="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q9:RequestBase">
+        <xs:sequence>
+          <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClienSignatureFormat" type="q10:ClientSignatureFormat" />
+          <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClientSignatureKind" type="q11:SignatureKind" />
+          <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClientSigningMode" type="q12:ClientSigningMode" />
+          <xs:element minOccurs="0" name="DocumentId" type="ser:guid" />
+          <xs:element xmlns:q13="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="FileAccessCodes" nillable="true" type="q13:ArrayOfstring" />
+          <xs:element xmlns:q14="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Oids" nillable="true" type="q14:ArrayOfstring" />
+          <xs:element minOccurs="0" name="ReturnUrl" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ServerSignRequired" type="xs:boolean" />
+          <xs:element xmlns:q15="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ServerSignatureFormat" type="q15:ServerSignatureFormat" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateUIToSignDocumentRequest" nillable="true" type="tns:CreateUIToSignDocumentRequest" />
+  <xs:complexType name="CreateUIToSignDocumentResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q16="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q16:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="OperationID" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Url" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateUIToSignDocumentResponse" nillable="true" type="tns:CreateUIToSignDocumentResponse" />
+  <xs:complexType name="CreateUIToSignForSmevRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q17="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q17:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="AppData" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="BinaryData" nillable="true" type="xs:base64Binary" />
+          <xs:element minOccurs="0" name="ReturnUrl" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ServerSignRequired" type="xs:boolean" />
+          <xs:element minOccurs="0" name="SmevInfo" nillable="true" type="tns:SmevInfo" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateUIToSignForSmevRequest" nillable="true" type="tns:CreateUIToSignForSmevRequest" />
+  <xs:complexType name="SmevInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CaseNumber" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="OriginRequestIdRef" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Originator" nillable="true" type="tns:Originator" />
+      <xs:element minOccurs="0" name="Recipient" nillable="true" type="tns:Recipient" />
+      <xs:element minOccurs="0" name="RequestIdRef" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Sender" nillable="true" type="tns:Sender" />
+      <xs:element minOccurs="0" name="ServiceCode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="TypeCode" type="tns:SmevMessageType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SmevInfo" nillable="true" type="tns:SmevInfo" />
+  <xs:complexType name="Originator">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:SmevParameterBase">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Originator" nillable="true" type="tns:Originator" />
+  <xs:complexType name="SmevParameterBase">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Code" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SmevParameterBase" nillable="true" type="tns:SmevParameterBase" />
+  <xs:complexType name="Recipient">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:SmevParameterBase">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Recipient" nillable="true" type="tns:Recipient" />
+  <xs:complexType name="Sender">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:SmevParameterBase">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Sender" nillable="true" type="tns:Sender" />
+  <xs:simpleType name="SmevMessageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ServiceRequest">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ServiceResponse">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="IntermediateDataRequest">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="IntermediateDataResponse">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">4</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="InteragencyRequest">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">5</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="InteragencyResponse">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">6</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="RequestToRegionalSystem">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">7</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="ResponseFromRegionalSystem">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">8</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="RegionalSystemRequest">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">9</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="RegionalSystemResponse">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">10</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="SmevMessageType" nillable="true" type="tns:SmevMessageType" />
+  <xs:complexType name="CreateUIToSignForSmevResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q18="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q18:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="OperationID" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Url" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateUIToSignForSmevResponse" nillable="true" type="tns:CreateUIToSignForSmevResponse" />
+  <xs:complexType name="CreateSignMobilePhaseOneRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q19="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q19:RequestBase">
+        <xs:sequence>
+          <xs:element xmlns:q20="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" name="AuthenticationType" type="q20:MobileAuthenticationType" />
+          <xs:element xmlns:q21="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClienSignatureFormat" type="q21:ClientSignatureFormat" />
+          <xs:element xmlns:q22="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClientSignatureKind" type="q22:SignatureKind" />
+          <xs:element xmlns:q23="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClientSigningMode" type="q23:ClientSigningMode" />
+          <xs:element xmlns:q24="http://schemas.microsoft.com/2003/10/Serialization/Arrays" name="FileAccessCodes" nillable="true" type="q24:ArrayOfstring" />
+          <xs:element name="Phone" nillable="true" type="xs:string" />
+          <xs:element name="UserID" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateSignMobilePhaseOneRequest" nillable="true" type="tns:CreateSignMobilePhaseOneRequest" />
+  <xs:complexType name="CreateSignMobilePhaseOneResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q25="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q25:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="OperationID" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="SequenceNumber" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Timeout" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateSignMobilePhaseOneResponse" nillable="true" type="tns:CreateSignMobilePhaseOneResponse" />
+  <xs:complexType name="CreateSignMobilePhaseTwoRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q26="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q26:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="OTP" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="OperationID" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateSignMobilePhaseTwoRequest" nillable="true" type="tns:CreateSignMobilePhaseTwoRequest" />
+  <xs:complexType name="CreateSignMobilePhaseTwoResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q27="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q27:ResponseBase">
+        <xs:sequence />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateSignMobilePhaseTwoResponse" nillable="true" type="tns:CreateSignMobilePhaseTwoResponse" />
+  <xs:complexType name="SignFileRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q28="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q28:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+          <xs:element xmlns:q29="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="OIDs" nillable="true" type="q29:ArrayOfstring" />
+          <xs:element xmlns:q30="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ServerSignatureFormat" type="q30:ServerSignatureFormat" />
+          <xs:element xmlns:q31="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ServerSignatureKind" type="q31:SignatureKind" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="SignFileRequest" nillable="true" type="tns:SignFileRequest" />
+  <xs:complexType name="SignFileResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q32="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q32:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="SignFileResponse" nillable="true" type="tns:SignFileResponse" />
+  <xs:complexType name="GetSignatureExistenceInfoRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q33="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q33:RequestBase">
+        <xs:sequence>
+          <xs:element xmlns:q34="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="FileAccessCodes" nillable="true" type="q34:ArrayOfstring" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetSignatureExistenceInfoRequest" nillable="true" type="tns:GetSignatureExistenceInfoRequest" />
+  <xs:complexType name="GetSignatureExistenceInfoResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q35="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q35:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="SignatureExistenceInfos" nillable="true" type="tns:ArrayOfSignatureExistenceInfo" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetSignatureExistenceInfoResponse" nillable="true" type="tns:GetSignatureExistenceInfoResponse" />
+  <xs:complexType name="ArrayOfSignatureExistenceInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SignatureExistenceInfo" nillable="true" type="tns:SignatureExistenceInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSignatureExistenceInfo" nillable="true" type="tns:ArrayOfSignatureExistenceInfo" />
+  <xs:complexType name="SignatureExistenceInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Exists" type="xs:boolean" />
+      <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SignatureExistenceInfo" nillable="true" type="tns:SignatureExistenceInfo" />
+  <xs:complexType name="GetFileSignatureInfoRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q36="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q36:RequestBase">
+        <xs:sequence>
+          <xs:element xmlns:q37="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="FileAccessCodes" nillable="true" type="q37:ArrayOfstring" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetFileSignatureInfoRequest" nillable="true" type="tns:GetFileSignatureInfoRequest" />
+  <xs:complexType name="GetFileSignatureInfoResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q38="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q38:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileSignatureInfos" nillable="true" type="tns:ArrayOfFileSignatureInfo" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetFileSignatureInfoResponse" nillable="true" type="tns:GetFileSignatureInfoResponse" />
+  <xs:complexType name="ArrayOfFileSignatureInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FileSignatureInfo" nillable="true" type="tns:FileSignatureInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFileSignatureInfo" nillable="true" type="tns:ArrayOfFileSignatureInfo" />
+  <xs:complexType name="FileSignatureInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+      <xs:element xmlns:q39="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" minOccurs="0" name="FileInfo" nillable="true" type="q39:FileInfoEx" />
+      <xs:element minOccurs="0" name="Signatures" nillable="true" type="tns:ArrayOfSignatureInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FileSignatureInfo" nillable="true" type="tns:FileSignatureInfo" />
+  <xs:complexType name="ArrayOfSignatureInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SignatureInfo" nillable="true" type="tns:SignatureInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSignatureInfo" nillable="true" type="tns:ArrayOfSignatureInfo" />
+  <xs:complexType name="SignatureInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CertificateThumbprint" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="CertificationAuthority" nillable="true" type="xs:string" />
+      <xs:element xmlns:q40="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClientSignatureKind" type="q40:SignatureKind" />
+      <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FailReason" type="xs:int" />
+      <xs:element minOccurs="0" name="IsValid" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Owner" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SigningDate" nillable="true" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SignatureInfo" nillable="true" type="tns:SignatureInfo" />
+  <xs:complexType name="GetFileSignatureInfoWithRulRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q41="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q41:RequestBase">
+        <xs:sequence>
+          <xs:element xmlns:q42="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="FileAccessCodes" nillable="true" type="q42:ArrayOfstring" />
+          <xs:element minOccurs="0" name="RulDocumentId" nillable="true" type="ser:guid" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetFileSignatureInfoWithRulRequest" nillable="true" type="tns:GetFileSignatureInfoWithRulRequest" />
+  <xs:complexType name="GetFileCertificatesUserInfoRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q43="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q43:RequestBase">
+        <xs:sequence>
+          <xs:element xmlns:q44="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="FileAccessCodes" nillable="true" type="q44:ArrayOfstring" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetFileCertificatesUserInfoRequest" nillable="true" type="tns:GetFileCertificatesUserInfoRequest" />
+  <xs:complexType name="GetFileCertificatesUserInfoResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q45="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q45:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileCertificateUserInfos" nillable="true" type="tns:ArrayOfFileCertificateUserInfo" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetFileCertificatesUserInfoResponse" nillable="true" type="tns:GetFileCertificatesUserInfoResponse" />
+  <xs:complexType name="ArrayOfFileCertificateUserInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="FileCertificateUserInfo" nillable="true" type="tns:FileCertificateUserInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfFileCertificateUserInfo" nillable="true" type="tns:ArrayOfFileCertificateUserInfo" />
+  <xs:complexType name="FileCertificateUserInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CertificatesUserInfo" nillable="true" type="tns:ArrayOfCertificateUserInfo" />
+      <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+      <xs:element xmlns:q46="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" minOccurs="0" name="FileInfo" nillable="true" type="q46:FileInfoEx" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FileCertificateUserInfo" nillable="true" type="tns:FileCertificateUserInfo" />
+  <xs:complexType name="ArrayOfCertificateUserInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="CertificateUserInfo" nillable="true" type="tns:CertificateUserInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCertificateUserInfo" nillable="true" type="tns:ArrayOfCertificateUserInfo" />
+  <xs:complexType name="CertificateUserInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CommonName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="INN" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="OGRN" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="OGRNIP" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SNILS" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SignDate" nillable="true" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CertificateUserInfo" nillable="true" type="tns:CertificateUserInfo" />
+  <xs:complexType name="CreateUIToShowDocumentsRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q47="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q47:RequestBase">
+        <xs:sequence>
+          <xs:element xmlns:q48="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="FileAccessCodes" nillable="true" type="q48:ArrayOfstring" />
+          <xs:element minOccurs="0" name="ReturnUrl" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateUIToShowDocumentsRequest" nillable="true" type="tns:CreateUIToShowDocumentsRequest" />
+  <xs:complexType name="CreateUIToShowDocumentsResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q49="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q49:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Url" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateUIToShowDocumentsResponse" nillable="true" type="tns:CreateUIToShowDocumentsResponse" />
+  <xs:complexType name="CreateUIToShowSignaturesRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q50="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q50:RequestBase">
+        <xs:sequence>
+          <xs:element xmlns:q51="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="FileAccessCodes" nillable="true" type="q51:ArrayOfstring" />
+          <xs:element minOccurs="0" name="ReturnUrl" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateUIToShowSignaturesRequest" nillable="true" type="tns:CreateUIToShowSignaturesRequest" />
+  <xs:complexType name="CreateUIToShowSignaturesResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q52="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q52:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Url" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="CreateUIToShowSignaturesResponse" nillable="true" type="tns:CreateUIToShowSignaturesResponse" />
+  <xs:complexType name="GetOriginalRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q53="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q53:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetOriginalRequest" nillable="true" type="tns:GetOriginalRequest" />
+  <xs:complexType name="GetOriginalResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q54="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q54:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetOriginalResponse" nillable="true" type="tns:GetOriginalResponse" />
+  <xs:complexType name="SignXmlRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q55="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q55:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Content" nillable="true" type="xs:string" />
+          <xs:element xmlns:q56="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Elements" nillable="true" type="q56:ArrayOfstring" />
+          <xs:element xmlns:q57="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Namespases" nillable="true" type="q57:ArrayOfstring" />
+          <xs:element xmlns:q58="http://schemas.microsoft.com/2003/10/Serialization/Arrays" minOccurs="0" name="Prefix" nillable="true" type="q58:ArrayOfstring" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="SignXmlRequest" nillable="true" type="tns:SignXmlRequest" />
+  <xs:complexType name="SignXmlResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q59="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q59:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Content" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="SignXmlResponse" nillable="true" type="tns:SignXmlResponse" />
+  <xs:complexType name="SignXmlExRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q60="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q60:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Actor" nillable="true" type="xs:string" />
+          <xs:element name="Content" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Elements" nillable="true" type="tns:ArrayOfSignXmlElement" />
+          <xs:element minOccurs="0" name="Namespaces" nillable="true" type="tns:ArrayOfSignXmlNamespaceElement" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="SignXmlExRequest" nillable="true" type="tns:SignXmlExRequest" />
+  <xs:complexType name="ArrayOfSignXmlElement">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SignXmlElement" nillable="true" type="tns:SignXmlElement" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSignXmlElement" nillable="true" type="tns:ArrayOfSignXmlElement" />
+  <xs:complexType name="SignXmlElement">
+    <xs:sequence>
+      <xs:element name="Id" nillable="true" type="xs:string" />
+      <xs:element name="XPathFilter" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SignXmlElement" nillable="true" type="tns:SignXmlElement" />
+  <xs:complexType name="ArrayOfSignXmlNamespaceElement">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SignXmlNamespaceElement" nillable="true" type="tns:SignXmlNamespaceElement" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfSignXmlNamespaceElement" nillable="true" type="tns:ArrayOfSignXmlNamespaceElement" />
+  <xs:complexType name="SignXmlNamespaceElement">
+    <xs:sequence>
+      <xs:element name="Prefix" nillable="true" type="xs:string" />
+      <xs:element name="Uri" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SignXmlNamespaceElement" nillable="true" type="tns:SignXmlNamespaceElement" />
+  <xs:complexType name="GetCertificateInfoRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q61="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q61:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Content" nillable="true" type="xs:base64Binary" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetCertificateInfoRequest" nillable="true" type="tns:GetCertificateInfoRequest" />
+  <xs:complexType name="GetCertificateInfoResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q62="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q62:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Info" nillable="true" type="tns:CertificateInfo" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetCertificateInfoResponse" nillable="true" type="tns:GetCertificateInfoResponse" />
+  <xs:complexType name="CertificateInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Algorithm" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsValid" type="xs:boolean" />
+      <xs:element minOccurs="0" name="KeyUsages" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SerialNumber" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SubjectKeyIndentifier" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ValidFrom" nillable="true" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="ValidTo" nillable="true" type="xs:dateTime" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CertificateInfo" nillable="true" type="tns:CertificateInfo" />
+  <xs:complexType name="GetOperationInfoRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q63="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q63:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="OperationId" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetOperationInfoRequest" nillable="true" type="tns:GetOperationInfoRequest" />
+  <xs:complexType name="GetOperationInfoResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q64="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q64:ResponseBase">
+        <xs:sequence>
+          <xs:element xmlns:q65="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClienSignatureFormat" nillable="true" type="q65:ClientSignatureFormat" />
+          <xs:element xmlns:q66="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClientSignatureKind" nillable="true" type="q66:SignatureKind" />
+          <xs:element xmlns:q67="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" minOccurs="0" name="ClientSigningMode" nillable="true" type="q67:ClientSigningMode" />
+          <xs:element xmlns:q68="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging.GetOperationInfo" minOccurs="0" name="Files" nillable="true" type="q68:ArrayOfOperationFileInfo" />
+          <xs:element minOccurs="0" name="ReturnUrl" nillable="true" type="xs:string" />
+          <xs:element xmlns:q69="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging.GetOperationInfo" minOccurs="0" name="Type" type="q69:OperationType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetOperationInfoResponse" nillable="true" type="tns:GetOperationInfoResponse" />
+  <xs:complexType name="GetOperationStateRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q70="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q70:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="OperationId" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetOperationStateRequest" nillable="true" type="tns:GetOperationStateRequest" />
+  <xs:complexType name="GetOperationStateResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q71="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q71:ResponseBase">
+        <xs:sequence>
+          <xs:element xmlns:q72="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.AppServices.Contracts.OperationService" minOccurs="0" name="OperationState" type="q72:OperationState" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetOperationStateResponse" nillable="true" type="tns:GetOperationStateResponse" />
+  <xs:complexType name="AddSignatureTimestampRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q73="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q73:RequestBase">
+        <xs:sequence>
+          <xs:element name="Signature" nillable="true" type="xs:string" />
+          <xs:element name="TspUrl" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="AddSignatureTimestampRequest" nillable="true" type="tns:AddSignatureTimestampRequest" />
+  <xs:complexType name="AddSignatureTimestampResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q74="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q74:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Signature" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="AddSignatureTimestampResponse" nillable="true" type="tns:AddSignatureTimestampResponse" />
+</xs:schema>

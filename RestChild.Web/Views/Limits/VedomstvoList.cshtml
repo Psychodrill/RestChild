@@ -1,0 +1,389 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Domain.Interfaces
+@using RestChild.Web.Models
+@model RestChild.Web.Models.Limits.VedomstvoListModel
+@{
+	ViewBag.Title = "Квоты ОИВ";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3>Квоты ОИВ</h3>
+@using (Html.BeginForm("VedomstvoList", "Limits", FormMethod.Post, new { @class = "mainForm" }))
+{
+	@Html.Hidden("pageNumber", 1)
+	<div class="row">
+		<div class="col-md-12">
+			<fieldset class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-offset-8 col-md-2 control-label text-right">Год кампании:</label>
+					<div class="col-md-2">
+						@Html.DropDownListFor(m => m.Data.Id, new SelectList(Model.ListOfYears, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+}
+<div class="row">
+	<div class="col-md-12">
+		<div class="form-group">
+			<table class="table input-table">
+				<tbody>
+					<tr>
+						<th>ОИВ:</th>
+						<th>Тип:</th>
+						<th>Размер квоты:</th>
+						<th></th>
+					</tr>
+					<tr>
+						<td style="width: 30%">
+							@Html.DropDownList("oivId", new SelectList(Model.Vedomstvos, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+						</td>
+						<td style="width: 20%">
+							@Html.DropDownList("tlid", new SelectList(Model.TypeOfLimitLists, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+						</td>
+						<td>
+							<input type="text" class="form-control" id="newVolume" maxlength="6" />
+						</td>
+						<td style="width: 40px">
+							<button type="button" class="btn btn-default" role="button" id="btnAddLimit" title="Добавить ОИВ"><i class="glyphicon glyphicon-plus"></i></button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table class="table" id="result">
+				<thead>
+					<tr>
+						<th style="width: 50%">ОИВ</th>
+						<th>Размер заявок</th>
+						<th>Размер квоты</th>
+						<th>Статус</th>
+						<th style="width: 200px"></th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="editMode">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>
+				<h4 class="modal-title">Редактирование квоты &quot;<span id="modalOrgName"></span>&quot;</h4>
+			</div>
+			<div class="modal-body">
+				<fieldset class="form-horizontal">
+					<div class="form-group">
+						<label class="col-md-5 control-label text-right">Размер квоты:</label>
+						<div class="col-md-7">
+							<input type="hidden" id="editLimitHiddenId" />
+							<input type="text" id="editLimitValue" class="form-control" maxlength="6" />
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="btnModalSave">Сохранить</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section styles
+{
+	@Styles.Render("~/Content/bootstrap-multiselect.css")
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	<style type="text/css">
+		.input-table tbody tr td {
+			border-top-style: none;
+		}
+	</style>
+}
+
+
+@section Scripts {
+	<script type="text/javascript" src="~/Scripts/doT.js"></script>
+	@Scripts.Render("~/bundles/global")
+	@Scripts.Render("~/bundles/jqueryval")
+	@Scripts.Render("~/Scripts/bootstrap-multiselect.js")
+	@Scripts.Render("~/Scripts/assets/multipleSelect.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	<script type="text/javascript" language="javascript">
+
+	function getClassByCode(code) {
+		var res = 'btn glyphicon';
+		switch (code) {
+			case '@AccessRightEnum.Limit.Oiv.Formation':
+				res = res + ' glyphicon-pencil';
+				break;
+			case '@AccessRightEnum.Limit.Oiv.Brought':
+				res = res + ' glyphicon-ok';
+				break;
+			case '@AccessRightEnum.Limit.Oiv.GatheringRequirements':
+				res = res + ' glyphicon-flag';
+				break;
+			default:
+		}
+		return res;
+	}
+
+	$(function () {
+		var oivTemplate = doT.template($('#rowTemplate').html());
+
+		$('#@Html.IdFor(m=>m.Data.Id)').change(function () {
+			refillData();
+		});
+
+		$("#editLimitValue, #newVolume").inputmask("integer", { allowMinus: false, rightAlign: false });
+
+		function operationFunction(e) {
+
+			var $button = $(e.target).closest('a');
+			var row = $(e.target).closest('tr');
+			var action = $button.attr('code');
+			var buttonName = $button.attr('title');
+			BootstrapDialog.show({
+				title: 'Подтверждение',
+				message: 'Подтвердить?',
+				buttons: [
+					{
+						label: buttonName,
+						action: function (dialogItself) {
+							$.ajax({
+								type: 'POST',
+								url: rootPath + 'Api/Limits/VedomstvoAction?limitId=' + row.find('.id').val() + '&actionCode=' + action,
+								data: null,
+								success: function (result) {
+									refillData();
+									dialogItself.close();
+									if (result.isError) {
+										var text = "<ul>";
+										for (var i = 0; i < result.errors.length; i++) {
+											text = text + '<li>' + result.errors[i] + '</li>';
+										}
+
+										text = text + '</ul>';
+										BootstrapDialog.show({
+											title: 'Ошибка',
+											message: 'Произошла ошибка при обновлении квоты по учреждению ' + text,
+											buttons: [
+												{
+													label: 'Закрыть',
+													action: function (dialogItself) {
+														dialogItself.close();
+													}
+												}
+											]
+										});
+									}
+								},
+
+								error: function () {
+								}
+							});
+						}
+					},
+					{
+						label: 'Закрыть',
+						action: function (dialogItself) {
+							dialogItself.close();
+						}
+					}
+				]
+			});
+		}
+
+
+		function prepareRow(row) {
+			row.find('.edit').click(editFunction);
+			row.find('.operation').click(operationFunction);
+			row.find('.remove').click(removeFunction);
+		}
+
+		function refillData() {
+			$.ajax({
+				type: 'POST',
+				url: rootPath + 'Api/Limits/GetLimitsOnYear?yearId=' + $('#@Html.IdFor(m=>m.Data.Id)').val(),
+				data: null,
+				success: function (result) {
+					$('#result tbody').empty();
+					retrocycle(result);
+					result.forEach(function (val) {
+						if (val.id) {
+							var html = oivTemplate(val);
+							var row = $(html);
+							$('#result tbody').append(row);
+							prepareRow(row);
+						}
+					});
+				},
+				error: function () {
+				}
+			});
+		}
+
+		refillData();
+
+		$('#btnAddLimit').click(function () {
+			$.ajax({
+				type: 'POST',
+				url: rootPath + 'Api/Limits/AddOivLimit?yearId=' + $('#@Html.IdFor(m=>m.Data.Id)').val() + '&organizationId=' + $('#oivId').val() + '&volume=' + $('#newVolume').val() + '&tlid=' + $('#tlid').val(),
+				data: null,
+				success: function (result) {
+					if (result) {
+						BootstrapDialog.show({
+							title: 'Ошибка',
+							message: result,
+							buttons: [
+								{
+									label: 'Закрыть',
+									action: function (dialogItself) {
+										dialogItself.close();
+									}
+								}
+							]
+						});
+					}
+
+					refillData();
+					$('#oivId').select2('data', null);
+					$('#newVolume').val('');
+				},
+				error: function () {
+					BootstrapDialog.show({
+						title: 'Ошибка',
+						message: 'Произошла ошибка при добавлении квоты',
+						buttons: [
+							{
+								label: 'Закрыть',
+								action: function (dialogItself) {
+									dialogItself.close();
+								}
+							}
+						]
+					});
+				}
+			});
+		});
+
+		function editFunction(e) {
+			var row = $(e.target).closest('tr');
+			$('#editLimitHiddenId').val(row.find('.id').val());
+			$('#editLimitValue').val(row.find('.volume').val());
+			$('#modalOrgName').html(row.find('.orgName').html());
+			$('#btnModalSave').unbind();
+			$('#btnModalSave').click(function () {
+				$.ajax({
+					type: 'POST',
+					url: rootPath + 'Api/Limits/UpdateOivLimit?limitId=' + row.find('.id').val() + '&volume=' + $('#editLimitValue').val(),
+					data: null,
+					success: function (result) {
+						refillData();
+						$('#editMode').modal('hide');
+						if (result) {
+							BootstrapDialog.show({
+								title: 'Ошибка',
+								message: 'Произошла ошибка: ' + result,
+								buttons: [
+									{
+										label: 'Закрыть',
+										action: function (dialogItself) {
+											dialogItself.close();
+										}
+									}
+								]
+							});
+						}
+					},
+					error: function () {
+					}
+				});
+
+			});
+			$('#editMode').modal();
+		}
+
+		function removeFunction(e) {
+			var row = $(e.currentTarget).parent().parent();
+			BootstrapDialog.show({
+				title: 'Удаление',
+				message: 'Подтвердить удаление квоты ведомству?',
+				buttons: [
+				{
+					label: 'Подтвердить',
+					action: function (dialogItself) {
+						$.ajax({
+							type: 'POST',
+							url: rootPath + 'Api/Limits/DeleteOivLimit?limitId=' + row.find('.id').val(),
+							data: null,
+							success: function (result) {
+								refillData();
+								dialogItself.close();
+								if (result) {
+									BootstrapDialog.show({
+										title: 'Ошибка',
+										message: 'Произошла ошибка: ' + result,
+										buttons: [
+											{
+												label: 'Закрыть',
+												action: function (dialogItself) {
+													dialogItself.close();
+												}
+											}
+										]
+									});
+								}
+							},
+							error: function () {
+							}
+						});
+					}
+				},
+				{
+					label: 'Закрыть',
+					action: function (dialogItself) {
+						dialogItself.close();
+					}
+				}]
+			});
+
+		}
+
+		$('select.select2').select2();
+	});
+	</script>
+	<script type="text/dot-template" id="rowTemplate">
+		<tr>
+			<td class="orgName">{{=it.organizationName}} ({{=it.tl}})</td>
+			<td>
+				{{? (it.requestVolume > 0)}}
+				<a href="@Url.Action("RequestOivExcel")?oivLimitId={{=it.id}}">{{=it.requestVolume > 0 ? it.requestVolume : '-'}}</a>
+				{{??}}-{{?}}
+			</td>
+			<td>{{=it.volume > 0 ? it.volume : '-'}}</td>
+			<td>{{=(it.state)?it.state.name:'-'}}</td>
+			<td style="text-align:center">
+				<input type="hidden" value="{{=it.id}}" class="id" />
+				<input type="hidden" value="{{=it.volume}}" class="volume" />
+				<text>
+					{{? (it.state.id == @StateMachineStateEnum.Limit.Oiv.Formation) || (it.state.id == @StateMachineStateEnum.Limit.Oiv.GatheringRequirements) }}
+					<a type="button" role="button" title="Редактировать" class="btn glyphicon glyphicon-edit edit "></a>
+					<a type="button" role="button" title="Удалить" class="btn glyphicon glyphicon-remove remove"></a>
+					{{?}}
+					{{~it.actions :value:index}}
+					<a type="button" role="button" title="{{=value.actionName}}" class="operation {{=getClassByCode(value.actionCode)}}" code="{{=value.actionCode}}"></a>
+					{{~}}
+				</text>
+				<a type="button" role="button" href="@Url.Action("GetOivChilds", "Pdf")?id={{=it.id}}" class="glyphicon glyphicon-print btn" title="Список"></a>
+			</td>
+		</tr>
+	</script>
+}

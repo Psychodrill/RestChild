@@ -1,0 +1,753 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@model RestChild.Web.Models.Limits.OrganizationListModel
+@{
+	ViewBag.Title = "Квоты по учреждениям";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3>Квоты по учреждениям</h3>
+@using (Html.BeginForm("OrganizationList", "Limits", FormMethod.Post, new { @class = "mainForm" }))
+{
+	@Html.Hidden("pageNumber", 1)
+	@Html.HiddenFor(m => m.TypeLimitId, new { @id = "tlid" })
+	<div class="row">
+		<div class="col-md-12">
+			<fieldset class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-1 control-label text-right">ОИВ:</label>
+					<div class="col-md-7">
+						<table style="width: 100%">
+							<tr>
+								<td>
+									@if (Model.Vedomstvos != null && Model.Vedomstvos.Where(v => v != null).Count() == 1)
+									{
+									    <span style="line-height: 33px">@Html.Raw(Model.Vedomstvos.Where(v => v != null).Select(o => new Organization { Id = o.Id, Name = o.Organization.Name + "(" + o.TypeOfLimitList.NullSafe(t => t.Name).FormatEx() + ")" }).First().Name.FormatEx())</span>
+										<input type="hidden" value="@Model.Data.Id" id="@Html.IdFor(m=>m.Data.Id)"/>
+									}
+									else
+									{
+										Model.Vedomstvos = Model.Vedomstvos ?? new List<LimitOnVedomstvo>();
+										Model.Vedomstvos = Model.Vedomstvos.Where(v=>v != null).ToList();
+										@Html.DropDownListFor(m => m.Data.Id, new SelectList(Model.Vedomstvos.Select(o => new Organization { Id = o.Id, Name = o.Organization.Name + "(" + o.TypeOfLimitList.NullSafe(t => t.Name).FormatEx() + ")" }).InsertAt(new Organization{Name = "-- Не выбрано --"}), "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+									}
+
+								</td>
+								<td style="width: 45px; padding-left: 3px">
+									@if (Model.Vedomstvos == null || Model.Vedomstvos.Where(v => v != null).Count() != 1)
+									{
+										<button type="button" role="button" class="btn btn-default" title="Очистить" onclick="$('#@Html.IdFor(m => m.Data.Id)').select2('data', null); $('#@Html.IdFor(m => m.Data.Id)').trigger('change'); "><i class="glyphicon glyphicon-remove"></i></button>
+									}
+								</td>
+							</tr>
+						</table>
+					</div>
+					<label class="col-md-2 control-label text-right">Год кампании:</label>
+					<div class="col-md-2">
+						@Html.DropDownListFor(m => m.Data.YearOfRestId, new SelectList(Model.ListOfYears, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+	if (Model.Data.Id > 0)
+	{
+		<text>
+			<span class="well-sm well">Размер квоты <span class="badge">@Model.Data.NullSafe(l => l.Volume)</span></span>
+			<span class="well-sm well"><span id="notFormedSpan">Не распределено</span> <span class="badge" id="notFormed">@Model.Data.NullSafe(l => l.Volume)</span></span>
+			<span class="well-sm well">Не утверждено <span class="badge" id="notApproved">0</span></span>
+			<span class="well-sm well">На подтверждении в ДКгМ <span class="badge" id="dkgmNotApproved">0</span></span>
+			<span class="well-sm well">Подтверждено ДКгМ <span class="badge" id="dkgmApproved">0</span></span>
+			<br /><br />
+		</text>
+	}
+}
+@using (Html.BeginForm("OrganizationChangeStatus", "Limits", FormMethod.Post, new { @class = "postForm" }))
+{
+	@Html.HiddenFor(m => m.Data.Id)
+	@Html.HiddenFor(m => m.StringStateCode, new { @class = "stringStateCode" })
+	@Html.HiddenFor(m => m.StringCommentaryCode, new { @class = "stringCommentaryCode" })
+	@Html.Partial("Assets/_StatePanel", Model.State)
+}
+@if (Model.Errors != null)
+{
+	<ul class="error-ul-block">
+		@foreach (var error in Model.Errors)
+		{
+			<li>@error</li>
+		}
+	</ul>
+}
+<div class="row">
+	<div class="col-md-12">
+		<div class="form-group">
+			<table class="table" id="result">
+				@*<thead>
+						<tr>
+							<th style="width: 50%">Учреждение</th>
+							<th>Размер квоты</th>
+							<th>Статус</th>
+							<th style="width: 170px"></th>
+						</tr>
+					</thead>*@
+				<tbody></tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="editMode">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>
+				<h4 class="modal-title">Редактирование квоты &quot;<span id="modalOrgName"></span>&quot;</h4>
+			</div>
+			<div class="modal-body">
+				<fieldset class="form-horizontal">
+					<div class="form-group">
+						<label class="col-md-5 control-label text-right">Размер квоты:</label>
+						<div class="col-md-7">
+							<input type="hidden" id="editLimitHiddenId" />
+							<input type="text" id="editLimitValue" class="form-control" maxlength="6" />
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="btnModalSave">Сохранить</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section styles
+{
+	@Styles.Render("~/Content/bootstrap-multiselect.css")
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	<style type="text/css">
+		.input-table tbody tr td {
+			border-top-style: none;
+		}
+
+		.tour-link {
+			cursor: pointer;
+		}
+	</style>
+}
+
+
+@section Scripts {
+	<script type="text/dot-template" id="rowGroupTemplate">
+			<div class="{{=it.timeOfRestId && !it.placeOfRestId ?'bs-callout bs-callout-info' :'' }} ">
+				{{? it.name }}
+					{{=it.timeOfRestId && !it.placeOfRestId ?'<h4 class="bs-callout-info tour-link">' +it.name + '</h4>' : (it.tourId ? '<h5 style="font-weight: bold">' + it.name + '</h5>' : '') }}
+				<input type="hidden" value="{{=it.timeOfRestId}}" class="timeOfRestId" />
+				<input type="hidden" value="{{=it.tourId}}" class="tourId" />
+				<input type="hidden" value="{{=it.oivId}}" class="oivId" />
+				<input type="hidden" value="{{=it.oivOrgId}}" class="oivOrgId" />
+				<input type="hidden" value="{{=it.placeOfRestId}}" class="placeOfRestId" />
+				<div {{=it.timeOfRestId && !it.placeOfRestId ? 'class="hidden"' : '' }}>
+					{{?? !it.name }}
+					<div>
+						{{?}}
+						{{? it.tourId }}
+						<div style="margin-bottom:5px;margin-top:10px; height: 30px;">
+							<span class="well-sm well">Размер квоты <span class="badge total">{{=it.volume}}</span></span>&nbsp;
+							<span class="well-sm well"><span class="notFormedSpan">Не распределено</span> <span class="badge notFormed">{{=it.volume}}</span></span>&nbsp;
+							<span class="well-sm well">Не утверждено <span class="badge notApproved">0</span></span>&nbsp;
+							<span class="well-sm well">На подтверждении в ДКгМ <span class="badge dkgmNotApproved">0</span></span>&nbsp;
+							<span class="well-sm well">Подтверждено ДКгМ <span class="badge dkgmApproved">0</span></span>
+							<input type="hidden" value="{{=it.volume}}" class="volume-hdn" />
+							<input type="hidden" value="0" class="confirmed-hdn" />
+							<input type="hidden" value="0" class="approved-hdn" />
+							<input type="hidden" value="0" class="notapproved-hdn" />
+							<input type="hidden" value="0" class="notFormed-hdn" />
+							<button class="btn-sm btn btn-default append-limit btn-primary" title="Добавить квоту" style="margin-left: 5px"><i class="glyphicon glyphicon-plus"></i> Добавить квоту</button>
+						</div>
+						{{?}}
+
+						{{? it.tourId }}
+						<table {{=it.tourId ? "class='table table-striped table-condensed inner-table'" : "style='width:100%' class='inner-table'"}}>
+							{{? it.tourId }}
+							<thead>
+								<tr>
+									<th class="text-center" style="width: 50%">Учреждение</th>
+									<th class="text-center">Квота</th>
+									<th class="text-center">Статус</th>
+									<th style="width: 100px"></th>
+								</tr>
+							</thead>
+							{{?}}
+							<tbody></tbody>
+						</table>
+						{{?}}
+
+						{{? !it.tourId }}
+						<div class="inner-div"></div>
+						{{?}}
+						{{? it.tourId }}
+						<hr style="border-top: 2px solid #1b809e" />
+						{{?}}
+					</div>
+				</div>
+	</script>
+
+	<script type="text/dot-template" id="rowAppendTemplate">
+		<tr>
+			<td style="width: 50%">
+				<input type="hidden" class="form-control organizationId" placeholder="Введите часть названия организации" style="max-width: 600px" />
+			</td>
+
+			<td>
+				<div class="form-group newVolume-frm">
+					<input type="text" class="form-control newVolume" maxlength="6" placeholder="Введите размер квоты" />
+				</div>
+			</td>
+			<td></td>
+
+			<td style="width: 100px; text-align:center">
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-sm approve-btn" role="button" title="Сохранить"><i class="glyphicon glyphicon-ok"></i></button>
+					<button type="button" class="btn btn-default btn-sm cancel-btn" role="button" title="Отменить"><i class="glyphicon glyphicon-remove"></i></button>
+				</div>
+			</td>
+		</tr>
+	</script>
+
+	<script type="text/dot-template" id="rowSimpleTemplate">
+		<tr>
+			<td>
+				<a class="orgName" href="@Url.Action("ListOfChildsList", "Limits")?LimitOnOrganizationId={{=it.id}}">{{=it.organizationName}}</a>
+				@if (Model.Data == null || Model.Data.Id == 0)
+				{<text>
+					<br />
+					<small>{{=it.vedomstvoName}}</small>
+				</text>
+				}
+			</td>
+			<td class="text-center volume-td">{{=it.volume}}</td>
+			<td class="text-center">{{=(it.state)?it.state.name:'-'}}</td>
+			<td class="text-center" style="width: 170px">
+				<input type="hidden" value="{{=it.id}}" class="id" />
+				<input type="hidden" value="{{=it.volume}}" class="volume" />
+				<input type="hidden" value="{{=it.state.id}}" class="state-id" />
+				<div class="btn-group">
+					@if (Model.State != null && Model.State.State != null && (Model.State.State.Id == StateMachineStateEnum.Limit.Oiv.Brought || Model.State.State.Id == StateMachineStateEnum.Limit.Oiv.BroughtToOrganization))
+					{
+						<text>
+							{{? it.state.id == @(StateMachineStateEnum.Limit.Organization.Formation) }}
+							<a type="button" role="button" title="Редактировать" class="btn btn-default btn-sm glyphicon glyphicon-edit edit "></a>
+							<a type="button" role="button" title="Удалить" class="btn btn-default btn-sm glyphicon glyphicon-remove remove"></a>
+							{{?}}
+						</text>
+					}
+					{{~it.actions :value:index}}
+					<a type="button" role="button" title="{{=value.actionName}}" class="btn-default btn-sm operation {{=getClassByCode(value.actionCode)}} " code="{{=value.actionCode}}" description="{{=getDescriptionByCode(value.actionCode)}}"></a>
+					{{~}}
+					<a type="button" role="button" href="@Url.Action("GetOrganizationChilds", "Pdf")?id={{=it.id}}" class="btn btn-default btn-sm glyphicon glyphicon-print" title="Печать"></a>
+				</div>
+			</td>
+		</tr>
+	</script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/bundles/global")
+	@Scripts.Render("~/bundles/jqueryval")
+	@Scripts.Render("~/Scripts/bootstrap-multiselect.js")
+	@Scripts.Render("~/Scripts/assets/multipleSelect.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	@Scripts.Render("~/Scripts/moment.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+
+
+	<script type="text/javascript" language="javascript">
+	var confirmed = 0;
+	var approved = 0;
+	var notapproved = 0;
+	var notFormed = 0;
+
+	function calcCounters($table, stateId, volume) {
+		var $parent = $table.parent();
+		var confirmedHdn = parseInt($parent.find('.confirmed-hdn').val());
+		var approvedHdn = parseInt($parent.find('.approved-hdn').val());
+		var notapprovedHdn = parseInt($parent.find('.notapproved-hdn').val());
+		var notFormedHdn = parseInt($parent.find('.notFormed-hdn').val());
+
+		if (@StateMachineStateEnum.Limit.Organization.Confirmed === stateId) {
+			confirmed = confirmed + volume;
+			confirmedHdn = confirmedHdn + volume;
+		} else if (@StateMachineStateEnum.Limit.Organization.Approved === stateId) {
+			approved = approved + volume;
+			approvedHdn = approvedHdn + volume;
+		} else {
+			notapproved = notapproved + volume;
+			notapprovedHdn = notapprovedHdn + volume;
+		}
+
+		notFormed = notFormed + volume;
+		notFormedHdn = notFormedHdn + volume;
+
+		$parent.find('.confirmed-hdn').val(confirmedHdn);
+		$parent.find('.approved-hdn').val(approvedHdn);
+		$parent.find('.notapproved-hdn').val(notapprovedHdn);
+		$parent.find('.notFormed-hdn').val(notFormedHdn);
+	}
+
+	function updateTotals($table) {
+		var $parent = $table.parent();
+		$('#dkgmApproved').html(confirmed);
+		$('#dkgmNotApproved').html(approved);
+		$('#notApproved').html(notapproved);
+		$parent.find('.dkgmApproved').html($parent.find('.confirmed-hdn').val());
+		$parent.find('.dkgmNotApproved').html($parent.find('.approved-hdn').val());
+		$parent.find('.notApproved').html($parent.find('.notapproved-hdn').val());
+
+		var nfl = parseInt($parent.find('.volume-hdn').val()) - parseInt($parent.find('.notFormed-hdn').val());
+
+		if (nfl < 0) {
+			$parent.find('.notFormedSpan').html('Перераспределено');
+			$parent.find('.notFormedSpan').parent().addClass('bg-danger');
+			$parent.find('.notFormedSpan').parent().removeClass('well');
+			$parent.find('.notFormed').html(-nfl);
+		} else {
+			$parent.find('.notFormedSpan').html('Не распределено');
+			$parent.find('.notFormedSpan').parent().addClass('well');
+			$parent.find('.notFormedSpan').parent().removeClass('bg-danger');
+			$parent.find('.notFormed').html(nfl);
+		}
+
+		var nf = @Model.Data.NullSafe(l => l.Volume) - notFormed;
+		if (nf < 0) {
+			$('#notFormedSpan').html('Перераспределено');
+			$('#notFormedSpan').parent().addClass('bg-danger');
+			$('#notFormedSpan').parent().removeClass('well');
+			$('#notFormed').html(-nf);
+		} else {
+			$('#notFormedSpan').html('Не распределено');
+			$('#notFormedSpan').parent().addClass('well');
+			$('#notFormedSpan').parent().removeClass('bg-danger');
+			$('#notFormed').html(nf);
+		}
+	}
+
+	function getClassByCode(code) {
+		var res = 'btn glyphicon';
+		switch (code) {
+			case '@AccessRightEnum.Limit.Organization.Formation':
+				res = res + ' glyphicon-pencil';
+				break;
+			case '@AccessRightEnum.Limit.Organization.OnCompletion':
+				res = res + ' glyphicon-refresh';
+				break;
+			case '@AccessRightEnum.Limit.Organization.Brought':
+				res = res + ' glyphicon-ok';
+				break;
+			case '@AccessRightEnum.Limit.Organization.ApprovedToCompetiotion':
+				res = res + ' glyphicon-refresh';
+				break;
+			case '@AccessRightEnum.Limit.Organization.Approved':
+				res = res + ' glyphicon-ok';
+				break;
+			case '@AccessRightEnum.Limit.Organization.Confirmed':
+					res = res + ' glyphicon-ok';
+					break;
+				default:
+			}
+			return res;
+		}
+
+		function getDescriptionByCode(code) {
+			var res = 'Вы действительно хотите ';
+			switch (code) {
+				case '@AccessRightEnum.Limit.Organization.Formation':
+					res = res + 'начать редактирование квоты';
+					break;
+				case '@AccessRightEnum.Limit.Organization.OnCompletion':
+					res = res + 'отправить квоту на доработку';
+					break;
+				case '@AccessRightEnum.Limit.Organization.Brought':
+					res = res + 'довести квоту до организации';
+					break;
+				case '@AccessRightEnum.Limit.Organization.ApprovedToCompetiotion':
+					res = res + 'отправить квоту на доработку';
+					break;
+				case '@AccessRightEnum.Limit.Organization.Approved':
+					res = res + 'утвердить квоту';
+					break;
+				case '@AccessRightEnum.Limit.Organization.Confirmed':
+					res = res + 'подтвердить квоту';
+					break;
+				default:
+			}
+			return res + '?';
+		}
+
+		var rowGroupTemplate = doT.template($('#rowGroupTemplate').html());
+		var rowSimpleTemplate = doT.template($('#rowSimpleTemplate').html());
+		var rowAppendTemplate = doT.template($('#rowAppendTemplate').html());
+
+		function editFunction(e) {
+			var row = $(e.currentTarget).parent().parent().parent();
+			$('#editLimitHiddenId').val(row.find('.id').val());
+			$('#editLimitValue').val(row.find('.volume').val());
+			$('#modalOrgName').html(row.find('.orgName').html());
+			$('#btnModalSave').unbind();
+			$('#btnModalSave').click(function () {
+				var val = $('#editLimitValue').val();
+				$.ajax({
+					type: 'POST',
+					url: rootPath + 'Api/Limits/UpdateOrganizationLimit?limitId=' + $('#editLimitHiddenId').val() + '&volume=' + val,
+					data: null,
+					success: function (result) {
+						$('#editMode').modal('hide');
+						if (result) {
+							BootstrapDialog.show({
+								title: result ? 'Ошибка' : 'Обновление квоты',
+								message: result ? 'Произошла ошибка при обновлении квоты по учреждения: ' + result : 'Квота по учреждению была обновлена.',
+								buttons: [
+									{
+										label: 'Закрыть',
+										action: function(dialogItself) {
+											dialogItself.close();
+										}
+									}
+								]
+							});
+						} else {
+							calcCounters(row.parent().parent(), parseInt(row.find('.state-id').val()), -parseInt(row.find('.volume').val()));
+							row.find('.volume-td').html(val);
+							calcCounters(row.parent().parent(), parseInt(row.find('.state-id').val()), parseInt(val));
+							row.find('.volume').val(val);
+							updateTotals(row.parent().parent());
+						}
+					},
+					error: function () {
+					}
+				});
+
+			});
+			$('#editMode').modal();
+		}
+
+		function removeFunction(e) {
+			var row = $(e.currentTarget).parent().parent().parent();
+			BootstrapDialog.show({
+				title: 'Удаление',
+				message: 'Подтвердить удаление квоты учреждения?',
+				buttons: [
+					{
+						label: 'Подтвердить',
+						action: function (dialogItself) {
+							$.ajax({
+								type: 'POST',
+								url: rootPath + 'Api/Limits/DeleteOrganizationLimit?limitId=' + row.find('.id').val(),
+								data: null,
+								success: function (result) {
+									dialogItself.close();
+									if (result) {
+										BootstrapDialog.show({
+											title: 'Ошибка',
+											message: 'Произошла ошибка при удалении квоты по учреждению: ' + result,
+											buttons: [
+												{
+													label: 'Закрыть',
+													action: function(dialogItself) {
+														dialogItself.close();
+													}
+												}
+											]
+										});
+									} else {
+										calcCounters(row.parent().parent(), parseInt(row.find('.state-id').val()), -parseInt(row.find('.volume').val()));
+										updateTotals(row.parent().parent());
+										row.remove();
+									}
+								},
+								error: function () {
+								}
+							});
+						}
+					},
+					{
+						label: 'Закрыть',
+						action: function (dialogItself) {
+							dialogItself.close();
+						}
+					}
+				]
+			});
+
+		}
+
+		function operationFunction(e) {
+			var $button = $(e.currentTarget);
+			var row = $(e.currentTarget).parent().parent().parent();
+			var action = $button.attr('code');
+			var buttonName = $button.attr('title');
+			var title = $button.attr('description');
+			if (!title || title === 'null') {
+				title = 'Подтвердить?';
+			}
+
+			var needComment = action === '@AccessRightEnum.Limit.Organization.ApprovedToCompetiotion' || action === '@AccessRightEnum.Limit.Organization.OnCompletion';
+
+		var $content;
+		BootstrapDialog.show({
+			title: 'Подтверждение',
+			message: function (dialog) {
+				var fn = doT.template($("#stateDialogBody").html());
+				$content = $(fn({ name: ((title) ? title : ('Вы действительно хотите ' + buttonName.toLowerCase() + '?')), needComment: needComment }));
+				return $content;
+			},
+			buttons: [
+				{
+					label: buttonName,
+					action: function (dialogItself) {
+						var commentary = $content.find('.stateDialogComment').val();
+						$.ajax({
+							type: 'POST',
+							url: rootPath + 'Api/Limits/OrganizationAction?limitId=' + row.find('.id').val() + '&actionCode=' + action + '&commentary=' + encodeURIComponent(commentary ? commentary : '-'),
+							data: null,
+							success: function (result) {
+								if (!result.isError && result.url) {
+									window.location = result.url;
+									return;
+								}
+
+								dialogItself.close();
+								if (result.isError) {
+									var text = "<ul>";
+									for (var i = 0; i < result.errors.length; i++) {
+										text = text + '<li>' + result.errors[i] + '</li>';
+									}
+
+									text = text + '</ul>';
+									BootstrapDialog.show({
+										title: 'Ошибка',
+										message: 'Произошла ошибка ' + text,
+										buttons: [
+											{
+												label: 'Закрыть',
+												action: function(dialogItself) {
+													dialogItself.close();
+												}
+											}
+										]
+									});
+								} else {
+									calcCounters(row.parent().parent(), parseInt(row.find('.state-id').val()), -parseInt(row.find('.volume').val()));
+									var $newRow = $(rowSimpleTemplate(result.item));
+									row.replaceWith($newRow);
+									prepareRow($newRow);
+									calcCounters($newRow.parent().parent(), parseInt($newRow.find('.state-id').val()), parseInt($newRow.find('.volume').val()));
+									updateTotals($newRow.parent().parent());
+								}
+							},
+
+							error: function () {
+							}
+						});
+					}
+				},
+				{
+					label: 'Закрыть',
+					action: function (dialogItself) {
+						dialogItself.close();
+					}
+				}
+			]
+		});
+	}
+
+	function prepareRow(row) {
+		row.find('.edit').click(editFunction);
+		row.find('.remove').click(removeFunction);
+		row.find('.operation').click(operationFunction);
+	}
+
+
+	function appendLimit(e) {
+		$('#result .append-limit').hide();
+		var $button = $(e.currentTarget);
+		var $parent = $button.parent().parent().parent();
+		var $table = $parent.find('table tbody');
+		var $rowAppend = $(rowAppendTemplate());
+		$rowAppend.find('.cancel-btn').click(function() {
+			$rowAppend.remove();
+			$('#result .append-limit').show();
+		});
+
+		$rowAppend.find('.approve-btn').click(function () {
+			var isError = false;
+			$rowAppend.find('.organizationId').removeClass('has-error');
+
+			if (!$rowAppend.find('.organizationId').select2('val')) {
+				$rowAppend.find('.organizationId').addClass('has-error');
+				isError = true;
+			}
+
+			$rowAppend.find('.newVolume-frm').removeClass('has-error');
+			if (!$rowAppend.find('.newVolume').val()) {
+				$rowAppend.find('.newVolume-frm').addClass('has-error');
+				isError = true;
+			}
+
+			if (!isError) {
+				$.ajax({
+					type: 'POST',
+					url: rootPath + 'Api/Limits/AddOrganizationLimit?limitVedomstviId=' + $parent.find('.oivId').val() + '&organizationId=' + $rowAppend.find('.organizationId').select2('val') + '&volume=' + $rowAppend.find('.newVolume').val() +
+						'&timeOfRestId=' + $parent.find('.timeOfRestId').val() + '&placeOfRestId=' + $parent.find('.placeOfRestId').val() + '&tourId=' + $parent.find('.tourId').val(),
+					data: null,
+					success: function (result) {
+						if (result.isError) {
+							var errorMessage = "<ul>";
+							for (var i = 0; i < result.errors.length; i++) {
+								errorMessage = errorMessage + '<li>' + result.errors[i] + '</li>';
+							}
+
+							errorMessage = errorMessage + '</ul>';
+							BootstrapDialog.show({
+								title: 'Ошибка',
+								message: 'Произошла ошибка при добавлении квоты учреждения :' + errorMessage,
+								buttons: [
+									{
+										label: 'Закрыть',
+										action: function(dialogItself) {
+											dialogItself.close();
+										}
+									}
+								]
+							});
+						} else {
+							var $newRow = $(rowSimpleTemplate(result.item));
+							$rowAppend.replaceWith($newRow);
+							prepareRow($newRow);
+							calcCounters($newRow.parent().parent(), parseInt($newRow.find('.state-id').val()), parseInt($rowAppend.find('.newVolume').val()));
+							updateTotals($newRow.parent().parent());
+							$('#result .append-limit').show();
+						}
+					},
+					error: function () {
+						BootstrapDialog.show({
+							title: 'Ошибка',
+							message: 'Произошла ошибка при добавлении квоты учреждения',
+							buttons: [
+								{
+									label: 'Закрыть',
+									action: function (dialogItself) {
+										dialogItself.close();
+									}
+								}
+							]
+						});
+					}
+				});
+			}
+		});
+
+		$rowAppend.find('.newVolume').inputmask("integer", { allowMinus: false, rightAlign: false });
+
+		$rowAppend.find('.organizationId').select2({
+			minimumInputLength: 1,
+			ajax: {
+				url: rootPath + 'api/Vedomstvo/Childs',
+				dataType: 'json',
+				quietMillis: 250,
+				data: function (term, page) {
+					return {
+						query: term,
+						oivId: $parent.find('.oivOrgId').val()
+					};
+				},
+				results: function (data, page) {
+					retrocycle(data);
+					for (var i in data) {
+						data[i] = { id: data[i].id, text: data[i].name }
+					}
+					return {
+						results: data
+					};
+				},
+				cache: true
+			}
+		});
+
+		$table.prepend($rowAppend);
+	}
+
+	function refillData() {
+
+		$.ajax({
+			type: 'POST',
+			url: rootPath + 'Api/Limits/GetOrganizationList?yearId=' + $('#@Html.IdFor(m => m.Data.YearOfRestId)').val() + '&oivId=' + $('#@Html.IdFor(m => m.Data.Id)').val() ,
+			data: null,
+			success: function (result) {
+				$('#result tbody').empty();
+				confirmed = 0;
+				approved = 0;
+				notapproved = 0;
+				notFormed = 0;
+
+				function prepareLimitRow(row) {
+					row.find('.append-limit').click(appendLimit);
+					row.find('.tour-link').click(function(e) {
+						var el = $(e.currentTarget).parent().find('div');
+						if (el.hasClass('hidden')) {
+							el.removeClass('hidden');
+						} else {
+							el.addClass('hidden');
+						}
+					});
+				}
+
+				function fillTemplate($table, data) {
+					var row = $(rowGroupTemplate(data));
+					prepareLimitRow(row);
+					$table.append(row);
+					var $subDiv = $(row.find('.inner-div'));
+					if (data.subGroups) {
+						data.subGroups.forEach(function (val) {
+							fillTemplate($subDiv, val);
+						});
+					}
+
+					var $subTable = $(row.find('.inner-table'));
+					if (data.items) {
+						data.items.forEach(function (val) {
+							var row = $(rowSimpleTemplate(val));
+							prepareRow(row);
+							$subTable.append(row);
+							calcCounters(row.parent().parent(), val.state.id, val.volume);
+							updateTotals(row.parent().parent());
+						});
+					}
+				}
+
+				fillTemplate($('#result tbody'), result);
+			},
+			error: function () {
+			}
+		});
+
+	}
+
+
+	$(function () {
+		$('#@Html.IdFor(m => m.Data.YearOfRestId), #@Html.IdFor(m => m.Data.Id)').change(function () {
+			$('.mainForm').submit();
+		});
+
+		refillData();
+
+
+		$('select.select2').select2();
+
+		refillData();
+	});
+	</script>
+	@Html.Partial("Assets/HistoryLinkTemplate")
+}

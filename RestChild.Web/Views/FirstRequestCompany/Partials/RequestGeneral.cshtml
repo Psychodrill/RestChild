@@ -1,0 +1,145 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@model RestChild.Web.Models.RequestViewModel
+<fieldset class="bs-callout bs-callout-info request-block">
+    <h3 id="GeneralInfo" class="anchor bs-callout-info">Общие сведения о заявлении</h3>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Номер заявления</label>
+        <div class="col-md-9 line-height35 wordbreak">
+            @Model.Data.RequestNumber.FormatEx()
+        </div>
+    </div>
+    @if (!string.IsNullOrEmpty(Model.Data.RequestNumberMpgu))
+    {
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Номер заявления (МПГУ)</label>
+            <div class="col-md-9 line-height35">
+                @Model.Data.RequestNumberMpgu.FormatEx()
+            </div>
+        </div>
+    }
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Дата заявления</label>
+        <div class="col-md-9 line-height35">
+            @Html.HiddenFor(r => r.Data.DateRequest)
+            @Model.Data.DateRequest.FormatEx()
+        </div>
+    </div>
+    @if (!string.IsNullOrWhiteSpace(Model.Data.CertificateNumber))
+    {
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Номер путевки</label>
+            <div class="col-md-9 line-height35">
+                @Model.Data.CertificateNumber.FormatEx()
+                @if (Model.Data.Certificates != null && Model.Data.Certificates.Any(ss => ss.StateMachineStateId != RestChild.Comon.Enumeration.StateMachineStateEnum.Deleted))
+                {
+                    @: - Погашен
+                }
+                @Html.HiddenFor(r => r.Data.CertificateNumber)
+            </div>
+        </div>
+    }
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Источник заявления</label>
+        <div class="col-md-9 line-height35">
+            @Html.HiddenFor(r => r.Data.SourceId)
+            @(Model.Data.Source != null ? Model.Data.Source.Name.FormatEx() : "-")
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-9 col-md-offset-3">
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(r => r.Data.ChangeByScan)
+                    Cогласие на внесение изменений в заявление оператором на основании прикрепленных скан-образцов бумажных документов в случае, если была допущена ошибка в заявлении
+                </label>
+            </div>
+        </div>
+    </div>
+    @if (Model.Data.DeclineReasonId.HasValue)
+    {
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Причина отказа</label>
+            <div class="col-md-9 line-height35">
+                @Html.Raw(Model.Data.DeclineReason != null ? Model.Data.DeclineReason.Name : "-")
+            </div>
+        </div>
+    }
+    @Html.HiddenFor(r => r.Data.DeclineReasonId)
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Уведомить заявителя по</label>
+        <div class="col-md-9">
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(r => r.Data.NeedSms)
+                    SMS
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(r => r.Data.NeedEmail)
+                    Email
+                </label>
+            </div>
+        </div>
+    </div>
+    @if (Model.Data.Id > 0 && Model.Data.TypeOfRest != null && Model.Data.IsFirstCompany)
+    {
+        var rulesFileExt = !string.IsNullOrEmpty(Model.Data.TypeOfRest.UrlToRulesOfRest) ? Model.Data.TypeOfRest.UrlToRulesOfRest.Substring(Model.Data.TypeOfRest.UrlToRulesOfRest.LastIndexOf('.')) : string.Empty;
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Согласие</label>
+            <div class="col-md-9 approve-checkboxs">
+                @if (Model.Data.TypeOfRest.NeedPlace)
+                {
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" @Html.Raw(Model.Data.StatusId != (long) StatusEnum.Draft ? "checked='checed' disabled" : string.Empty)/>
+                            Я подтверждаю, что ознакомлен и согласен с <a target="_blank" class="href-file" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.Data.TypeOfRest.UrlToRulesOfRest)&t=@Url.Encode("Правила" + rulesFileExt)">Правилами отдыха и оздоровления</a>.<span class="requared">*</span>
+                        </label>
+                    </div>
+                }
+                @if (!Model.Data.TypeOfRest.NotChildren && !Model.Data.TypeOfRest.NeedPlacment && Model.Data.TypeOfRest.NeedPlace)
+                {
+                    var listRestriction = !string.IsNullOrEmpty(Model.Data.TypeOfRest.UrlToListRestriction) ? Model.Data.TypeOfRest.UrlToListRestriction.Substring(Model.Data.TypeOfRest.UrlToListRestriction.LastIndexOf('.')) : string.Empty;
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" @Html.Raw(Model.Data.StatusId != (long) StatusEnum.Draft ? "checked='checed' disabled" : string.Empty)/>
+                            Я подтверждаю, что ознакомлен(а) с <a target="_blank" class="href-file" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.Data.TypeOfRest.UrlToListRestriction)&t=@Url.Encode("перечень ограничений" + listRestriction)">Перечнем противопоказаний</a> к отдыху и оздоровлению, утвержденным Министерством здравоохранения Российской Федерации.<span class="requared">*</span>
+                        </label>
+                    </div>
+                }
+                @if (!Model.Data.TypeOfRest.NotChildren && Model.Data.TypeOfRest.NeedPlacment)
+                {
+                    var roolAttendantExt = !string.IsNullOrEmpty(Model.Data.TypeOfRest.UrlToRoolAttendant) ? Model.Data.TypeOfRest.UrlToRoolAttendant.Substring(Model.Data.TypeOfRest.UrlToRoolAttendant.LastIndexOf('.')) : string.Empty;
+
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" @Html.Raw(Model.Data.StatusId != (long) StatusEnum.Draft ? "checked='checed' disabled" : string.Empty)/>
+                            Я подтверждаю, что ознакомлен(а) и соглашаюсь с <a target="_blank" class="href-file" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.Data.TypeOfRest.UrlToRoolAttendant)&t=@Url.Encode("Правила сопровождения" + roolAttendantExt)">условиями соглашения</a> об осуществлении обязанностей законным представителем (родителем) по сопровождению детей во время отдыха и оздоровления (совместный отдых).<span class="requared">*</span>
+                        </label>
+                    </div>
+                }
+                @if (!Model.Data.TypeOfRest.NotChildren && Model.Data.TypeOfRest.NeedPlace == false)
+                {
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" @Html.Raw(Model.Data.StatusId != (long) StatusEnum.Draft ? "checked='checed' disabled" : string.Empty)/>
+                            Я подтверждаю, что ознакомлен(а) с отсутствием возможности замены сертификата на получение выплаты на самостоятельную организацию отдыха и оздоровления на путевку для отдыха и оздоровления.<span class="requared">*</span>
+                        </label>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+
+    @if (Model.Data.IsFirstCompany && Model.Data.RequestOnMoney)
+    {
+        <div class="row form-group">
+            <div class="col-md-12 line-height35 wordbreak">
+                Сертификат на отдых и оздоровление
+            </div>
+        </div>
+    }
+
+</fieldset>

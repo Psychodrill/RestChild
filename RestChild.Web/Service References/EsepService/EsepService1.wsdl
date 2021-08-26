@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:i0="http://schemas.granit.ru/esep" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="EsepService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="WSHttpBinding_IEsepService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:import namespace="http://schemas.granit.ru/esep" location="http://esep.itopcase.ru/Esep-Services/EsepService.svc?wsdl=wsdl0" />
+  <wsdl:types />
+  <wsdl:binding name="WSHttpBinding_IEsepService" type="i0:IEsepService">
+    <wsp:PolicyReference URI="#WSHttpBinding_IEsepService_policy" />
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CreateUIToSing">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateUIToSing" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToSingEx">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateUIToSingEx" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToSignDocument">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateUIToSignDocument" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToSignForSmev">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateUIToSignForSmev" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateSignMobilePhaseOne">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateSignMobilePhaseOne" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateSignMobilePhaseTwo">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateSignMobilePhaseTwo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SignFile">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/SignFile" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSignatureExistenceInfo">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetSignatureExistenceInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileSignatureInfo">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetFileSignatureInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileSignatureInfoWithRul">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetFileSignatureInfoWithRul" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileCertificatesUserInfo">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetFileCertificatesUserInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToShowDocuments">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateUIToShowDocuments" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToShowSignatures">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateUIToShowSignatures" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOriginal">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetOriginal" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SignXml">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/SignXml" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ServerSignSmev">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/ServerSignSmev" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ServerSignSmevEx">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/ServerSignSmevEx" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCertificateInfo">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetCertificateInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOperationInfo">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetOperationInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOperationState">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetOperationState" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddSignatureTimestamp">
+      <soap12:operation soapAction="http://schemas.granit.ru/esep/IEsepService/AddSignatureTimestamp" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpBinding_IEsepService" type="i0:IEsepService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CreateUIToSing">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateUIToSing" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToSingEx">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateUIToSingEx" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToSignDocument">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateUIToSignDocument" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToSignForSmev">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateUIToSignForSmev" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateSignMobilePhaseOne">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateSignMobilePhaseOne" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateSignMobilePhaseTwo">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateSignMobilePhaseTwo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SignFile">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/SignFile" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetSignatureExistenceInfo">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetSignatureExistenceInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileSignatureInfo">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetFileSignatureInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileSignatureInfoWithRul">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetFileSignatureInfoWithRul" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFileCertificatesUserInfo">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetFileCertificatesUserInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToShowDocuments">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateUIToShowDocuments" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToShowSignatures">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/CreateUIToShowSignatures" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOriginal">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetOriginal" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SignXml">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/SignXml" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ServerSignSmev">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/ServerSignSmev" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ServerSignSmevEx">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/ServerSignSmevEx" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCertificateInfo">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetCertificateInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOperationInfo">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetOperationInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetOperationState">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/GetOperationState" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddSignatureTimestamp">
+      <soap:operation soapAction="http://schemas.granit.ru/esep/IEsepService/AddSignatureTimestamp" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="EsepService">
+    <wsdl:port name="WSHttpBinding_IEsepService" binding="tns:WSHttpBinding_IEsepService">
+      <soap12:address location="http://esep.itopcase.ru/Esep-Services/EsepService.svc" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>http://esep.itopcase.ru/Esep-Services/EsepService.svc</wsa10:Address>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+    <wsdl:port name="BasicHttpBinding_IEsepService" binding="tns:BasicHttpBinding_IEsepService">
+      <soap:address location="http://esep.itopcase.ru/Esep-Services/EsepService.svc/basic" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

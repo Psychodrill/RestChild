@@ -1,0 +1,273 @@
+﻿@using RestChild.Comon
+@using RestChild.Mobile.DAL.Enum
+@using RestChild.Mobile.Domain
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.Gift.ManageModel
+@{
+    ViewBag.Title = "Подарок";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.CanEdit = Model.CanEdit;
+
+    long totalLeft = 0;
+    int booked = 0;
+    decimal? rating = 0;
+
+    if (Model.Data.GiftParameters != null)
+    {
+        if (Model.Data.GiftParameters.Any(g => !string.IsNullOrWhiteSpace(g.Name)) || Model.Data.GiftParameters.Count > 1)
+        {
+            foreach (var p in Model.Data.GiftParameters.OrderBy(p => p.Name).ToList())
+            {
+                totalLeft += p.Count - (Model.Counts.ContainsKey(p.Id) ? Model.Counts[p.Id] : 0);
+            }
+        }
+        else
+        {
+            var p = Model.Data.GiftParameters.FirstOrDefault();
+            if (p != null)
+            {
+                totalLeft += (p.Count - (Model.Counts.ContainsKey(p.Id) ? Model.Counts[p.Id] : 0));
+            }
+        }
+        booked = Model.Data.GiftParameters
+            .SelectMany(p => p.Reserved ?? new List<GiftReserved>())
+            .Count(r => r.StateId == StateEnum.GiftReserved.Reserved);
+        rating = Model.Data.GiftParameters
+            .SelectMany(p => p.Reserved ?? new List<GiftReserved>()).Select(v=>v.Rating).DefaultIfEmpty()
+            .Average(r => r);
+    }
+}
+<div class="form-group row">
+    <div class="col-md-12">
+        <h2>Подарок</h2>
+        @Html.ActionLink("Вернуться", "List")
+    </div>
+</div>
+@using (Html.BeginForm("Save", "Gift", FormMethod.Post, new {enctype = "multipart/form-data", @class = "form-horizontal", id = "mainForm"}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Data.Id)
+    @Html.HiddenFor(m => m.Data.LinkId)
+    @Html.HiddenFor(m => m.StateMachineActionString)
+    @Html.HiddenFor(m => m.Data.StateId)
+    @Html.HiddenFor(m => m.Data.LastUpdateTick)
+    @Html.Partial("Assets/_StatePanel", Model.State)
+    <div role="tabpanel" id="MainTabs">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="@(Model.ActiveTab == "common" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)">
+                <a href="#common" aria-controls="common" role="tab" data-toggle="tab">Основные</a>
+            </li>
+            @if (Model.Data.Id > 0)
+            {
+                <li role="presentation" class="@(Model.ActiveTab == "statistic" ? "active" : string.Empty)">
+                    <a href="#statistic" aria-controls="statistic" role="tab" data-toggle="tab">Статистика</a>
+                </li>
+            }
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane @(Model.ActiveTab == "common" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)" id="common">
+                <fieldset class="form-horizontal">
+
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <h4>Основные параметры</h4>
+                                <label class="control-label">Название подарка</label>
+                                <div>
+                                    @Html.TextBoxFor(r => r.Data.Name, new {@class = "form-control", maxlength = "600", autocomplete = "off"}).DisableIf(() => !Model.CanEdit)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Название для магазина</label>
+                                <div>
+                                    @Html.TextBoxFor(r => r.Data.NameForShop, new {@class = "form-control", maxlength = "40", autocomplete = "off"}).DisableIf(() => !Model.CanEdit)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Описание подарка</label>
+                                <div>
+                                    @Html.TextAreaFor(r => r.Data.Description, new {@class = "form-control", autocomplete = "off"}).DisableIf(() => !Model.CanEdit)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Стоимость</label>
+                                <div>
+                                    @Html.TextBoxFor(r => r.Data.Price, new {@class = "form-control price", maxlength = "20", autocomplete = "off"}).DisableIf(() => !Model.CanEdit)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Общее кол-во на складе: @(totalLeft)</label>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Забронировано на данный момент: @(booked)</label>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Рейтинг: @(rating.FormatEx())</label>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label text-right input-label">Дата начала использования после утверждения</label>
+                                <div class='input-group date datepicker-anytime' style="max-width: 150px">
+                                    @Html.TextBoxFor(r => r.Data.DateStartUsing, new {@class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", Value = Model.NullSafe(m => m.Data.DateStartUsing).FormatEx(string.Empty, string.Empty)}).DisableIf(() => !Model.CanEdit)
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <h4>Характеристики и количество</h4>
+                                <label class="control-label">Параметр подарка</label>
+                                @if (Model.CanEdit)
+                                {
+                                    <div class="input-group">
+                                        <input type="text" maxlength="600" autocomplete="off" id="parameterText" class="form-control"/>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-primary" title="Добавить параметр" id="btnParameter">
+                                                <i class="glyphicon glyphicon-plus"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                }
+                            </div>
+                            <div id="rows">
+                                @foreach (var k in Model.Params.Keys)
+                                {
+                                    @Html.EditorFor(m => m.Params[k], "Row")
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group text-right">
+                                <div class="col-md-9 col-md-offset-3">
+                                    <img id="imgPreview" src="@Model.PhotoShowUrl" width="330" height="330" alt=""/>
+                                    @Html.HiddenFor(m => m.PhotoUrl, new {@class = "photoUrl"})
+                                    @Html.HiddenFor(m => m.PhotoName, new {@class = "photoName"})
+                                </div>
+                            </div>
+                            @if (Model.CanEdit)
+                            {
+                                <div class="form-group text-right">
+                                    <div class="col-md-9 col-md-offset-3">
+                                        <span class="btn btn-primary btn-file">
+                                            <span class="glyphicon glyphicon-folder-open"></span><span> Открыть изображение</span><input type='file' id="photo" name="photo" accept="image/jpeg,image/png"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+
+                </fieldset>
+            </div>
+            @if (Model.Data.Id > 0)
+            {
+                <div role="tabpanel" class="tab-pane @(Model.ActiveTab == "statistic" ? "active" : string.Empty)" id="statistic">
+
+                    <h3>Параметры подарка (Использовано / осталось)</h3>
+                    @if (Model.Data.GiftParameters.Any(g => !string.IsNullOrWhiteSpace(g.Name)) || Model.Data.GiftParameters.Count > 1)
+                    {
+                        <ul>
+                            @foreach (var p in Model.Data.GiftParameters.OrderBy(p => p.Name).ToList())
+                            {
+                                <li>
+                                    @p.Name - @(Model.Counts.ContainsKey(p.Id) ? Model.Counts[p.Id] : 0) / @(p.Count - (Model.Counts.ContainsKey(p.Id) ? Model.Counts[p.Id] : 0))
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        var p = Model.Data.GiftParameters.FirstOrDefault();
+                        if (p != null)
+                        {
+                            <div>
+                                @(Model.Counts.ContainsKey(p.Id) ? Model.Counts[p.Id] : 0) / @(p.Count - (Model.Counts.ContainsKey(p.Id) ? Model.Counts[p.Id] : 0))
+                            </div>
+                        }
+                    }
+                    @if (Model.Data.GiftParameters != null)
+                    {
+                        <h3>Воспитанники</h3>
+                        <table class="table-bordered table">
+                            <thead>
+                            <tr>
+                                <th class="text-center">ФИО воспитанника</th>
+                                <th class="text-center">Лагерь/ период отдыха</th>
+                                <th class="text-center">Параметр подарка</th>
+                                <th class="text-center">Дата приобретения/Дата отказа</th>
+                                <th class="text-center">Кол-во</th>
+                                <th class="text-center">Сумма баллов</th>
+                                <th class="text-center">Рейтинг</th>
+                                <th class="text-center">Статус</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var task in Model.Data.GiftParameters.SelectMany(g => g.Reserved ?? new List<GiftReserved>()).OrderBy(c => c.Owner.Name).ToList())
+                            {
+                                var camper = task.Owner.Campers.OrderByDescending(c => c.Id).FirstOrDefault() ?? new Camper
+                                {
+                                    Name = task.Owner.Name
+                                };
+
+                                <tr>
+                                    <td>@camper.Name</td>
+                                    <td class="text-center">@(camper.Bout != null ? camper.Bout.Name : "")</td>
+                                    <td>@task.Gift.Name</td>
+                                    <td>@(task.StateId != StateEnum.GiftReserved.Reserved ? new DateTime(task.LastUpdateTick).FormatEx() : "-")</td>
+                                    <td class="text-center">@task.Count</td>
+                                    <td class="text-center">@task.Price.FormatEx()</td>
+                                    <td class="text-center">@task.Rating.FormatEx("0")</td>
+                                    <td class="text-center">@task.State.Name</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div>Задание ещё никто не брал в выполнение</div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+@Html.Partial("_ImageEditPartial")
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/Vocabulary/VocabularyEdit.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/jquery.validate.min.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/moment.js")
+    @Scripts.Render("~/Scripts/moment-with-locales.js")
+    <script type="text/javascript">
+		moment.locale('ru');
+	</script>
+    @Scripts.Render("~/Scripts/jQuery.FileUpload/jquery.fileupload.js")
+    @Scripts.Render("~/Scripts/jquery.Jcrop.min.js")
+    @Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/StateScript.js")
+    @Scripts.Render("~/Scripts/assets/HistoryInMobile.js")
+    @Scripts.Render("~/Scripts/Gift/manage.js")
+    @Scripts.Render("~/Scripts/jquery.numeric.js")
+    @Scripts.Render("~/Scripts/assets/imageloader.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
+    <script type="dot/template" id="templateParameter">
+        @{
+            var vdd = new ViewDataDictionary
+            {
+                TemplateInfo = new TemplateInfo {HtmlFieldPrefix = "Params[{{=it}}]"}
+            };
+
+            Html.RenderPartial("EditorTemplates/Row", new GiftParameter(), vdd);
+        }
+    </script>
+}

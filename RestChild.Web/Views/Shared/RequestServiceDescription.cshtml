@@ -1,0 +1,112 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Extensions.Extensions
+@model RestChild.Domain.AddonServices
+@{
+	Layout = null;
+	var serviceParent = (Model != null ? Model.Parent ?? Model : Model)?? new RestChild.Domain.AddonServices {Prices = new List<RestChild.Domain.AddonServicesPrice>(), Tags = new List<Tag>()};
+	var prices = (serviceParent.Prices != null && serviceParent.Prices.Any() ? serviceParent.Prices : (Model != null ? Model.Prices : new List<RestChild.Domain.AddonServicesPrice>())) ?? new List<RestChild.Domain.AddonServicesPrice>();
+	if (Model != null && Model.DateFrom.HasValue && Model.Tour != null)
+	{
+		prices = prices.Where(p => !p.DateTo.HasValue || p.DateTo >= Model.DateFrom).ToList();
+		if (serviceParent != null && (serviceParent.TypePriceCalculationId == (long) TypePriceCalculationEnum.Once || !serviceParent.TypePriceCalculationId.HasValue))
+		{
+			prices = prices.Where(p => !p.DateFrom.HasValue || p.DateFrom <= Model.DateFrom).ToList();
+		}
+	}
+	if (Model != null && Model.DateTo.HasValue && Model.Tour != null && (serviceParent.TypePriceCalculationId != (long)TypePriceCalculationEnum.Once && serviceParent.TypePriceCalculationId.HasValue))
+	{
+		prices = prices.Where(p => !p.DateFrom.HasValue || p.DateFrom <= Model.DateTo).ToList();
+	}
+
+	var priceMin = prices.Select(p => (decimal?)p.Price).DefaultIfEmpty().OrderBy(p => p).FirstOrDefault();
+	var priceMax = prices.Select(p => (decimal?)p.Price).DefaultIfEmpty().OrderByDescending(p => p).FirstOrDefault();
+	var countdate = (serviceParent.TypePriceCalculationId != (long)RestChild.Comon.Enumeration.TypePriceCalculationEnum.Once ? "2" : "1");
+}
+@if (Model != null)
+{
+	<input type="hidden" class="hdn-id" value="@Model.Id" />
+	<input type="hidden" class="hdn-parentid" value="@Model.ParentId" />
+	<input type="hidden" class="hdn-requared" value="@((Model.Requared??false).ToString())" />
+	<input type="hidden" class="hdn-default" value="@(Model.ByDefault.ToString())" />
+	<input type="hidden" class="hdn-parentid" value="@Model.ParentId" />
+	<input type="hidden" class="hdn-countdate" value="@countdate"/>
+	<input type="hidden" class="hdn-start" value="@Model.DateFrom.FormatEx(string.Empty, string.Empty)" />
+	<input type="hidden" class="hdn-end" value="@Model.DateTo.FormatEx(string.Empty, string.Empty)" />
+	<input type="hidden" class="hdn-hasTranport" value="@((serviceParent != null && serviceParent.TypeOfService != null && serviceParent.TypeOfService.NeedTransport).ToString())" />
+	<input type="hidden" class="hdn-has-price" value="@(((Model.Parent == null && Model.Prices != null && Model.Prices.Any()) || (Model.Parent != null && Model.Parent.Prices !=null && Model.Parent.Prices.Any())).ToString())" />
+	<div class="col-md-9">
+		<h4><a href="@Url.Action("Edit", "AddonService", new {@id = serviceParent.Id})">@serviceParent.Name</a> <small><i>(@(serviceParent.TypeOfService != null ? serviceParent.TypeOfService.Name.FormatEx(string.Empty) : string.Empty))</i></small></h4>
+	</div>
+	if (!Model.InRequest)
+	{
+		<div class="col-md-3 descr-price-div @(priceMin.HasValue ? "" : "hidden")">
+			от <span style="white-space: nowrap" class="priceMin">@priceMin.FormatEx()</span> до <span style="white-space: nowrap" class="priceMax">@priceMax.FormatEx()</span> руб.
+		</div>
+		<div class="col-md-12 descr-descr-div @(Model.DateFrom.HasValue && Model.ParentId.HasValue ? "" : "hidden")">
+			@(countdate == "2" ? "Срок" : "Дата"): <span class="DateFrom">@Html.Raw(Model.DateFrom.FormatEx())</span>
+			@if (countdate == "2")
+			{
+				<text> - <span class="DateTo">@Html.Raw(Model.DateTo.FormatEx())</span> </text>
+			}
+		</div>
+	}
+	<div class="col-md-12 descr-pricetype-div @(serviceParent.TypePriceCalculation != null?"":"hidden")">
+		Стоимость за: @Html.Raw(serviceParent.TypePriceCalculation != null ? serviceParent.TypePriceCalculation.Name.FormatEx() : "")
+	</div>
+	if (Model.TourTransport != null)
+	{
+		<div class="divDirectoryFlightsDiv col-md-12 @(Model.TourTransport != null && Model.TourTransport.DirectoryFlights != null && !Model.InRequest ? "" : "hidden")">
+			Рейс: <span class="divDirectoryFlightsSpan">
+				@if (Model.TourTransport != null && Model.TourTransport.DirectoryFlights != null)
+				{<text>
+				@Model.TourTransport.DirectoryFlights.GetShortName()
+				</text>}
+			</span>
+		</div>
+		 <div class="col-md-12 @(Model.TourTransport != null ? "" : "hidden")">
+			 Отправление: из @(Model.TourTransport != null && Model.TourTransport.CityOfDeparture != null ? Model.TourTransport.CityOfDeparture.Name : "")
+	   		@(serviceParent.TourTransport != null ? serviceParent.TourTransport.PlaceOfDeparture : "-")
+		 </div>
+		<div class="col-md-12 @(Model.TourTransport != null ? "" : "hidden")">
+			Прибытие: в @(Model.TourTransport != null && Model.TourTransport.CityOfArrival != null ? Model.TourTransport.CityOfArrival.Name : "")
+			@(serviceParent.TourTransport != null ? serviceParent.TourTransport.PlaceOfArrival : "-")
+		</div>
+	}
+	<div class="col-md-12 descr-curator-div @(Model.Curator != null ? "" : "hidden")">
+		Куратор: <span class="CuratorTitle">@Html.Raw(Model.Curator != null ? Model.Curator.Name : "-")</span>
+	</div>
+	<div class="col-md-12 descr-TypeRoom-div @(Model.TypeOfRooms != null ? "" : "hidden")">
+		Вид номера: <span class="TypeRoomTitle">@Html.Raw(Model.TypeOfRooms != null ? Model.TypeOfRooms.Name : "-")</span>
+	</div>
+	if (string.IsNullOrEmpty(serviceParent.AnnouncementEvent))
+	{
+		<div class="col-md-12 descr-descr-div @(!string.IsNullOrEmpty(Model.Description) ? "" : "hidden")">
+			Описание: <span class="Description">@Html.Raw(Model.Description)</span>
+		</div>
+	}
+	else
+	{
+		<div class="col-md-12 descr-event-div @(!string.IsNullOrEmpty(serviceParent.AnnouncementEvent) ? "" : "hidden")">
+			Анонс мероприятия: <span class="AnnouncementEvent">@Html.Raw(serviceParent.AnnouncementEvent)</span>
+		</div>
+	}
+	<div class="col-md-12 descr-condition-div @(!string.IsNullOrEmpty(serviceParent.ConditionsForAccompanying)?"":"hidden")">
+		Условия для сопровождающих: <span class="ConditionsForAccompanying">@Html.Raw(serviceParent.ConditionsForAccompanying)</span>
+	</div>
+	<div class="col-md-12 descr-duration-div @(serviceParent.DurationHour.HasValue ? "" : "hidden")">
+		Продолжительность: <span class="DurationHour">@Html.Raw(serviceParent.DurationHour.FormatEx())</span> часов
+	</div>
+	<div class="col-md-12 descr-flags">
+		<span class="descr-flag-Requared">@(Model.Requared ?? false ? "Обязательная" : "Не обязательная")</span><span class="descr-flag-ByDefault @(!Model.ByDefault?"hidden":"")">, по умолчанию</span><span class="descr-flag-NeedApprove @(!Model.NeedApprove?"hidden":"")">, требует подтверждения</span><span class="descr-flag-Hidden @(!Model.Hidden?"hidden":"")">, скрытая услуга</span><span class="descr-flag-OnlyWithRequest @(!Model.OnlyWithRequest?"hidden":"")">, только с проживанием</span>.
+	</div>
+	<div class="col-md-12 descr-tags-div @(serviceParent.Tags != null && serviceParent.Tags.Any()?"":"hidden")">
+		@foreach (var tag in serviceParent.Tags ?? new List<Tag>())
+		{
+			<span class="label label-info" style="font-size: 14px; margin-right: 4px">
+				@tag.Name
+			</span>
+		}
+	</div>
+}

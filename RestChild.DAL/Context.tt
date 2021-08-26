@@ -1,0 +1,68 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ assembly name="$(SolutionDir)\RestChild.Domain\bin\Debug\RestChild.Comon.dll"#>
+<#@ assembly name="$(SolutionDir)\RestChild.Domain\bin\Debug\RestChild.Domain.dll"#>
+<#@ import namespace="System"#>
+<#@ import namespace="System.IO"#>
+<#@ import namespace="System.Reflection"#>
+<#@ output extension=".cs" #>
+namespace RestChild.DAL
+{
+	using System;
+	using System.Data.Entity;
+	using System.Data.Entity.ModelConfiguration.Conventions;
+	using Domain;
+
+	internal partial class Context : DbContext
+	{
+		static Context()
+		{
+			//Database.SetInitializer(new MigrateDatabaseToLatestVersion<Context, Configuration>());
+		}
+
+		public Context()
+			: base("RestChild")
+		{
+		}
+
+		public Context(string connString)
+			: base(connString)
+		{
+		}
+
+<#
+			var assembly = Assembly.GetAssembly(typeof(RestChild.Domain.Request));
+			var types = assembly.GetTypes().Where(t=>t.Name!="IEntityBase" && t.Name != "IStateEntity" && t.IsClass && !t.IsAbstract && !t.IsInterface && !t.IsSealed);
+			foreach (var type in types)
+			{
+#>
+        /// <summary>
+        ///     <#=type.ToString()#>
+        /// </summary>
+        public DbSet<<#=type.Name#>> <#=type.Name#> { get; set; }
+
+<#}
+#>
+
+		protected override void OnModelCreating(DbModelBuilder modelBuilder)
+		{
+			modelBuilder.Properties<decimal>().Configure(c => c.HasPrecision(32, 4));
+			modelBuilder.Properties<decimal>().Where(e => e.Name  == "Latitude" || e.Name == "Longitude").Configure(c => c.HasPrecision(32, 10));
+			modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+			modelBuilder.Entity<Numerator>().HasKey(t => new { t.Id, t.Key });
+			modelBuilder.Properties<DateTime>().Configure(c => c.HasColumnType("datetime2"));
+			modelBuilder.Entity<Organization>().HasOptional(x => x.Parent).WithMany().HasForeignKey(x => x.ParentId);
+			modelBuilder.Entity<Organization>().HasOptional(x => x.Entity).WithMany().HasForeignKey(x => x.EntityId);
+			modelBuilder.Entity<ReportRowData>().HasRequired(x => x.Row).WithMany(t => t.RowData).HasForeignKey(d => d.RowId).WillCascadeOnDelete(true);
+			modelBuilder.Entity<ReportTableRow>().HasRequired(x => x.Table).WithMany(t => t.Rows).HasForeignKey(d => d.TableId).WillCascadeOnDelete(true);
+			modelBuilder.Entity<ReportTableHead>().HasRequired(x => x.ReportTable).WithMany(t => t.ReportTableHeads).HasForeignKey(d => d.ReportTableId).WillCascadeOnDelete(true);
+			modelBuilder.Entity<ReportTable>().HasRequired(x => x.ReportSheet).WithMany(t => t.ReportTables).HasForeignKey(d => d.ReportSheetId).WillCascadeOnDelete(true);
+			modelBuilder.Entity<TourVolume>().HasOptional(x => x.TourAccommodation).WithMany(t => t.Volumes).HasForeignKey(d => d.TourAccommodationId).WillCascadeOnDelete(true);
+			modelBuilder.Entity<RoomRates>().HasOptional(x => x.TourAccommodation).WithMany(t => t.RoomRates).HasForeignKey(d => d.TourAccommodationId).WillCascadeOnDelete(true);
+			modelBuilder.Properties().Where(e => e.Name == "RowVersion").Configure(c => c.IsRowVersion());
+		}
+	}
+}

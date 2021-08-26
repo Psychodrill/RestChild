@@ -1,0 +1,246 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Models
+@model RestChild.Web.Models.BoutJournalModel
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	if (Model.Data.BoutJournalTypeId == (long) BoutJournalTypeEnum.Event)
+	{
+		Model.Title = "Событие смены";
+		Model.DateTitle = "Дата события";
+		Model.EventTitle = "Событие";
+		Model.DescriptionTitle = "Описание события";
+		Model.ShowForSiteOption = true;
+		Model.ShowCategoryIncident = false;
+	}
+	else if (Model.Data.BoutJournalTypeId == (long)BoutJournalTypeEnum.Incident)
+	{
+		Model.Title = "Происшествие смены";
+		Model.DateTitle = "Дата происшествия";
+		Model.EventTitle = "Происшествие";
+		Model.DescriptionTitle = "Описание происшествия";
+		Model.ShowForSiteOption = false;
+		Model.ShowCategoryIncident = true;
+	}
+	else if (Model.Data.BoutJournalTypeId == (long) BoutJournalTypeEnum.Report)
+	{
+		Model.Title = "Отчёт по смене";
+		Model.DateTitle = "Дата формирования отчёта";
+		Model.EventTitle = "Название отчёта";
+		Model.DescriptionTitle = "Описание";
+		Model.ShowForSiteOption = false;
+		Model.ShowCategoryIncident = false;
+	}
+
+	ViewBag.Title = Model.Title;
+}
+
+<div class="row">
+	<div class="col-md-12">
+		<h2>@Model.Title</h2>
+		<h3>@Html.Raw(Model.Data != null && Model.Data.Bout != null ? Model.Data.Bout.ToString() : string.Empty)</h3>
+	</div>
+</div>
+<a href="@Url.Action("Update", "Bout", new {id = Model.Data.BoutId, activeTab="BoutJournal"})">Вернуться</a>
+<div class="row">&nbsp;</div>
+<div class="row">
+	<div class="col-md-12">
+		@using (Html.BeginForm("BoutJournalSave", "Bout", FormMethod.Post, new { enctype = "multipart/form-data", @id = "boutJournalForm", autocomplete = "off" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.Data.Id)
+			@Html.HiddenFor(m => m.Data.BoutId)
+			@Html.HiddenFor(m => m.Data.CounselorsId)
+			@Html.HiddenFor(m => m.Data.AdministratorTourId)
+			@Html.HiddenFor(m => m.Data.CounselorTaskExecutorTypeId)
+			@Html.HiddenFor(m => m.Data.HistoryLinkId)
+			@Html.HiddenFor(m => m.Data.BoutJournalTypeId)
+			<div class="form-group row">
+				<div class="col-md-12">
+					<button type="button" class="btn btn-default btn-primary" onclick="saveForm()">Сохранить</button>
+				</div>
+			</div>
+			<fieldset class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">@Model.DateTitle</label>
+					<div class="col-md-3 col-lg-2">
+						<div class="input-group date datepicker-anytime">
+							@Html.TextBoxFor(m => m.Data.EventDate, new { @class = "form-control datetime", @Value = @Model.Data.Id>0? Model.NullSafe(m => m.Data.EventDate).FormatEx("dd.MM.yyyy HH:mm"):DateTime.Now.Date.FormatEx("dd.MM.yyyy HH:mm")})
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">@Model.EventTitle</label>
+					<div class="col-md-9">
+						@Html.TextBoxFor(model => model.Data.Title, new {@class = "form-control", autocomplete = "off", maxlength = 1000})
+					</div>
+				</div>
+
+				@if (Model.ShowCategoryIncident)
+				{
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Категория происшествия</label>
+						<div class="col-md-9">
+							@Html.DropDownListFor(r => r.Data.CategoryIncidentId, new SelectList(Model.Incidents.InsertAt(new CategoryIncident() {Id=0, Name = "-- Не выбрано --"}), "Id", "Name", "Parent.Name", 0), new { @class = "form-control type-of-rest select2", autocomplete = "off" })
+							@*@Html.TextBoxFor(model => model.Data.CategoryIncidentId, new {id="incidentCategorySelect", @class="form-control select2", autocomplete = "off"})*@
+						</div>
+					</div>
+				}
+
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">@Model.DescriptionTitle</label>
+					<div class="col-md-9">
+						@Html.HiddenFor(m => m.Description, new { @class = "description" })
+						<div id="memo"></div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Отряд</label>
+					<div class="col-md-9">
+						@Html.DropDownListFor(m => m.Data.PartyId, SelectListHelper.Create(Model.Partys, s => new SelectListItem { Value = s.Id.ToString(), Text = string.Format("{0} - отряд", s.PartyNumber) }), new { @class = "form-control" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Автор</label>
+					<div class="col-md-9">
+						@Model.Author
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-9 col-md-offset-3">
+						<label>
+							@Html.CheckBoxFor(model => model.Data.IsArchive) Архивная запись
+						</label>
+					</div>
+				</div>
+				@if (Model.ShowForSiteOption)
+				{
+					<div class="form-group">
+						<div class="col-md-9 col-md-offset-3">
+							<label>
+								@Html.CheckBoxFor(model => model.Data.ForSite, new { id = "boutJournalForSiteDiv" }) Отображать на сайте
+							</label>
+						</div>
+					</div>
+				}
+
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Файлы</label>
+					<div class="col-md-9">
+						<table class="table table-striped" id="filesTable" tablename="FilesJournal">
+							<tbody>
+								@for (var i = 0; i < Model.FilesJournal.Count; i++)
+								{
+									<tr>
+										<td>
+											<a target="_blank" class="href-file" href="@Url.Content("~/")UploadBoutJournal.ashx?f=@Url.Encode(Model.FilesJournal[i].FileLink)&t=@Url.Encode(Model.FilesJournal[i].FileName)">@Model.FilesJournal[i].FileName</a>
+										</td>
+										<td style="width: 50px">
+											<span class="glyphicon glyphicon-remove-circle text-danger request-file-remove" aria-hidden="true" title="Удалить" style="cursor: pointer"></span>
+											@Html.HiddenFor(m => m.FilesJournal[i].Id)
+											@Html.HiddenFor(m => m.FilesJournal[i].BoutJournalId)
+											@Html.HiddenFor(m => m.FilesJournal[i].FileName)
+											@Html.HiddenFor(m => m.FilesJournal[i].FileLink)
+											@Html.HiddenFor(m => m.FilesJournal[i].IsPhoto)
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+						<div class="row form-group file-upload-div">
+							<div class="col-md-12">
+								<div class="panel-file well well-sm">
+									<span class="file-span">
+										<em>Выберите файл для загрузки</em>
+									</span>
+								</div>
+								<span class="btn fileinput-button">
+									<i class="glyphicon glyphicon-paperclip"></i>
+									<input type="file" name="files[]" multiple accept="image/jpg,image/png,image/jpeg,image/gif" id="fileUploadBoutJournal">
+								</span>
+							</div>
+						</div>
+						<div class="file-uploading-div hidden">
+							<img src="~/Content/images/spinner.gif" /> Загрузка файла...
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		}
+	</div>
+</div>
+
+@section styles{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	<link href="~/Content/Vocabulary/VocabularyEdit.css" rel="stylesheet" />
+	@Styles.Render("~/Content/css/font-awesome.min.css")
+	@Styles.Render("~/Content/summernote.css")
+	@Styles.Render("~/Content/jQuery.FileUpload/css/jquery.fileupload.css")
+	<style type="text/css">
+		.datetime {
+			width: 200px !important;
+		}
+
+		#boutJournalForSiteDiv {
+			margin-left: 0;
+		}
+	</style>
+}
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/jquery.validate.min.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale("ru");
+		$(function() {
+			$('#fileUploadBoutJournal').change(function() {
+				var ext = this.value.match(/\.(.+)$/)[1];
+				switch (ext) {
+					case 'jpg':
+					case 'jpeg':
+					case 'png':
+					case 'gif':
+						break;
+					default:
+						ShowAlert('К дневнеку смены можно прикрепить только файл изображение.', "alert-danger", "glyphicon-ok", true);
+						this.value = '';
+				}
+			});
+		});
+	</script>
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/Vocabulary/BoutEdit.js")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	@Scripts.Render("~/Scripts/PartyForm.js")
+	@Scripts.Render("~/Scripts/assets/NotNeedTicketSelect.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote.min.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote-ru-RU.js")
+	@Scripts.Render("~/Scripts/BoutJournalEdit.js")
+	<script type="dot/template" id="fileRowTemplate">
+		<tr>
+			<td>
+				<a target="_blank" class="href-file" href="@Url.Content("~/")/UploadBoutJournal.ashx?f={{=encodeURIComponent(it.fileName)}}&t={{=encodeURIComponent(it.fileTitle)}}">{{=it.fileTitle}}</a>
+			</td>
+			<td style="width: 50px">
+				<span class="glyphicon glyphicon-remove-circle text-danger request-file-remove" aria-hidden="true" title="Удалить" style="cursor: pointer"></span>
+				<input type="hidden" name="{{=it.tableName}}[0].FileLink" class="FileUrl" value="{{=it.fileName}}" />
+				<input type="hidden" name="{{=it.tableName}}[0].FileName" class="FileName" value="{{=it.fileTitle}}" />
+			</td>
+		</tr>
+	</script>
+}

@@ -1,0 +1,607 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Extensions
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.TransportInfoModel
+
+@{
+	var isTransportFormed = Model.Data.StateId == StateMachineStateEnum.Transport.Formed;
+	var canChangeNeedTicket = Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicket);
+	var toTransport = Model.Data.Bout != null && Model.Data.Bout.TransportInfoToId == Model.Data.Id;
+	var boutIsClosed = Model.Data.Bout != null && Model.Data.Bout.StateId == StateMachineStateEnum.Bout.Closed;
+	var boutIsConfirmed = Model.Data.Bout != null && Model.Data.Bout.StateId == StateMachineStateEnum.Bout.Confirmed;
+	var boutIsFormed = Model.Data.Bout != null && Model.Data.Bout.StateId == StateMachineStateEnum.Bout.Formed;
+}
+@if (Model.TransportToCamps != null && Model.TransportToCamps.Any())
+{
+	<div class="row">
+	<div class="panel-group col-md-12" id="campsAccordion" role="tablist" aria-multiselectable="true">
+	<div class="panel panel-default">
+	<div class="panel-heading" role="tab" id="campsAccordionHeading">
+		<h4 class="panel-title">
+			<a data-toggle="collapse" data-parent="#accordion" href="#campsAccordionCollapse" aria-expanded="true" aria-controls="campsAccordionCollapse">
+				Детские лагеря
+			</a>
+		</h4>
+	</div>
+	<div id="campsAccordionCollapse" class="panel-collapse collapse search-to-hide" role="tabpanel" aria-labelledby="campsAccordionHeading">
+	<div class="panel-body">
+	@{ var campNum = 0; }
+	@foreach (var camp in Model.TransportToCamps)
+	{
+		campNum++;
+		if (camp == null)
+		{
+			continue;
+		}
+		<div class="row">
+		<div class="panel-group col-md-12" id="campAccordion@(campNum)" role="tablist" aria-multiselectable="true">
+		<div class="panel panel-default">
+		<div class="panel-heading" role="tab" id="campAccordionHeading@(campNum)">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#campAccordionCollapse@(campNum)" aria-expanded="true" aria-controls="campAccordionCollapse@(campNum)">
+					@camp.Name
+				</a>
+			</h4>
+		</div>
+		<div id="campAccordionCollapse@(campNum)" class="panel-collapse collapse camp-accordion search-to-hide" data-camp-id="@camp.Id" role="tabpanel" aria-labelledby="campAccordionHeading@(campNum)">
+		<div class="panel-body">
+		<div class="info">
+		@if (Model.IsEditable)
+		{
+			<fieldset class="form-horizontal row directory-flight-set  form-group">
+				<div class="row">
+					<div class="col-md-7 pull-right">
+						<div class="col-md-4" style="padding-right: 5px;">
+							@Html.DropDownList("DirectoryFlightSelectForCamp" + campNum, SelectListHelper.Create(Model.DirectoryFlights, f => new SelectListItem { Value = f.Id.ToString(), Text = f.GetName() }), new { @class = "form-control directory-flight-set-select", autocomplete = "off" })
+						</div>
+						<div class="col-md-4" style="padding-left: 5px; padding-right: 5px;">
+							<div class="input-group date datepicker-anytime">
+								@Html.TextBox("DepartureDateForCamp" + campNum, string.Empty, new { @class = "form-control input-mask-date-anytime departure-date-hotel-set" })
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+						<div class="col-md-3" style="padding-right: 5px;">
+							<input type="text" class="integer form-control" maxlength="3" placeholder="Вместимость" title="Вместимость рейса (пусто не ограничено)" />
+						</div>
+						<div class="col-md-1" style="padding-left: 5px;">
+							<button class="btn btn-default directory-flight-set-button" type="button">
+								<i class="glyphicon glyphicon-ok"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2 col-md-offset-10">
+						<div class="col-md-12 pull-right" style="padding-right: 5px;">
+							<label><input type="checkbox" checked="checked" />Не заполненные</label>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		}
+
+		<fieldset>
+
+		@if (camp.Administrators != null && camp.Administrators.Any())
+		{
+			<label class="col-md-12">Администраторы</label>
+			var counseloristratorNum = 1;
+			<table class="table table-bordered">
+				<thead>
+				<tr class="search-to-hide">
+					<th width="45%">Администратор</th>
+					<th width="10%">Не нужен билет</th>
+					<th width="25%">Рейс</th>
+					<th width="160px">Дата отправления</th>
+				</tr>
+				</thead>
+				<tbody>
+				@foreach (var counselor in camp.Administrators)
+				{
+					var counselorData = counselor.BuildData();
+					var fio = new List<string> {counselorData.NullSafe(a => a.AdministratorTour.LastName), counselorData.NullSafe(a => a.AdministratorTour.FirstName), counselorData.NullSafe(a => a.AdministratorTour.MiddleName)};
+					<tr class="search-to-hide">
+						<td>
+							@{ var document = string.Format("{0} {1} {2}", counselor.NullSafe(c => c.Data.AdministratorTour.DocumentType.Name), counselor.NullSafe(c => c.Data.AdministratorTour.DocumentSeria), counselor.NullSafe(c => c.Data.AdministratorTour.DocumentNumber)); }
+							<div class="transport-info-fio">@string.Join(" ", fio.Where(f => !string.IsNullOrEmpty(f)))</div>
+							<div>
+								<small>
+									<i style="color: #666">Дата рождения: @counselor.NullSafe(c => c.Data.AdministratorTour.DateOfBirth).FormatEx()</i>
+								</small>
+							</div>
+							<div>
+								<small>
+									<i style="color: #666">@counselor.NullSafe(c => (bool?) c.Data.AdministratorTour.Male).FormatEx("-", "Мужской", "Женский")</i>
+								</small>
+							</div>
+							<div>
+								<small>
+									<i style="color: #666">@document</i>
+								</small>
+							</div>
+						</td>
+						<td class="transport-info-ticket text-center">
+							@if (canChangeNeedTicket)
+							{
+								<div class="checkbox">
+									<label>
+										@Html.CheckBoxFor(m => m.TransportToCamps[campNum - 1].Administrators[counseloristratorNum - 1].NotNeedTicket, new {@class = "not-need-ticket", data_id = counselor.Data.Id, value = counselor.NotNeedTicket ? "True" : "False"})
+									</label>
+								</div>
+							}
+							else
+							{
+								@counselor.NotNeedTicket.FormatEx()
+							}
+						</td>
+						<td class="transport-info-directory-flight form-group">
+							@Html.DropDownListFor(m => m.TransportToCamps[campNum - 1].Administrators[counseloristratorNum - 1].Data.DirectoryFlightsId, SelectListHelper.Create(Model.DirectoryFlights, f => new SelectListItem { Value = f.Id.ToString(), Text = f.GetName(), Selected = Model.TransportToCamps[campNum - 1].Administrators[counseloristratorNum - 1].Data.DirectoryFlightsId == f.Id }), new { @class = "form-control transport-info-directory-flight-select", autocomplete = "off" }).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+							@Html.HiddenFor(m => m.TransportToCamps[campNum - 1].Administrators[counseloristratorNum - 1].Data.Id).DisableIf(() => !Model.IsEditable)
+						</td>
+						<td>
+							<div class="input-group date datepicker-anytime">
+								@Html.TextBoxFor(m => m.TransportToCamps[campNum - 1].Administrators[counseloristratorNum - 1].Data.DateDeparture, new {@class = "form-control input-mask-date-anytime departure-date"}).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+								<span class="input-group-addon">
+																					<span class="glyphicon glyphicon-calendar"></span>
+																				</span>
+							</div>
+
+						</td>
+
+					</tr>
+					counseloristratorNum++;
+				}
+				</tbody>
+
+			</table>
+		}
+
+
+		@if (camp.SeniorCounselors != null && camp.SeniorCounselors.Any())
+		{
+			<label class="col-md-12">Старшие вожатые</label>
+			var counselorNum = 1;
+			<table class="table  table-bordered">
+				<thead>
+				<tr class="search-to-hide">
+					<th width="45%">Вожатый</th>
+					<th width="10%">Не нужен билет</th>
+					<th width="25%">Рейс</th>
+					<th width="160px">Дата отправления</th>
+				</tr>
+				</thead>
+				<tbody>
+				@foreach (var counselor in camp.SeniorCounselors)
+				{
+					var counselorData = counselor.BuildData();
+					var fio = new List<string> {counselorData.NullSafe(a => a.Counselors.LastName), counselorData.NullSafe(a => a.Counselors.FirstName), counselorData.NullSafe(a => a.Counselors.MiddleName)};
+					<tr class="search-to-hide">
+						<td>
+							@{ var document = string.Format("{0} {1} {2}", counselor.NullSafe(c => c.Data.Counselors.DocumentType.Name), counselor.NullSafe(c => c.Data.Counselors.DocumentSeria), counselor.NullSafe(c => c.Data.Counselors.DocumentNumber)); }
+							<div class="transport-info-fio">@string.Join(" ", fio.Where(f => !string.IsNullOrEmpty(f)))</div>
+							<div>
+								<small>
+									<i style="color: #666">Дата рождения: @counselor.NullSafe(c => c.Data.Counselors.DateOfBirth).FormatEx()</i>
+								</small>
+							</div>
+							<div>
+								<small>
+									<i style="color: #666">@counselor.NullSafe(c => (bool?) c.Data.Counselors.Male).FormatEx("-", "Мужской", "Женский")</i>
+								</small>
+							</div>
+							<div>
+								<small>
+									<i style="color: #666">@document</i>
+								</small>
+							</div>
+						</td>
+						<td class="transport-info-ticket text-center">
+							@if (canChangeNeedTicket)
+							{
+								<div class="checkbox">
+									<label>
+										@Html.CheckBoxFor(m => m.TransportToCamps[campNum - 1].SeniorCounselors[counselorNum - 1].NotNeedTicket, new {@class = "not-need-ticket", data_id = counselor.Data.Id, value = counselor.NotNeedTicket ? "True" : "False"})
+									</label>
+								</div>
+							}
+							else
+							{
+								@counselor.NotNeedTicket.FormatEx()
+							}
+						</td>
+						<td class="transport-info-directory-flight form-group">
+							@Html.DropDownListFor(m => m.TransportToCamps[campNum - 1].SeniorCounselors[counselorNum - 1].Data.DirectoryFlightsId, SelectListHelper.Create(Model.DirectoryFlights, f => new SelectListItem { Value = f.Id.ToString(), Text = f.GetName(), Selected = Model.TransportToCamps[campNum - 1].SeniorCounselors[counselorNum - 1].Data.DirectoryFlightsId == f.Id }), new { @class = "form-control transport-info-directory-flight-select", autocomplete = "off" }).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+							@Html.HiddenFor(m => m.TransportToCamps[campNum - 1].SeniorCounselors[counselorNum - 1].Data.Id).DisableIf(() => !Model.IsEditable)
+						</td>
+						<td>
+							<div class="input-group date datepicker-anytime">
+								@Html.TextBoxFor(m => m.TransportToCamps[campNum - 1].SeniorCounselors[counselorNum - 1].Data.DateDeparture, new {@class = "form-control input-mask-date-anytime departure-date"}).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</td>
+					</tr>
+					counselorNum++;
+				}
+				</tbody>
+
+			</table>
+		}
+
+		@if (camp.SwingCounselors != null && camp.SwingCounselors.Any())
+		{
+			<label class="col-md-12">Подменные вожатые</label>
+			var counselorNum = 1;
+			<table class="table  table-bordered">
+				<thead>
+				<tr class="search-to-hide">
+					<th width="45%">Вожатый</th>
+					<th width="10%">Не нужен билет</th>
+					<th width="25%">Рейс</th>
+					<th width="160px">Дата отправления</th>
+				</tr>
+				</thead>
+				<tbody>
+				@foreach (var counselor in camp.SwingCounselors)
+				{
+					var counselorData = counselor.Data;
+					var fio = new List<string> { counselorData.NullSafe(a => a.Counselors.LastName), counselorData.NullSafe(a => a.Counselors.FirstName), counselorData.NullSafe(a => a.Counselors.MiddleName) };
+					<tr class="search-to-hide">
+						<td>
+							@{ var document = string.Format("{0} {1} {2}", counselor.NullSafe(c => c.Data.Counselors.DocumentType.Name), counselor.NullSafe(c => c.Data.Counselors.DocumentSeria), counselor.NullSafe(c => c.Data.Counselors.DocumentNumber)); }
+							<div class="transport-info-fio">@string.Join(" ", fio.Where(f => !string.IsNullOrEmpty(f)))</div>
+							<div>
+								<small>
+									<i style="color: #666">Дата рождения: @counselor.NullSafe(c => c.Data.Counselors.DateOfBirth).FormatEx()</i>
+								</small>
+							</div>
+							<div>
+								<small>
+									<i style="color: #666">@counselor.NullSafe(c => (bool?)c.Data.Counselors.Male).FormatEx("-", "Мужской", "Женский")</i>
+								</small>
+							</div>
+							<div>
+								<small>
+									<i style="color: #666">@document</i>
+								</small>
+							</div>
+						</td>
+						<td class="transport-info-ticket text-center">
+							@if (canChangeNeedTicket)
+							{
+								<div class="checkbox">
+									<label>
+										@Html.CheckBoxFor(m => m.TransportToCamps[campNum - 1].SwingCounselors[counselorNum - 1].NotNeedTicket, new { @class = "not-need-ticket", data_id = counselor.Data.Id, value = counselor.NotNeedTicket ? "True" : "False" })
+									</label>
+								</div>
+							}
+							else
+							{
+								@counselor.NotNeedTicket.FormatEx()
+								;
+							}
+
+
+						</td>
+						<td class="transport-info-directory-flight form-group">
+							@Html.DropDownListFor(m => m.TransportToCamps[campNum - 1].SwingCounselors[counselorNum - 1].Data.DirectoryFlightsId, SelectListHelper.Create(Model.DirectoryFlights, f => new SelectListItem { Value = f.Id.ToString(), Text = f.GetName(), Selected = f.Id == Model.TransportToCamps[campNum - 1].SwingCounselors[counselorNum - 1].Data.DirectoryFlightsId }), new { @class = "form-control transport-info-directory-flight-select", autocomplete = "off" }).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+							@Html.HiddenFor(m => m.TransportToCamps[campNum - 1].SwingCounselors[counselorNum - 1].Data.Id).DisableIf(() => !Model.IsEditable)
+						</td>
+						<td>
+							<div class="input-group date datepicker-anytime">
+								@Html.TextBoxFor(m => m.TransportToCamps[campNum - 1].SwingCounselors[counselorNum - 1].Data.DateDeparture, new { @class = "form-control input-mask-date-anytime departure-date" }).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</td>
+					</tr>
+									counselorNum++;
+								}
+				</tbody>
+
+			</table>
+		}
+
+		@if (camp.Attendants != null && camp.Attendants.Any())
+		{
+			<label class="col-md-12">Педагоги/тренра</label>
+			var teacherNum = 1;
+			<table class="table  table-bordered">
+				<thead>
+				<tr class="search-to-hide">
+					<th width="45%">Педагог/тренр</th>
+					<th width="10%">Не нужен билет</th>
+					<th width="25%">Рейс</th>
+					<th width="160px">Дата отправления</th>
+				</tr>
+				</thead>
+				<tbody>
+				@foreach (var counselor in camp.Attendants)
+				{
+					var counselorData = counselor.BuildData();
+					var fio = new List<string> { counselorData.NullSafe(a => a.Applicant.LastName), counselorData.NullSafe(a => a.Applicant.FirstName), counselorData.NullSafe(a => a.Applicant.MiddleName) };
+					<tr class="search-to-hide">
+						<td>
+							@{ var document = string.Format("{0} {1} {2}", counselor.NullSafe(c => c.Data.Counselors.DocumentType.Name), counselor.NullSafe(c => c.Data.Counselors.DocumentSeria), counselor.NullSafe(c => c.Data.Counselors.DocumentNumber)); }
+							<div class="transport-info-fio">@string.Join(" ", fio.Where(f => !string.IsNullOrEmpty(f)))</div>
+							<div>
+								<small>
+									<i style="color: #666">Дата рождения: @counselor.NullSafe(c => c.Data.Counselors.DateOfBirth).FormatEx()</i>
+								</small>
+							</div>
+							<div>
+								<small>
+									<i style="color: #666">@counselor.NullSafe(c => (bool?)c.Data.Counselors.Male).FormatEx("-", "Мужской", "Женский")</i>
+								</small>
+							</div>
+							<div>
+								<small>
+									<i style="color: #666">@document</i>
+								</small>
+							</div>
+						</td>
+						<td class="transport-info-ticket text-center">
+							@if (canChangeNeedTicket)
+							{
+								<div class="checkbox">
+									<label>
+										@Html.CheckBoxFor(m => m.TransportToCamps[campNum - 1].Attendants[teacherNum - 1].NotNeedTicket, new { @class = "not-need-ticket", data_id = counselor.Data.Id, value = counselor.NotNeedTicket ? "True" : "False" })
+									</label>
+								</div>
+							}
+							else
+							{
+								@counselor.NotNeedTicket.FormatEx()
+							}
+
+
+						</td>
+						<td class="transport-info-directory-flight form-group">
+							@Html.DropDownListFor(m => m.TransportToCamps[campNum - 1].Attendants[teacherNum - 1].Data.DirectoryFlightsId, SelectListHelper.Create(Model.DirectoryFlights, f => new SelectListItem { Value = f.Id.ToString(), Text = f.GetName(), Selected = Model.TransportToCamps[campNum - 1].Attendants[teacherNum - 1].Data.DirectoryFlightsId == f.Id }), new { @class = "form-control transport-info-directory-flight-select", autocomplete = "off" }).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+							@Html.HiddenFor(m => m.TransportToCamps[campNum - 1].Attendants[teacherNum - 1].Data.Id)
+						</td>
+						<td>
+							<div class="input-group date datepicker-anytime">
+								@Html.TextBoxFor(m => m.TransportToCamps[campNum - 1].Attendants[teacherNum - 1].Data.DateDeparture, new { @class = "form-control input-mask-date-anytime departure-date" }).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+
+						</td>
+					</tr>
+									teacherNum++;
+								}
+				</tbody>
+
+			</table>
+		}
+
+		</fieldset>
+		</div>
+
+		@if (camp.Parties != null && camp.Parties.Any())
+		{
+			var partyNum = 1;
+			foreach (var party in camp.Parties.ToList())
+			{
+				<div class="row">
+					<div class="panel-group col-md-12" id="camp@(campNum)PartyAccordion@(partyNum)" role="tablist" aria-multiselectable="true">
+						<div class="panel panel-default">
+							<div class="panel-heading" role="tab" id="camp@(campNum)partyAccordionHeading@(partyNum)">
+								<h4 class="panel-title">
+									<a data-toggle="collapse" data-parent="#accordion" href="#camp@(campNum)partyAccordionCollapse@(partyNum)" aria-expanded="true" aria-controls="camp@(campNum)partyAccordionCollapse@(partyNum)">
+										Отряд №@(party.Number)
+									</a>
+								</h4>
+							</div>
+							<div id="camp@(campNum)partyAccordionCollapse@(partyNum)" class="panel-collapse collapse party-accordion search-to-hide" data-party-id="@party.Id" role="tabpanel" aria-labelledby="camp@(campNum)partyAccordionHeading@(partyNum)">
+								<div class="panel-body info">
+									@if (Model.IsEditable)
+									{
+										<fieldset class="form-horizontal row directory-flight-set  form-group">
+											<div class="row">
+												<div class="col-md-7 pull-right">
+													<div class="col-md-4" style="padding-right: 5px;">
+														@Html.DropDownList("DirectoryFlightSelectForCamp" + campNum + "_" + partyNum, SelectListHelper.Create(Model.DirectoryFlights, f => new SelectListItem { Value = f.Id.ToString(), Text = f.GetName() }), new { @class = "form-control directory-flight-set-select", autocomplete = "off" })
+													</div>
+													<div class="col-md-4" style="padding-left: 5px; padding-right: 5px;">
+														<div class="input-group date datepicker-anytime">
+															@Html.TextBox("DepartureDateForCamp" + campNum + "_" + partyNum, string.Empty, new { @class = "form-control input-mask-date-anytime departure-date-hotel-set" })
+															<span class="input-group-addon">
+																<span class="glyphicon glyphicon-calendar"></span>
+															</span>
+														</div>
+													</div>
+													<div class="col-md-3" style="padding-right: 5px;">
+														<input type="text" class="integer form-control" maxlength="3" placeholder="Вместимость" title="Вместимость рейса (пусто не ограничено)" />
+													</div>
+													<div class="col-md-1" style="padding-left: 5px;">
+														<button class="btn btn-default directory-flight-set-button" type="button">
+															<i class="glyphicon glyphicon-ok"></i>
+														</button>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-2 col-md-offset-10">
+													<div class="col-md-12 pull-right" style="padding-right: 5px;">
+														<label><input type="checkbox" checked="checked" />Не заполненные</label>
+													</div>
+												</div>
+											</div>
+										</fieldset>
+									}
+									@if (party.Counselors != null && party.Counselors.Any())
+									{
+										<label class="col-md-12">Вожатые</label>
+										var counselorNum = 1;
+										<table class="table  table-bordered">
+											<thead>
+											<tr class="search-to-hide">
+												<th width="45%">Вожатый</th>
+												<th width="10%">Не нужен билет</th>
+												<th width="25%">Рейс</th>
+												<th width="160px">Дата отправления</th>
+											</tr>
+											</thead>
+											<tbody>
+											@foreach (var counselor in party.Counselors)
+											{
+												var counselorData = counselor.BuildData();
+												var fio = new List<string> {counselorData.NullSafe(a => a.Counselors.LastName), counselorData.NullSafe(a => a.Counselors.FirstName), counselorData.NullSafe(a => a.Counselors.MiddleName)};
+												<tr class="search-to-hide">
+													<td>
+														@{ var document = string.Format("{0} {1} {2}", counselor.NullSafe(c => c.Data.Counselors.DocumentType.Name), counselor.NullSafe(c => c.Data.Counselors.DocumentSeria), counselor.NullSafe(c => c.Data.Counselors.DocumentNumber)); }
+														<div class="transport-info-fio">@string.Join(" ", fio.Where(f => !string.IsNullOrEmpty(f)))</div>
+														<div>
+															<small>
+																<i style="color: #666">Дата рождения: @counselor.NullSafe(c => c.Data.Counselors.DateOfBirth).FormatEx()</i>
+															</small>
+														</div>
+														<div>
+															<small>
+																<i style="color: #666">@counselor.NullSafe(c => (bool?) c.Data.Counselors.Male).FormatEx("-", "Мужской", "Женский")</i>
+															</small>
+														</div>
+														<div>
+															<small>
+																<i style="color: #666">@document</i>
+															</small>
+														</div>
+													</td>
+													<td class="transport-info-ticket text-center">
+														@if (canChangeNeedTicket)
+														{
+															<div class="checkbox">
+																<label>
+																	@Html.CheckBoxFor(m => m.TransportToCamps[campNum - 1].Parties[partyNum - 1].Counselors[counselorNum - 1].NotNeedTicket, new {@class = "not-need-ticket", data_id = counselor.Data.Id, value = counselor.NotNeedTicket ? "True" : "False"})
+																</label>
+															</div>
+														}
+														else
+														{
+															@counselor.NotNeedTicket.FormatEx()
+															;
+														}
+
+
+													</td>
+													<td class="transport-info-directory-flight form-group">
+														@Html.DropDownListFor(m => m.TransportToCamps[campNum - 1].Parties[partyNum - 1].Counselors[counselorNum - 1].Data.DirectoryFlightsId, SelectListHelper.Create(Model.DirectoryFlights, f => new SelectListItem { Value = f.Id.ToString(), Text = f.GetName(), Selected = f.Id == Model.TransportToCamps[campNum - 1].Parties[partyNum - 1].Counselors[counselorNum - 1].Data.DirectoryFlightsId }), new { @class = "form-control transport-info-directory-flight-select", autocomplete = "off" }).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+														@Html.HiddenFor(m => m.TransportToCamps[campNum - 1].Parties[partyNum - 1].Counselors[counselorNum - 1].Data.Id).DisableIf(() => !Model.IsEditable)
+													</td>
+													<td>
+														<div class="input-group date datepicker-anytime">
+															@Html.TextBoxFor(m => m.TransportToCamps[campNum - 1].Parties[partyNum - 1].Counselors[counselorNum - 1].Data.DateDeparture, new {@class = "form-control input-mask-date-anytime departure-date"}).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+															<span class="input-group-addon">
+																										<span class="glyphicon glyphicon-calendar"></span>
+																									</span>
+														</div>
+
+													</td>
+												</tr>
+												counselorNum++;
+											}
+											</tbody>
+
+										</table>
+									}
+									@if (party.Children != null && party.Children.Any())
+									{
+										<label class="col-md-12">Дети</label>
+										var childNum = 1;
+										<table class="table  table-bordered">
+											<thead>
+											<tr class="search-to-hide">
+												<th width="35%">Ребенок</th>
+												<th width="20%">Причина отказа от билета</th>
+												<th width="25%">Рейс</th>
+												<th width="160px">Дата отправления</th>
+											</tr>
+											</thead>
+											<tbody>
+											@foreach (var child in party.Children)
+											{
+												var childData = child.BuildData();
+												var fio = new List<string> {childData.NullSafe(a => a.Child.LastName), childData.NullSafe(a => a.Child.FirstName), childData.NullSafe(a => a.Child.MiddleName)};
+												<tr class="search-to-hide @(Extensions.NotNeedTicketColor(child.Data.NotNeedTicketReasonId))">
+													<td>
+														@{ var document = string.Format("{0} {1} {2}", child.NullSafe(c => c.Data.Child.DocumentType.Name), child.NullSafe(c => c.Data.Child.DocumentSeria), child.NullSafe(c => c.Data.Child.DocumentNumber)); }
+														<div class="transport-info-fio">@string.Join(" ", fio.Where(f => !string.IsNullOrEmpty(f)))</div>
+														<div>
+															<small>
+																<i style="color: #666">Дата рождения: @child.NullSafe(c => c.Data.Child.DateOfBirth).FormatEx()</i>
+															</small>
+														</div>
+														<div>
+															<small>
+																<i style="color: #666">@child.NullSafe(c => (bool?) c.Data.Child.Male).FormatEx("-", "Мужской", "Женский")</i>
+															</small>
+														</div>
+														<div>
+															<small>
+																<i style="color: #666">@document</i>
+															</small>
+														</div>
+													</td>
+													<td>
+														@if (Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicketReason))
+														{
+															@Html.DropDownListFor(m => m.TransportToCamps[campNum - 1].Parties[partyNum - 1].Children[childNum - 1].Data.NotNeedTicketReasonId, SelectListHelper.Create(Model.NotNeedTicketReasons, t => new SelectListItem {Value = t.Id.ToString(), Text = t.Name, Selected = child.Data.NotNeedTicketReasonId == t.Id}), new {@class = "form-control not-need-ticket-select not-need-ticket-child", data_id = child.Data.Id}).DisableIf(() => isTransportFormed)
+														}
+														else
+														{
+															@Html.DisplayTextFor(m => m.TransportToCamps[campNum - 1].Parties[partyNum - 1].Children[childNum - 1].Data.NotNeedTicketReason.Name)
+														}
+
+													</td>
+													<td class="transport-info-directory-flight form-group">
+														@Html.DropDownListFor(m => m.TransportToCamps[campNum - 1].Parties[partyNum - 1].Children[childNum - 1].Data.DirectoryFlightsId, SelectListHelper.Create(Model.DirectoryFlights, f => new SelectListItem { Value = f.Id.ToString(), Text = f.GetName(), Selected = f.Id == Model.TransportToCamps[campNum - 1].Parties[partyNum - 1].Children[childNum - 1].Data.DirectoryFlightsId }), new { @class = "form-control transport-info-directory-flight-select", autocomplete = "off" }).DisableIf(() => !Model.IsEditable || child.Data.NotNeedTicketReasonId.HasValue)
+														@Html.HiddenFor(m => m.TransportToCamps[campNum - 1].Parties[partyNum - 1].Children[childNum - 1].Data.Id).DisableIf(() => !Model.IsEditable)
+													</td>
+													<td>
+														<div class="input-group date datepicker-anytime">
+															@Html.TextBoxFor(m => m.TransportToCamps[campNum - 1].Parties[partyNum - 1].Children[childNum - 1].Data.DateDeparture, new {@class = "form-control input-mask-date-anytime departure-date"}).DisableIf(() => !Model.IsEditable || child.Data.NotNeedTicketReasonId.HasValue)
+															<span class="input-group-addon">
+																										<span class="glyphicon glyphicon-calendar"></span>
+																									</span>
+														</div>
+
+													</td>
+												</tr>
+												childNum++;
+											}
+											</tbody>
+
+										</table>
+									}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				partyNum++;
+			}
+		}
+		</div>
+		</div>
+		</div>
+		</div>
+		</div>
+
+		campNum++;
+	}
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
+}

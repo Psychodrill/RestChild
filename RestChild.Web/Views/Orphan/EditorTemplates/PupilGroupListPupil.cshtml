@@ -1,0 +1,78 @@
+﻿@using RestChild.Web.Extensions
+@using RestChild.Comon
+@using RestChild.Domain
+
+@model  RestChild.Web.Models.Orphans.OrphanagePupilGroupListMemberModel
+@{
+    var isEditable = (ViewData["isEditable"] as bool?) ?? true;
+    var possibleTransferAdresses = new SelectList(((List<OrphanageAddress>)ViewBag.PossibleTransferAdresses ?? new List<OrphanageAddress>()).Select(o => new { Id = (long?)o.Id, Name = o.Address.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name");
+    var food_adds = new List<string>();
+    if (Model.Data.Pupil.GlutenFreeFood)
+    {
+        food_adds.Add("Безглютеновое");
+    }
+    if (Model.Data.Pupil.PureedFood)
+    {
+        food_adds.Add("Протертое");
+    }
+    if (!string.IsNullOrWhiteSpace(Model.Data.Pupil.FoodAditionals))
+    {
+        food_adds.Add(Model.Data.Pupil.FoodAditionals);
+    }
+    if (!food_adds.Any())
+    {
+        food_adds.Add("Без особенностей питания");
+    }
+
+    string cColor = string.Empty;
+    if (Model.Data.Pupil.Foul)
+    {
+        cColor = "#FCFBC2";
+    }
+    else if (Model.Data.Pupil.FoulRegionRestriction)
+    {
+        cColor = "#FCC2C2";
+    }
+}
+
+<tr style="@(!string.IsNullOrWhiteSpace(cColor) ? string.Format("background-color: {0}", cColor) : string.Empty)">
+    @Html.Hidden(System.Guid.NewGuid().ToString(), Model.Data.Id, new { @class = "pkey" })
+    @Html.Hidden(System.Guid.NewGuid().ToString(), Model.Data.Pupil.EntityId, new { @class = "pekey" })
+    @Html.HiddenFor(m => m.Data.Id)
+    @Html.HiddenFor(m => m.Data.PupilId, new { @class = "ppkey" })
+    <td>
+        <a target="_blank" href="@Url.Action("OrphanagePupilEdit", "Orphan", new {pupilId = Model.Data.Pupil.EntityId ?? Model.Data.PupilId })">@Model.Data.Pupil.Child.GetFio()</a>
+        <h6>@Model.Data.Pupil.Child.DateOfBirth.FormatEx()</h6>
+        <h6>@Html.Raw(string.Join("</br>", food_adds))</h6>
+    </td>
+    <td>
+        @if (Model.DrugDoses != null && Model.DrugDoses.Any())
+        {
+            foreach (var dose in Model.DrugDoses)
+            {
+                @Html.HiddenFor(m => m.DrugDoses[dose.Key].DoseId)
+                @Html.HiddenFor(m => m.DrugDoses[dose.Key].Id)
+                @(string.Format("{0} ({1})", Model.DrugDoses[dose.Key].Dose.Drug.Name, Model.DrugDoses[dose.Key].Dose.Drug.DrugType.Name))<br />
+                @:Условия хранения: @Model.DrugDoses[dose.Key].Dose.Drug.Storage<br />
+                @Html.TextBoxFor(m => m.DrugDoses[dose.Key].DrugQuantity, new { @class = "form-control" }).DisableIf(() => !isEditable)
+            }
+        }
+    </td>
+    <td class="text-center">
+        @Html.CheckBoxFor(m => m.Data.TicketTo).DisableIf(() => !isEditable)
+    </td>
+    <td class="text-center">
+        @Html.CheckBoxFor(m => m.Data.TicketFrom).DisableIf(() => !isEditable)
+    </td>
+    <td>
+        @Html.DropDownListFor(m => m.Data.OrganisatonAddresId, possibleTransferAdresses, new { @class = "form-control select2 possibleTransferOrganisatonAddresId" }).DisableIf(() => !isEditable)
+    </td>
+    <td>
+        @if (isEditable)
+        {
+            <button type="button" class="btn btn-danger btn-primary remove-pupil" role="button">
+                <i class="glyphicon glyphicon-trash"></i>
+            </button>
+        }
+    </td>
+</tr>

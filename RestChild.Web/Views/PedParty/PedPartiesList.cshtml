@@ -1,0 +1,83 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.PedParty.PedPartyFilterModel
+
+@{
+	ViewBag.Title = "Педотряды для вожатых";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "Search";
+	ViewBag.InsertAction = "Insert";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "PedParty";
+	ViewBag.Caption = "Педотряды";
+	ViewBag.InsertButtonCaption = "Добавить педотряд";
+	ViewBag.SearchPanelCaption = "Поиск педотрядов";
+	ViewBag.NeedInsertButton = Security.HasRight(AccessRightEnum.PedParty.PedPartyManage);
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Наименование</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+		</div>
+		<label class="col-md-1 control-label text-right">Город</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.City, new { @class = "form-control" })
+		</div>
+	</div>
+}
+
+@section searchResult{
+	@if (Model.Result != null && Model.Result.Any())
+	{
+
+
+		<table class="table table-striped table-hover">
+			<thead>
+			<tr>
+				<th class="text-center" width="5%">№</th>
+				<th>Название</th>
+				<th>Город</th>
+				<th></th>
+			</tr>
+			</thead>
+			<tbody>
+			@{
+				int rowNumber = Model.Result.FirstItemOnPage;
+			}
+			@foreach (var ped in Model.Result)
+			{
+				<tr>
+					<td class="text-center">@(rowNumber++)</td>
+					<td>@ped.Name</td>
+					<td>@ped.City</td>
+					<td class="text-center">@Html.ActionLink(" ", "Update", new {id = @ped.Id}, new {@class = " glyphicon glyphicon-pencil", target = "_blank"})</td>
+				</tr>
+			}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model.Result, page =>
+				{
+					Model.Result = null;
+					Model.PageNumber = page;
+					return Url.Action("Search", Model);
+				}, new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+

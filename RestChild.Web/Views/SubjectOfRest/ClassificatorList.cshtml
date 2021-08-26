@@ -1,0 +1,100 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Filter
+@using RestChild.Domain
+@using RestChild.Web.Controllers
+@model SubjectOfRestClassificationFilterModel
+@{
+	ViewBag.Title = "Классификатор тематик смены";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "ClassificatorList";
+	ViewBag.InsertAction = "ClassificatorEdit";
+	ViewBag.Controller = "SubjectOfRest";
+	ViewBag.Caption = "Классификатор тематик смены";
+	ViewBag.InsertButtonCaption = "Добавить";
+	ViewBag.SearchPanelCaption = "Поиск";
+	ViewBag.NeedInsertButton = false;
+}
+
+@section additionalInserts
+{
+	@if (Security.HasRight(AccessRightEnum.VocabularyManage))
+	{
+		<a class="btn btn-primary" href="@Url.Action("ClassificatorEdit")" target="_blank">
+			<i class="glyphicon glyphicon-plus"></i> Добавить
+		</a>
+	}
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Наименование</label>
+		<div class="col-md-10">
+			@Html.TextBoxFor(m => m.SearchString, new { @class = "form-control" })
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="checkbox col-md-10 col-md-offset-2">
+			<label>
+				@Html.CheckBoxFor(m => m.ViewArchive) Отображать архивные
+			</label>
+		</div>
+	</div>
+}
+
+@section searchResult
+{
+	@if (Model != null && Model.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="text-center" width="5%">№</th>
+					<th>Наименование</th>
+					<th>Отображать на сайте</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@{int rowNumber = Model.FirstItemOnPage;}
+				@foreach (var classification in Model)
+				{
+					<tr @(Html.Raw(classification.IsArchive ? "class=\"active\"" : string.Empty)) >
+						<td class="text-center">@(rowNumber++)</td>
+						<td>@Html.Raw(classification.Name.FormatEx())</td>
+						<td>@Html.Raw(classification.ViewOnSite.FormatEx())</td>
+						<td class="text-center">@Html.ActionLink(" ", "ClassificatorEdit", new { id = classification.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model, page =>
+		   {
+			   var model = new CounselorTestFilterModel(new List<CounselorTest>(), page, Model.PageSize, Model.TotalItemCount)
+			   {
+				   PageNumberEx = page,
+				   SearchString = Model.SearchString
+			   };
+			   return Url.Action("ClassificatorList", model);
+		   }, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+						<div class="row">
+							<div class="col-md-12">
+								<p>Поиск не дал результатов</p>
+							</div>
+						</div>
+	}
+}
+
+
+@section scripts
+{
+}

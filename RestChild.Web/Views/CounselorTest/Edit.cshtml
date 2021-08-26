@@ -1,0 +1,382 @@
+﻿@using DocumentFormat.OpenXml.Wordprocessing
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Extensions
+@using RestChild.DAL.Migrations
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@using RestChild.Web.Models
+@using Styles = System.Web.Optimization.Styles
+@model RestChild.Web.Models.CounselorTestModels.TestModel
+@{
+	ViewBag.Title = "Тестирование вожатых";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Тестирование вожатых</h2>
+
+<a href="@Url.Action("List", "CounselorTest")">Вернуться</a>
+<div class="row">&nbsp;</div>
+
+@Html.Partial("Assets/_StatePanel", Model.State)
+
+<div class="row">
+	<div class="col-md-12">
+		@using (Html.BeginForm("SaveEdit", "CounselorTest", FormMethod.Post, new { @id = "form" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.Data.Id)
+			@Html.HiddenFor(m => m.Data.StateId)
+			@Html.HiddenFor(m => m.Data.DateCreate)
+			@Html.HiddenFor(m => m.StateMachineActionString)
+			@Html.HiddenFor(m => m.Data.HistoryLinkId)
+			@Html.HiddenFor(m => m.Data.LastUpdateTick)
+			if (!ViewData.ModelState.IsValid)
+			{
+				<div class="alert alert-danger" role="alert">
+					@Html.ValidationSummary(false)
+				</div>
+			}
+			<fieldset class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Дата создания</label>
+					<div class="col-md-9 line-height35">
+						@Html.Raw(Model.Data.DateCreate.FormatEx())
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Наименование<span class="requared">*</span></label>
+					<div class="col-md-9 line-height35">
+						@if (!Model.IsEditable)
+						{
+							@Html.Raw(Model.Data.Name.FormatEx())
+							@Html.HiddenFor(m => m.Data.Name)
+						}
+						else
+						{
+							@Html.TextBoxFor(m => m.Data.Name, new { @class = "form-control", maxlength = 1000 })
+						}
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Количество ошибок допустимых для прохождения теста<span class="requared">*</span></label>
+					<div class="col-md-3 line-height35">
+						@if (!Model.IsEditable)
+						{
+							@Html.Raw(Model.Data.CountErrorInTest.FormatEx())
+							@Html.HiddenFor(m => m.Data.CountErrorInTest)
+						}
+						else
+						{
+							@Html.TextBoxFor(m => m.Data.CountErrorInTest, new { @class = "form-control integer", maxlength = 3 })
+						}
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="col-md-offset-3 col-md-5 checkbox">
+						<label>
+							@Html.CheckBoxFor(m => m.Data.IsFinalTest).DisableIf(()=>!Model.IsEditable)
+							Финальный тест
+						</label>
+					</div>
+				</div>
+
+				<h4>
+					Темы тестирования
+					@if (Model.IsEditable)
+					{
+						<a class="btn btn-sm btn-default glyphicon glyphicon-plus" title="Добавить" id="add-subject"></a>
+					}
+				</h4>
+				<table class="table table-bordered table-striped" id="tblSubject">
+					<thead>
+						<tr>
+							<th>Тема</th>
+							<th>Количество вопросов данной тематики в тесте</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (var i = 0; i < Model.Subjects.Count; i++)
+						{
+							<tr>
+								<td>
+									@Html.HiddenFor(m => m.Subjects[i].Data.Id)
+									@Html.HiddenFor(m => m.Subjects[i].Data.CounselorTestId)
+									@Html.HiddenFor(m => m.Subjects[i].Data.IsArchive)
+									@Html.HiddenFor(m => m.Subjects[i].Data.LastUpdateTick)
+									@Html.HiddenFor(m => m.Subjects[i].UniqalId, new { @class = "uniqalId" })
+									@if (!Model.IsEditable)
+									{
+										@Html.Raw(Model.Subjects[i].Data.Name.FormatEx())
+										@Html.HiddenFor(m => m.Subjects[i].Data.Name, new { @class = "subject-name" })
+									}
+									else
+									{
+										@Html.TextBoxFor(m => m.Subjects[i].Data.Name, new { @class = "form-control subject-name", maxlength = 1000 })
+									}
+								</td>
+								<td style="width: 10%">
+									@if (!Model.IsEditable)
+									{
+										@Html.Raw(Model.Subjects[i] != null && Model.Subjects[i].Data != null ? Model.Subjects[i].Data.QuestionCount.FormatEx() : "-")
+										@Html.HiddenFor(m => m.Subjects[i].Data.QuestionCount)
+									}
+									else
+									{
+										@Html.TextBoxFor(m => m.Subjects[i].Data.QuestionCount, new { @class = "form-control integer", maxlength = 3 })
+									}
+								</td>
+								<td style="width: 45px">
+									@if (Model.IsEditable)
+									{
+										<a class="btn btn-xs btn-default glyphicon glyphicon-remove remove-subject" title="Удалить"></a>
+									}
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+				@if (Model.IsEditable)
+				{
+					<a class="btn btn-sm btn-default  @(Model.Subjects.Any()?string.Empty:"hidden")" title="Добавить" id="add-subject-bottom"><i class="glyphicon glyphicon-plus"></i> Добавить тему</a>
+				}
+				<h4>
+					Вопросы
+					@if (Model.IsEditable)
+					{
+						<a class="btn btn-sm btn-default glyphicon glyphicon-plus" title="Добавить" id="add-question"></a>
+					}
+				</h4>
+				<table class="table table-bordered table-striped" id="tblQuestions">
+					<tbody>
+						@for (var i = 0; i < Model.Questions.Count; i++)
+						{
+							<tr>
+								<td>
+									<div class="form-horizontal">
+										<div class="form-group">
+											<label class="col-md-2 control-label text-right">Вопрос:</label>
+											<div class="col-md-10 line-height35">
+												@Html.HiddenFor(m => m.Questions[i].Data.Id)
+												@Html.HiddenFor(m => m.Questions[i].Data.CounselorTestId)
+												@Html.HiddenFor(m => m.Questions[i].Data.TypeId)
+												@if (!Model.IsEditable)
+												{
+													@Html.Raw(Model.Questions[i].Data.Question.FormatEx())
+													@Html.HiddenFor(m => m.Questions[i].Data.Question)
+												}
+												else
+												{
+													@Html.TextAreaFor(m => m.Questions[i].Data.Question, new { @class = "form-control", maxlength = 1000, style = "width: 892px; max-width: 892px; min-width: 892px; max-height: 300px" })
+												}
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-2 control-label text-right">Тема вопроса:</label>
+											<div class="col-md-10 line-height35">
+												@if (!Model.IsEditable)
+												{
+													@Html.Raw(Model.Questions[i] != null && Model.Questions[i].Data != null && Model.Questions[i].Data.CounselorTestSubject != null ? Model.Questions[i].Data.CounselorTestSubject.Name.FormatEx() : "-")
+													@Html.HiddenFor(m => m.Questions[i].Data.CounselorTestSubjectId)
+												}
+												else
+												{
+													@Html.DropDownListFor(m => m.Questions[i].SubjectUid, new SelectList(Model.Subjects, "UniqalId", "Data.Name", Model.Questions[i].SubjectUid), new { @class = "form-control subjectsUid" })
+												}
+											</div>
+										</div>
+									</div>
+									<input type="hidden" value="@i" class="hdnIndex" />
+									<h5>
+										Ответы
+										@if (Model.IsEditable)
+										{
+											<a class="btn btn-sm btn-default glyphicon glyphicon-plus add-answer" title="Добавить"></a>
+										}
+									</h5>
+									<table class="table answers @(Model.Questions[i].Variants!=null && Model.Questions[i].Variants.Any()?string.Empty:"hidden")" style="background-color: transparent;">
+										<thead>
+											<tr>
+												<th>Ответ</th>
+												<th>Правильность</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>
+											@for (var j = 0; j < Model.Questions[i].Variants.Count; j++)
+											{
+												<tr>
+													<td>
+														@Html.HiddenFor(m => m.Questions[i].Variants[j].Data.Id)
+														@Html.HiddenFor(m => m.Questions[i].Variants[j].Data.FileOrLinkId)
+														@Html.HiddenFor(m => m.Questions[i].Variants[j].Data.QuestionId)
+														@if (!Model.IsEditable)
+														{
+															@Html.Raw(Model.Questions[i].Variants[j].Data.Text.FormatEx())
+															@Html.HiddenFor(m => m.Questions[i].Variants[j].Data.Text)
+														}
+														else
+														{
+															@Html.TextBoxFor(m => m.Questions[i].Variants[j].Data.Text, new { @class = "form-control", maxlength = 1000 })
+														}
+													</td>
+													<td style="width: 55px; text-align: center">
+														<input type="radio" name="group_@(i)" onchange="changeGroup(this);" @(Model.Questions[i].Variants[j].Data.IsTrue ? "checked=\"checked\"" : "") @(!Model.IsEditable ? "disabled='disabled'" : string.Empty) />
+														@Html.HiddenFor(m => m.Questions[i].Variants[j].Data.IsTrue, new { @class = "is-true group_" + i })
+													</td>
+													<td style="width: 55px; text-align: center">
+														@if (Model.IsEditable)
+														{
+															<a class="btn btn-xs btn-default glyphicon glyphicon-remove remove-answer" title="Удалить"></a>
+														}
+													</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</td>
+								<td style="width: 45px">
+									@if (Model.IsEditable)
+									{
+										<a class="btn btn-xs btn-default glyphicon glyphicon-remove remove-question" title="Удалить"></a>
+									}
+								</td>
+							</tr>
+						}
+
+					</tbody>
+				</table>
+				@if (Model.IsEditable)
+				{
+					<a class="btn btn-sm btn-default @(Model.Questions.Any()?string.Empty:"hidden")" title="Добавить" id="add-question-bottom"><i class="glyphicon glyphicon-plus"></i> Добавить вопрос</a>
+				}
+			</fieldset>
+		}
+	</div>
+</div>
+
+@section scripts
+{
+	@Scripts.Render("~/Scripts/jquery.validate.min.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale("ru");
+
+		function confirmStateButtonTask(formSelector, actionSelector, actionCode, buttonName, description, commentSelector) {
+			var errors = '';
+
+			if (!$('#@Html.IdFor(m => m.Data.Name)').val()) {
+				errors = errors + '<li>' + 'Наименование должно быть заполнено!' + '</li>';
+			}
+			if (!$('#@Html.IdFor(m => m.Data.CountErrorInTest)').val()) {
+				errors = errors + '<li>' + 'Количество ошибок допустимых для прохождения теста должно быть заполнено!' + '</li>';
+			}
+
+			if (errors !== '') {
+				ShowAlert('<ul>' + errors + '</ul>', "alert-danger", "", true);
+				return false;
+			}
+
+			confirmStateButton(formSelector, actionSelector, actionCode, buttonName, description, commentSelector);
+			return false;
+		}
+
+
+	</script>
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+	@Html.Partial("Assets/HistoryLinkTemplate")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	@Scripts.Render("~/Scripts/CounselorTests/TestEdit.js")
+
+	<script type="dot/template" id="rowQuestion">
+		<tr>
+			<td>
+				<div class="form-horizontal">
+					<div class="form-group">
+						<label class="col-md-2 control-label text-right">Вопрос:</label>
+						<div class="col-md-11 line-height35">
+							<input data-val="true" name="Questions[0].Data.TypeId" type="hidden" value="">
+							<textarea class="form-control" cols="20" maxlength="1000" name="Questions[0].Data.Question" rows="2" style="max-width: 985px; min-width: 985px; max-height: 300px"></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label text-right">Тема вопроса:</label>
+						<div class="col-md-10 line-height35">
+							<select class="form-control subjectsUid" name="Questions[0].SubjectUid">
+							</select>
+						</div>
+					</div>
+				</div>
+				<input type="hidden" value="" class="hdnIndex">
+				<h5>Ответы <a class="btn btn-sm btn-default glyphicon glyphicon-plus add-answer" title="Добавить"></a></h5>
+				<table class="table answers hidden" style="background-color: transparent;">
+					<thead>
+						<tr>
+							<th>Ответ</th>
+							<th>Правильность</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</td>
+			<td style="width: 45px">
+				<a class="btn btn-xs btn-default glyphicon glyphicon-remove remove-question" title="Удалить"></a>
+			</td>
+		</tr>
+	</script>
+	<script type="dot/template" id="rowAnswer">
+		<tr>
+			<td>
+				<input data-val="true" data-val-number="The field FileOrLinkId must be a number." id="Questions_1__Variants_1__Data_FileOrLinkId" name="Questions[1].Variants[1].Data.FileOrLinkId" type="hidden" value="">
+				<input class="form-control" maxlength="1000" name="Questions[1].Variants[1].Data.Text" type="text" value="" autocomplete="off">
+			</td>
+			<td style="width: 55px; text-align: center">
+				<input type="radio" name="group_" onchange="changeGroup(this);">
+				<input class="is-true group_0" name="Questions[0].Variants[0].Data.IsTrue" type="hidden" value="False">
+			</td>
+			<td style="width: 55px; text-align: center">
+				<a class="btn btn-xs btn-default glyphicon glyphicon-remove remove-answer" title="Удалить"></a>
+			</td>
+		</tr>
+	</script>
+	<script type="dot/template" id="rowSubject">
+		<tr>
+			<td>
+				<input data-val="true" data-val-number="The field CounselorTestId must be a number." name="Subjects[0].Data.CounselorTestId" type="hidden" value="@Html.ValueFor(m => m.Data.Id)">
+				<input data-val="true" name="Subjects[0].Data.IsArchive" type="hidden" value="False">
+				<input data-val="true" data-val-number="The field LastUpdateTick must be a number." data-val-required="The LastUpdateTick field is required." id="Subjects_0__Data_LastUpdateTick" name="Subjects[0].Data.LastUpdateTick" type="hidden" value="0">
+				<input class="uniqalId" name="Subjects[0].UniqalId" type="hidden" value="48b2ddc4-c224-4290-89e0-13b6d760635c">
+				<input class="form-control subject-name" data-val="true" data-val-maxlength="&quot;Наименование&quot; не может быть больше 1000 символов" data-val-maxlength-max="1000" id="Subjects_0__Data_Name" maxlength="1000" name="Subjects[0].Data.Name" type="text" value="" autocomplete="off">
+			</td>
+			<td style="width: 10%">
+				<input class="form-control integer" data-val="true" data-val-number="The field QuestionCount must be a number." maxlength="3" name="Subjects[0].Data.QuestionCount" type="text" value="0" autocomplete="off">
+			</td>
+			<td style="width: 45px">
+				<a class="btn btn-xs btn-default glyphicon glyphicon-remove remove-subject" title="Удалить"></a>
+			</td>
+		</tr>
+	</script>
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+}
+
+
+
+
+
+
+

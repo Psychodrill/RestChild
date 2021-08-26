@@ -1,0 +1,333 @@
+﻿@using Newtonsoft.Json
+@using RestChild.Comon
+@using RestChild.Mobile.DAL.Enum
+@using RestChild.Mobile.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Models.Task
+@model RestChild.Web.Models.Task.ManageModel
+
+@{
+    ViewBag.Title = "Задание";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.CanEdit = Model.CanEdit;
+    var durations = new[]
+    {
+        new SelectListItem {Value = "15", Text = "15 минут"},
+        new SelectListItem {Value = "30", Text = "30 минут"},
+        new SelectListItem {Value = "45", Text = "45 минут"},
+        new SelectListItem {Value = "60", Text = "1 час"},
+        new SelectListItem {Value = "120", Text = "2 часа"},
+        new SelectListItem {Value = "180", Text = "3 часа"},
+        new SelectListItem {Value = "240", Text = "4 часа"},
+        new SelectListItem {Value = "300", Text = "5 часов"},
+        new SelectListItem {Value = "360", Text = "6 часов"},
+        new SelectListItem {Value = "420", Text = "7 часов"},
+        new SelectListItem {Value = "480", Text = "8 часов"},
+        new SelectListItem {Value = "540", Text = "9 часов"},
+        new SelectListItem {Value = "600", Text = "10 часов"},
+        new SelectListItem {Value = "660", Text = "11 часов"},
+        new SelectListItem {Value = "720", Text = "12 часов"},
+        new SelectListItem {Value = "1440", Text = "1 день"},
+        new SelectListItem {Value = "2880", Text = "2 дня"},
+        new SelectListItem {Value = "4320", Text = "3 дня"},
+        new SelectListItem {Value = "5760", Text = "4 дня"},
+        new SelectListItem {Value = "7200", Text = "5 дней"},
+        new SelectListItem {Value = "8640", Text = "6 дней"},
+        new SelectListItem {Value = "10080", Text = "7 дней"},
+        new SelectListItem {Value = "11520", Text = "8 дней"},
+        new SelectListItem {Value = "12960", Text = "9 дней"},
+        new SelectListItem {Value = "14400", Text = "10 дней"},
+        new SelectListItem {Value = "15840", Text = "11 дней"},
+        new SelectListItem {Value = "17280", Text = "12 дней"},
+        new SelectListItem {Value = "18720", Text = "13 дней"},
+        new SelectListItem {Value = "20160", Text = "14 дней"},
+        new SelectListItem {Value = "21600", Text = "15 дней"},
+        new SelectListItem {Value = "23040", Text = "16 дней"},
+        new SelectListItem {Value = "24480", Text = "17 дней"},
+        new SelectListItem {Value = "25920", Text = "18 дней"},
+        new SelectListItem {Value = "27360", Text = "19 дней"},
+        new SelectListItem {Value = "28800", Text = "20 дней"},
+        new SelectListItem {Value = "30240", Text = "21 день"}
+    };
+}
+<div class="form-group row">
+    <div class="col-md-12">
+        <h2>Задание в @Model.Data.Bout.Name</h2>
+        @Html.ActionLink("Вернуться", "Manage", "NewBout", new {id = Model.Data.BoutId, activeTab = "task"}, new {})
+    </div>
+</div>
+@using (Html.BeginForm("Save", "Task", FormMethod.Post, new {enctype = "multipart/form-data", @class = "form-horizontal", id = "mainForm"}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Data.Id)
+    @Html.HiddenFor(m => m.Data.LinkId)
+    @Html.HiddenFor(m => m.StateMachineActionString)
+    @Html.HiddenFor(m => m.Data.StateId)
+    @Html.HiddenFor(m => m.Data.LastUpdateTick)
+    @Html.HiddenFor(m => m.Data.BoutId)
+
+    @Html.Partial("Assets/_StatePanel", Model.State)
+    <div role="tabpanel" id="MainTabs">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="@(Model.ActiveTab == "common" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)">
+                <a href="#common" aria-controls="common" role="tab" data-toggle="tab">Основные</a>
+            </li>
+            <li role="presentation" class="@(Model.ActiveTab == "statistic" ? "active" : string.Empty)">
+                <a href="#statistic" aria-controls="statistic" role="tab" data-toggle="tab">Статистика</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane @(Model.ActiveTab == "common" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)" id="common">
+                <fieldset class="form-horizontal">
+
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <h4>Основные данные</h4>
+                                <label class="control-label">Название задания</label>
+                                <div>
+                                    @Html.TextBoxFor(r => r.Data.Name, new {@class = "form-control", maxlength = "600", autocomplete = "off"}).DisableIf(() => !Model.CanEdit)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Описание задания</label>
+                                <div>
+                                    @Html.TextAreaFor(r => r.Data.Description, new {@class = "form-control", autocomplete = "off"}).DisableIf(() => !Model.CanEdit)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Стоимость</label>
+                                <div>
+                                    @Html.TextBoxFor(r => r.Data.Price, new {@class = "form-control price", maxlength = "20", autocomplete = "off"}).DisableIf(() => !Model.CanEdit)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Одновременное кол-во</label>
+                                <div>
+                                    @Html.TextBoxFor(r => r.Data.CountOnBout, new {@class = "form-control integer", maxlength = "6", autocomplete = "off"}).DisableIf(() => !Model.CanEdit)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Текущее кол-во исполнителей: @(Model.Data.CamperTasks != null ? Model.Data.CamperTasks.Count(c => c.CamperId.HasValue && c.StateId == StateEnum.CamperTask.OnExecution) : 0)</label>
+                            </div>
+                            <div class="form-group">
+                                <h3>Расписание</h3>
+                                <label class="col-md-3 control-label">начало:</label>
+                                <div class="col-md-4">
+                                    <div class='input-group date datepicker-anytime' style="max-width: 150px">
+                                        @Html.TextBoxFor(r => r.Timesheet.Start, new {@class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.Timesheet.Start).FormatEx(string.Empty, string.Empty)}).DisableIf(() => !Model.CanEdit)
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <label class="col-md-2 control-label">время:</label>
+                                <div class="col-md-3">
+                                    <div class='' style="max-width: 150px">
+                                        @Html.TextBoxFor(r => r.Timesheet.Time, new {@class = "form-control time-only", autocomplete = "off", @Value = Model.NullSafe(m => m.Timesheet.Time)}).DisableIf(() => !Model.CanEdit)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group @TimesheetState.Simple @(Model.Timesheet.State != TimesheetState.Simple ? "" : "hidden")">
+                                <label class="col-md-3 control-label">окончание:</label>
+                                <div class="col-md-4">
+                                    <div class='input-group date datepicker-anytime' style="max-width: 150px">
+                                        @Html.TextBoxFor(r => r.Timesheet.End, new {@class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.Timesheet.End).FormatEx(string.Empty, string.Empty)}).DisableIf(() => !Model.CanEdit)
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label">продолжительность:</label>
+                                <div class="col-md-3">
+                                    @Html.DropDownListFor(m => m.Timesheet.Duration, durations, new {@class = "select2 form-control"}).DisableIf(() => !Model.CanEdit)
+                                </div>
+                                <label class="col-md-3 control-label">доступно за:</label>
+                                <div class="col-md-3">
+                                    @Html.DropDownListFor(m => m.Timesheet.AvailableBefore, durations, new {@class = "select2 form-control"}).DisableIf(() => !Model.CanEdit)
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" title="Через сколько можно отказаться после принятия решения">отказаться в течении:</label>
+                                <div class="col-md-3">
+                                    @Html.DropDownListFor(m => m.Timesheet.Refuse, durations, new {@class = "select2 form-control"}).DisableIf(() => !Model.CanEdit)
+                                </div>
+                                <label class="col-md-3 control-label">доступно после:</label>
+                                <div class="col-md-3">
+                                    @Html.DropDownListFor(m => m.Timesheet.AvailableAfter, durations, new {@class = "select2 form-control"}).DisableIf(() => !Model.CanEdit)
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <div>
+                                        <label>
+                                            <input type="radio" class="ts-type" @Html.Raw(Model.CanEdit ? "" : "disabled") name="@Html.NameFor(m => m.Timesheet.State)" value="@TimesheetState.Simple" @Html.Raw(Model.Timesheet.State == TimesheetState.Simple ? "checked" : "")/> Без повторения
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label>
+                                            <input type="radio" class="ts-type" @Html.Raw(Model.CanEdit ? "" : "disabled") name="@Html.NameFor(m => m.Timesheet.State)" value="@TimesheetState.EveryDay" @Html.Raw(Model.Timesheet.State == TimesheetState.EveryDay ? "checked" : "")/> Каждый день
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label>
+                                            <input type="radio" class="ts-type" @Html.Raw(Model.CanEdit ? "" : "disabled") name="@Html.NameFor(m => m.Timesheet.State)" value="@TimesheetState.EveryWorkDay" @Html.Raw(Model.Timesheet.State == TimesheetState.EveryWorkDay ? "checked" : "")/> Каждый рабочий день
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label>
+                                            <input type="radio" class="ts-type" @Html.Raw(Model.CanEdit ? "" : "disabled") name="@Html.NameFor(m => m.Timesheet.State)" value="@TimesheetState.EveryWeek" @Html.Raw(Model.Timesheet.State == TimesheetState.EveryWeek ? "checked" : "")/> Еженедельно
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 @TimesheetState.EveryDay @(Model.Timesheet.State == TimesheetState.EveryDay ? "" : "hidden")">
+                                    <label class="col-md-4 control-label">
+                                        каждый
+                                    </label>
+                                    <label class="col-md-4">
+                                        @Html.TextBoxFor(r => r.Timesheet.EveryDay, new {@class = "form-control integer"}).DisableIf(() => !Model.CanEdit)
+                                    </label>
+                                    <label class="col-md-4 control-label" style="text-align: left">
+                                        день
+                                    </label>
+
+                                </div>
+                                <div class="col-md-6 @TimesheetState.EveryWeek @(Model.Timesheet.State == TimesheetState.EveryWeek ? "" : "hidden")">
+                                    <label class="col-md-6">
+                                        @Html.CheckBoxFor(m => m.Timesheet.Every1).DisableIf(() => !Model.CanEdit) Понедельник
+                                    </label>
+                                    <label class="col-md-6">
+                                        @Html.CheckBoxFor(m => m.Timesheet.Every2).DisableIf(() => !Model.CanEdit) Вторник
+                                    </label>
+                                    <label class="col-md-6">
+                                        @Html.CheckBoxFor(m => m.Timesheet.Every3).DisableIf(() => !Model.CanEdit) Среда
+                                    </label>
+                                    <label class="col-md-6">
+                                        @Html.CheckBoxFor(m => m.Timesheet.Every4).DisableIf(() => !Model.CanEdit) Четверг
+                                    </label>
+                                    <label class="col-md-6">
+                                        @Html.CheckBoxFor(m => m.Timesheet.Every5).DisableIf(() => !Model.CanEdit) Пятница
+                                    </label>
+                                    <label class="col-md-6">
+                                        @Html.CheckBoxFor(m => m.Timesheet.Every6).DisableIf(() => !Model.CanEdit) Суббота
+                                    </label>
+                                    <label class="col-md-6">
+                                        @Html.CheckBoxFor(m => m.Timesheet.Every7).DisableIf(() => !Model.CanEdit) Воскресенье
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group text-right">
+                                <div class="col-md-9 col-md-offset-3">
+                                    <img id="imgPreview" src="@Model.PhotoShowUrl" width="330" height="330"/>
+                                    @Html.HiddenFor(m => m.PhotoUrl, new {@class = "photoUrl"})
+                                    @Html.HiddenFor(m => m.PhotoName, new {@class = "photoName"})
+                                </div>
+                            </div>
+                            @if (Model.CanEdit)
+                            {
+                                <div class="form-group text-right">
+                                    <div class="col-md-9 col-md-offset-3">
+                                        <span class="btn btn-primary btn-file">
+                                            <span class="glyphicon glyphicon-folder-open"></span><span> Открыть изображение</span><input type='file' id="photo" name="photo" accept="image/jpeg,image/png"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+                </fieldset>
+            </div>
+            <div role="tabpanel" class="tab-pane @(Model.ActiveTab == "statistic" ? "active" : string.Empty)" id="statistic">
+                @if (Model.Data.CamperTasks != null && Model.Data.CamperTasks.Any(c => c.CamperId.HasValue))
+                {
+                    <table class="table-bordered table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">ФИО воспитанника</th>
+                                <th class="text-center">Дата задания</th>
+                                <th class="text-center">Дата начала выполнения</th>
+                                <th class="text-center">Дата выполнения</th>
+                                <th class="text-center">Продолжительность задания</th>
+                                <th class="text-center">Затраченное на исполнение время</th>
+                                <th class="text-center">Дата отказа от задания</th>
+                                <th class="text-center">Рейтинг</th>
+                                <th class="text-center">Статус задания</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var task in Model.Data.CamperTasks.Where(c => c.Camper != null).OrderBy(c => c.Camper.Name).ToList() ?? new List<CamperTask>())
+                        {
+                            var timesheet = string.IsNullOrWhiteSpace(task.BoutTask.Timesheet) ? new Timesheet() : JsonConvert.DeserializeObject<Timesheet>(task.BoutTask.Timesheet);
+                            <tr>
+                                <td>@task.Camper.Name</td>
+                                <td class="text-center">@task.TaskDate.FormatEx()</td>
+                                <td class="text-center">@task.AcceptDate.FormatEx()</td>
+                                <td class="text-center">@task.CompliteDate.FormatEx()</td>
+                                <td class="text-center">@timesheet.DurationText</td>
+                                <td class="text-center">
+                                    @Timesheet.FormatTime(Convert.ToInt32(task.CompliteDate.HasValue && task.AcceptDate.HasValue
+                                        ? (task.CompliteDate - task.AcceptDate).Value.TotalMinutes : 0))
+                                </td>
+                                <td class="text-center">@task.RefuseDate.FormatEx()</td>
+                                <td class="text-center">@task.Rating.FormatEx("### ### ### ### ### ### ##0.0")</td>
+                                <td class="text-center">@task.State.Name</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div>Задание ещё никто не брал в выполнение</div>
+                }
+            </div>
+        </div>
+    </div>
+}
+@Html.Partial("_ImageEditPartial")
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/Vocabulary/VocabularyEdit.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/jquery.validate.min.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/moment.js")
+    @Scripts.Render("~/Scripts/moment-with-locales.js")
+    <script type="text/javascript">
+		moment.locale('ru');
+	</script>
+    @Scripts.Render("~/Scripts/jQuery.FileUpload/jquery.fileupload.js")
+    @Scripts.Render("~/Scripts/jquery.Jcrop.min.js")
+    @Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/StateScript.js")
+    @Scripts.Render("~/Scripts/assets/HistoryInMobile.js")
+    @Scripts.Render("~/Scripts/task/manage.js")
+    @Scripts.Render("~/Scripts/jquery.numeric.js")
+    @Scripts.Render("~/Scripts/assets/imageloader.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
+    @*
+    <script type="dot/template" id="templateParameter">
+        @{
+            var vdd = new ViewDataDictionary
+            {
+                TemplateInfo = new TemplateInfo {HtmlFieldPrefix = "Params[{{=it}}]"}
+            };
+
+            Html.RenderPartial("EditorTemplates/Row", new RestChild.Mobile.Domain.GiftParameter(), vdd);
+        }
+    </script>
+*@
+}

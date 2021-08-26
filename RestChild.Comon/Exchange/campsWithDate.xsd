@@ -1,0 +1,1716 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://camps.mos.ru/kultura_gu/" targetNamespace="http://camps.mos.ru/kultura_gu/" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="request">
+		<xs:annotation>
+			<xs:documentation>Заявление</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice>
+					<xs:annotation>
+						<xs:documentation>Вариации заявлений</xs:documentation>
+					</xs:annotation>
+					<xs:sequence>
+						<xs:annotation>
+							<xs:documentation>Компенсация/этапы заявочной кампании</xs:documentation>
+						</xs:annotation>
+						<xs:element name="typeOfRest" type="xs:int">
+							<xs:annotation>
+								<xs:documentation>Вид отдыха</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:choice>
+							<xs:sequence>
+								<xs:annotation>
+									<xs:documentation>Первая заявочная кампания</xs:documentation>
+								</xs:annotation>
+								<xs:element name="timeOfRest" type="xs:int" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Время отдыха</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="timeOfRestAddon" type="xs:int" minOccurs="0" maxOccurs="2">
+									<xs:annotation>
+										<xs:documentation>Время отдыха</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="placeOfRest" type="xs:int" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Место отдыха</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="placeOfRestAddon" type="xs:int" minOccurs="0" maxOccurs="2">
+									<xs:annotation>
+										<xs:documentation>Место отдыха дополнительное</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="subjectOfRest" type="xs:int" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Тематика смены</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="mainPlaces" type="xs:int">
+									<xs:annotation>
+										<xs:documentation>Количество детей</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="attendantCount" type="xs:int" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>количество сопровождающих</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="additionalPlaces" type="xs:int" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Количество дополнительных мест</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+							<xs:sequence>
+								<xs:annotation>
+									<xs:documentation>Компенсация за путевку</xs:documentation>
+								</xs:annotation>
+								<xs:element name="countChild" type="xs:int">
+									<xs:annotation>
+										<xs:documentation>Число детей льготных категорий</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="restMoney" type="xs:decimal">
+									<xs:annotation>
+										<xs:documentation>Сумма выплаты за путевку ребенка</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="restBankBIK">
+									<xs:annotation>
+										<xs:documentation>БИК банка получателя компенсации</xs:documentation>
+									</xs:annotation>
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:maxLength value="9"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:element name="restBankINN">
+									<xs:annotation>
+										<xs:documentation>ИНН Банка</xs:documentation>
+									</xs:annotation>
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:maxLength value="10"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:element name="restBankStrukt" minOccurs="0">
+									<xs:annotation>
+										<xs:documentation>Внутреннее структурное подразделение</xs:documentation>
+									</xs:annotation>
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:maxLength value="20"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:element name="restBankAccount">
+									<xs:annotation>
+										<xs:documentation>Номер счета получателя компенсации</xs:documentation>
+									</xs:annotation>
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:maxLength value="20"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+							</xs:sequence>
+						</xs:choice>
+					</xs:sequence>
+					<xs:sequence>
+						<xs:annotation>
+							<xs:documentation>Прямая подача заявлений</xs:documentation>
+						</xs:annotation>
+						<xs:element name="bookingGuid" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Идентификатор бронирования</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:string">
+									<xs:maxLength value="100"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:element>
+					</xs:sequence>
+				</xs:choice>
+				<xs:element name="dateRequest" type="xs:dateTime" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Дата заявления</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="declarant">
+					<xs:annotation>
+						<xs:documentation>Заявитель</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="lastName">
+								<xs:annotation>
+									<xs:documentation>Фамилия</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="500"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="firstName">
+								<xs:annotation>
+									<xs:documentation>Имя</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="500"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="middleName" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Отчество</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="500"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="middleNameAbsent" type="xs:boolean">
+								<xs:annotation>
+									<xs:documentation>Нет отчества</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="applicantType" type="xs:int" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Вид представительства</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="documentType" type="xs:int">
+								<xs:annotation>
+									<xs:documentation>Тип документа</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="documentSeria">
+								<xs:annotation>
+									<xs:documentation>Серия документа</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="documentNumber">
+								<xs:annotation>
+									<xs:documentation>Номер документа</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="documentDateOfIssue" type="xs:date">
+								<xs:annotation>
+									<xs:documentation>Дата выдачи документа</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="documentSubjectIssue">
+								<xs:annotation>
+									<xs:documentation>Кем выдан документ</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="documentCode" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Код подразделения</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="phone">
+								<xs:annotation>
+									<xs:documentation>телефон</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="500"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="phoneAddon" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Дополнительный телефон</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="500"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="email">
+								<xs:annotation>
+									<xs:documentation>электронная почта</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="500"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="isAccomp" type="xs:boolean" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>признак что заявитель сопровождающий</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="foreginDocument" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Документ удостоверяющий личность заявителя за рубежом</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="documentType" type="xs:int">
+											<xs:annotation>
+												<xs:documentation>Тип документа</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="documentSeria">
+											<xs:annotation>
+												<xs:documentation>Серия документа</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="documentNumber">
+											<xs:annotation>
+												<xs:documentation>Номер документа</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="documentDateOfIssue" type="xs:date">
+											<xs:annotation>
+												<xs:documentation>Дата выдачи документа</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="documentSubjectIssue">
+											<xs:annotation>
+												<xs:documentation>Кем выдан документ</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="documentEndDate" type="xs:date">
+											<xs:annotation>
+												<xs:documentation>Срок действия документа</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="sex" type="ns1:sexType">
+								<xs:annotation>
+									<xs:documentation>Пол</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="dateOfBirth" type="xs:date" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Дата рождения</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="placeOfBirth" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>место рождения</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="snils" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>СНИЛС</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="inn" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>ИНН</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="statusByChild" type="xs:int" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Статус родителя/сопровождающего по отношению к ребенку</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="addressRegistration" type="ns1:addressRegistration" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>адрес регистрации</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="headDeclarant" type="xs:boolean">
+					<xs:annotation>
+						<xs:documentation>заявление подается представителем заявителя </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="head" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Представитель</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="lastName">
+								<xs:annotation>
+									<xs:documentation>Фамилия</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="500"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="firstName">
+								<xs:annotation>
+									<xs:documentation>Имя</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="500"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="middleNameAbsent" type="xs:boolean">
+								<xs:annotation>
+									<xs:documentation>Нет отчества</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="middleName" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Отчество</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="500"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="documentType" type="xs:int">
+								<xs:annotation>
+									<xs:documentation>Тип документа</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="documentSeria">
+								<xs:annotation>
+									<xs:documentation>Серия документа</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="documentNumber">
+								<xs:annotation>
+									<xs:documentation>Номер документа</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="documentDateOfIssue" type="xs:date">
+								<xs:annotation>
+									<xs:documentation>Дата выдачи документа</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="documentSubjectIssue">
+								<xs:annotation>
+									<xs:documentation>Кем выдан документ</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="documentCode" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Код подразделения</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="dateOfBirth" type="xs:date" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Дата рождения</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="snils" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>СНИЛС</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="placeOfBirth" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>место рождения</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="isAccomp" type="xs:boolean" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>признак что доверенное лицо сопровождающий</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="sex" type="ns1:sexType">
+								<xs:annotation>
+									<xs:documentation>Пол</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="phone">
+								<xs:annotation>
+									<xs:documentation>телефон</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="500"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="email">
+								<xs:annotation>
+									<xs:documentation>электронная почта</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="500"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="proxyDateOfIssure" type="xs:date">
+								<xs:annotation>
+									<xs:documentation>Дата выдачи доверенности</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="proxyEndDate" type="xs:date">
+								<xs:annotation>
+									<xs:documentation>Дата окончания действия доверенности</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="notaryName">
+								<xs:annotation>
+									<xs:documentation>Имя нотариуса</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="proxyNumber">
+								<xs:annotation>
+									<xs:documentation>Номер доверенности</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="attendant" type="ns1:proxy" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Доверенное лицо - сопровождающий</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="statusByApplicant" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Чьи интересы представляет</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="1000"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="childs">
+					<xs:annotation>
+						<xs:documentation>Дети из заявления</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="child">
+								<xs:annotation>
+									<xs:documentation>Ребенок</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="lastName">
+											<xs:annotation>
+												<xs:documentation>Фамилия</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="500"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="firstName">
+											<xs:annotation>
+												<xs:documentation>Имя</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="500"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="middleName" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Отчество</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="500"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="middleNameAbsent" type="xs:boolean">
+											<xs:annotation>
+												<xs:documentation>Нет отчества</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="sex" type="ns1:sexType">
+											<xs:annotation>
+												<xs:documentation>Пол</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="dateOfBirth" type="xs:date">
+											<xs:annotation>
+												<xs:documentation>Дата рождения</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="placeOfBirth">
+											<xs:annotation>
+												<xs:documentation>место рождения</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="documentType" type="xs:int">
+											<xs:annotation>
+												<xs:documentation>Тип документа</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="documentSeria">
+											<xs:annotation>
+												<xs:documentation>Серия документа</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="documentNumber">
+											<xs:annotation>
+												<xs:documentation>Номер документа</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="documentDateOfIssue" type="xs:date">
+											<xs:annotation>
+												<xs:documentation>Дата выдачи документа</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="documentSubjectIssue">
+											<xs:annotation>
+												<xs:documentation>Кем выдан документ</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="documentCode" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Код подразделения</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="birthCertDocument" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Свидетельство о рождении</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="svidType" type="xs:int">
+														<xs:annotation>
+															<xs:documentation>Тип документа</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="svidSeria">
+														<xs:annotation>
+															<xs:documentation>Серия документа</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="1000"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="svidNumber">
+														<xs:annotation>
+															<xs:documentation>Номер документа</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="1000"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="registeredInMoscow" type="xs:boolean">
+											<xs:annotation>
+												<xs:documentation>Ребенок зарегистрирован по месту жительства в Москве</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="addressRegistration" type="ns1:addressRegistration" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>адрес регистрации</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="foreginDocument" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Документ удостоверяющий личность ребенка за рубежом</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="documentType" type="xs:int">
+														<xs:annotation>
+															<xs:documentation>Тип документа</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="documentSeria">
+														<xs:annotation>
+															<xs:documentation>Серия документа</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="1000"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="documentNumber">
+														<xs:annotation>
+															<xs:documentation>Номер документа</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="1000"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="documentDateOfIssue" type="xs:date">
+														<xs:annotation>
+															<xs:documentation>Дата выдачи документа</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="documentSubjectIssue">
+														<xs:annotation>
+															<xs:documentation>Кем выдан документ</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="1000"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="documentEndDate" type="xs:date">
+														<xs:annotation>
+															<xs:documentation>Срок действия документа</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="benefit" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>льгота</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="benefitType" type="xs:int">
+														<xs:annotation>
+															<xs:documentation>Тип льготы</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="benefitDate" type="xs:date" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Дата возникновения льготы </xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="benefitNeverEnd" type="xs:boolean">
+														<xs:annotation>
+															<xs:documentation>Бессрочная</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="benefitEndDate" type="xs:date" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Если не бессрочная то дата окончания льготы</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="isInvalid" type="xs:boolean">
+														<xs:annotation>
+															<xs:documentation>Признак что инвалид</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="typeOfRestriction" type="xs:int" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Вид ограничения</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="typeOfSubRestrictionId" type="xs:int" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Подвид ограничения</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="groupInvalid" type="xs:int" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Группа инвалидности</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="school" type="xs:int" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Образовательное учреждение</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="schoolNotPresent" type="xs:boolean">
+											<xs:annotation>
+												<xs:documentation>Школы нет в списке</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="attendantChildNumber" type="xs:int" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>номер второго родителя/сопровождающего в списке родителей/сопровождающих</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="haveOtherParent" type="xs:boolean" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>У ребенка есть второй родитель</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="absentOtherParentReason" type="xs:int" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Причина отсутствия второго родителя</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="statusByChild" type="xs:int" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Статус родителя/сопровождающего по отношению к ребенку</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="tour" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Сведения об оздоровительном учреждении</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="restOrg">
+														<xs:annotation>
+															<xs:documentation>Наименование учреждения</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="255"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="restStart" type="xs:date">
+														<xs:annotation>
+															<xs:documentation>Дата начала действия путевки</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="restStop" type="xs:date">
+														<xs:annotation>
+															<xs:documentation>Дата окончания действия путевки</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="restCost" type="xs:decimal">
+														<xs:annotation>
+															<xs:documentation>Стоимость путевки</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="restFamily" type="xs:int" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Общее количество отдохнувших членов семьи</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="restMoney" type="xs:decimal" minOccurs="0">
+														<xs:annotation>
+															<xs:documentation>Сумма выплаты за путевку ребенка</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="snils" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>СНИЛС</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="inn" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>ИНН</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="attendants" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Сопровождающие/второй родитель</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="attendant">
+								<xs:annotation>
+									<xs:documentation>Сопровождающий/второй родитель</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="number" type="xs:int">
+											<xs:annotation>
+												<xs:documentation>номер сопровождающего</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="lastName">
+											<xs:annotation>
+												<xs:documentation>Фамилия</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="500"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="firstName">
+											<xs:annotation>
+												<xs:documentation>Имя</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="500"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="middleName" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Отчество</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="500"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="middleNameAbsent" type="xs:boolean">
+											<xs:annotation>
+												<xs:documentation>Нет отчества</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="sex" type="ns1:sexType">
+											<xs:annotation>
+												<xs:documentation>Пол</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="dateOfBirth" type="xs:date">
+											<xs:annotation>
+												<xs:documentation>Дата рождения</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="placeOfBirth">
+											<xs:annotation>
+												<xs:documentation>место рождения</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="documentType" type="xs:int">
+											<xs:annotation>
+												<xs:documentation>Тип документа</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="documentSeria">
+											<xs:annotation>
+												<xs:documentation>Серия документа</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="documentNumber">
+											<xs:annotation>
+												<xs:documentation>Номер документа</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="documentDateOfIssue" type="xs:date">
+											<xs:annotation>
+												<xs:documentation>Дата выдачи документа</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="documentSubjectIssue">
+											<xs:annotation>
+												<xs:documentation>Кем выдан документ</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="documentCode" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Код подразделения</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="phone">
+											<xs:annotation>
+												<xs:documentation>телефон</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="500"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="email">
+											<xs:annotation>
+												<xs:documentation>электронная почта</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="500"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="foreginDocument" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Документ удостоверяющий личность сопровождающего за рубежом</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="documentType" type="xs:int">
+														<xs:annotation>
+															<xs:documentation>Тип документа</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="documentSeria">
+														<xs:annotation>
+															<xs:documentation>Серия документа</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="1000"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="documentNumber">
+														<xs:annotation>
+															<xs:documentation>Номер документа</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="1000"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="documentDateOfIssue" type="xs:date">
+														<xs:annotation>
+															<xs:documentation>Дата выдачи документа</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+													<xs:element name="documentSubjectIssue">
+														<xs:annotation>
+															<xs:documentation>Кем выдан документ</xs:documentation>
+														</xs:annotation>
+														<xs:simpleType>
+															<xs:restriction base="xs:string">
+																<xs:maxLength value="1000"/>
+															</xs:restriction>
+														</xs:simpleType>
+													</xs:element>
+													<xs:element name="documentEndDate" type="xs:date">
+														<xs:annotation>
+															<xs:documentation>Срок действия документа</xs:documentation>
+														</xs:annotation>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="snils" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>СНИЛС</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="inn" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>ИНН</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="proxy" type="ns1:proxy" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Доверенное лицо - сопровождающий</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="statusByChild" type="xs:int" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Статус по отношению к ребенку (Двух этапная кампания)
+Родитель (1)
+Законный представитель (2);
+Доверенное лицо (3)</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="files" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Файлы</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="file" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>файл</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="uid">
+											<xs:annotation>
+												<xs:documentation>идентификатор документа в ЦХЭД</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="fileName">
+											<xs:annotation>
+												<xs:documentation>имя файла</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="description" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>описание прикрепленого файла</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="os" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>наименование репозитория, в котором размещен документ (не обязательный параметр)</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:maxLength value="1000"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="documentType" type="xs:int">
+											<xs:annotation>
+												<xs:documentation>Вид документа</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="needEmail" type="xs:boolean" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>необходимо отправлять уведомления по Email</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="needSms" type="xs:boolean" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>необходимо отправлять уведомления по Sms</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="isDisabled" type="xs:int" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Обладатель льготы</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="changeByScan" type="xs:boolean" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Согласие на внесение изменений в заявление оператором на основании прикрепленных скан-образцов бумажных документов в случае, если мной была допущено ошибка в заявлении</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="bankProperty" type="ns1:bankPropertysType" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Банкоовские реквизиты</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="ssoid" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>ssoid</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="1000"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="statusByChild" type="xs:int" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Заявление подает</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="transferFrom" type="xs:int" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Трансфер из места отдыха</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="transferTo" type="xs:int" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Трансфер в место отдыха</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="certificateInfo">
+		<xs:annotation>
+			<xs:documentation>информация для формирования сертификата</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="serviceNumber" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>номер путевки</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="serviceDate" type="xs:date">
+					<xs:annotation>
+						<xs:documentation>дата сертификата</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="children">
+					<xs:annotation>
+						<xs:documentation>дети</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="child" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="lastName" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>фамилия</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="firstName" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>имя</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="middleName" type="xs:string" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>отчество</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="documentNumber" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>номер документ</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="dateOfBirth" type="xs:date">
+											<xs:annotation>
+												<xs:documentation>дата рождения</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="attendants" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>сопровождающие</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="attendant" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="lastName" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>фамилия</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="firstName" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>имя</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="middleName" type="xs:string" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>отчество</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="documentNumber" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>номер документ</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="dateOfBirth" type="xs:date">
+											<xs:annotation>
+												<xs:documentation>дата рождения</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="applicant">
+					<xs:annotation>
+						<xs:documentation>заявитель</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="lastName" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>фамилия</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="firstName" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>имя</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="middleName" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>отчество</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="documentNumber" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>номер документ</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="dateStart" type="xs:date">
+					<xs:annotation>
+						<xs:documentation>время отдыха с</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="dateEnd" type="xs:date">
+					<xs:annotation>
+						<xs:documentation>время отдыха по</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="placeOfRest" type="xs:string">
+					<xs:annotation>
+						<xs:documentation>место отдыха</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="sexType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="1">
+				<xs:annotation>
+					<xs:documentation>Мужской</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="2">
+				<xs:annotation>
+					<xs:documentation>Женский</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="bankPropertysType">
+		<xs:annotation>
+			<xs:documentation>Банковские реквизиты</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name">
+				<xs:annotation>
+					<xs:documentation>Наименование кредитной организации </xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="account">
+				<xs:annotation>
+					<xs:documentation>Номер счета</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="documentNumber">
+				<xs:annotation>
+					<xs:documentation>Номер заявления</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="inn">
+				<xs:annotation>
+					<xs:documentation>ИНН</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="kpp">
+				<xs:annotation>
+					<xs:documentation>КПП</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="korr">
+				<xs:annotation>
+					<xs:documentation>Корр счет</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="cardNumber">
+				<xs:annotation>
+					<xs:documentation>Номер карты</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:minLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="bik">
+				<xs:annotation>
+					<xs:documentation>БИК</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="lastName">
+				<xs:annotation>
+					<xs:documentation>Фамилия</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="500"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="firstName">
+				<xs:annotation>
+					<xs:documentation>Имя</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="500"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="middleName" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Отчество</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="500"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="bankProperys" type="ns1:bankPropertysType">
+		<xs:annotation>
+			<xs:documentation>Банковские реквизиты</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="proxy">
+		<xs:annotation>
+			<xs:documentation>Сведения о доверенности при сопровождении</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="proxyDateOfIssure" type="xs:date">
+				<xs:annotation>
+					<xs:documentation>Дата выдачи доверенности</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="proxyEndDate" type="xs:date">
+				<xs:annotation>
+					<xs:documentation>Дата окончания действия доверенности</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="notaryName">
+				<xs:annotation>
+					<xs:documentation>Имя нотариуса</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="proxyNumber">
+				<xs:annotation>
+					<xs:documentation>Номер доверенности</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="addressRegistration">
+		<xs:annotation>
+			<xs:documentation>Адрес регистрации</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="appartment">
+				<xs:annotation>
+					<xs:documentation>Номер квартиры</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="addressUnom" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>УНОМ</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="district" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Округ</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="region" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Район</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="street" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Улица</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="house" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Дом</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="corpus" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Корпус</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="stroenie" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>строение</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="vladenie" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>владение</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="fiasid" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Код ФИАС</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="addressName" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Полный адрес</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="1000"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

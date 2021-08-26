@@ -1,0 +1,1268 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.HotelsViewModel
+@{
+	ViewBag.Title = "Реестр оздоровительных организаций";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="form-group row">
+	<div class="col-md-12">
+		<h2>Оздоровительная организация</h2>
+		@Html.ActionLink("Вернуться", "Search")
+	</div>
+</div>
+@using (Html.BeginForm("Save", "Hotels", FormMethod.Post, new { enctype = "multipart/form-data", id = "hotelsForm" }))
+{
+	@Html.AntiForgeryToken()
+	@Html.HiddenFor(m => m.Data.Id)
+	@Html.HiddenFor(m => m.Data.HistoryLinkId)
+	@Html.HiddenFor(m => m.StateMachineActionString)
+	@Html.HiddenFor(m => m.Data.StateId)
+	@Html.HiddenFor(m => m.Data.LastUpdateTick)
+	@Html.HiddenFor(m => m.Data.EkisId)
+	@Html.HiddenFor(m => m.Data.EkisNeedSend)
+	@Html.HiddenFor(m => m.ActiveTab)
+	if (!Model.CanEditName && Model.CanEdit)
+	{
+		@Html.HiddenFor(m => m.Data.Name)
+	}
+
+	@Html.Partial("Assets/_StatePanel", Model.State)
+
+	if (!ViewData.ModelState.IsValid)
+	{
+		<div class="alert alert-danger" role="alert">
+			@Html.ValidationSummary(false)
+		</div>
+	}
+	<div class="row">
+		<div class="col-md-12">
+			<div role="tabpanel" id="MainTabs">
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="@(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)">
+						<a href="#CommonInfo" aria-controls="CommonInfo" role="tab" data-toggle="tab">Общая информация</a>
+					</li>
+					<li role="presentation" class="@(Model.ActiveTab == "PlaceInfo" ? "active" : string.Empty)">
+						<a href="#PlaceInfo" aria-controls="PlaceInfo" role="tab" data-toggle="tab">Информация о расположении</a>
+					</li>
+					<li role="presentation" class="@(Model.ActiveTab == "Description" ? "active" : string.Empty)">
+						<a href="#Description" aria-controls="Description" role="tab" data-toggle="tab">Описание</a>
+					</li>
+					<li role="presentation" class="@(Model.Data.HotelTypeId == (long?)HotelTypeEnum.Hotel ? string.Empty : "hidden") @(Model.ActiveTab == "Rooms" ? "active" : string.Empty)" id="RoomsTab">
+						<a href="#Rooms" aria-controls="Rooms" role="tab" data-toggle="tab">Номерной фонд</a>
+					</li>
+					<li role="presentation" class="@(Model.ActiveTab == "Leisure" ? "active" : string.Empty)">
+						<a href="#Leisure" aria-controls="Leisure" role="tab" data-toggle="tab">Досуг</a>
+					</li>
+					<li role="presentation" class="@(Model.ActiveTab == "Files" ? "active" : string.Empty)">
+						<a href="#Files" aria-controls="Files" role="tab" data-toggle="tab">Фотографии</a>
+					</li>
+					<li role="presentation" class="@(Model.ActiveTab == "Contacts" ? "active" : string.Empty)">
+						<a href="#Contacts" aria-controls="Contacts" role="tab" data-toggle="tab">Контактные лица</a>
+					</li>
+					@if (Model.Data != null && Model.Data.Id > 0 && Security.HasAnyRights(new [] { AccessRightEnum.Hotel.PricesView, AccessRightEnum.Hotel.PricesEdit }))
+					{
+						<li role="presentation" class="@(Model.ActiveTab == "Prices" ? "active" : string.Empty)">
+							<a href="#Prices" aria-controls="Prices" role="tab" data-toggle="tab">Матрица цен</a>
+						</li>
+					}
+				</ul>
+
+				<!-- Tab panes -->
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)" id="CommonInfo">
+						<div>
+							<fieldset class="form-horizontal">
+								<h3>
+									Общая информация
+								</h3>
+								<div class="form-group">
+									<label class="col-md-3 control-label text-right">Наименование оздоровительной организаций<span class="requared">*</span></label>
+									<div class="col-md-9">
+										@Html.TextBoxFor(m => m.Data.Name, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEditName)
+										@Html.ValidationMessageFor(m => m.Data.Name, "Заполните поле")
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-3 control-label text-right">Организация – победитель конкурса<span class="requared">*</span></label>
+									<div class="col-md-9">
+										@Html.HiddenFor(m => m.Data.OrganizationId, new { @class = "form-control change-submit", data_default_text = Model.NullSafe(l => l.Data.Organization.Name) }).DisableIf(() => !Model.CanEdit)
+										@Html.ValidationMessageFor(m => m.Data.OrganizationId, "Заполните поле")
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-3 control-label text-right">Телефон<span class="requared">*</span></label>
+									<div class="col-md-9">
+										@Html.TextBoxFor(m => m.Data.Phone, new { @class = "form-control input-mask-phone", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+										@Html.ValidationMessageFor(m => m.Data.Phone, "Заполните поле")
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-3 control-label text-right">Факс</label>
+									<div class="col-md-9">
+										@Html.TextBoxFor(m => m.Data.Fax, new { @class = "form-control input-mask-phone", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+										@Html.ValidationMessageFor(m => m.Data.Fax, "Заполните поле")
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-3 control-label text-right">Электронная почта</label>
+									<div class="col-md-9">
+										@Html.TextBoxFor(m => m.Data.Email, new { @class = "form-control input-mask-email", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+										@Html.ValidationMessageFor(m => m.Data.Email, "Заполните поле")
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-3 control-label text-right">Домашняя страница</label>
+									<div class="col-md-9">
+										@Html.TextBoxFor(m => m.Data.Url, new {@class = "form-control input-mask-url", autocomplete = "Off"}).DisableIf(() => !Model.CanEdit)
+										@Html.ValidationMessageFor(m => m.Data.Url, "Заполните поле")
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-3 control-label text-right">Ссылка 3D тур</label>
+									<div class="col-md-9">
+										@Html.TextBoxFor(m => m.Link3DTour, new { @class = "form-control", maxlength="300", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+										@Html.HiddenFor(m => m.Link3DTourId)
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-3 control-label text-right">ФИО руководителя</label>
+									<div class="col-md-9">
+										@Html.TextBoxFor(m => m.Data.Head, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+										@Html.ValidationMessageFor(m => m.Data.Head, "Заполните поле")
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-3 control-label text-right">Должность руководителя</label>
+									<div class="col-md-9">
+										@Html.TextBoxFor(m => m.Data.HeadPosition, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+										@Html.ValidationMessageFor(m => m.Data.HeadPosition, "Заполните поле")
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-3 control-label text-right">Вид места отдыха<span class="requared">*</span></label>
+									<div class="col-md-9">
+										@Html.DropDownListFor(m => m.Data.HotelTypeId, SelectListHelper.Create(Model.HotelTypes, t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control" }).DisableIf(() => Model.Data.Id != 0 && Model.Data.State != null && Model.Data.HotelTypeId.HasValue || !Model.CanEdit)
+										@Html.ValidationMessageFor(m => m.Data.HotelTypeId, "Заполните поле")
+										@if (Model.Data.Id != 0 && Model.Data.State != null && Model.Data.HotelTypeId.HasValue)
+										{
+											@Html.HiddenFor(m => m.Data.HotelTypeId)
+										}
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-9 col-md-offset-3 checkbox">
+										<label>
+											@Html.CheckBoxFor(m => m.Data.AccessibleEnvironment).DisableIf(() => !Model.CanEdit) Доступная среда
+										</label>
+
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-9 col-md-offset-3 checkbox">
+										<label>
+											@Html.CheckBoxFor(m => m.Data.TakeChildUp3Years).DisableIf(() => !Model.CanEdit) Принимает детей до 3х лет
+										</label>
+
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-9 col-md-offset-3 checkbox">
+										<label>
+											@Html.CheckBoxFor(m => m.Data.IsLok).DisableIf(() => !Model.CanEdit) Участник ЛОК
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-9 col-md-offset-3 checkbox">
+										<label>
+											@Html.CheckBoxFor(m => m.Data.NotForSite).DisableIf(() => !Model.CanEdit) Не для сайта
+										</label>
+									</div>
+								</div>
+							</fieldset>
+						</div>
+					</div>
+					<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "PlaceInfo" ? "active" : string.Empty)" id="PlaceInfo">
+						<fieldset class="form-horizontal">
+							<h3>
+								Информация о расположении
+							</h3>
+							<div class="form-group">
+								<label class="col-md-3 control-label text-right">Регион<span class="requared">*</span></label>
+								<div class="col-md-9">
+									@Html.DropDownListFor(m => m.Data.PlaceOfRestId, SelectListHelper.Create(Model.Regions, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" }).DisableIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.PlaceOfRestId, "Заполните поле")
+									@if (!Model.CanEdit)
+									{
+										@Html.HiddenFor(m => m.Data.PlaceOfRestId)
+									}
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-3 control-label text-right">Ближайший город (транспортный узел)<span class="requared">*</span></label>
+								<div class="col-md-9">
+									@Html.DropDownListFor(m => m.Data.CityId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" }).DisableIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.PlaceOfRestId, "Заполните поле")
+									@if (Model.Data.StateId == StateMachineStateEnum.Hotel.OnReworking)
+									{
+										@Html.HiddenFor(m => m.Data.PlaceOfRestId)
+									}
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-3 control-label text-right">Адрес<span class="requared">*</span></label>
+								<div class="col-md-9">
+									@Html.TextBoxFor(m => m.Data.Address, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit).ReadonlyIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.Address, "Заполните поле")
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-3 control-label text-right">Удаленность от центра города, км</label>
+								<div class="col-md-9">
+									@Html.TextBoxFor(m => m.Data.DistanceFromCenter, new { @class = "form-control decimal", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit).ReadonlyIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.DistanceFromCenter, "Заполните поле")
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-3 control-label text-right">Удаленность от пляжа, км</label>
+								<div class="col-md-9">
+									@Html.TextBoxFor(m => m.Data.DistanceFromBeach, new {@class = "form-control decimal", autocomplete = "Off"}).DisableIf(() => !Model.CanEdit).ReadonlyIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.DistanceFromBeach, "Заполните поле")
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-md-3 control-label text-right">Широта</label>
+								<div class="col-md-9">
+									@Html.TextBoxFor(m => m.Data.Latitude, new { @class = "form-control coordinates", autocomplete = "Off", maxlength=11 }).DisableIf(() => !Model.CanEdit).ReadonlyIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.Latitude, "Заполните поле")
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-3 control-label text-right">Долгота</label>
+								<div class="col-md-9">
+									@Html.TextBoxFor(m => m.Data.Longitude, new { @class = "form-control coordinates", autocomplete = "Off", maxlength = 11 }).DisableIf(() => !Model.CanEdit).ReadonlyIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.Longitude, "Заполните поле")
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-3 control-label text-right">Маршрут проезда</label>
+								<div class="col-md-9">
+									@Html.TextAreaFor(m => m.Data.DrivingDirections, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.DrivingDirections, "Заполните поле")
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "Description" ? "active" : string.Empty)" id="Description">
+						<fieldset class="form-horizontal">
+							<h3>
+								Описание
+							</h3>
+							<div class="form-group">
+								<label class="col-md-3 control-label text-right">Описание</label>
+								<div class="col-md-9">
+									@Html.TextAreaFor(m => m.Data.Description, new { @class = "form-control", autocomplete = "Off", style = "max-height: 300px" }).DisableIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.Description, "Заполните поле")
+								</div>
+							</div>
+							<div class="form-group hidden">
+								<label class="col-md-3 control-label text-right">Количество корпусов</label>
+								<div class="col-md-9">
+									@Html.TextBoxFor(m => m.Data.NumberHousing, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.NumberHousing, "Заполните поле")
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-3 control-label text-right">Площадь территории, га</label>
+								<div class="col-md-9">
+									@Html.TextBoxFor(m => m.Data.Squere, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.Squere, "Заполните поле")
+								</div>
+							</div>
+							@*<div class="form-group">
+								<label class="col-md-3 control-label text-right">Тип функционирования</label>
+								<div class="col-md-9">
+									@Html.DropDownListFor(m => m.Data.FunctioningTypeId, SelectListHelper.Create(Model.FunctioningType, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" }).DisableIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.PlaceOfRestId, "Заполните поле")
+								</div>
+							</div>*@
+							<div class="form-group">
+								<label class="col-md-3 control-label text-right">Возраст</label>
+								<div class="col-md-6">
+									<label class="control-label input-label col-md-1 without-margin without-padding width-auto">с</label>
+									<div class="col-md-2">
+										@Html.TextBoxFor(r => r.Data.AgeFrom, new { @class = "form-control integer", autocomplete = "off" }).DisableIf(() => !Model.CanEdit)
+									</div>
+
+									<label class="control-label input-label col-md-1 without-margin without-padding width-auto">по</label>
+									<div class="col-md-2">
+										@Html.TextBoxFor(r => r.Data.AgeTo, new { @class = "form-control integer", autocomplete = "off" }).DisableIf(() => !Model.CanEdit)
+									</div>
+								</div>
+
+							</div>
+							@*<div class="form-group">
+								<label class="col-md-3 control-label text-right">Размещение</label>
+								<div class="col-md-9">
+									@Html.DropDownListFor(m => m.Data.HotelPlacementId, SelectListHelper.Create(Model.HotelPlacements, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" }).DisableIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.PlaceOfRestId, "Заполните поле")
+								</div>
+							</div>*@
+							<div class="form-group">
+								<div class="col-md-3 col-md-offset-3 checkbox">
+									<label>
+										@Html.CheckBoxFor(m => m.Data.MedicalOfficeAvailability).DisableIf(() => !Model.CanEdit)
+										Наличие медицинского кабинета
+									</label>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-md-3 col-md-offset-3 checkbox">
+									<label>
+										@Html.CheckBoxFor(m => m.Data.OutdoorPondAvailability).DisableIf(() => !Model.CanEdit)
+										Наличие открытого водоема
+									</label>
+								</div>
+								<label class="col-md-1 control-label text-right">название</label>
+								<div class="col-md-5">
+									@Html.TextBoxFor(m => m.Data.OutdoorPondName, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.OutdoorPondName, "Заполните поле")
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-3 col-md-offset-3 checkbox">
+									<label>
+										@Html.CheckBoxFor(m => m.Data.PoolAvailability).DisableIf(() => !Model.CanEdit)
+										Наличие бассейна
+									</label>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "Rooms" ? "active" : string.Empty)" id="Rooms">
+						<h3>
+							<span>Номерной фонд</span>
+							<button type="button" class="btn btn-primary add-button @(!Model.CanEdit ? "hidden" : string.Empty)" id="Data_addRoomBtn">Добавить сведения</button>
+
+						</h3>
+
+					<div class="form-group">
+						<table class="table table-hover" id="Data_typeOfRoomsTable">
+							<thead>
+							<tr>
+								<th width="25%">Наименование</th>
+								<th width="15%" class="text-center">Основных мест</th>
+								<th width="20%" class="text-center">Дополнительных мест</th>
+								<th width="25%" class="text-center">Максимальное количество номеров</th>
+								<th>Удобства</th>
+								<th width="5%" class="text-center"></th>
+							</tr>
+							</thead>
+							<tbody>
+							@if (Model.Data.TypeOfRooms != null && Model.Data.TypeOfRooms.Any())
+							{
+								for (var typeOfRoomCounter = 0; typeOfRoomCounter < Model.Data.TypeOfRooms.Count; typeOfRoomCounter++)
+								{
+									var type = Model.Data.TypeOfRooms.ElementAt(@typeOfRoomCounter);
+									<tr>
+										<td>
+											@type.Name.FormatEx()
+										</td>
+										<td class="text-center">
+											@type.CountBasePlace.FormatEx()
+										</td>
+										<td class="text-center">
+											@type.CountAddonPlace.FormatEx()
+										</td>
+										<td class="text-center">
+											@type.MaximumCount
+										</td>
+										<td>
+											@type.GetConviencsString()
+										</td>
+										<td>
+											<a class="glyphicon glyphicon-pencil updateTypeOfRooms @(!Model.CanEdit ? "hidden" : string.Empty)" href="javascript:void(0);"></a>
+											<a class="glyphicon glyphicon-remove deleteTypeOfRooms @(!Model.CanEdit ? "hidden" : string.Empty)" href="javascript:void(0);"></a>
+
+											<div class="room-hidden">
+												<input type="hidden" name="Id" value="@type.Id" />
+												@Html.Hidden("Name", type.Name)
+
+												@Html.Hidden("HaveAirConditioning", type.HaveAirConditioning.ToString())
+												@Html.Hidden("HaveBalcony", type.HaveBalcony.ToString())
+												@Html.Hidden("HaveBar", type.HaveBar.ToString())
+												@Html.Hidden("HaveBath", type.HaveBath.ToString())
+												@Html.Hidden("HaveBidet", type.HaveBidet.ToString())
+												@Html.Hidden("HaveFurniture", type.HaveFurniture.ToString())
+												@Html.Hidden("HaveHairDryer", type.HaveHairDryer.ToString())
+												@Html.Hidden("HaveKitchen", type.HaveKitchen.ToString())
+												@Html.Hidden("HaveLocalTv", type.HaveLocalTv.ToString())
+												@Html.Hidden("HavePhone", type.HavePhone.ToString())
+												@Html.Hidden("HaveRadio", type.HaveRadio.ToString())
+												@Html.Hidden("HaveRefrigerator", type.HaveRefrigerator.ToString())
+												@Html.Hidden("HaveSafe", type.HaveSafe.ToString())
+												@Html.Hidden("HaveSatelliteTv", type.HaveSatelliteTv.ToString())
+												@Html.Hidden("HaveShower", type.HaveShower.ToString())
+												@Html.Hidden("HaveTv", type.HaveTv.ToString())
+												@Html.Hidden("HaveWc", type.HaveWc.ToString())
+												@Html.Hidden("CountBasePlace", type.CountBasePlace)
+												@Html.Hidden("CountAddonPlace", type.CountAddonPlace)
+												@Html.Hidden("RoomSizePerPerson", type.RoomSizePerPerson)
+												@Html.Hidden("MaximumCount", type.MaximumCount)
+											</div>
+											@if (type.Files != null)
+											{
+												for (var i = 0; i < @type.Files.Count; i++)
+												{
+													 <div class="photo-hidden hidden">
+														 @Html.Hidden("Id", @type.Files.ElementAt(i).Id)
+														 @Html.Hidden("FileTypeId", @type.Files.ElementAt(i).FileTypeId)
+														 @Html.Hidden("FileUrl", @type.Files.ElementAt(i).FileUrl)
+														 @Html.Hidden("FileName", @type.Files.ElementAt(i).FileName)
+														 @Html.Hidden("IsMainPhoto", @type.Files.ElementAt(i).IsMainPhoto.ToString().ToLower(), new {@class = "IsMainPhoto"})
+														 @Html.Hidden("HotelId", Model.Data.Id)
+														 @Html.Hidden("TypeOfRoomsId", @type.Files.ElementAt(i).TypeOfRoomsId)
+													 </div>
+												}
+											}
+										</td>
+									</tr>
+								}
+							}
+
+							</tbody>
+						</table>
+					</div>
+
+						<div class="accomodation-variants">
+							<h3>
+								<span>Варианты размещений</span>
+								@if (Model.CanEdit)
+								{
+									<button type="button" class="btn btn-primary add-accomodation add-button">Добавить</button>
+								}
+							</h3>
+
+							<div id="AccomodationTable">
+								@if (Model.Data.Accommodation != null && Model.Data.Accommodation.Any())
+								{
+									var accomodationNum = 0;
+									foreach (var accomodation in Model.Data.Accommodation)
+									{
+										<div class="bs-callout bs-callout-info accomodation-tr row">
+
+											<div class="row">
+												<div class="col-md-9">
+													<div class="text-center accomodation-name-label">
+														<label class="line-height35">Название</label>
+													</div>
+													@Html.TextBox("Data.Accommodation[" + accomodationNum + "].Name", accomodation.Name, new { @class = "form-control accomodation-name", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+													@Html.ValidationMessage("Data.Accommodation[" + accomodationNum + "].Name", "Заполните поле")
+												</div>
+												<div class="col-md-3">
+													<div class="col-md-6 text-right">
+														<label class="">Количество взрослых</label>
+													</div>
+													<div class="col-md-4 without-margin without-padding">
+														@Html.TextBox("Data.Accommodation[" + accomodationNum + "].Adult", accomodation.Adult, new { @class = "form-control count", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+														@Html.ValidationMessage("Data.Accommodation[" + accomodationNum + "].Adult", "Заполните поле")
+													</div>
+													@if (Model.CanEdit)
+													{
+														<a class="remove-accomodation pull-right" href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+													}
+
+													<div class="col-md-2 text-center">
+														@Html.Hidden("Data.Accommodation[" + accomodationNum + "].Id", accomodation.Id, new { @class = "accomodation-id" })
+														@Html.Hidden("Data.Accommodation[" + accomodationNum + "].HotelId", accomodation.HotelId, new { @class = "accomodation-hotelid" })
+													</div>
+
+												</div>
+											</div>
+
+											<div class="col-md-8">
+												<h3>
+													<span>Дети</span>
+													@if (Model.CanEdit)
+													{
+														<button type="button" class="btn btn-primary add-accomodation-child add-button">Добавить</button>
+													}
+												</h3>
+
+
+												<table class="table table-hover table-striped @(accomodation.AccommodationChildren != null && accomodation.AccommodationChildren.Any() ? string.Empty : "hidden") accoomodation-child-table">
+													<thead>
+														<tr>
+															<th>Минимальный возраст</th>
+															<th>Максимальный возраст</th>
+															<th>Количество детей</th>
+															<th></th>
+														</tr>
+													</thead>
+													<tbody>
+														@if (accomodation.AccommodationChildren != null && accomodation.AccommodationChildren.Any())
+														{
+															var accomodationChildNum = 0;
+															foreach (var child in accomodation.AccommodationChildren)
+															{
+																<tr class="accomodation-child-tr">
+																	<td>
+																		@Html.TextBox("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].AgeFrom", child.AgeFrom, new { @class = "form-control age", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+																		@Html.ValidationMessage("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].AgeFrom", "Заполните поле")
+																	</td>
+																	<td>
+																		@Html.TextBox("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].AgeTo", child.AgeTo, new { @class = "form-control age", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+																		@Html.ValidationMessage("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].AgeTo", "Заполните поле")
+																	</td>
+																	<td>
+																		@Html.TextBox("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].CountChildren", child.CountChildren, new { @class = "form-control count", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+																		@Html.ValidationMessage("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].CountChildren", "Заполните поле")
+																	</td>
+																	<td>
+																		@if (Model.CanEdit)
+																		{
+																			<a class="remove-accomodation-child" href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+																		}
+
+																		@Html.Hidden("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].Id", child.Id)
+																		@Html.Hidden("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].AccommodationId", child.AccommodationId)
+																	</td>
+																</tr>
+																		accomodationChildNum++;
+															}
+
+														}
+													</tbody>
+												</table>
+											</div>
+
+										</div>
+
+
+														accomodationNum++;
+									}
+
+								}
+							</div>
+
+
+						</div>
+					</div>
+					<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "Leisure" ? "active" : string.Empty)" id="Leisure">
+						<fieldset class="form-horizontal">
+							<h3>
+								Досуг
+							</h3>
+							<div class="form-group">
+								<div class="col-md-3 col-md-offset-1">
+									@Html.CheckBoxFor(m => m.Data.LibraryAvailability).DisableIf(() => !Model.CanEdit)
+									Библиотека
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-3 col-md-offset-1">
+									@Html.CheckBoxFor(m => m.Data.ComputerClassAvailability).DisableIf(() => !Model.CanEdit)
+									Компьютерный класс
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-2 col-md-offset-1">
+									@Html.CheckBoxFor(m => m.Data.CinimaAvailability).DisableIf(() => !Model.CanEdit)
+									Кинозал
+								</div>
+								<label class="col-md-2 control-label text-right">График работы</label>
+								<div class="col-md-5">
+									@Html.TextBoxFor(m => m.Data.CinimaTimetable, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.CinimaTimetable, "Заполните поле")
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-3 col-md-offset-1">
+									@Html.CheckBoxFor(m => m.Data.GymAvailability).DisableIf(() => !Model.CanEdit)
+									Тренажерный зал
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-1 control-label text-right">Другое</label>
+								<div class="col-md-9">
+									@Html.TextAreaFor(m => m.Data.OtherLeisure, new { @class = "form-control", autocomplete = "Off", maxlength = "1000" }).DisableIf(() => !Model.CanEdit)
+									@Html.ValidationMessageFor(m => m.Data.DrivingDirections, "Заполните поле")
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div id="Files" role="tabpanel" class="tab-pane @(Model.ActiveTab == "Files" ? "active" : string.Empty)">
+						<h3>
+							Фотографии<span class="requared">*</span>
+						</h3>
+						<h4>Кликните по фотографии, чтобы отметить ее, как главную</h4>
+						<div class="form-group @(!Model.CanEdit ? "hidden" : string.Empty)">
+							<button type="button" class="btn btn-primary" id="Data_addFileBtn">Добавить</button>
+						</div>
+						<div class="form-group">
+							<h4>Инфраструктура</h4>
+							<div class="photo-set" id="Data_infrastructurePhotoSet">
+								@if (Model.Data.Files != null)
+								{
+									foreach (var file in Model.Data.Files.Where(f => f.FileType != null && f.FileType.ParentId == (int) FileTypeEnum.Infrastructure))
+									{
+										<div class="photo @Html.Raw(file.IsMainPhoto?"isMainPhoto":string.Empty)">
+											<div class="photo-inner" style="width: 150px; height: 150px">
+												<img style="max-width: 150px; max-height: 150px" src="@("/DownloadHotelFile.ashx/" + file.FileUrl)"/>
+												<div class="text-right photo-text @(!Model.CanEdit ? "hidden" : string.Empty)">
+													<a class="remove-photo " href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+												</div>
+											</div>
+											<div class="text-center photo-text">
+												@file.FileName.FormatEx()
+											</div>
+											<div class="photo-hidden hidden">
+												<input type="hidden" name="Id" value="@file.Id" class="hidden" />
+												<input type="hidden" name="FileName" value="@file.FileName" class="hidden c7" />
+												<input type="hidden" name="FileTypeId" value="@file.FileTypeId" class="hidden" />
+												<input type="hidden" name="FileUrl" value="@file.FileUrl" class="hidden" />
+												<input type="hidden" name="IsMainPhoto" value="@file.IsMainPhoto.ToString()" class="hidden IsMainPhoto" />
+											</div>
+										</div>
+									}
+								}
+							</div>
+						</div>
+						<div class="form-group">
+							<h4>Интерьеры</h4>
+							<div class="photo-set" id="Data_interiorsPhotoSet">
+								@if (Model.Data.Files != null)
+								{
+									foreach (var file in Model.Data.Files.Where(f => f.FileType != null && f.FileType.ParentId == (int)FileTypeEnum.Interior))
+									{
+										<div class="photo @Html.Raw(file.IsMainPhoto?"isMainPhoto":string.Empty)">
+											<div class="photo-inner" style="width: 150px; height:150px">
+												<img style="max-width: 150px; max-height: 150px" src="@("/DownloadHotelFile.ashx/" + file.FileUrl)" />
+												<div class="text-right photo-text">
+													<a class="remove-photo @(!Model.CanEdit ? "hidden" : string.Empty)" href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+												</div>
+											</div>
+											<div class="text-center photo-text">
+												@file.FileName.FormatEx()
+											</div>
+											<div class="photo-hidden hidden">
+												<input type="hidden" name="Id" value="@file.Id" class="hidden" />
+												<input type="hidden" name="FileName" value="@file.FileName" class="hidden c6" />
+												<input type="hidden" name="FileTypeId" value="@file.FileTypeId" class="hidden" />
+												<input type="hidden" name="FileUrl" value="@file.FileUrl" class="hidden" />
+												<input type="hidden" name="IsMainPhoto" value="@file.IsMainPhoto.ToString()" class="hidden IsMainPhoto" />
+											</div>
+										</div>
+									}
+								}
+							</div>
+						</div>
+						<div class="form-group">
+							<h4>Экстерьеры</h4>
+							<div class="photo-set" id="Data_exteriorsPhotoSet">
+								@if (Model.Data.Files != null)
+								{
+									foreach (var file in Model.Data.Files.Where(f => f.FileType != null && f.FileType.ParentId == (int)FileTypeEnum.Exterior))
+									{
+										<div class="photo @Html.Raw(file.IsMainPhoto?"isMainPhoto":string.Empty)">
+											<div class="photo-inner" style="width: 150px; height:150px">
+												<img style="max-width: 150px; max-height: 150px" src="@("/DownloadHotelFile.ashx/" + file.FileUrl)" />
+												<div class="text-right photo-text">
+													<a class="remove-photo @(!Model.CanEdit ? "hidden" : string.Empty)" href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+												</div>
+											</div>
+											<div class="text-center photo-text">
+												@file.FileName.FormatEx()
+											</div>
+											<div class="photo-hidden hidden">
+												<input type="hidden" name="Id" value="@file.Id" class="hidden" />
+												<input type="hidden" name="FileName" value="@file.FileName" class="hidden c5" />
+												<input type="hidden" name="FileTypeId" value="@file.FileTypeId" class="hidden" />
+												<input type="hidden" name="FileUrl" value="@file.FileUrl" class="hidden" />
+												<input type="hidden" name="IsMainPhoto" value="@file.IsMainPhoto.ToString()" class="hidden IsMainPhoto" />
+											</div>
+										</div>
+									}
+								}
+							</div>
+						</div>
+						<div class="form-group">
+							<h4>Технические объекты</h4>
+							<div class="photo-set" id="Data_techobjPhotoSet">
+								@if (Model.Data.Files != null)
+								{
+									foreach (var file in Model.Data.Files.Where(f => f.FileType != null && f.FileType.ParentId == (int)FileTypeEnum.TechObjects))
+									{
+										<div class="photo @Html.Raw(file.IsMainPhoto?"isMainPhoto":string.Empty)">
+											<div class="photo-inner" style="width: 150px; height:150px">
+												<img style="max-width: 150px; max-height: 150px" src="@("/DownloadHotelFile.ashx/" + file.FileUrl)" />
+												<div class="text-right photo-text">
+													<a class="remove-photo @(!Model.CanEdit ? "hidden" : string.Empty)" href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+												</div>
+											</div>
+											<div class="text-center photo-text">
+												@file.FileName.FormatEx()
+											</div>
+
+											<div class="photo-hidden hidden">
+												<input type="hidden" name="Id" value="@file.Id" class="hidden" />
+												<input type="hidden" name="FileName" value="@file.FileName" class="hidden c4" />
+												<input type="hidden" name="FileTypeId" value="@file.FileTypeId" class="hidden" />
+												<input type="hidden" name="FileUrl" value="@file.FileUrl" class="hidden" />
+												<input type="hidden" name="IsMainPhoto" value="@file.IsMainPhoto.ToString()" class="hidden IsMainPhoto" />
+											</div>
+										</div>
+									}
+								}
+							</div>
+						</div>
+					</div>
+					<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "Contacts" ? "active" : string.Empty)" id="Contacts">
+						<h3>Контактные лица</h3>
+						<div class="form-group @(!Model.CanEdit ? "hidden" : string.Empty)">
+							<button type="button" class="btn btn-primary" id="addContactBtn">Добавить сведения</button>
+						</div>
+						<table class="table table-striped table-hover" id="ContactsTable">
+							<thead>
+								<tr>
+									<th width="50%">ФИО</th>
+									<th width="25%">Должность</th>
+									<th width="20%">Телефон</th>
+									<th width="5%"></th>
+								</tr>
+							</thead>
+							<tbody>
+								@if (Model.Data.Contacts != null && Model.Data.Contacts.Any())
+								{
+									var contactNum = 0;
+									foreach (var contact in Model.Data.Contacts)
+									{
+										<tr>
+											<td>@contact.LastName @contact.FirstName @contact.MiddleName</td>
+											<td>@contact.Position</td>
+											<td>@contact.Phone</td>
+											<td>
+												<a class="glyphicon glyphicon-pencil edit-contact @(!Model.CanEdit ? "hidden" : string.Empty)" href="javascript:void(0);"></a>
+												<a class="glyphicon glyphicon-remove delete-contact @(!Model.CanEdit ? "hidden" : string.Empty)" href="javascript:void(0);"></a>
+												@Html.Hidden("Data.Contacts[].Id", contact.Id, new { @class = "contact-edit-id" })
+												@Html.Hidden("Data.Contacts[].LastName", contact.LastName, new { @class = "contact-edit-lastname" })
+												@Html.Hidden("Data.Contacts[].FirstName", contact.FirstName, new { @class = "contact-edit-firstname" })
+												@Html.Hidden("Data.Contacts[].MiddleName", contact.MiddleName, new { @class = "contact-edit-middlename" })
+												@Html.Hidden("Data.Contacts[].Position", contact.Position, new { @class = "contact-edit-position" })
+												@Html.Hidden("Data.Contacts[].Phone", contact.Phone, new { @class = "contact-edit-phone" })
+											</td>
+										</tr>
+										contactNum++;
+									}
+								}
+							</tbody>
+						</table>
+					</div>
+					@if (Model.Data != null && Model.Data.Id > 0 && Security.HasAnyRights(new[] { AccessRightEnum.Hotel.PricesView, AccessRightEnum.Hotel.PricesEdit }))
+					{
+						@Html.Partial("Partials/HotelPrices")
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+<form id="Data_addFileModalForm">
+	<div class="modal fade" id="Data_addFileModal" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Добавление файла</h4>
+				</div>
+				<div class="modal-body form-horizontal modal-body-margin">
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Наименование файла<span class="requared">*</span></label>
+						<div class="col-md-9">
+							<input type="text" id="Data_addFileModalName" class="form-control required" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Тип объекта</label>
+						<div class="col-md-9">
+							@Html.DropDownList("Data_addFileModalObject", new SelectList(((IEnumerable<FileType>)Model.FileTypes.Where(f=>f.Id != (long)FileTypeEnum.Room && f.ParentId != (long)FileTypeEnum.Room)).Select(x => new { Val = x.Id, Text = x.Name, Parent = x.Parent }), "Val", "Text", "Parent.Name", null, new Object[0]), new { @class = "form-control" })
+						</div>
+					</div>
+					@*<div class="form-group">
+							<label class="col-md-3 control-label text-right">Дата съемки</label>
+							<div class="col-md-9">
+								<input type="text" class="datepicker form-control" id="Data_addFileModalDate" />
+							</div>
+						</div>*@
+					<div class="form-group">
+						<span class="btn btn-default btn-file col-md-3 col-md-offset-1" id="Data_addFileModalUpload">
+							<span>Загрузить файл</span>
+							<input type="file" id="Data_addFileModalFile" accept="image/*">
+						</span>
+						<div class="col-md-8">
+							<img id="Data_addFileModalImg" style="max-width: 150px; max-height: 150px" />
+						</div>
+					</div>
+					@Html.Hidden("Data_uploadedFileName")
+				</div>
+				<div class="modal-footer">
+					<img id="Data_addFileModalLoading" class="hidden" src="~/Content/images/spinner.gif" />
+					<button type="button" class="btn btn-primary" id="Data_addFileModalSave">Сохранить</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+</form>
+
+<form id="Data_addTypeOfRoomForm">
+	<div class="modal fade" id="Data_addTypeOfRoomModal" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Сведения о номере</h4>
+				</div>
+
+				<div class="modal-body">
+
+					<div>
+						<ul class="nav nav-tabs" role="tablist">
+							<li role="presentation" class="active">
+								<a href="#addTypeOfRoomForm_mainInfo" role="tab" data-toggle="tab">Общая информация</a>
+							</li>
+							<li role="presentation">
+								<a href="#addTypeOfRoomForm_photoInfo" role="tab" data-toggle="tab">Фотографии</a>
+							</li>
+						</ul>
+
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane active top-margin" id="addTypeOfRoomForm_mainInfo">
+								<div class="form-horizontal">
+									<div class="form-group">
+										<label class="col-md-3 control-label text-right">
+											Наименование
+										</label>
+										<div class="col-md-9">
+											<input type="text" id="Data_addTypeOfRoomName" class="form-control required"/>
+										</div>
+									</div>
+								</div>
+								<div class="form-horizontal">
+									<div class="form-group">
+										<label class="col-md-3 control-label text-right">Основных мест</label>
+										<div class="col-md-2">
+											<input type="text" id="Data_addTypeOfRoomBasePlaces" class="form-control required"/>
+										</div>
+										<label class="col-md-4 control-label text-right">Дополнительных мест</label>
+										<div class="col-md-2">
+											<input type="text" id="Data_addTypeOfRoomAddonPlaces" class="form-control required"/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-3 control-label text-right">Площадь на человека (м<sup>2</sup>)</label>
+										<div class="col-md-2">
+											<input type="text" id="Data_addTypeOfRoomRoomSizePerPerson" class="form-control required"/>
+										</div>
+										<label class="col-md-4 control-label text-right">Максимальное количество номеров</label>
+										<div class="col-md-2">
+											<input type="text" id="Data_addTypeOfRoomMaximumCount" class="form-control required"/>
+										</div>
+									</div>
+
+									<div class="form-group" id="Data_addTypeOfRoomConveniences">
+										<label class="col-md-12">Условия проживания</label>
+										<div class="col-md-11 col-md-offset-1">
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveFurniture" name="HaveFurniture" data-text="мебель"/> мебель
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveBalcony" name="HaveBalcony" data-text="балкон"/> балкон
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveTv" name="HaveTv" data-text="телевизор"/> телевизор
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveBath" name="HaveBath" data-text="ванна"/> ванна
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveSatelliteTv" name="HaveSatelliteTv" data-text="спутниковое ТВ"/> спутниковое ТВ
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveShower" name="HaveShower" data-text="душ"/> душ
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveLocalTv" name="HaveLocalTv" data-text="местное ТВ"/> местное ТВ
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveHairDryer" name="HaveHairDryer" data-text="фен"/> фен
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveRadio" name="HaveRadio" data-text="радио"/> радио
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveWc" name="HaveWc" data-text="туалет"/> туалет
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHavePhone" name="HavePhone" data-text="телефон"/> телефон
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveBidet" name="HaveBidet" data-text="биде"/> биде
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveBar" name="HaveBar" data-text="бар"/> бар
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveAirConditioning" name="HaveAirConditioning" data-text="кондиционер"/> кондиционер
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveSafe" name="HaveSafe" data-text="сейф"/> сейф
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveKitchen" name="HaveKitchen" data-text="кухня"/> кухня
+												</label>
+											</div>
+											<div class="col-md-6 checkbox">
+												<label>
+													<input type="checkbox" id="Data_addTypeOfRoomHaveRefrigerator" name="HaveRefrigerator" data-text="холодильник"/> холодильник
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div role="tabpanel" class="tab-pane top-margin" id="addTypeOfRoomForm_photoInfo">
+								<div>
+									<div id="RoomPhotoModelUploadedPhotos" class="photo-set"></div>
+
+									<span class="btn btn-default btn-file" id="Data_addRoomPhotoModalUpload">
+											<span>Загрузить файл</span>
+											<input type="file" id="Data_addRoomPhotoModalFile" accept="image/*">
+										</span>
+								</div>
+							</div>
+						</div>
+				</div>
+
+					<div class="modal-footer">
+						<img id="Data_addRoomPhotoModalLoading" class="hidden" src="~/Content/images/spinner.gif" />
+						<button type="button" class="btn btn-primary" id="Data_addTypeOfRoomSave">Сохранить</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+					</div>
+			</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div>
+	</div><!-- /.modal -->
+</form>
+
+<script type="text/html" id="Data_photoTemplate">
+	<div class="photo">
+		<div class="photo-inner" style="width: 150px; height:150px">
+			<img style="max-width: 150px; max-height: 150px" src="/DownloadHotelFile.ashx/{{=it.FileUrl}}" />
+			<div class="text-right photo-text">
+				<a class="remove-photo" href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+			</div>
+		</div>
+		<div class="text-center photo-text">
+			{{=it.FileName}}
+		</div>
+		<div class="photo-hidden hidden">
+			<input type="hidden" name="Id" value="{{=it.Id}}" class="hidden" />
+			<input type="hidden" name="FileName" value="{{=it.FileName}}" class="hidden c2" />
+			<input type="hidden" name="FileTypeId" value="{{=it.FileTypeId}}" class="hidden" />
+			<input type="hidden" name="FileUrl" value="{{=it.FileUrl}}" class="hidden" />
+			<input type="hidden" name="IsMainPhoto" value="false" class="hidden IsMainPhoto" />
+		</div>
+	</div>
+</script>
+
+<script type="text/html" id="Data_roomPhotoModalTemplate">
+	<div class="photo {{=it.ClassName}}" data-isMainPhoto="{{=it.IsMainPhoto}}">
+		<div class="photo-inner" style="width: 150px; height: 150px">
+			<img style="max-width: 150px; max-height: 150px" src="/DownloadHotelFile.ashx/{{=it.FileUrl}}"/>
+			<div class="text-right photo-text">
+				<a class="remove-photo" href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+			</div>
+		</div>
+		<div class="photo-hidden hidden">
+			<input type="hidden" name="Id" value="{{=it.Id}}" class="hidden" />
+			<input type="hidden" name="FileTypeId" value="{{=it.FileTypeId}}" class="hidden" />
+			<input type="hidden" name="FileUrl" value="{{=it.FileUrl}}" class="hidden" />
+			<input type="hidden" name="FileName" value="фотография" class="hidden c3" />
+			<input type="hidden" name="HotelId" value="{{=it.HotelId}}" class="hidden" />
+			<input type="hidden" name="TypeOfRoomsId" value="{{=it.TypeOfRoomsId}}" class="hidden" />
+			<input type="hidden" name="IsMainPhoto" value="{{=it.IsMainPhoto}}" class="hidden IsMainPhoto" />
+		</div>
+	</div>
+</script>
+
+<script type="text/html" id="Data_roomPhotoTemplate">
+	<div class="photo-hidden hidden">
+		<input type="hidden" name="Id" value="{{=it.Id}}" class="hidden"/>
+		<input type="hidden" name="FileTypeId" value="{{=it.FileTypeId}}" class="hidden"/>
+		<input type="hidden" name="FileUrl" value="{{=it.FileUrl}}" class="hidden" />
+		<input type="hidden" name="FileName" value="{{=it.FileName}}" class="hidden c1" />
+		<input type="hidden" name="HotelId" value="{{=it.HotelId}}" class="hidden"/>
+		<input type="hidden" name="TypeOfRoomsId" value="{{=it.TypeOfRoomsId}}" class="hidden"/>
+		<input type="hidden" name="IsMainPhoto" value="{{=it.IsMainPhoto}}" class="hidden IsMainPhoto"/>
+	</div>
+</script>
+
+<script type="text/html" id="Data_typeOfRoomsTemplate">
+	<tr>
+		<td>{{=it.Name}}</td>
+		<td class="text-center">{{=it.CountBasePlace}}</td>
+		<td class="text-center">{{=it.CountAddonPlace}}</td>
+		<td class="text-center">{{=it.MaximumCount}}</td>
+		<td>{{=it.Conveniences}}</td>
+		<td>
+			<a class="glyphicon glyphicon-pencil updateTypeOfRooms" href="javascript:void(0);"></a>&nbsp;
+			<a class="glyphicon glyphicon-remove deleteTypeOfRooms" href="javascript:void(0);"></a>
+			<div class="room-hidden">
+				<input type="hidden" name="Id" value="{{=it.Id}}" />
+				<input type="hidden" name="Name" value="{{=it.Name}}" />
+				<input type="hidden" name="CountBasePlace" value="{{=it.CountBasePlace}}" />
+				<input type="hidden" name="CountAddonPlace" value="{{=it.CountAddonPlace}}" />
+				<input type="hidden" name="RoomSizePerPerson" value="{{=it.RoomSizePerPerson}}" />
+				<input type="hidden" name="MaximumCount" value="{{=it.MaximumCount}}" />
+				{{~it.ConviencesArray :value:index}}
+				<input type="hidden" name="{{=value.Name}}" value="{{=value.Value}}" />
+				{{~}}
+			</div>
+		</td>
+	</tr>
+</script>
+
+<script type="text/x-dot-template" id="ContactEditRowTemplate">
+	<tr class="form-horizontal new-contact">
+		<td>
+			<div class="col-md-4">
+				<input type="text" class="contact-edit-lastname form-control required" placeholder="Фамилия" value="{{=it.lastName}}" />
+			</div>
+			<div class="col-md-4">
+				<input type="text" class="contact-edit-firstname form-control required" placeholder="Имя" value="{{=it.firstName}}" />
+			</div>
+			<div class="col-md-4">
+				<input type="text" class="contact-edit-middlename form-control required" placeholder="Отчество" value="{{=it.middleName}}" />
+			</div>
+
+		</td>
+		<td><input type="text" class="contact-edit-position form-control" value="{{=it.position}}" /></td>
+		<td><input type="text" class="contact-edit-phone form-control required" value="{{=it.phone}}" /></td>
+		<td class="line-height35">
+			<a class="glyphicon glyphicon-ok update-contact" href="javascript:void(0);"></a>&nbsp;
+			<a class="glyphicon glyphicon-remove cancel-edit-contact" href="javascript:void(0);"></a>
+			<input type="hidden" class="contact-edit-id" value="{{=it.id}}" />
+		</td>
+	</tr>
+</script>
+
+<script type="text/x-dot-template" id="ContactRowTemplate">
+	<tr>
+		<td>{{=it.lastName}} {{=it.firstName}} {{=it.middleName}}</td>
+		<td>{{=it.position}}</td>
+		<td>{{=it.phone}}</td>
+		<td>
+			<a class="glyphicon glyphicon-pencil edit-contact" href="javascript:void(0);"></a>&nbsp;
+			<a class="glyphicon glyphicon-remove delete-contact" href="javascript:void(0);"></a>
+			<input type="hidden" name="Data.Contacts[].Id" class="contact-edit-id" value="{{=it.id}}" />
+			<input type="hidden" name="Data.Contacts[].LastName" class="contact-edit-lastname" value="{{=it.lastName}}" />
+			<input type="hidden" name="Data.Contacts[].FirstName" class="contact-edit-firstname" value="{{=it.firstName}}" />
+			<input type="hidden" name="Data.Contacts[].MiddleName" class="contact-edit-middlename" value="{{=it.middleName}}" />
+			<input type="hidden" name="Data.Contacts[].Position" class="contact-edit-position" value="{{=it.position}}" />
+			<input type="hidden" name="Data.Contacts[].Phone" class="contact-edit-phone" value="{{=it.phone}}" />
+		</td>
+	</tr>
+</script>
+
+<script type="text/x-dot-template" id="AccomodationChildTemplate">
+	<tr class="accomodation-child-tr">
+		<td>
+			<input autocomplete="Off" class="form-control age" name="Data.Accommodation[].AccommodationChildren[].AgeFrom" type="text" value="{{=it.ageFrom}}">
+		</td>
+		<td>
+			<input autocomplete="Off" class="form-control age" name="Data.Accommodation[].AccommodationChildren[].AgeTo" type="text" value="{{=it.ageTo}}">
+		</td>
+		<td>
+			<input autocomplete="Off" class="form-control count" name="Data.Accommodation[].AccommodationChildren[].CountChildren" type="text" value="{{=it.countChildren}}">
+		</td>
+		<td>
+			<a class="remove-accomodation-child  text-center" href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+			<input name="Data.Accommodation[].AccommodationChildren[].Id" type="hidden" value="{{=it.id}}">
+			<input name="Data.Accommodation[].AccommodationChildren[].AccommodationId" type="hidden" value="{{=it.accomodationId}}">
+		</td>
+	</tr>
+</script>
+
+<script type="text/x-dot-template" id="AccomodationTemplate">
+	<div class="bs-callout bs-callout-info accomodation-tr row">
+
+		<div class="row">
+			<div class="col-md-9">
+				<div class="text-center accomodation-name-label">
+					<label class="line-height35">Название</label>
+				</div>
+				<input autocomplete="Off" class="form-control accomodation-name" name="Data.Accommodation[].Name" type="text" value="{{=it.name}}">
+			</div>
+			<div class="col-md-3">
+				<div class="col-md-6 text-right">
+					<label class="">Количество взрослых</label>
+				</div>
+				<div class="col-md-4 without-margin without-padding">
+					<input autocomplete="Off" class="form-control count" name="Data.Accommodation[].Adult" type="text" value="{{=it.adult}}">
+				</div>
+				<div class="col-md-2">
+					<a class="remove-accomodation" href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+					<input class="accomodation-id" name="Data.Accommodation[].Id" type="hidden" value="{{=it.id}}">
+					<input class="accomodation-hotelid" name="Data.Accommodation[].HotelId" type="hidden" value="{{=it.hotelId}}">
+				</div>
+
+			</div>
+		</div>
+
+		<div class="col-md-8">
+			<h3>
+				<span>Дети</span>
+				<button type="button" class="btn btn-primary add-accomodation-child  add-button">Добавить</button>
+			</h3>
+
+			<table class="table table-hover table-striped accoomodation-child-table hidden">
+				<thead>
+					<tr>
+						<th>Минимальный возраст</th>
+						<th>Максимальный возраст</th>
+						<th>Количество детей</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+		</div>
+	</div>
+</script>
+
+<script type="text/x-dot-template" id="DiningOptionTemplate">
+	<tr>
+		<td>
+			<input type="text" class="form-control" autocomplete="Off" @(!Model.CanEdit ? "disabled=\"disabled\"" : string.Empty) name="Data.DiningOptions[].Name" value="{{=it.name}}" />
+		</td>
+		<td>
+			@if (Model.CanEdit)
+			{
+				<a class="remove-dining pull-right" href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+			}
+			<input type="hidden" name="Data.DiningOptions[].Id" value="{{=it.id}}" />
+			<input type="hidden" name="Data.DiningOptions[].HotelId" value="{{=it.hotelId}}" />
+		</td>
+	</tr>
+</script>
+
+@section styles{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	<link href="~/Content/Vocabulary/VocabularyEdit.css" rel="stylesheet" />
+	@Styles.Render("~/Content/Vocabulary/HotelsEdit.css")
+}
+
+@section Scripts {
+	<script type="text/javascript">
+		var hotelTypeId_Hotel = '@((long?)HotelTypeEnum.Hotel)';
+	</script>
+	@Scripts.Render("~/Scripts/jquery.validate.min.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/Vocabulary/HotelsEdit.js")
+	@Scripts.Render("~/Scripts/Vocabulary/HotelPrices.js")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+	@Html.Partial("Assets/HistoryLinkTemplate")
+	<script type="text/javascript">
+		$(function () {
+			$('#@Html.IdFor(m => m.Data.OrganizationId)').select2({
+				initSelection: function (element, callback) {
+					if (element.attr('data-default-text')) {
+						var data = { id: element.val(), text: element.attr('data-default-text') };
+						callback(data);
+					}
+				},
+				minimumInputLength: 0,
+				ajax: {
+					url: rootPath + '/api/WebHotels/GetOrganizationList',
+					dataType: 'json',
+					quietMillis: 250,
+					data: function (term, page) {
+						return {
+							query: term
+						};
+					},
+					results: function (data, page) {
+						for (var i in data) {
+							data[i] = { id: data[i].id, text: data[i].name }
+						}
+						return {
+							results: data
+						};
+					},
+					cache: true
+				}
+			});
+
+			@if (Model.Data != null && Model.Data.Id > 0 && Security.HasAnyRights(new[] {AccessRightEnum.Hotel.PricesView, AccessRightEnum.Hotel.PricesEdit}))
+			{
+				<text>
+				// Загрузка первой страницы "матрицы цен"
+				hpriceGoPage(1);
+				</text>
+			}
+		})
+	</script>
+}

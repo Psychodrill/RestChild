@@ -1,0 +1,186 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.BoutModel
+@{
+	var canChangeNotCome = Model.Data.StateId != StateMachineStateEnum.Bout.Confirmed;
+	var disableNeedTicket = Model.Data.StateId != StateMachineStateEnum.Bout.Formed && Model.Data.StateId != StateMachineStateEnum.Bout.Editing;
+	var disableReturnNeedTicket = Model.Data.StateId != StateMachineStateEnum.Bout.Confirmed;
+	var disableAll = Model.Data.StateId == StateMachineStateEnum.Bout.Closed;
+}
+
+<div id="Requests" role="tabpanel" class="tab-pane @(Model.ActiveTab == "Requests" ? "active" : string.Empty)">
+	<h3>Реестр отдыхающих</h3>
+	@if (Model.Requests != null && Model.Requests.Any())
+	{
+		var camperNum = 1;
+
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th></th>
+					<th>ФИО</th>
+					<th>Ребёнок / сопровождающий</th>
+					<th width="30px">Прибыл в место отдыха</th>
+					<th width="30px">Вернулся из места отдыха</th>
+					<th width="20%">Причина отказа от обратного билета</th>
+					<th>Номер заявления</th>
+				</tr>
+			</thead>
+			<tbody>
+
+				@foreach (var request in Model.Requests.Where(r => r != null).OrderBy(r => r.TypeOfRestId == (long)TypeOfRestEnum.CommercicalAddonRequest && r.ParentRequest != null ? r.ParentRequest.Id : r.Id))
+				{
+					var childs = Model.Data.Chidren.Where(c => c.RequestId == request.Id).OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ThenBy(c => c.MiddleName).ToList();
+					var attendants = Model.Data.Applicants.Where(c => c.RequestId == request.Id || c.Id == request.ApplicantId).OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ThenBy(c => c.MiddleName).ToList();
+					var requestNumFirstRecord = true;
+					var childsCount = childs.Count();
+					var attendantsCount = attendants.Count();
+					var camperCount = childsCount + attendantsCount;
+					if (childsCount > 0)
+					{
+						foreach (var child in childs)
+						{
+							var toTransport = child.LinkToPeoples != null ? child.LinkToPeoples.FirstOrDefault(l => l.TransportId == Model.Data.TransportInfoToId) : null;
+							var fromTransport = child.LinkToPeoples != null ? child.LinkToPeoples.FirstOrDefault(l => l.TransportId == Model.Data.TransportInfoFromId) : null;
+
+							<tr class="@(fromTransport != null ? Extensions.NotNeedTicketColor(fromTransport.NotNeedTicketReasonId) : string.Empty)">
+								<td class="text-center">@camperNum</td>
+								<td class="camper-name">@child.LastName @child.FirstName @child.MiddleName</td>
+								<td>Ребёнок</td>
+								<td>
+									@if (toTransport != null && fromTransport != null)
+									{
+										<input type="checkbox" @Html.Raw(!toTransport.NotComeInPlaceOfRest ? "checked='checked'" : string.Empty) class="notComeInPlaceOfRest" data-link-id="@toTransport.Id" data-from-link-id="@fromTransport.Id" @Html.Raw(!canChangeNotCome || disableAll ? "disabled='disabled'" : "") />}
+									else
+									{
+										<text>
+											Нет информации по транспорту
+										</text>
+									}
+								</td>
+								<td>
+									@if (fromTransport != null)
+									{
+										<input type="checkbox" @Html.Raw(fromTransport.DeliveredParents ? "checked='checked'" : string.Empty) class="deliveredParents" data-link-id="@fromTransport.Id" @Html.Raw((toTransport != null && toTransport.NotComeInPlaceOfRest) || disableReturnNeedTicket ? "disabled='disabled'" : "") />
+										<div class="label-notComeInPlaceOfRest @Html.Raw(toTransport != null && toTransport.NotComeInPlaceOfRest?"":"hidden")" style="color: #888">Не прибыл</div>
+									}
+									else
+									{
+										<text>
+											Нет информации по транспорту
+										</text>
+									}
+								</td>
+
+
+								<td>
+									@if (fromTransport != null)
+									{
+										if (Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicketReason) && Model.NotNeedTicketReasons.Where(r => r.Id != (long)NotNeedTicketReasonEnum.NotCome || canChangeNotCome).Any(n => !fromTransport.NotNeedTicketReasonId.HasValue || n.Id == fromTransport.NotNeedTicketReasonId))
+										{
+											@Html.DropDownList("NotNeedTicket", SelectListHelper.Create(Model.NotNeedTicketReasons.Where(r => r.Id != (long)NotNeedTicketReasonEnum.NotCome || canChangeNotCome), t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = fromTransport.NotNeedTicketReasonId == t.Id }), new { @class = "form-control not-need-ticket-select not-need-ticket-child", data_id = fromTransport.Id }).DisableIf(() => (fromTransport.NotNeedTicketReasonId == (long)NotNeedTicketReasonEnum.NotCome && !canChangeNotCome) || (toTransport != null && toTransport.NotComeInPlaceOfRest) || disableAll)
+										}
+										else
+										{
+											<text>@fromTransport.NullSafe(l => l.NotNeedTicketReason.Name).FormatEx("Не выбрано")</text>
+										}
+									}
+									else
+									{
+										<text>
+											Не найден обратный транспорт
+										</text>
+									}
+								</td>
+
+								@if (requestNumFirstRecord)
+								{
+									requestNumFirstRecord = false;
+									<td class="transport-grouping-td" @Html.Raw(camperCount != 0 ? string.Format("rowspan=\"{0}\"", camperCount) : string.Empty)>@request.NullSafe(c => c.RequestNumber)</td>
+								}
+
+							</tr>
+							camperNum++;
+						}
+					}
+					if (attendantsCount != 0)
+					{
+						foreach (var attendant in attendants)
+						{
+
+							var toTransport = attendant.LinkToPeoples != null ? attendant.LinkToPeoples.FirstOrDefault(l => l.TransportId == Model.Data.TransportInfoToId) : null;
+							var fromTransport = attendant.LinkToPeoples != null ? attendant.LinkToPeoples.FirstOrDefault(l => l.TransportId == Model.Data.TransportInfoFromId) : null;
+
+
+							<tr class="@(fromTransport != null ? Extensions.NotNeedTicketColor(fromTransport.NotNeedTicketReasonId) : string.Empty)">
+								<td class="text-center">@camperNum</td>
+								<td class="camper-name">@attendant.LastName @attendant.FirstName @attendant.MiddleName</td>
+								<td>Сопровождающий</td>
+
+								<td>
+									@if (toTransport != null && fromTransport != null)
+									{
+										<input type="checkbox" @Html.Raw(!toTransport.NotComeInPlaceOfRest ? "checked='checked'" : string.Empty) class="notComeInPlaceOfRest" data-link-id="@toTransport.Id" data-from-link-id="@fromTransport.Id" @Html.Raw(!canChangeNotCome || disableAll ? "disabled='disabled'" : "") />}
+									else
+									{
+										<text>
+											Нет информации по транспорту
+										</text>
+									}
+								</td>
+								<td>
+									@if (fromTransport != null)
+									{
+										<input type="checkbox" @Html.Raw(fromTransport.DeliveredParents ? "checked='checked'" : string.Empty) class="deliveredParents" data-link-id="@fromTransport.Id" @Html.Raw((toTransport != null && toTransport.NotComeInPlaceOfRest || disableReturnNeedTicket) ? "disabled='disabled'" : "") />
+														<div class="label-notComeInPlaceOfRest @Html.Raw(toTransport != null && toTransport.NotComeInPlaceOfRest?"":"hidden")" style="color: #888">Не прибыл</div>
+									}
+									else
+									{
+										<text>
+											Нет информации по транспорту
+										</text>
+									}
+								</td>
+
+								<td>
+									@if (fromTransport != null)
+									{
+										if (Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicketReason) && Model.NotNeedTicketReasons.Where(r => r.Id != (long)NotNeedTicketReasonEnum.NotCome || canChangeNotCome).Any(n => !fromTransport.NotNeedTicketReasonId.HasValue || n.Id == fromTransport.NotNeedTicketReasonId))
+										{
+											@Html.DropDownList("NotNeedTicket", SelectListHelper.Create(Model.NotNeedTicketReasons.Where(r => r.Id != (long)NotNeedTicketReasonEnum.NotCome || canChangeNotCome), t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = fromTransport.NotNeedTicketReasonId == t.Id }), new { @class = "form-control not-need-ticket-select not-need-ticket-attendant", data_id = fromTransport.Id }).DisableIf(() => (fromTransport.NotNeedTicketReasonId == (long)NotNeedTicketReasonEnum.NotCome && !canChangeNotCome) || (toTransport != null && toTransport.NotComeInPlaceOfRest) || disableAll)
+										}
+										else
+										{
+											<text>@fromTransport.NullSafe(l => l.NotNeedTicketReason.Name).FormatEx("Не выбрано")</text>
+										}
+									}
+									else
+									{
+										<text>
+											Не найден обратный транспорт
+										</text>
+									}
+								</td>
+
+								@if (requestNumFirstRecord)
+								{
+									requestNumFirstRecord = false;
+									<td class="transport-grouping-td" @Html.Raw(camperCount != 0 ? string.Format("rowspan=\"{0}\"", camperCount) : string.Empty)>@request.NullSafe(a => a.RequestNumber).FormatEx()</td>
+								}
+							</tr>
+							camperNum++;
+						}
+					}
+				}
+			</tbody>
+		</table>
+
+	}
+	else
+	{
+		<label>Нет отдыхающих</label>
+	}
+</div>
+

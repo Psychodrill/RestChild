@@ -1,0 +1,121 @@
+﻿@model RestChild.Domain.RelativeUniqe
+@using RestChild.Comon
+@using RestChild.Domain
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Карточка родителя, законного представителя";
+    var current = Model.LastInfo ?? Model.Relatives.FirstOrDefault();
+    var currentRequest = Model.RelativeRequests.Where(r => r.ApplicantId == current.Id).Select(r => r.Request).FirstOrDefault();
+    var applicants = Model.RelativeRequests.Where(c => c.ApplicantId != current.Id).OrderByDescending(c => c.Request.DateRequest).ToList();
+}
+
+<div class="form-horizontal">
+    <h2>Карточка родителя, законного представителя</h2>
+    <div class="form-group">
+        <div class="col-xs-6">
+            СНИЛС: @Model.Snils.FormatSnils()
+        </div>
+        <div class="col-xs-6 text-right">
+            Данные по заявлению <a style="white-space: nowrap" href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = currentRequest.Id})" target="_blank">@currentRequest.RequestNumber</a>
+        </div>
+    </div>
+    <hr/>
+
+    @if (current != null)
+    {
+        <div class="block-base">
+            <h4>
+                Общие сведения
+                @if (applicants.Any())
+                {
+                    <button type="button" class="btn btn-default unhideitem">Сведения прошлых лет</button>
+                }
+            </h4>
+            <div class="form-group">
+                <div class="col-xs-12 start-div">
+                    @current.LastName @current.FirstName @current.MiddleName, @current.DateOfBirth.FormatEx(), @current.PlaceOfBirth, @(current.Male == true ? "мужской" : "женский")
+                </div>
+            </div>
+            <div class="blockitems hidden">
+                @foreach (var item in applicants)
+                {
+                    var child = item.Applicant;
+                    <div class="form-group">
+                        <div class="col-xs-8 start-div">
+                            @child.LastName @child.FirstName @child.MiddleName, @child.DateOfBirth.FormatEx(), @child.PlaceOfBirth, @(child.Male == true ? "мужской" : "женский")
+                        </div>
+                        <div class="col-xs-4 text-right">
+                            <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = item.RequestId})" target="_blank">@item.Request.RequestNumber</a>
+                        </div>
+                    </div>
+                }
+            </div>
+            <hr/>
+        </div>
+
+        <div class="block-base">
+            <h4>
+                Документ удостоверяющий личность
+                @if (applicants.Any())
+                {
+                    <button type="button" class="btn btn-default unhideitem">Документы прошлых лет</button>
+                }
+            </h4>
+            <div class="form-group">
+                <div class="col-xs-12 start-div">
+                    @current.DocumentType.Name, @current.DocumentSeria @current.DocumentNumber, выдан @current.DocumentDateOfIssue.FormatEx(), @current.DocumentSubjectIssue
+                </div>
+            </div>
+            <div class="blockitems hidden">
+                @foreach (var item in applicants)
+                {
+                    var child = item.Applicant;
+                    <div class="form-group">
+                        <div class="col-xs-8 start-div">
+                            @child.DocumentType.Name, @child.DocumentSeria @current.DocumentNumber, выдан @child.DocumentDateOfIssue.FormatEx(), @child.DocumentSubjectIssue
+                        </div>
+                        <div class="col-xs-4 text-right">
+                            <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = item.RequestId})" target="_blank">@item.Request.RequestNumber</a>
+                        </div>
+                    </div>
+                }
+            </div>
+            <hr/>
+        </div>
+
+        if (Model.Children.Any())
+        {
+            <div class="block-base">
+                <h4>
+                    Дети в заявлениях
+                </h4>
+
+                <div class="blockitems">
+                    @foreach (var child in Model.Children.Where(r => r.LastInfo != null).OrderBy(r => r.LastInfo.LastName).ThenBy(r => r.LastInfo.FirstName).ThenBy(r => r.LastInfo.MiddleName).ToList())
+                    {
+                        var li = child.LastInfo;
+                        <div class="form-group">
+                            <div class="col-xs-8 start-div">
+                                <a href="@Url.Action("Child", "UniqueCard", new {@id = @child.Id})">
+                                    @li.LastName @li.FirstName @li.MiddleName, @li.DateOfBirth.FormatEx(), @li.Snils, @((li.DocumentType ?? new DocumentType()).Name) @li.DocumentSeria @li.DocumentNumber
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <hr/>
+            </div>
+        }
+    }
+</div>
+
+@section styles
+{
+    @Styles.Render("~/Content/childUniqe.css")
+}
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/childUniqe.js")
+}

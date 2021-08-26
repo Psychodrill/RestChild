@@ -1,0 +1,281 @@
+﻿@using PagedList.Mvc
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.BaseRegistry.BaseRegistrySearch
+@{
+    ViewBag.Title = "Проверка льготы";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.SearchAction = "List";
+    ViewBag.Controller = "BaseRegistry";
+    ViewBag.Caption = "Проверка льготы";
+    ViewBag.SearchPanelCaption = "Проверка льготы";
+    ViewBag.NeedInsertButton = false;
+}
+
+@section searchForm
+{
+    <div class="panel panel-default" style="margin-bottom: 5px;">
+        <div class="panel-body bg-info">
+            Поиск запросов выполняется по совпадению номера запроса, или если не указан номер запроса, то по полному совпадению фамилии, имени, отчества.
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Номер запроса</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.RegistryNumber, new {@class = "form-control"})
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Фамилия, Имя, Отчество</label>
+        <div class="col-md-3">
+            @Html.TextBoxFor(m => m.LastName, new {@class = "form-control"})
+        </div>
+        <div class="col-md-3">
+            @Html.TextBoxFor(m => m.FirstName, new {@class = "form-control"})
+        </div>
+        <div class="col-md-3">
+            @Html.TextBoxFor(m => m.MiddleName, new {@class = "form-control"})
+        </div>
+    </div>
+    @Html.HiddenFor(m => m.ActionString, new {@id = "actionString"})
+    <div class="modal fade" id="sendDialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span>
+                    </button>
+                    <h4 class="modal-title">Отправить запрос</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Фамилия</label>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(m => m.RequestBlock.LastName, new {@class = "form-control", @id = "dialogLastName", autocomplete = "Off", maxlength = "100"})
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Имя</label>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(m => m.RequestBlock.FirstName, new {@class = "form-control", autocomplete = "Off", maxlength = "100"})
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Отчество</label>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(m => m.RequestBlock.MiddleName, new {@class = "form-control", autocomplete = "Off", maxlength = "100"})
+                        </div>
+                    </div>
+                    <div class="form-group " id="snilsBlock">
+                        <label class="col-md-3 control-label text-right">СНИЛС</label>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(m => m.RequestBlock.Snils, new {@class = "form-control snils", maxlength = "100", autocomplete = "Off", id = "snils"})
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Пол</label>
+                        <div class="col-md-9">
+                            <label>
+                                @Html.RadioButtonFor(r => r.RequestBlock.Male, true)
+                                Мужской
+                            </label>&nbsp;
+                            <label>
+                                @Html.RadioButtonFor(r => r.RequestBlock.Male, false)
+                                Женский
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Дата рождения</label>
+                        <div class="col-md-5">
+                            <div class='input-group date'>
+                                @Html.TextBoxFor(m => m.RequestBlock.DateOfBirth, new {@class = "form-control", autocomplete = "Off", @id = "dialogDateBirth", maxlength = "10"})
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="parent" class="hidden">
+                        <h4>Родитель</h4>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label text-right">Фамилия</label>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.RequestBlock.LastNameParent, new {@class = "form-control", @id = "dialogLastNameParent", autocomplete = "Off", maxlength = "100"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label text-right">Имя</label>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.RequestBlock.FirstNameParent, new {@class = "form-control", autocomplete = "Off", maxlength = "100"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label text-right">Отчество</label>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.RequestBlock.MiddleNameParent, new {@class = "form-control", autocomplete = "Off", maxlength = "100"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Пол</label>
+                            <div class="col-md-9">
+                                <label>
+                                    @Html.RadioButtonFor(r => r.RequestBlock.MaleParent, true)
+                                    Мужской
+                                </label>&nbsp;
+                                <label>
+                                    @Html.RadioButtonFor(r => r.RequestBlock.MaleParent, false)
+                                    Женский
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label text-right">Дата рождения</label>
+                            <div class="col-md-5">
+                                <div class='input-group date'>
+                                    @Html.TextBoxFor(m => m.RequestBlock.DateOfBirthParent, new {@class = "form-control", autocomplete = "Off", @id = "dialogDateBirthParent", maxlength = "10"})
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="otherBlock">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label text-right">Вид документа</label>
+                            <div class="col-md-9">
+                                @Html.DropDownListFor(m => m.RequestBlock.DocumentTypeId, new SelectList(Model.DocumentTypes, "Id", "Name"), new {@class = "form-control"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label text-right">Серия, номер</label>
+                            <div class="col-md-4">
+                                @Html.TextBoxFor(m => m.RequestBlock.DocumentSeria, new {@class = "form-control input-mask-passport-series", maxlength = "100", autocomplete = "Off"})
+                            </div>
+                            <div class="col-md-5">
+                                @Html.TextBoxFor(m => m.RequestBlock.DocumentNumber, new {@class = "form-control input-mask-passport-number", maxlength = "100", autocomplete = "Off", @id = "dialogNumber"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label text-right">Дата документа</label>
+                            <div class="col-md-5">
+                                <div class='input-group date'>
+                                    @Html.TextBoxFor(m => m.RequestBlock.DocumentDateOfIssue, new {@class = "form-control", autocomplete = "Off", maxlength = "10"})
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label text-right">Кем выдан документ</label>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.RequestBlock.DocumentSubjectIssue, new {@class = "form-control", maxlength = "100", autocomplete = "Off"})
+                            </div>
+                        </div>
+                    </div>
+                    <div id="addonSnils">
+                        <h4>Место рождения</h4>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label text-right">Регион</label>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.RequestBlock.Region, new {@class = "form-control", maxlength = "100", autocomplete = "Off"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label text-right">Район</label>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.RequestBlock.District, new {@class = "form-control", maxlength = "100", autocomplete = "Off"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label text-right">Населенный пункт</label>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(m => m.RequestBlock.Settlement, new {@class = "form-control", maxlength = "100", autocomplete = "Off"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary send-button" id="sendButton">Отправить</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section additionalInserts
+{
+    <button type="button" class="btn btn-primary create-request" uid="@BaseRegistryController.SendRequestInBr"><i class="glyphicon glyphicon-plus"></i> Отправить запрос (Льготы)</button>
+    <button type="button" class="btn btn-primary create-request" uid="@BaseRegistryController.GetPassportBySnilsInBr"><i class="glyphicon glyphicon-plus"></i> Отправить запрос (Паспорт)</button>
+    <button type="button" class="btn btn-primary create-request" uid="@BaseRegistryController.GetSnilsByData"><i class="glyphicon glyphicon-plus"></i> Отправить запрос (СНИЛС)</button>
+    <button type="button" class="btn btn-primary create-request" uid="@BaseRegistryController.GetRelativesSmev"><i class="glyphicon glyphicon-plus"></i> Отправить запрос (Федеральный ЗАГС)</button>
+    <button type="button" class="btn btn-primary create-request" uid="@BaseRegistryController.GetRelatives"><i class="glyphicon glyphicon-plus"></i> Отправить запрос (Московский ЗАГС)</button>
+}
+
+@section searchResult
+{
+    @if (Model.Result != null && Model.Result.Any())
+    {
+        <table class="table table-bordered">
+            <tbody>
+            @foreach (var br in Model.Result)
+            {
+                <tr>
+                    <td>
+                        @Html.Partial("Partials/CheckResult", br)
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <div class="row form-group">
+
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-12">
+            @Html.PagedListPager(Model.Result, page =>
+            {
+                Model.Result = null;
+                Model.DocumentTypes = null;
+                Model.PageNumber = page;
+                return Url.Action("List", Model);
+            }, new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+        </div>
+    </div>
+}
+
+else
+{
+<div class="row">
+    <div class="col-md-12">
+        <p>Поиск не дал результатов</p>
+    </div>
+</div>
+}
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+}
+
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale('ru');
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+    @Scripts.Render("~/Scripts/BaseRegistry/List.js")
+}

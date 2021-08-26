@@ -1,0 +1,78 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.SpecializedCampsReportModel
+@{
+	ViewBag.Title = "Отдыхающие в профильных лагерях";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="form-group row">
+	<div class="col-md-12">
+		<h2>@Model.NullSafe(m => m.Organization.Name)</h2>
+		@Html.ActionLink("Вернуться", "Index", "Home")
+	</div>
+</div>
+
+@if (Model.ReportTable != null)
+{
+	<table class="@Model.ReportTable.CssClass">
+		<thead>
+		@if (Model.ReportTable.ReportTableHeads != null && Model.ReportTable.ReportTableHeads.Any() && !Model.ReportTable.ReportTableHeads.Any(h => h.RowIndex.HasValue))
+		{
+			var heads = Model.ReportTable.ReportTableHeads.OrderBy(h => h.SortOrder).ToList();
+			<tr>
+				@foreach (var head in heads)
+				{
+					<th class="@head.CssClass" style="@head.Style">@Html.Raw(head.Name)</th>
+				}
+			</tr>
+		}
+		else if (Model.ReportTable.ReportTableHeads != null && Model.ReportTable.ReportTableHeads.Any() && Model.ReportTable.ReportTableHeads.Any(h => h.RowIndex.HasValue))
+		{
+			var rowIndexes = Model.ReportTable.ReportTableHeads.Where(h => h.RowIndex.HasValue).Select(h => h.RowIndex ?? 0).OrderBy(i => i).Distinct().OrderBy(i => i).ToList();
+			foreach (var index in rowIndexes)
+			{
+				var heads = Model.ReportTable.ReportTableHeads.Where(h => h.RowIndex == index).OrderBy(h => h.SortOrder).ToList();
+				<tr>
+					@foreach (var head in heads)
+					{
+						<th class="@head.CssClass" style="@head.Style" rowspan="@(head.RowSpan ?? 0)" colspan="@(head.ColSpan ?? 0)">@Html.Raw(head.Name)</th>
+					}
+				</tr>
+			}
+		}
+		</thead>
+		<tbody>
+		@if (Model.ReportTable.Rows != null && Model.ReportTable.Rows.Any())
+		{
+			var rows = Model.ReportTable.Rows.OrderBy(t => t.SortOrder).ToList();
+			foreach (var row in rows)
+			{
+				<tr class="@row.CssClass" style="@row.Style">
+					@if (row.RowData != null && row.RowData.Any())
+					{
+						var items = row.RowData.OrderBy(i => i.SortOrder).ToList();
+						foreach (var item in items)
+						{
+							if (!string.IsNullOrEmpty(item.Url))
+							{
+								<td class="@item.CssClass" style="@item.Style" onclick=' javascript: window.open("@item.Url"); '>@Html.Raw(item.Value)</td>
+							}
+							else
+							{
+								<td class="@item.CssClass" style="@item.Style">@Html.Raw(item.Value)</td>
+							}
+						}
+					}
+				</tr>
+			}
+		}
+		</tbody>
+	</table>
+}
+else
+{
+	<label>Данные не найдены</label>
+}

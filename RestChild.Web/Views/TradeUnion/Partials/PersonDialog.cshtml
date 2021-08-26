@@ -1,0 +1,342 @@
+﻿@using RestChild.Web.App_Code
+@using RestChild.Web.Models
+@model RestChild.Web.Models.TradeUnion.TradeUnionModel
+
+@{
+    var oldAddressInUse = Model.Campers.Any(ss => ss.Value.ChildAddressBtiAddressBtiStreetId.HasValue);
+}
+
+<div class="modal fade" id="dialogPerson">
+    <div class="modal-dialog" style="width: 1000px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>
+                <h4 class="modal-title">Сведения о ребёнке</h4>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#childPanel" aria-controls="childPanel" role="tab" data-toggle="tab">Сведения о ребёнке</a></li>
+                    <li role="presentation"><a href="#parentPanel" aria-controls="parentPanel" role="tab" data-toggle="tab">Сведения о родителе (законном представителе)</a></li>
+                    <li role="presentation"><a href="#pricePanel" aria-controls="pricePanel" role="tab" data-toggle="tab">Сведения о стоимости путевки</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="childPanel">
+                        <fieldset class="form-horizontal">
+                            <div class="row">
+                                <div class="col-md-offset-9 col-md-3 pull-right">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" class="middleName-present" id="Child-HaveMiddleName" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                        Нет отчества
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Фамилия имя отчество<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control required" maxlength="1000" id="Child-LastName" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control required" maxlength="1000" id="Child-FirstName" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control required" maxlength="1000" id="Child-MiddleName" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Пол<span class="requared">*</span></label>
+                                <div class="col-md-3 form-control-static">
+                                    <label>
+                                        <input type="radio" name="male" class="male" value="True" Id="Child-Male" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                        Мужской
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="male" class="male" value="False" Id="Child-Male-False" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                        Женский
+                                    </label>
+                                </div>
+                                <label class="col-md-2 control-label text-right">Дата рождения<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    <div class='input-group date' style="width: 150px">
+                                        <input type="text" class="form-control required" maxlength="10" id="Child-DateOfBirth" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Место рождения<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control required" maxlength="1000" id="Child-PlaceOfBirth" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <label class="col-md-3 control-label text-right">СНИЛС</label>
+                                <div class="col-md-3">
+                                    @if (Model.IsEditable)
+                                    {
+                                        <div class="input-group">
+                                            <input type="text" class="form-control snils" maxlength="1000" id="Child-Snils" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                            <span class="input-group-addon retweet-by-snils" style="cursor: pointer;">
+                                                <span class="glyphicon glyphicon-retweet"></span>
+                                            </span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <input type="text" class="form-control snils" maxlength="1000" id="Child-Snils" disabled="disabled" />
+                                    }
+                                </div>
+                            </div>
+                            @if (oldAddressInUse)
+                            {
+                                <div class="form-group">
+                                    <div class="col-md-3"><h5>Адрес регистрации</h5></div>
+                                    <div class="col-md-9"><label class="checkbox"><input type="checkbox" id="cbAddress" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") /> в Москве</label></div>
+                                </div>
+                                <div class="form-group div-address-text">
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <input type="text" class="form-control" maxlength="1000" id="AddressChild" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                    </div>
+                                </div>
+                            }
+                            <div class="form-group div-address-control">
+                                @{
+                                    ViewBag.AddressControlViewPrefix = "DialogChildAddress";
+                                }
+                                @Html.Partial("Assets/AddressControlFIASView", new AddressViewModel(new RestChild.Domain.Address { BtiAddressId = oldAddressInUse ? (long?)665 : null }), new ViewDataDictionary() { new KeyValuePair<string, object>("ViewBag", ViewBag), new KeyValuePair<string, object>("IsDisabled", !Model.IsEditable) })
+                            </div>
+                            <h5>Образовательное учреждение</h5>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Обр. учреждение<span class="requared">*</span></label>
+                                <div class="col-md-5">
+                                    <input type="hidden" class="form-control" maxlength="1000" id="SelectedSchoolId" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") @Html.Raw(Model.IsEditable ? "" : "readonly='readonly'") />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>
+                                        <input type="checkbox" id="IsScoolNotPresent" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") @Html.Raw(Model.IsEditable ? "" : "readonly='readonly'") />
+                                        Учреждения нет в списке
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group" id="txtSchool">
+                                <label class="col-md-3 control-label text-right">Иное обр. учреждение</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" maxlength="1000" id="School" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                            <h5>Документ удостоверяющий личность</h5>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Вид<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    @Html.DropDownList("documentType", new SelectList(Model.DocumentTypes, "Id", "Name"), new { @class = "form-control select2 required", @id = "Child-DocumentTypeId" }).DisableIf(() => !Model.IsEditable)
+                                </div>
+                                <label class="col-md-2 control-label text-right">Серия, номер<span class="requared">*</span></label>
+                                <div class="col-md-2">
+                                    <input type="text" class="document-seria form-control required" maxlength="1000" id="Child-DocumentSeria" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" class="document-number form-control required" maxlength="1000" Id="Child-DocumentNumber" autocomplete="off" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Дата выдачи<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    <div class='input-group date datepicker' style="width: 150px">
+                                        <input type="text" class="document-date-issue form-control required input-mask-date" maxlength="10" id="Child-DocumentDateOfIssue" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <label class="col-md-2 control-label text-right">Кем выдан<span class="requared">*</span></label>
+                                <div class="col-md-4">
+                                    <input type="text" class="document-subject-issue form-control required" maxlength="1000" id="Child-DocumentSubjectIssue" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">
+                                    Заехал
+                                </label>
+                                <div class="col-md-4">
+                                    <input type="checkbox" class="middleName-present" id="IsChecked" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="parentPanel" class="tab-pane">
+                        <fieldset class="form-horizontal">
+                            <h5>Сведения о родителе (законном представителе)</h5>
+                            <div class="row">
+                                <div class="col-md-offset-9 col-md-3 pull-right">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" class="middleName-present" id="Parent-HaveMiddleName" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                        Нет отчества
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Фамилия имя отчество<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control required" maxlength="1000" id="Parent-LastName" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control required" maxlength="1000" id="Parent-FirstName" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control required" maxlength="1000" id="Parent-MiddleName" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Email</label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" maxlength="1000" id="Parent-Email" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <label class="col-md-2 control-label text-right">Место работы<span class="requared">*</span></label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control required" maxlength="1000" Id="ParentPlaceWork" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Телефон<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control input-mask-phone required" maxlength="50" Id="Parent-Phone" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <label class="col-md-2 control-label text-right">СНИЛС</label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control snils" maxlength="1000" id="Parent-Snils" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Член профсоюза<span class="requared">*</span></label>
+                                <div class="col-md-3 form-control-static">
+                                    <label>
+                                        <input type="radio" name="IsParentUnionist" class="IsParentUnionist" value="True" Id="IsParentUnionist" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                        Да
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="IsParentUnionist" class="IsParentUnionist" value="False" Id="IsParentUnionist-False" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                        Нет
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group RelativeUnionistChecked">
+                                <label class="col-md-3 control-label text-right">Родственник-член профсоюза<span class="requared">*</span></label>
+                                <div class="col-md-3 form-control-static">
+                                    <label>
+                                        <input type="radio" name="IsRelativeUnionist" class="IsRelativeUnionist" value="True" Id="IsRelativeUnionist" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                        Да
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="IsRelativeUnionist" class="IsRelativeUnionist" value="False" Id="IsRelativeUnionist-False" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                        Нет
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group tradeUnionOrgDiv">
+                                <label class="col-md-3 control-label text-right">Профсоюз<span class="requared">*</span></label>
+                                <div class="col-md-5">
+                                    <input type="hidden" class="form-control TradeUnionOrganizationId" maxlength="500" id="TradeUnionOrganizationId" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") @Html.Raw(Model.IsEditable ? "" : "readonly='readonly'") />
+                                </div>
+                                <div class="col-md-4">
+                                    <label>
+                                        <input type="checkbox" id="IsTradeUnionOrgNotPresent" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") @Html.Raw(Model.IsEditable ? "" : "readonly='readonly'") />
+                                        Профсоюза нет в списке
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group" id="divOtherTradeUnionOrgName">
+                                <label class="col-md-3 control-label text-right">Иной профсоюз</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" maxlength="1000" id="TradeUnionOrganizationOther" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                            <div class="form-group RelativeUnionist">
+                                <label class="col-md-3 control-label text-right">Статус по отношению к ребёнку<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    @Html.DropDownList("statusByChild", new SelectList(Model.StatusByChild, "Id", "Name"), new { @class = "form-control select2", @id = "TradeUnionStatusByChildId" }).DisableIf(() => !Model.IsEditable)
+                                </div>
+                            </div>
+                            <h5 class="RelativeUnionist">Родственник член профсоюза</h5>
+                            <div class="row RelativeUnionist">
+                                <div class="col-md-offset-9 col-md-3 pull-right">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" class="middleName-present" id="Unionist-HaveMiddleName" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                        Нет отчества
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group RelativeUnionist">
+                                <label class="col-md-3 control-label text-right">Фамилия<span class="requared">*</span> имя<span class="requared">*</span> отчество</label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" maxlength="1000" id="Unionist-LastName" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" maxlength="1000" id="Unionist-FirstName" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" maxlength="1000" id="Unionist-MiddleName" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                            <div class="form-group RelativeUnionist">
+                                <label class="col-md-3 control-label text-right">Email</label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" maxlength="1000" id="Unionist-Email" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <label class="col-md-2 control-label text-right">Место работы<span class="requared">*</span></label>
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" maxlength="1000" id="RelativePlaceWork" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                            <div class="form-group RelativeUnionist">
+                                <label class="col-md-3 control-label text-right">Телефон</label>
+                                <div class="col-md-3">
+                                    <input type="text" class="input-mask-phone form-control" maxlength="1000" id="Unionist-Phone" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="pricePanel" class="tab-pane">
+                        <fieldset class="form-horizontal">
+                            <h5>Сведения о стоимости путевки</h5>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Полная<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control decimal required" maxlength="30" id="Summa" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <label class="col-md-3 control-label text-right">Средства родителей<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control decimal required" maxlength="30" Id="SummaParent" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Средства профсоюза<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control decimal required" maxlength="30" Id="SummaTradeUnion" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                                <label class="col-md-3 control-label text-right">Бюджетные средства<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control decimal required" maxlength="30" Id="SummaBudget" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label text-right">Средства предприятия<span class="requared">*</span></label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control decimal required" maxlength="30" Id="SummaOrganization" @Html.Raw(Model.IsEditable ? "" : "disabled='disabled'") />
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="alert alert-danger col-md-12 dialog-validation-alert hidden">
+                    Заполнены не все обязательные поля
+                </div>
+            </div>
+            <div class="modal-footer">
+                @if (Model.IsEditable)
+                {
+                    <button type="button" class="btn btn-primary" id="personSaveBtn">Сохранить</button>
+                }
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,131 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.Controllers
+@using RestChild.Web.Models
+@model RestChild.Web.Models.InteragencyRequestListViewModel
+@{
+	ViewBag.Title = "Межведомственные запросы";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "List";
+	ViewBag.InsertAction = "Edit";
+	ViewBag.SaveAction = "Edit";
+	ViewBag.Controller = "InteragencyRequest";
+	ViewBag.ActiveChecker = false;
+	ViewBag.ActiveCheckerCaption = "";
+	ViewBag.Caption = "Межведомственные запросы";
+	ViewBag.InsertButtonCaption = "Добавить запрос";
+	ViewBag.SearchPanelCaption = "Поиск запросов";
+	ViewBag.NeedInsertButton = Security.HasRight(AccessRightEnum.InteragencyRequestManage);
+}
+
+@section additionalInserts
+{
+	@if (ViewBag.NeedInsertButton ?? true)
+	{
+
+		@*<a class="btn btn-primary" href="@Url.Action("Edit", (string) ViewBag.Controller, new {createSecondaryRequest = true})" target="_blank">
+			<i class="glyphicon glyphicon-plus"></i> Добавить повторный запрос
+		</a>*@
+	}
+}
+
+@section searchForm
+{
+	@Html.HiddenFor(r => r.PageSizeEx)
+	@Html.HiddenFor(r => r.PageNumberEx)
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Номер запроса</label>
+		<div class="col-md-9">
+			@Html.TextBoxFor(r => r.RequestNumber, new { @class = "form-control", autocomplete = "off" })
+		</div>
+	</div>
+}
+
+@section searchResult{
+	@if (Model != null && Model.Any())
+	{
+		<table class="table table-striped table-hover row-clicable">
+			<thead>
+				<tr>
+					<th class="text-center">№</th>
+					<th class="text-center">Номер запроса</th>
+					<th class="text-center">Организация</th>
+					<th class="text-center">Дата запроса</th>
+					<th class="text-center">Комментарий к запросу</th>
+					<th class="text-center">Номер ответа</th>
+					<th class="text-center">Дата ответа</th>
+					<th class="text-center">Комментарий к ответу</th>
+					<th class="text-center">Статус запроса</th>
+					<th class="text-center">Повторный запрос</th>
+					<th class="text-center"></th>
+				</tr>
+			</thead>
+			<tbody>
+				@{ int rowNumber = Model.FirstItemOnPage; }
+				@foreach (InteragencyRequest req in Model)
+				{
+					<tr class="row-clicable" onclick="openIntergencyRequest('@Url.Action("Edit", new {id=req.Id})');">
+						<td class="text-center">@(rowNumber++)</td>
+						<td class="text-center">@req.RequestNumber.FormatEx()</td>
+						<td>@Html.Raw(req.NullSafe(r => r.Organization.Name).FormatEx())</td>
+						<td class="text-center">@req.RequsetDate.FormatEx()</td>
+						<td>@req.RequestComment.FormatEx()</td>
+						<td class="text-center">@req.AnswerNumber.FormatEx()</td>
+						<td class="text-center">@req.AnswerDate.FormatEx()</td>
+						<td>@req.AnswerComment.FormatEx()</td>
+						<td>@req.StatusInteragencyRequest.NullSafe(s => s.Name).FormatEx()</td>
+						@if (req.IsSecondaryRequest)
+						{
+							<td class="text-center"><span class="glyphicon glyphicon-ok text-success"></span></td>
+						}
+						else
+						{
+							<td class="text-center">-</td>
+						}
+						<td class="text-center"><a onclick="$.noop()" class="glyphicon glyphicon-pencil"></a></td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				<p>Найдено запросов: @Model.TotalItemCount</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model, page =>
+				{
+					var m = new InteragencyRequestListViewModel(null, page, Model.PageSizeEx, Model.TotalItemCount)
+					{
+						RequestNumber = Model.RequestNumber
+					};
+					return Url.Action("List", "InteragencyRequest", m);
+				}, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+@section scripts{
+	<script type="text/javascript" src="~/Scripts/doT.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+	<script type="text/javascript" src="~/Scripts/select2.min.js"></script>
+	<script type="text/javascript" src="~/Scripts/select2_locale_ru.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+	<script type="text/javascript" src="~/Scripts/InteragencyRequest.js"></script>
+	<script type="text/javascript" src="~/Scripts/Selectors/Organization.js"></script>
+}

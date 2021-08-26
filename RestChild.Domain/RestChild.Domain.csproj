@@ -1,0 +1,412 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2EFDFAFB-1B53-451A-BE0E-2088DFFF27C4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RestChild.Domain</RootNamespace>
+    <AssemblyName>RestChild.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="RestChild.Model.Partial.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>RestChild.Model.Partial.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccessRight.cs" />
+    <Compile Include="Accommodation.cs" />
+    <Compile Include="AccommodationChildren.cs" />
+    <Compile Include="Account.cs" />
+    <Compile Include="AccountHistoryLogin.cs" />
+    <Compile Include="AccountRights.cs" />
+    <Compile Include="AccountRoles.cs" />
+    <Compile Include="AddonServices.cs" />
+    <Compile Include="AddonServices.partial.cs" />
+    <Compile Include="AddonServicesLink.cs" />
+    <Compile Include="AddonServicesPaymentType.cs" />
+    <Compile Include="AddonServicesPhoto.cs" />
+    <Compile Include="AddonServicesPrice.cs" />
+    <Compile Include="Address.partial.cs" />
+    <Compile Include="AdministratorTour.cs" />
+    <Compile Include="AdministratorTour.partial.cs" />
+    <Compile Include="Applicant.partial.cs" />
+    <Compile Include="AverageRestPrice.cs" />
+    <Compile Include="Beneficiaries.cs" />
+    <Compile Include="BenefitTypeERL.cs" />
+    <Compile Include="Booking.partial.cs" />
+    <Compile Include="BookingCommercial.cs" />
+    <Compile Include="Bout.cs" />
+    <Compile Include="Bout.partial.cs" />
+    <Compile Include="BoutAttendant.cs" />
+    <Compile Include="BoutJournal.cs" />
+    <Compile Include="BoutJournalFile.cs" />
+    <Compile Include="BoutJournalType.cs" />
+    <Compile Include="Calculation.cs" />
+    <Compile Include="CategoryIncident.cs" />
+    <Compile Include="Certificate.cs" />
+    <Compile Include="CertificateToApply.cs" />
+    <Compile Include="CertificateToApplyAccount.cs" />
+    <Compile Include="Child.partial.cs" />
+    <Compile Include="ChildIncludeExcludeReason.cs" />
+    <Compile Include="ChildUniqe.cs" />
+    <Compile Include="City.cs" />
+    <Compile Include="ClothingSize.cs" />
+    <Compile Include="Contract.cs" />
+    <Compile Include="ContractAddonAgreement.cs" />
+    <Compile Include="CouncelorComment.cs" />
+    <Compile Include="CounselorCource.cs" />
+    <Compile Include="CounselorFile.cs" />
+    <Compile Include="CounselorHighSchool.cs" />
+    <Compile Include="CounselorPractice.cs" />
+    <Compile Include="Counselors.cs" />
+    <Compile Include="Counselors.partial.cs" />
+    <Compile Include="CounselorSkill.cs" />
+    <Compile Include="CounselorsStopListReason.cs" />
+    <Compile Include="CounselorTask.cs" />
+    <Compile Include="CounselorTask.partial.cs" />
+    <Compile Include="CounselorTaskCommentary.cs" />
+    <Compile Include="CounselorTaskExecutorType.cs" />
+    <Compile Include="CounselorTaskFile.cs" />
+    <Compile Include="CounselorTaskReportFile.cs" />
+    <Compile Include="CounselorTest.cs" />
+    <Compile Include="CounselorTestAnswer.cs" />
+    <Compile Include="CounselorTestAnswerVariant.cs" />
+    <Compile Include="CounselorTestQuestion.cs" />
+    <Compile Include="CounselorTestQuestionType.cs" />
+    <Compile Include="CounselorTestSubject.cs" />
+    <Compile Include="Country.cs" />
+    <Compile Include="DeletedRecord.cs" />
+    <Compile Include="DiningOptions.cs" />
+    <Compile Include="DirectoryFlights.cs" />
+    <Compile Include="DirectoryFlightsPartial.cs" />
+    <Compile Include="Discount.cs" />
+    <Compile Include="DiscountCard.cs" />
+    <Compile Include="Drug.cs" />
+    <Compile Include="ERLBenefitStatus.cs" />
+    <Compile Include="ERLPersonStatus.cs" />
+    <Compile Include="EventGeography.cs" />
+    <Compile Include="FileOrLink.cs" />
+    <Compile Include="ForeginPassport.cs" />
+    <Compile Include="FormOfRest.cs" />
+    <Compile Include="FunctioningType.cs" />
+    <Compile Include="GroupedTimeOfRest.cs" />
+    <Compile Include="History.cs" />
+    <Compile Include="HistoryLink.cs" />
+    <Compile Include="HotelBlock.cs" />
+    <Compile Include="HotelBlockDate.cs" />
+    <Compile Include="HotelContactPerson.cs" />
+    <Compile Include="HotelPlacement.cs" />
+    <Compile Include="HotelPrice.cs" />
+    <Compile Include="LimitOnOrganizationRequest.cs" />
+    <Compile Include="LinkToFile.cs" />
+    <Compile Include="LinkToPeople.cs" />
+    <Compile Include="ListTravelers.cs" />
+    <Compile Include="ListTravelersRequest.cs" />
+    <Compile Include="ListTravelersRequestDetail.cs" />
+    <Compile Include="MatrialStatus.cs" />
+    <Compile Include="MGTBookingVisit.cs" />
+    <Compile Include="MGTBookingVisit.partial.cs" />
+    <Compile Include="MGTVisitBookingMPGUStatus.cs" />
+    <Compile Include="MGTVisitBookingMPGUStatusModel.cs" />
+    <Compile Include="MGTVisitBookingPerson.cs" />
+    <Compile Include="MGTVisitBookingPersonType.cs" />
+    <Compile Include="MGTVisitBookingStatus.cs" />
+    <Compile Include="MGTVisitTarget.cs" />
+    <Compile Include="MGTWindowWorkingPeriod.cs" />
+    <Compile Include="MGTWorkingDay.cs" />
+    <Compile Include="MGTWorkingDay.partial.cs" />
+    <Compile Include="MGTWorkingDaysHistory.cs" />
+    <Compile Include="MGTWorkingDayWindow.cs" />
+    <Compile Include="MilitaryDuty.cs" />
+    <Compile Include="MonitoringChildrenNumberInformation.cs" />
+    <Compile Include="MonitoringFinancialData.cs" />
+    <Compile Include="MonitoringFinancialInformation.cs" />
+    <Compile Include="MonitoringFinancialSource.cs" />
+    <Compile Include="MonitoringGBU.cs" />
+    <Compile Include="MonitoringHotel.cs" />
+    <Compile Include="MonitoringHotelData.cs" />
+    <Compile Include="MonitoringSmallLeisureInfo.cs" />
+    <Compile Include="MonitoringSmallLeisureInfoData.cs" />
+    <Compile Include="MonitoringSmallLeisureInfoGBU.cs" />
+    <Compile Include="MonitoringTourData.cs" />
+    <Compile Include="NotNeedTicketReason.cs" />
+    <Compile Include="OfferInRequest.cs" />
+    <Compile Include="OfferInRequest.partial.cs" />
+    <Compile Include="Okved.cs" />
+    <Compile Include="OrganisatorCollaborator.cs" />
+    <Compile Include="OrganizationBank.cs" />
+    <Compile Include="OrganizationCollaboratorPostType.cs" />
+    <Compile Include="OrphanageAddress.cs" />
+    <Compile Include="Party.cs" />
+    <Compile Include="Party.partial.cs" />
+    <Compile Include="Payment.cs" />
+    <Compile Include="PedParty.cs" />
+    <Compile Include="Person.cs" />
+    <Compile Include="PlaceOfRest.partial.cs" />
+    <Compile Include="PlaceOfRestTypeOfRest.cs" />
+    <Compile Include="Product.cs" />
+    <Compile Include="Pupil.cs" />
+    <Compile Include="Pupil.partial.cs" />
+    <Compile Include="PupilDose.cs" />
+    <Compile Include="PupilGroup.cs" />
+    <Compile Include="PupilGroupListCollaborator.cs" />
+    <Compile Include="PupilGroupListMember.cs" />
+    <Compile Include="PupilGroupListMemberDrugDose.cs" />
+    <Compile Include="PupilGroupListTransfer.cs" />
+    <Compile Include="PupilGroupVacationPeriod.cs" />
+    <Compile Include="PupilsHealthStatus.cs" />
+    <Compile Include="Relative.cs" />
+    <Compile Include="RelativeUniqe.cs" />
+    <Compile Include="RelativeUniqeApplicant.cs" />
+    <Compile Include="ReportRowData.cs" />
+    <Compile Include="ReportSheet.cs" />
+    <Compile Include="ReportTable.cs" />
+    <Compile Include="ReportTableHead.cs" />
+    <Compile Include="ReportTableHead.partial.cs" />
+    <Compile Include="ReportTableRow.cs" />
+    <Compile Include="RepresentInterest.cs" />
+    <Compile Include="RequestAccommodation.cs" />
+    <Compile Include="RequestAccommodationLink.cs" />
+    <Compile Include="RequestEvent.cs" />
+    <Compile Include="RequestEventPlanied.cs" />
+    <Compile Include="RequestFile.cs" />
+    <Compile Include="RequestFileType.cs" />
+    <Compile Include="RequestForPeriodOfRest.cs" />
+    <Compile Include="RequestInformationVoucher.cs" />
+    <Compile Include="RequestInformationVoucherAttendant.cs" />
+    <Compile Include="RequestInformationVoucherAttendant.partial.cs" />
+    <Compile Include="RequestPlaceOfRest.cs" />
+    <Compile Include="RequestService.cs" />
+    <Compile Include="RequestStatusChainForMpgu.cs" />
+    <Compile Include="RequestStatusCshedSendAndSignDocument.cs" />
+    <Compile Include="RequestStatusForMpgu.cs" />
+    <Compile Include="RequestsTimeOfRest.cs" />
+    <Compile Include="ResponsibilityForTask.cs" />
+    <Compile Include="ResponsibilityForTask.partial.cs" />
+    <Compile Include="RestChild.Model.Partial.cs">
+      <DependentUpon>RestChild.Model.Partial.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="RestrictionGroup.cs" />
+    <Compile Include="RoomRates.cs" />
+    <Compile Include="RoomRates.partial.cs" />
+    <Compile Include="ScheduleMessage.cs" />
+    <Compile Include="SearchFormSetting.cs" />
+    <Compile Include="SecurityJournal.cs" />
+    <Compile Include="SecurityJournalType.cs" />
+    <Compile Include="SecurityJournalEventType.cs" />
+    <Compile Include="SecuritySetting.cs" />
+    <Compile Include="SendEmailAndSms.partial.cs" />
+    <Compile Include="SendEmailAndSmsAttachment.cs" />
+    <Compile Include="ServiceBlock.cs" />
+    <Compile Include="ServiceBlockDate.cs" />
+    <Compile Include="Skill.cs" />
+    <Compile Include="SkillsGroup.cs" />
+    <Compile Include="SkillVocabulary.cs" />
+    <Compile Include="SmallLeisureSubtype.cs" />
+    <Compile Include="SmallLeisureType.cs" />
+    <Compile Include="StateDistrict.cs" />
+    <Compile Include="SubjectOfRestClassification.cs" />
+    <Compile Include="Tag.cs" />
+    <Compile Include="Ticket.cs" />
+    <Compile Include="TicketLink.cs" />
+    <Compile Include="TieColor.cs" />
+    <Compile Include="Tour.partial.cs" />
+    <Compile Include="ListOfChildsCategory.cs" />
+    <Compile Include="TourAccommodation.cs" />
+    <Compile Include="TourCountry.cs" />
+    <Compile Include="TourPrice.cs" />
+    <Compile Include="TourTransport.cs" />
+    <Compile Include="TourTransportPrice.cs" />
+    <Compile Include="TourVolume.partial.cs" />
+    <Compile Include="TradeUnionCamper.cs" />
+    <Compile Include="TradeUnionList.cs" />
+    <Compile Include="TradeUnionPersonCheck.cs" />
+    <Compile Include="TradeUnionStatusByChild.cs" />
+    <Compile Include="TrainingCounselors.cs" />
+    <Compile Include="TrainingCounselorsGroupTest.cs" />
+    <Compile Include="TrainingCounselorsPlace.cs" />
+    <Compile Include="TrainingCounselorsResult.cs" />
+    <Compile Include="TrainingCounselorsResultStatus.cs" />
+    <Compile Include="TrainingCounselorsTest.cs" />
+    <Compile Include="TrainingCounselorsTime.cs" />
+    <Compile Include="TrainingCounselorsType.cs" />
+    <Compile Include="TransportInfo.cs" />
+    <Compile Include="TypeOfCalculation.cs" />
+    <Compile Include="TypeOfDrug.cs" />
+    <Compile Include="TypeOfEducation.cs" />
+    <Compile Include="TypeOfGroupCheck.cs" />
+    <Compile Include="TypeOfLimitList.cs" />
+    <Compile Include="TypeOfLinkPeople.cs" />
+    <Compile Include="TypeOfRestERL.cs" />
+    <Compile Include="TypeOfRestSubtype.cs" />
+    <Compile Include="TypeOfRooms.partial.cs" />
+    <Compile Include="Address.cs" />
+    <Compile Include="Agent.cs" />
+    <Compile Include="AnalyticsViewRow.cs" />
+    <Compile Include="AnalyticsViewRowType.cs" />
+    <Compile Include="Applicant.cs" />
+    <Compile Include="ApplicantType.cs" />
+    <Compile Include="AttendantType.cs" />
+    <Compile Include="BenefitApproveType.cs" />
+    <Compile Include="BenefitGroupInvalid.cs" />
+    <Compile Include="BenefitType.cs" />
+    <Compile Include="Booking.cs" />
+    <Compile Include="BtiAddress.cs" />
+    <Compile Include="BtiDistrict.cs" />
+    <Compile Include="BtiRegion.cs" />
+    <Compile Include="BtiStreet.cs" />
+    <Compile Include="Child.cs" />
+    <Compile Include="DeclineReason.cs" />
+    <Compile Include="DocumentType.cs" />
+    <Compile Include="ExchangeBaseRegistry.cs" />
+    <Compile Include="ExchangeBaseRegistryType.cs" />
+    <Compile Include="ExchangeUTS.cs" />
+    <Compile Include="ExcludeDays.cs" />
+    <Compile Include="FileHotel.cs" />
+    <Compile Include="FileOfTour.cs" />
+    <Compile Include="FileType.cs" />
+    <Compile Include="HistoryInteragencyRequest.cs" />
+    <Compile Include="HistoryRequest.cs" />
+    <Compile Include="Hotels.cs" />
+    <Compile Include="Hotels.Partial.cs" />
+    <Compile Include="HotelType.cs" />
+    <Compile Include="InteragencyRequest.cs" />
+    <Compile Include="InteragencyRequestBenefitType.cs" />
+    <Compile Include="InteragencyRequestResult.cs" />
+    <Compile Include="Interfaces\IStateEntity.cs" />
+    <Compile Include="LimitOnOrganization.cs" />
+    <Compile Include="LimitOnOrganization.partial.cs" />
+    <Compile Include="LimitOnVedomstvo.cs" />
+    <Compile Include="LimitOnVedomstvo.partial.cs" />
+    <Compile Include="ListOfChilds.cs" />
+    <Compile Include="ListOfChilds.partial.cs" />
+    <Compile Include="Numerator.cs" />
+    <Compile Include="Organization.cs" />
+    <Compile Include="PlaceOfRest.cs" />
+    <Compile Include="Request.cs" />
+    <Compile Include="Role.cs" />
+    <Compile Include="School.cs" />
+    <Compile Include="SendEmailAndSms.cs" />
+    <Compile Include="SignInfo.cs" />
+    <Compile Include="Source.cs" />
+    <Compile Include="StateMachine.cs" />
+    <Compile Include="StateMachineAction.cs" />
+    <Compile Include="StateMachineFromStatus.cs" />
+    <Compile Include="StateMachineState.cs" />
+    <Compile Include="Status.cs" />
+    <Compile Include="StatusAction.cs" />
+    <Compile Include="StatusByChild.cs" />
+    <Compile Include="StatusInteragencyRequest.cs" />
+    <Compile Include="StatusResult.cs" />
+    <Compile Include="SubjectOfRest.cs" />
+    <Compile Include="TimeOfRest.cs" />
+    <Compile Include="Tour.cs" />
+    <Compile Include="TourVolume.cs" />
+    <Compile Include="TypeOfRest.cs" />
+    <Compile Include="TypeOfRestBenefitRestriction.cs" />
+    <Compile Include="TypeOfRestriction.cs" />
+    <Compile Include="TypeOfRooms.cs" />
+    <Compile Include="TypeOfService.cs" />
+    <Compile Include="TypeOfSubRestriction.cs" />
+    <Compile Include="TypeOfTransfer.cs" />
+    <Compile Include="TypeOfTransport.cs" />
+    <Compile Include="TypePriceCalculation.cs" />
+    <Compile Include="TypeRequestInformationVoucher.cs" />
+    <Compile Include="TypeViolation.cs" />
+    <Compile Include="YearOfRest.cs" />
+    <Compile Include="YearOfRest.partial.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RestChild.Comon\RestChild.Comon.csproj">
+      <Project>{4f2d7102-41a3-4a1a-86a7-b7bdd743de98}</Project>
+      <Name>RestChild.Comon</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

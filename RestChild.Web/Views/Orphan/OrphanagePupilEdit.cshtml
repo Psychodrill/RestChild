@@ -1,0 +1,501 @@
+﻿@using Newtonsoft.Json
+@using RestChild.Web.Extensions
+@using RestChild.Comon
+@using RestChild.Domain
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Extensions
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+
+@model RestChild.Web.Models.Orphans.OrphanagePupilModel
+@{
+    ViewBag.Title = "Воспитанник учреждения социальной защиты";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var orphanageAdresses = new SelectList(((List<OrphanageAddress>)ViewBag.OrphanageAdresses ?? new List<OrphanageAddress>(0)).Select(o => new { Id = (long?)o.Id, o.Address.Name }), "Id", "Name");
+    var documentTypes = new SelectList(((List<DocumentType>)ViewBag.DocumentTypes ?? new List<DocumentType>(0)).Select(o => new { Id = (long?)o.Id, o.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name");
+    var restrictionTypes = new SelectList(((List<TypeOfRestriction>)ViewBag.RestrictionTypes ?? new List<TypeOfRestriction>(0)).Select(o => new { Id = (long?)o.Id, o.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name");
+
+    if (Model.Data.Id > 0)
+    {
+        if (Model.Data.LinkToFiles != null)
+        {
+            if (Model.Data.LinkToFiles.Files != null)
+            {
+                Model.Files = Model.Data.LinkToFiles.Files.ToDictionary(ss => ss.FileName, ss => ss);
+            }
+        }
+    }
+}
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/HistoryModal.css")
+    @Styles.Render("~/Content/jQuery.FileUpload/css/jquery.fileupload.css")
+    @Styles.Render("~/Content/jQuery.FileUpload/css/jquery.fileupload-ui.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale("ru");
+
+        var typeOfRestrictionSubs = @(JsonConvert.SerializeObject(ViewBag.TypeOfRestrictionSubs));
+        var checkSNILSUrl = '@Url.Action("OrphanagePupilSNILSCheck", "Orphan")';
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
+
+    @Scripts.Render("~/Scripts/Vocabulary/Orphanage.Pupil.Edit.js")
+
+    <script type="dot/template" id="fileImageRowTemplate">
+        <div class="thumbnail" style="margin-bottom: 10px;">
+            <img class="card-img-top" src="@(Url.Content("~/"))UploadPupilFile.ashx?f={{=encodeURIComponent(it.fileName)}}&t={{=encodeURIComponent(it.fileTitle)}}" alt="" />
+            <input type="hidden" name="{{=it.tableName}}[{{=it.fileName}}].FileUrl" class="FileUrl" value="{{=it.fileName}}" />
+            <input type="hidden" name="{{=it.tableName}}[{{=it.fileName}}].FileName" class="FileName" value="{{=it.fileTitle}}" />
+            <input type="hidden" name="{{=it.tableName}}[{{=it.fileName}}].IsPhoto" class="IsPhoto" value="true" />
+        </div>
+    </script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Воспитанник учреждения социальной защиты</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("OrphanagePupilSave", "Orphan", FormMethod.Post, new { enctype = "multipart/form-data", id = "OrphanagePupilForm", autocomplete = "off" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Data.LastUpdateTick)
+            @Html.HiddenFor(m => m.Data.Id)
+
+            @Html.HiddenFor(m => m.Data.Child.Id)
+            @Html.HiddenFor(m => m.Data.ChildId)
+
+            @Html.HiddenFor(m => m.Data.Child.AddressId)
+
+            @Html.HiddenFor(m => m.OrphanageId)
+
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <div class="row form-group">
+                        <div class="col-md-8">
+                            <p class="panel-operation-button">
+                                <button type="button" class="btn btn-default btn-primary OrphanagePupilFormSave" role="button">
+                                    Сохранить
+                                </button>
+                                @if (Model.Data.Id > 0)
+                                {
+                                    <a data-id="@Model.Data.Id" class="btn btn-default btn-primary btn-snils-check-link" href="#">Отправить СНИЛС на проверку</a>
+                                }
+                                @if (Model.Data.HistoryLinkId.HasValue)
+                                {
+                                    <a data-history-id="@Model.Data.HistoryLinkId" class="btn btn-default btn-hystory-link" href="#">История</a>
+                                }
+                            </p>
+                            @if (Model.Data.Filled)
+                            {
+                                <h5 class="text-success">Все необходимые данные заполнены.</h5>
+                            }
+                            else
+                            {
+                                <h5 class="text-danger">Не заполнены необходимые данные в карточке. Воспитанник не может быть добавлен в группы и списки.</h5>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @Html.ValidationSummary(false)
+                </div>
+            }
+
+            <fieldset class="form-horizontal">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Фамилия <span class="requared">*</span></label>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(r => r.Data.Child.LastName, new { @class = "form-control", tabindex = "1", autocomplete = "off" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Имя <span class="requared">*</span></label>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(r => r.Data.Child.FirstName, new { @class = "form-control", tabindex = "2", autocomplete = "off" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Отчество <span class="requared">*</span></label>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(r => r.Data.Child.MiddleName, new { @class = "form-control Middle-Name", tabindex = "3", autocomplete = "off" }).ReadOnlyIf(() => Model.NoMiddleName)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3" style="height: 34px; line-height: 34px;">
+                            @Html.CheckBoxFor(m => m.NoMiddleName, new { tabindex = "10", autocomplete = "off", @class = "No-Middle-Name", style = "vertical-align: text-bottom;" })
+                            <span>Нет отчества</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Дата рождения <span class="requared">*</span></label>
+                        <div class="col-md-9">
+                            <div class='input-group date datepicker-anytime'>
+                                @Html.TextBoxFor(r => r.Data.Child.DateOfBirth, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.Data.Child.DateOfBirth).FormatEx(string.Empty, string.Empty) })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Пол <span class="requared">*</span></label>
+                        <div class="col-md-9">
+                            @Html.DropDownListFor(m => m.Data.Child.Male, new SelectList(new List<object>
+                            {
+                                new {Id = (bool?) null, Name = "-- Все -- "},
+                                new {Id = (bool?) false, Name = "Женский"},
+                                new {Id = (bool?) true, Name = "Мужской"}
+                            }, "Id", "Name"), new { @class = "form-control", tabindex = "11" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">СНИЛС <span class="requared">*</span></label>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(r => r.Data.Child.Snils, new { @class = "form-control snils", tabindex = "5", autocomplete = "off" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Место рождения <span class="requared">*</span></label>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(r => r.Data.Child.PlaceOfBirth, new { @class = "form-control", tabindex = "12", autocomplete = "off" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3" style="height: 34px; line-height: 34px;">
+                            @Html.CheckBoxFor(m => m.Data.Foul, new { tabindex = "10", autocomplete = "off", style = "vertical-align: text-bottom;" })
+                            <span>Нарушение Правил</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-9 col-md-offset-3" style="height: 34px; line-height: 34px;">
+                            @Html.CheckBoxFor(m => m.Data.FoulRegionRestriction, new { tabindex = "10", autocomplete = "off", @class = "Foul-Region-Restriction", style = "vertical-align: text-bottom;" })
+                            <span>Нарушение Правил с ограничением региона</span>
+                        </div>
+                    </div>
+                    <div class="form-group restrictionPeriod@(!Model.Data.FoulRegionRestriction ? " hidden" : string.Empty)">
+                        <label class="col-sm-3 control-label">Ограничение с</label>
+                        <div class="col-md-4">
+                            <div class='input-group date datepicker-anytime'>
+                                @Html.TextBoxFor(r => r.Data.FoulRegionRestrictionFrom, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.Data.FoulRegionRestrictionFrom).FormatEx(string.Empty, string.Empty) })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <label class="col-sm-1 control-label">по</label>
+                        <div class="col-md-4">
+                            <div class='input-group date datepicker-anytime'>
+                                @Html.TextBoxFor(r => r.Data.FoulRegionRestrictionTo, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.Data.FoulRegionRestrictionTo).FormatEx(string.Empty, string.Empty) })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="thumbnail" style="margin-bottom: 10px;">
+                        @if (Model.Data.Id > 0 && Model.Files != null && Model.Files.Any(s => s.Value.IsPhoto))
+                        {
+                            var f = Model.Files.FirstOrDefault(s => s.Value.IsPhoto);
+
+                            <img class="card-img-top" src="@(Url.Content("~/"))UploadPupilFile.ashx?f=@Url.Encode(f.Value.FileUrl)&t=@Url.Encode(f.Value.FileName)" alt="" />
+                            @Html.HiddenFor(x => Model.Files[f.Key].FileUrl)
+                            @Html.HiddenFor(x => Model.Files[f.Key].FileName)
+                            @Html.HiddenFor(x => Model.Files[f.Key].IsPhoto)
+                        }
+                        else
+                        {
+                            <img class="card-img-top" src="" alt="" />
+                        }
+                    </div>
+                    @if (Model.Data.Id > 0)
+                    {
+                        <div class="form-group pull-right" style="margin-right: 5px; cursor: pointer;">
+                            <span class="btn btn-success fileImageinput-button" role="button">
+                                <i class="glyphicon glyphicon-folder-open"></i>&nbsp;&nbsp;Загрузить фото
+                                <input type="file" name="avatar" id="fileImageUpload" />
+                            </span>
+                        </div>
+                    }
+                </div>
+            </fieldset>
+            if (Model.Data.Id > 0)
+            {
+                var cvm = new RestChild.Web.Models.ChildViewModel(Model.Data.Child);
+
+                var codes = new string[0];
+                var brPaymentDocument = ViewBag.BrPaymentDocument as string[];
+                if (cvm.Data.BenefitType != null && !string.IsNullOrWhiteSpace(cvm.Data.BenefitType.ExnternalUid))
+                {
+                    codes = cvm.Data.BenefitType.ExnternalUid.Split(',').ToArray();
+                }
+                foreach (var e in (cvm.Data.BaseRegistryInfo ?? new List<ExchangeBaseRegistry>()).Where(b => !b.NotActual).OrderBy(b => b.ExchangeBaseRegistryTypeId).ThenBy(b => b.Id).ToList())
+                {
+                    var res = e.Parse(codes, brPaymentDocument, cvm.LowIncomeTypes);
+                    Html.RenderPartial("BaseRegistryBenefitResult", res);
+                }
+            }
+            <h3><hr /></h3>
+            <fieldset class="form-horizontal restriction-block">
+                <div class="row form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                        @Html.CheckBoxFor(r => r.Data.Child.IsInvalid, new { @class = "child-is-invalid" })
+                        Ребёнок имеет ограничения здоровья - недостатки в физическом и (или) психическом развитии
+                    </div>
+                </div>
+                <div class="row form-group type-of-restriction @(!Model.Data.Child.IsInvalid ? " hidden" : string.Empty)">
+                    <label class="col-md-3 control-label">Вид ограничения <span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(r => r.Data.Child.TypeOfRestrictionId, restrictionTypes, new { @class = "form-control select2 restriction-select" })
+                    </div>
+                </div>
+                <div class="row form-group type-of-subrestriction @(!Model.Data.Child.IsInvalid || Model.Data.Child.TypeOfRestriction == null || !Model.Data.Child.TypeOfRestriction.Subs.Any() ? " hidden" : string.Empty)">
+                    <label class="col-md-3 control-label">Подвид ограничения <span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.HiddenFor(r => r.Data.Child.TypeOfSubRestrictionId, new { @class = "form-control subrestriction-select", titleText = Model.Data.Child.TypeOfSubRestriction != null ? Model.Data.Child.TypeOfSubRestriction.Name : "--Не указано--" })
+                    </div>
+                </div>
+            </fieldset>
+            <h3><hr /></h3>
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    @Html.HiddenFor(model => model.Data.Child.Address.Id, new { @class = "AddressId forClear" })
+                    @Html.HiddenFor(model => model.Data.Child.Address.Name, new { @class = "OrphanageAddressName forClear" })
+                    <label class="col-md-2 control-label text-right">Адрес</label>
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.Data.Child.Address.FiasId, new
+                        {
+                            @class = "form-control street-autocompleteAR forClear",
+                            maxlength = 1000,
+                            autocomplete = "off",
+                            data_default_id = Model.Data.Child.Address.FiasId,
+                            data_default_text = string.IsNullOrWhiteSpace(Model.Data.Child.Address.FiasId) ? string.Empty : Model.Data.Child.Address.Name,
+                            data_default_district = Model.Data.Child.Address.BtiDistrict,
+                            data_default_region = Model.Data.Child.Address.BtiRegion
+                        })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Квартира</label>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(m => m.Data.Child.Address.Appartment, new { @class = "form-control", tabindex = "18", autocomplete = "off" })
+                    </div>
+                    <label class="col-sm-1 control-label">Округ</label>
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(m => m.Data.Child.Address.Region, new { @class = "form-control", tabindex = "19", autocomplete = "off" }).ReadOnlyIf(() => true)
+                    </div>
+                    <label class="col-sm-1 control-label">Район</label>
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(m => m.Data.Child.Address.District, new { @class = "form-control", tabindex = "20", autocomplete = "off" }).ReadOnlyIf(() => true)
+                    </div>
+                </div>
+            </fieldset>
+            <h3><hr /></h3>
+            <fieldset id="dialogPerson" class="form-horizontal">
+                <div class="row form-group">
+                    <label class="col-md-2 control-label">Тип документа удостоверяющего личность <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.DropDownListFor(r => r.Data.Child.DocumentTypeId, documentTypes, new { @class = "form-control", autocomplete = "off" })
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-md-2 control-label">Серия и номер <span class="requared">*</span></label>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(r => r.Data.Child.DocumentSeria, new { @class = "form-control document-seria" })
+                    </div>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(r => r.Data.Child.DocumentNumber, new { @class = "form-control document-number" })
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-md-2 control-label">Когда выдан документ <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        <div class='input-group date datepicker-anytime'>
+                            @Html.TextBoxFor(r => r.Data.Child.DocumentDateOfIssue, new { @class = "form-control input-mask-date-anytime", autocomplete = "off", Value = Model.NullSafe(m => m.Data.Child.DocumentDateOfIssue).FormatEx(string.Empty, string.Empty) })
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-md-2 control-label">Кем выдан документ <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(r => r.Data.Child.DocumentSubjectIssue, new { @class = "form-control  required" })
+                    </div>
+                </div>
+            </fieldset>
+            <h3><hr /></h3>
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-7">
+                        <h3 style="margin: 0;">Особенности состояния здоровья воспитанника</h3>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 col-md-offset-1 control-label">Особенности в питании</label>
+                    <div class="col-md-2" style="padding-top: 7px;">
+                        @Html.CheckBoxFor(r => r.Data.GlutenFreeFood, new { autocomplete = "off", tabindex = "15" })
+                        Безглютеновое
+                    </div>
+                    <div class="col-md-2 col-md-offset-0" style="padding-top: 7px;">
+                        @Html.CheckBoxFor(r => r.Data.PureedFood, new { autocomplete = "off", tabindex = "16" })
+                        Протертое
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Дополнительная информация (аллергия и пр.)</label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(r => r.Data.FoodAditionals, new { @class = "form-control", tabindex = "17", autocomplete = "off" })
+                    </div>
+                </div>
+            </fieldset>
+            <h3><hr /></h3>
+            <fieldset class="form-horizontal pupil-drugs">
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <h3 style="margin: 0;">Лекарственные препараты воспитанника</h3>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-success btn-primary form-control add-drug"><i class="glyphicon glyphicon-plus"></i> Добавить </button>
+                    </div>
+                </div>
+                <div class="form-group c-thead">
+                    <label class="col-sm-2 control-label" style="text-align: center;">Группа лекарственного препарата</label>
+                    <label class="col-sm-3 control-label" style="text-align: center;">Наименование лекарственного препарата</label>
+                    <label class="col-sm-3 control-label" style="text-align: center;">Схема приема</label>
+                    <label class="col-sm-3 control-label" style="text-align: center;">Условия хранения препарата</label>
+                </div>
+                @if (Model.Doses != null && Model.Doses.Any())
+                {
+                    foreach (var key in Model.Doses.Keys)
+                    {
+                        @Html.EditorFor(m => m.Doses[key], "PupilDrugs")
+                    }
+                }
+            </fieldset>
+            <h3><hr /></h3>
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-7">
+                        <h3 style="margin: 0;">Образовательное учреждение воспитанника</h3>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-md-2 control-label">Наименование учреждение</label>
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.Data.SchoolId, new
+                        {
+                            @class = "form-control school-autocompleteAR forClear",
+                            maxlength = 1000,
+                            autocomplete = "off",
+                            data_default_id = Model.Data.School != null ? (long?) Model.Data.School.Id : null,
+                            data_default_text = Model.Data.School != null && !string.IsNullOrWhiteSpace(Model.Data.School.Name) ? Model.Data.School.Name : string.Empty
+                        })
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-md-2 control-label">Учреждения нет в списке</label>
+                    <div class="col-md-4" style="padding-top: 7px;">
+                        @Html.CheckBoxFor(r => r.Data.SchoolNotFound, new { @class = "school-not-present", autocomplete = "off" })
+                    </div>
+                </div>
+                <div class="form-group school-manual@(Model.Data.SchoolNotFound || !Model.Data.SchoolId.HasValue && !string.IsNullOrWhiteSpace(Model.Data.SchoolName) ? string.Empty : " hidden")">
+                    <label class="col-sm-2 control-label">Образовательное учреждение (ручной ввод)</label>
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(r => r.Data.SchoolName, new { @class = "form-control SchoolManual", tabindex = "14", autocomplete = "off" })
+                    </div>
+                </div>
+
+            </fieldset>
+            <h3><hr /></h3>
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Учреждение соц. защиты</label>
+                    <div class="col-md-4">
+                        <a href="@Url.Action("OrphanageEdit", new {organizationId = Model.OrphanageId})" target="_blank">@Model.OrphanageName</a>
+                        @Html.HiddenFor(r => r.OrphanageName, new {@class = "form-control"})
+                    </div>
+                    <label class="col-sm-2 control-label">Адрес учреждения соц. защиты <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.DropDownListFor(r => r.Data.OrphanageAddressId, orphanageAdresses, new { @class = "form-control", tabindex = "16", autocomplete = "off" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Дата зачисления</label>
+                    <div class="col-md-4">
+                        <div class='input-group date datepicker-anytime'>
+                            @Html.TextBoxFor(r => r.Data.DateIn, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.Data.DateIn).FormatEx(string.Empty, string.Empty) })
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Отчислен(а)</label>
+                    <div class="col-md-4" style="padding-top: 7px;">
+                        @Html.CheckBox("PupilIsOut", new { @class = "PupilIsOut", tabindex = "14", autocomplete = "off" })
+                    </div>
+                </div>
+                <div class="form-group@(!Model.Data.PupilIsOut ? " hidden" : string.Empty)">
+                    <label class="col-sm-2 control-label">Дата отчисления</label>
+                    <div class="col-md-4">
+                        <div class='input-group date datepicker-anytime'>
+                            @Html.TextBoxFor(r => r.Data.DateOut, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.Data.DateOut).FormatEx(string.Empty, string.Empty) })
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group@(!Model.Data.PupilIsOut ? " hidden" : string.Empty)">
+                    <label class="col-sm-2 control-label">Учреждение выбытия</label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(r => r.Data.OrganisationOut, new { @class = "form-control", tabindex = "14", autocomplete = "off" })
+                    </div>
+                </div>
+            </fieldset>
+            if (Model.Data.Id > 0 && Model.Files != null)
+            {
+                <h3><hr /></h3>
+                <fieldset class="form-horizontal">
+                    <div class="col-md-12">
+                        @foreach (var f in Model.Files.Where(ss => !ss.Value.IsPhoto))
+                        {
+                        }
+                    </div>
+                    @Html.HiddenFor(m => m.Data.LinkToFilesId)
+                    @Html.EditorFor(m => m.Files, "Files")
+                </fieldset>
+            }
+        }
+    </div>
+</div>

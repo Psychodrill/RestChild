@@ -1,0 +1,6 @@
+﻿@model RestChild.Web.Models.BoutModel
+
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "Parties" ? "active" : string.Empty)" id="Parties">
+	@Html.Partial("~/Views/Party/FormPartial.cshtml", Model)
+</div>
+

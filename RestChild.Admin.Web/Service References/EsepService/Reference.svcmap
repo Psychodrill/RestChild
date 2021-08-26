@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="070279b4-c28c-465e-868a-0de20085164a" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>false</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://esep.itopcase.ru/Esep-Services/EsepService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="EsepService.xsd" MetadataType="Schema" ID="c558260d-b02a-470e-9fe7-9e661e063c10" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd4" />
+    <MetadataFile FileName="EsepService1.xsd" MetadataType="Schema" ID="cdd70de7-746f-4001-93d1-a8d2bc272f5f" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd6" />
+    <MetadataFile FileName="EsepService2.xsd" MetadataType="Schema" ID="eaeec1aa-2eca-4e89-afcb-1705971541f2" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd3" />
+    <MetadataFile FileName="EsepService3.xsd" MetadataType="Schema" ID="841ade0e-0134-4b72-aac1-8594cca8ac68" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd1" />
+    <MetadataFile FileName="EsepService.wsdl" MetadataType="Wsdl" ID="f0622254-d8d1-4d27-8a09-d9519081934f" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/EsepService.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="EsepService4.xsd" MetadataType="Schema" ID="83ffb493-ed28-43d6-a840-8d364dfb2de1" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd2" />
+    <MetadataFile FileName="EsepService.disco" MetadataType="Disco" ID="96802d33-a175-418c-b193-3b9fa618543e" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/EsepService.svc?disco" />
+    <MetadataFile FileName="EsepService5.xsd" MetadataType="Schema" ID="303d9000-97e8-44d0-85ec-5a36b798e7db" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd0" />
+    <MetadataFile FileName="EsepService6.xsd" MetadataType="Schema" ID="19d7b963-db6f-430b-946d-8bb2983daed5" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd7" />
+    <MetadataFile FileName="EsepService1.wsdl" MetadataType="Wsdl" ID="829bab1a-2259-4d7a-b827-f7f3d4efef58" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/EsepService.svc?wsdl" />
+    <MetadataFile FileName="EsepService7.xsd" MetadataType="Schema" ID="6ffb40e4-7d81-48f4-9ec0-616382cd038d" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd5" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

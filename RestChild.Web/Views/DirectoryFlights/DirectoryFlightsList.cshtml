@@ -1,0 +1,89 @@
+﻿@using System.Collections
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@model RestChild.Extensions.Filter.DirectoryFlightsFilterModel
+@{
+	ViewBag.Title = "Реестр рейсов";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "Search";
+	ViewBag.InsertAction = "Insert";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "DirectoryFlights";
+	ViewBag.Caption = "Реестр рейсов";
+	ViewBag.InsertButtonCaption = "Добавить рейс";
+	ViewBag.SearchPanelCaption = "Поиск рейсов";
+
+	Model.Years = Model.Years ?? new List<YearOfRest>();
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Год кампании</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.YearOfRestId, Model.Years.Select(y => new SelectListItem(){ Value = y.Id.ToString(), Text = y.Name, Selected = Model.YearOfRestId == y.Id}), new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Вид транспорта</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.TypeOfTransportId, SelectListHelper.Create(Model.TypesOfTransports, t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control" })
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Транспортный узел отбытия</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.DepartureCode, new { @class = "form-control", maxlength = 100 })
+		</div>
+		<label class="col-md-2 control-label text-right">Транспортный узел прибытия</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.ArrivalCode, new { @class = "form-control", maxlength=100 })
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Место отбытия</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.DepartureId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Место прибытия</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.ArrivalId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" })
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Статус</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.StateId, SelectListHelper.Create(Model.States, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Номер рейса</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.FilightNumber, new { @class = "form-control" })
+		</div>
+	</div>
+}
+
+@section searchResult
+{
+	@Html.Partial("DirectoryFlightSearchResult",Model)
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+}
+
+@section scripts
+{
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+	@Scripts.Render("~/Scripts/Vocabulary/DirectoryFlightsList.js")
+}

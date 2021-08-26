@@ -1,0 +1,105 @@
+﻿@model RestChild.Web.Models.Orphans.OrphanageModel
+
+@{
+    ViewBag.Title = "Учреждение социальной защиты";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/Vocabulary/OrphanageEdit.js"></script>
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale("ru");
+    </script>
+    <script type="text/javascript" src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @Html.Partial("Assets/HistoryLinkTemplate")
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/HistoryModal.css")
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Учреждение социальной защиты</h2>
+    </div>
+</div>
+<a href="@Url.Action("OrphanageSearch", "Orphan")">Вернуться</a>
+<div class="row">&nbsp;</div>
+@if (!(Model.IsValid ?? true))
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="summary-block">@Html.Raw(Model.ErrorMessage)</div>
+        </div>
+    </div>
+    <div class="row">&nbsp;</div>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group row">
+            <div class="col-md-12">
+                <div class="row form-group">
+                    <div class="col-md-8">
+                        <p class="panel-operation-button">
+                            <button type="button" class="btn btn-default btn-primary OrphanageFormSave" role="button">Сохранить</button>
+                            @if (Model.HistoryLinkId.HasValue)
+                            {
+                                <a data-history-id="@Model.HistoryLinkId" class="btn btn-default btn-hystory-link" href="#">История</a>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div role="tabpanel" id="MainTabs">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="@(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)">
+                            <a href="#CommonInfo" aria-controls="CommonInfo" role="tab" data-toggle="tab">Общая информация</a>
+                        </li>
+
+                        @if (Model.Data.Id != 0)
+                        {
+                            <li role="presentation" class="@(Model.ActiveTab == "Pupils" ? "active" : string.Empty)">
+                                <a href="#Pupils" aria-controls="Pupils" role="tab" data-toggle="tab">Список воспитанников</a>
+                            </li>
+                            <li role="presentation" class="@(Model.ActiveTab == "Personal" ? "active" : string.Empty)">
+                                <a href="#Personal" aria-controls="Personal" role="tab" data-toggle="tab">Список работников</a>
+                            </li>
+                            <li role="presentation" class="@(Model.ActiveTab == "Groups" ? "active" : string.Empty)">
+                                <a href="#Groups" aria-controls="Groups" role="tab" data-toggle="tab">Группы</a>
+                            </li>
+                            <li role="presentation" class="@(Model.ActiveTab == "Lists" ? "active" : string.Empty)">
+                                <a href="#Lists" aria-controls="Lists" role="tab" data-toggle="tab">Списки</a>
+                            </li>
+                        }
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        @Html.Partial("Partials/CommonInfo")
+                        @if (Model.Data.Id != 0)
+                        {
+                            @Html.Partial("Partials/Pupils")
+                            @Html.Partial("Partials/Personal")
+                            @Html.Partial("Partials/Groups")
+                            @Html.Partial("Partials/Lists")
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

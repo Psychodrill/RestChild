@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{42F5F670-36B0-46DD-B40E-3F9A0D382F36}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RestChild.MPGUIntegration</RootNamespace>
+    <AssemblyName>RestChild.MPGUIntegration</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ServiceProperties.cs" />
+    <Compile Include="V6_1\AccountType.cs" />
+    <Compile Include="V6_1\Address.cs" />
+    <Compile Include="V6_1\BaseDeclarant.cs" />
+    <Compile Include="V6_1\CitizenshipType.cs" />
+    <Compile Include="V6_1\ContactType.cs" />
+    <Compile Include="V6_1\CoordinateData.cs" />
+    <Compile Include="V6_1\CoordinateFile.cs" />
+    <Compile Include="V6_1\CoordinateFileReference.cs" />
+    <Compile Include="V6_1\CoordinateStatusData.cs" />
+    <Compile Include="V6_1\CoordinateTaskData.cs" />
+    <Compile Include="V6_1\CoordinateTaskStatusData.cs" />
+    <Compile Include="V6_1\Department.cs" />
+    <Compile Include="V6_1\DictionaryItem.cs" />
+    <Compile Include="V6_1\DigestAlghoritm.cs" />
+    <Compile Include="V6_1\DigestType.cs" />
+    <Compile Include="V6_1\ErrorMessageData.cs" />
+    <Compile Include="V6_1\GenderType.cs" />
+    <Compile Include="V6_1\Headers.cs" />
+    <Compile Include="V6_1\Messages.cs" />
+    <Compile Include="MPGUParseException.cs" />
+    <Compile Include="V6_1\Note.cs" />
+    <Compile Include="V6_1\OutputKindType.cs" />
+    <Compile Include="V6_1\Person.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="V6_1\RegType.cs" />
+    <Compile Include="V6_1\RequestAccount.cs" />
+    <Compile Include="V6_1\RequestContact.cs" />
+    <Compile Include="V6_1\RequestDocument.cs" />
+    <Compile Include="V6_1\RequestDocumentsData.cs" />
+    <Compile Include="V6_1\RequestResult.cs" />
+    <Compile Include="V6_1\RequestService.cs" />
+    <Compile Include="V6_1\RequestServiceForSign.cs" />
+    <Compile Include="V6_1\RequestStatus.cs" />
+    <Compile Include="V6_1\ServiceDocument.cs" />
+    <Compile Include="V6_1\SetFilesAndStatusesData.cs" />
+    <Compile Include="StatusMessageFilter.cs" />
+    <Compile Include="V6_1\StatusType.cs" />
+    <Compile Include="V6_1\TaskDataType.cs" />
+    <Compile Include="V6_1\TaskResult.cs" />
+    <Compile Include="V6_1\TaskResultType.cs" />
+    <Compile Include="V6_1\TaskType.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="V6_1_8\AccountType.cs" />
+    <Compile Include="V6_1_8\Address.cs" />
+    <Compile Include="V6_1_8\ArrayOfCoordinateFile.cs" />
+    <Compile Include="V6_1_8\BaseDeclarant.cs" />
+    <Compile Include="V6_1_8\BaseDepartment.cs" />
+    <Compile Include="V6_1_8\CanonicalizationMethodType.cs" />
+    <Compile Include="V6_1_8\CitizenshipType.cs" />
+    <Compile Include="V6_1_8\ContactType.cs" />
+    <Compile Include="V6_1_8\CoordinateData.cs" />
+    <Compile Include="V6_1_8\CoordinateFile.cs" />
+    <Compile Include="V6_1_8\CoordinateFileReference.cs" />
+    <Compile Include="V6_1_8\CoordinateStatusData.cs" />
+    <Compile Include="V6_1_8\CoordinateTaskData.cs" />
+    <Compile Include="V6_1_8\CoordinateTaskStatusData.cs" />
+    <Compile Include="V6_1_8\Department.cs" />
+    <Compile Include="V6_1_8\DictionaryItem.cs" />
+    <Compile Include="V6_1_8\DigestAlghoritm.cs" />
+    <Compile Include="V6_1_8\DigestMethodType.cs" />
+    <Compile Include="V6_1_8\DigestType.cs" />
+    <Compile Include="V6_1_8\DSAKeyValueType.cs" />
+    <Compile Include="V6_1_8\ErrorMessageData.cs" />
+    <Compile Include="V6_1_8\GenderType.cs" />
+    <Compile Include="V6_1_8\Headers.cs" />
+    <Compile Include="V6_1_8\ItemsChoiceType1.cs" />
+    <Compile Include="V6_1_8\ItemsChoiceType2.cs" />
+    <Compile Include="V6_1_8\ItemsChoiceType3.cs" />
+    <Compile Include="V6_1_8\KeyInfoType.cs" />
+    <Compile Include="V6_1_8\KeyValueType.cs" />
+    <Compile Include="V6_1_8\Messages.cs" />
+    <Compile Include="V6_1_8\Note.cs" />
+    <Compile Include="V6_1_8\ObjectType.cs" />
+    <Compile Include="V6_1_8\OutputKindType.cs" />
+    <Compile Include="V6_1_8\Person.cs" />
+    <Compile Include="V6_1_8\PGPDataType.cs" />
+    <Compile Include="V6_1_8\ReferenceType.cs" />
+    <Compile Include="V6_1_8\RegType.cs" />
+    <Compile Include="V6_1_8\RequestAccount.cs" />
+    <Compile Include="V6_1_8\RequestContact.cs" />
+    <Compile Include="V6_1_8\RequestDocument.cs" />
+    <Compile Include="V6_1_8\RequestDocumentsData.cs" />
+    <Compile Include="V6_1_8\RequestResult.cs" />
+    <Compile Include="V6_1_8\RequestService.cs" />
+    <Compile Include="V6_1_8\RequestServiceForSign.cs" />
+    <Compile Include="V6_1_8\RequestStatus.cs" />
+    <Compile Include="V6_1_8\RetrievalMethodType.cs" />
+    <Compile Include="V6_1_8\RSAKeyValueType.cs" />
+    <Compile Include="V6_1_8\ServiceDocument.cs" />
+    <Compile Include="V6_1_8\SetFilesAndStatusesData.cs" />
+    <Compile Include="V6_1_8\SignatureMethodType.cs" />
+    <Compile Include="V6_1_8\SignatureType.cs" />
+    <Compile Include="V6_1_8\SignatureValueType.cs" />
+    <Compile Include="V6_1_8\SignedInfoType.cs" />
+    <Compile Include="V6_1_8\SPKIDataType.cs" />
+    <Compile Include="V6_1_8\StatusType.cs" />
+    <Compile Include="V6_1_8\TaskDataType.cs" />
+    <Compile Include="V6_1_8\TaskResult.cs" />
+    <Compile Include="V6_1_8\TaskResultType.cs" />
+    <Compile Include="V6_1_8\TaskType.cs" />
+    <Compile Include="V6_1_8\TaskTypeDepartment.cs" />
+    <Compile Include="V6_1_8\TransformType.cs" />
+    <Compile Include="V6_1_8\X509DataType.cs" />
+    <Compile Include="V6_1_8\X509IssuerSerialType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RestChild.Comon\RestChild.Comon.csproj">
+      <Project>{4F2D7102-41A3-4A1A-86A7-B7BDD743DE98}</Project>
+      <Name>RestChild.Comon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Domain\RestChild.Domain.csproj">
+      <Project>{2EFDFAFB-1B53-451A-BE0E-2088DFFF27C4}</Project>
+      <Name>RestChild.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="V6_1_8\Service.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

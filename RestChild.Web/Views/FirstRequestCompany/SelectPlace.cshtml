@@ -1,0 +1,191 @@
+﻿@using RestChild.Comon.Enumeration
+@using Styles = System.Web.Optimization.Styles
+@model RestChild.Web.Models.SelectPlaceModel
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Принятие решения";
+}
+
+<link href="~/Content/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<h2>
+@if (Model.Request == null)
+{
+	<text>Поиск места отдыха</text>
+}
+else
+{
+	<text>Решение по заявлению</text>
+}
+</h2>
+@if (Model.Request == null)
+{
+	<a href="@Url.Action("RequestList")">Вернуться</a>
+}
+else if (Model.SelectPlaceStep == SelectPlaceStepEnum.SecondSelectOrganization)
+{
+	<a href="@Url.Action("RequestEdit", new {@id = Model.Request.Id})">Вернуться</a>
+}
+else
+{
+	<a href="#" onclick="prevstep();">Вернуться</a>
+}
+
+<form action="@Url.Action("SelectPlace", "FirstRequestCompany" )" method="POST" class="form-horizontal" role="form" id="mainForm" autocomplete="off">
+	@Html.HiddenFor(m => m.SearchResultJson)
+	@Html.HiddenFor(m => m.SelectedItemJson)
+	@Html.HiddenFor(m => m.PlacementJson)
+	@Html.HiddenFor(m => m.HotelKey)
+	@Html.HiddenFor(m => m.SelectPlaceStep)
+	@Html.HiddenFor(m => m.IndexPlacement)
+	@Html.HiddenFor(m => m.RequestId)
+	@Html.HiddenFor(m => m.ActionStep, new { @class = "action-step" })
+	@if (Model.Request == null)
+	{
+		<ul class="nav nav-pills">
+			<li @Html.Raw(Model.SelectPlaceStep == SelectPlaceStepEnum.FirstSelectTypeTimeAndPlace ? "class=\" active\"" : string.Empty)><a href="#" onclick="$('.action-step').val('initial');$('#mainForm').submit(); ">Шаг 1. Выбор вида, времени и места отдыха</a></li>
+			<li @Html.Raw(Model.SelectPlaceStep != SelectPlaceStepEnum.FirstSelectTypeTimeAndPlace ? "class=\" active\"" : string.Empty)><a href="#">Шаг 2. Выбор организации отдыха и оздоровления</a></li>
+		</ul>
+	}
+	<span class="validation-summary-errors @Html.Raw(Model.IsError?"":"hidden")" style="white-space: pre-wrap" id="validation-summary-errors">@Html.Raw(Model.ErrorMessage)</span>
+
+	@{
+		Html.RenderPartial("Partials/SelectPlaceFirstSelectTypeTimeAndPlace");
+		Html.RenderPartial("Partials/SelectPlaceSecondSelectOrganization");
+		Html.RenderPartial("Partials/SelectPlaceThridSelectTimeAndPlacment");
+		Html.RenderPartial("Partials/SelectPlaceThridMoney");
+	}
+
+</form>
+
+<div class="modal fade" id="photoShow">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>
+				<h4 class="modal-title">Фотографии</h4>
+			</div>
+			<div class="modal-body">
+				<div id="carousel-info" class="carousel slide" data-ride="carousel">
+					<!-- Indicators -->
+					<ol class="carousel-indicators">
+						<li data-target="#carousel-info" data-slide-to="0" class="active"></li>
+					</ol>
+
+					<!-- Wrapper for slides -->
+					<div class="carousel-inner" role="listbox">
+						<div class="item active">
+							<img class="first-slide" src="~/Content/images/logo_greytext.png" alt="dosa" />
+						</div>
+					</div>
+
+					<!-- Controls -->
+					<a class="left carousel-control" href="#carousel-info" role="button" data-slide="prev">
+						<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+						<span class="sr-only">Предыдущая</span>
+					</a>
+					<a class="right carousel-control" href="#carousel-info" role="button" data-slide="next">
+						<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+						<span class="sr-only">Следующая</span>
+					</a>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section styles
+{
+	@Styles.Render("~/Content/RequestEdit.css")
+	@Styles.Render("~/Content/HistoryModal.css")
+	<!-- -------AddressControlView--------- -->
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	<!-- -------AddressControlView--------- -->
+}
+
+@section scripts
+{
+	<script type="text/javascript" src="~/Scripts/doT.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+	<script type="text/javascript" src="~/Scripts/SelectPlace.js"></script>
+
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+
+	<script type="text/javascript" language="javascript">
+		var typeOfRest = @Html.Raw(Json.Encode(Model.TypeOfRests));
+
+		function showPhoto(e) {
+			var $items = $(e).parent().find('script');
+			$('#carousel-info .carousel-indicators').html($($items[0]).html());
+			$('#carousel-info .carousel-inner').html($($items[1]).html());
+			$('#photoShow').modal();
+			$('#carousel-info').carousel({
+				interval: 0
+			});
+			$('#carousel-info').carousel('pause');
+		}
+
+		function changePageNumber(pageNumber) {
+			$('#@Html.IdFor(m=>m.PageNumber)').val(pageNumber);
+			$('#mainForm').submit();
+		}
+
+		function selectHotelKey(key) {
+			$('#@Html.IdFor(m=>m.HotelKey)').val(key);
+			$('.action-step').val('nextstep');
+			$('#mainForm').submit();
+		}
+
+		function booking(index) {
+			$('#@Html.IdFor(m => m.IndexPlacement)').val(index);
+			$('.action-step').val('nextstep');
+			$('#mainForm').submit();
+		}
+		function prevstep() {
+			$('.action-step').val('prevstep');
+			$('#mainForm').submit();
+		}
+
+		function bankPropertys() {
+			$('.action-step').val('bank');
+			$('#mainForm').submit();
+		}
+
+		function bankSetted() {
+
+			if ($('#bankName').val() === '' || $('#bankAccount').val() === '') {
+				$('#validation-summary-errors').removeClass('hidden');
+				$('#validation-summary-errors').html('Укажите банковские реквизиты');
+				return;
+			}
+
+			$('.action-step').val('nextstep');
+			$('#mainForm').submit();
+
+		}
+
+		$(function() {
+			$('#@Html.IdFor(m=>m.TourId)').change(function() {
+				$('#mainForm').submit();
+			});
+		});
+
+	</script>
+	<script type="text/dot-template" id="timeOfRestTemplate">
+		{{~it.data :value:index}}
+		<option value="{{=value.id}}" {{=it.selected==value.id?'selected':''}}>{{=value.name}}</option>
+		{{~}}
+	</script>
+
+}

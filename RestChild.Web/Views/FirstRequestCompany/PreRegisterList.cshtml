@@ -1,0 +1,184 @@
+﻿@using System.Web.UI.WebControls
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Extensions.Filter
+@using RestChild.Domain
+@model RestChild.Extensions.Filter.RequestFilterModel
+@{
+	ViewBag.Title = "Реестр отдыхающих";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "PreRegisterList";
+	ViewBag.InsertAction = "";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "FirstRequestCompany";
+	ViewBag.Caption = "Реестр отдыхающих";
+	ViewBag.SearchPanelCaption = "Поиск заявлений";
+	ViewBag.NeedStatus = false;
+	ViewBag.NeedInsertButton = false;
+	ViewBag.NeedAdditionalButtons = true;
+	ViewBag.NeedTypeOfRestriction = true;
+	ViewBag.NeedDepartmentSearchAndFilter = false;
+	ViewBag.NeedSpecializedCampFilter = false;
+}
+
+@section searchForm
+{
+	@Html.Partial("RequestSearchForm", Model)
+}
+
+@section additionalFilters
+{
+	<a class="btn btn-default" href="@Url.Action("ExportPreRequestToExcel", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
+}
+
+@helper PrintRequest(Request req)
+{
+	if (req == null)
+	{
+		return;
+	}
+
+
+	if (req.Attendant != null)
+	{
+		var attendants = (req.Applicant != null && req.Applicant.IsAccomp) ? req.Attendant.InsertAt(req.Applicant) : req.Attendant;
+		foreach (var attendant in attendants)
+		{
+			<tr class="row-clicable" onclick="openRequest('@Url.Action("RequestEdit", new {id=req.Id})');">
+				<td>@req.RequestNumber.FormatEx()</td>
+				<td>@String.Format("{0} {1} {2}", attendant.LastName, attendant.FirstName, attendant.MiddleName)</td>
+				<td>@attendant.DateOfBirth.FormatEx()</td>
+				<td>@attendant.NullSafe(a => a.DocumentType.Name).FormatEx()</td>
+				<td>@attendant.NullSafe(a => a.DocumentSeria).FormatEx()</td>
+				<td>@attendant.NullSafe(a => a.DocumentNumber).FormatEx()</td>
+				<td>-</td>
+				<td>
+					@Html.Raw(req.TypeOfRest != null && req.TypeOfRest.Parent != null ? string.Format("{0} / {1}", req.TypeOfRest.Parent.Name, req.TypeOfRest.Name) : req.TypeOfRest != null ? req.TypeOfRest.Name : req.NullSafe(r => r.TypeOfRest.Name).FormatEx())
+				</td>
+				<td>
+					@Html.Raw(req.NullSafe(r => r.Tour.Hotels.Name).FormatEx())
+					<div>
+						<small><i style="color: #666">@Html.Raw(req.NullSafe(r => r.Tour.Hotels.PlaceOfRest.Name).FormatEx())</i></small>
+					</div>
+				</td>
+				<td>
+					@req.NullSafe(r => r.TimeOfRest.Name).FormatEx()
+					@if (req.Tour != null)
+					{
+						<div>
+							<small><i style="color: #666">@string.Format("{0}-{1}", req.Tour.DateIncome.FormatEx(), req.Tour.DateOutcome.FormatEx())</i></small>
+						</div>
+					}
+				</td>
+				<td class="text-center"><a onclick="$.noop()" class="glyphicon glyphicon-pencil"></a></td>
+			</tr>
+		}
+
+		foreach (var child in req.Child.Where(c => !c.IsDeleted).ToList())
+		{
+			<tr class="row-clicable" onclick="openRequest('@Url.Action("RequestEdit", new {id=req.Id})');">
+				<td>@req.RequestNumber.FormatEx()</td>
+				<td>@String.Format("{0} {1} {2}", child.LastName, child.FirstName, child.MiddleName)</td>
+				<td>@child.DateOfBirth.FormatEx()</td>
+				<td>@child.NullSafe(a => a.DocumentType.Name).FormatEx()</td>
+				<td>@child.NullSafe(a => a.DocumentSeria).FormatEx()</td>
+				<td>@child.NullSafe(a => a.DocumentNumber).FormatEx()</td>
+				<td>@child.NullSafe(c => c.BenefitType.Name).FormatEx()</td>
+				<td>
+					@Html.Raw(req.TypeOfRest != null && req.TypeOfRest.Parent != null ? string.Format("{0} / {1}", req.TypeOfRest.Parent.Name, req.TypeOfRest.Name) : req.TypeOfRest != null ? req.TypeOfRest.Name : req.NullSafe(r => r.TypeOfRest.Name).FormatEx())
+				</td>
+				<td>
+					@Html.Raw(req.NullSafe(r => r.Tour.Hotels.Name).FormatEx())
+					<div>
+						<small><i style="color: #666">@Html.Raw(req.NullSafe(r => r.Tour.Hotels.PlaceOfRest.Name).FormatEx())</i></small>
+					</div>
+				</td>
+				<td>
+					@req.NullSafe(r => r.TimeOfRest.Name).FormatEx()
+					@if (req.Tour != null)
+					{
+						<div>
+							<small><i style="color: #666">@string.Format("{0}-{1}", req.Tour.DateIncome.FormatEx(), req.Tour.DateOutcome.FormatEx())</i></small>
+						</div>
+					}
+				</td>
+				<td class="text-center"><a onclick="$.noop()" class="glyphicon glyphicon-pencil"></a></td>
+			</tr>
+		}
+	}
+
+}
+
+@section searchResult
+{
+	@if (Model.Requests != null && Model.Requests.Any())
+	{
+		<table class="table table-hover table-striped">
+			<thead>
+				<tr>
+					<!--th>№</th-->
+					<th>Номер заявления</th>
+					<th>ФИО</th>
+					<th>Дата рождения</th>
+					<th>Тип документа</th>
+					<th>Серия</th>
+					<th>Номер</th>
+					<th>Вид льготы</th>
+					<th>Цель обращения</th>
+					<th>Место отдыха</th>
+					<th>Время отдыха</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (Request r in Model.Requests)
+				{
+					@PrintRequest(r)
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				<p>Найдено отдыхающих: @Model.TotalRecordsCount</p>
+			</div>
+		</div>
+		<div>
+			@Html.PagedListPager(Model.Requests, page =>
+			{
+				RequestFilterModel m = Model;
+				m.PageNumber = page;
+				return Url.Action("PreRegisterList", "FirstRequestCompany", m);
+			})
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	@Styles.Render("~/Content/RequestList.css")
+}
+
+@section scripts
+{
+	<script type="text/javascript" src="~/Scripts/doT.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/RequestList.js"></script>
+}

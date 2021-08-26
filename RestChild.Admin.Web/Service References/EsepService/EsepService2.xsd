@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="RequestBase">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Credentials" nillable="true" type="tns:Credentials" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RequestBase" nillable="true" type="tns:RequestBase" />
+  <xs:complexType name="Credentials">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Login" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Password" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Credentials" nillable="true" type="tns:Credentials" />
+  <xs:complexType name="ResponseBase">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="RequestResult" nillable="true" type="tns:RequestResult" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ResponseBase" nillable="true" type="tns:ResponseBase" />
+  <xs:complexType name="RequestResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ErrorCode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ErrorData" nillable="true" type="tns:ArrayOfErrorDataItem" />
+      <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="WasSuccessful" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RequestResult" nillable="true" type="tns:RequestResult" />
+  <xs:complexType name="ArrayOfErrorDataItem">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ErrorDataItem" nillable="true" type="tns:ErrorDataItem" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfErrorDataItem" nillable="true" type="tns:ArrayOfErrorDataItem" />
+  <xs:complexType name="ErrorDataItem">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Key" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Value" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ErrorDataItem" nillable="true" type="tns:ErrorDataItem" />
+  <xs:complexType name="FileInfoEx">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:FileInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="CreationDate" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="ModifiedDate" type="xs:dateTime" />
+          <xs:element minOccurs="0" name="Size" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="FileInfoEx" nillable="true" type="tns:FileInfoEx" />
+  <xs:complexType name="FileInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="MimeType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FileInfo" nillable="true" type="tns:FileInfo" />
+</xs:schema>

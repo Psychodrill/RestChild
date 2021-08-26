@@ -1,0 +1,200 @@
+﻿@using System.Collections
+@using RestChild.Comon
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+
+
+@model RestChild.Web.Models.Monitoring.SmallLeisureInfoModel
+@{
+    ViewBag.Title = "Cведения о малых формах досуга";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var isEditable = Model.State.State.Id == RestChild.Comon.Enumeration.StateMachineStateEnum.Monitoring.SmallLeisureInfoData.Formation && Security.HasRight(AccessRightEnum.Monitoring.SmallLeisureInfoData.Edit);
+    Html.EnableClientValidation(false);
+}
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/HistoryModal.css")
+
+    @Styles.Render("~/Content/jQuery.FileUpload/css/jquery.fileupload.css")
+    @Styles.Render("~/Content/jQuery.FileUpload/css/jquery.fileupload-ui.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+
+    <script src="~/Scripts/globalize/globalize.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale("ru");
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Scripts.Render("~/Scripts/StateScript.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
+
+    @Scripts.Render("~/Scripts/Vocabulary/Monitoring.SmallLeisureInfoData.Edit.js")
+
+    <script type="text/html" id="LoadResultDialogTemplate">
+        <div class="modal fade" id="LoadResultDialog">
+            <div class="modal-dialog big-dialog ">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Отчет о загрузке</h4>
+                    </div>
+                    <div class="modal-body modal-body-autosize" style="max-height: 600px">
+                        <div class="text-center">Загрузка данных <img class="text-center" width="20" height="20" src="/Content/images/spinner.gif" /> </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/x-dot-template" id="LoadResultDialogRowTemplate">
+    	<table class="table table-striped table-hover">
+    		<thead>
+    			<tr>
+    				<th>Файл</th>
+    				<th>Результат загрузки</th>
+    				<th>ГБУ к которому привязан</th>
+    			</tr>
+    		</thead>
+    		<tbody>
+    			{{~ it:val:index}}
+    			<tr>
+    				<td>{{=val.fileName}}</td>
+    				<td>{{=val.resultLoad}}</td>
+    				<td><ul>
+    				{{~val.gbu :gbu}}
+    				<li>{{=gbu}}</li>
+    				{{~}}
+    				</ul>
+    				</td>
+    			</tr>
+    			{{~}}
+    		</tbody>
+    	</table>
+
+    </script>
+
+    <script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Cведения о малых формах досуга</h2>
+    </div>
+</div>
+
+<div class="row">
+    <fieldset class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-4 control-label">Год формы: </label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(m => m.Data.YearOfRestId, new SelectList(Model.YearsOfRest, "Id", "Name"), new { @class = "form-control select2" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label">Месяц: </label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(m => m.Data.Month, new SelectList(Model.Months, "Key", "Value"), new { @class = "form-control select2" })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-4 control-label">Участник мониторинга: </label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Data.OrganisationId, new SelectList(Model.Organisations, "Id", "Name"), new { @class = "form-control select2" })
+            </div>
+        </div>
+    </fieldset>
+</div>
+<h3><hr /></h3>
+
+@Html.Partial("Assets/_StatePanel", Model.State)
+<input type="file" style='display:none' id="fileUploader" multiple accept=".xlsx" />
+
+
+@if (!(Model.IsValid ?? true))
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="summary-block">@Html.Raw(Model.ErrorMessage)</div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("SmallLeisureInfoSave", "Monitoring", new { organisationId = Model.Data.OrganisationId, yearOfRestId = Model.Data.YearOfRestId, month = Model.Data.Month }, FormMethod.Post, new { enctype = "multipart/form-data", id = "smallLeisureInfoForm", autocomplete = "off" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Data.LastUpdateTick)
+            @Html.HiddenFor(m => m.Data.Id)
+            @Html.HiddenFor(m => m.Data.YearOfRestId)
+            @Html.HiddenFor(m => m.Data.Month)
+            @Html.HiddenFor(m => m.Data.OrganisationId)
+            @Html.HiddenFor(m => m.Data.HistoryLinkId)
+            @Html.HiddenFor(m => m.Data.StateId)
+            @Html.HiddenFor(m => m.StateMachineActionString)
+
+
+            <h3><hr /></h3>
+            <div class="row">
+                <div class="col-md-10">
+                    <h3>Список ГБУ для заполнения формы</h3>
+                </div>
+            </div>
+            if (isEditable)
+            {
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        @Html.DropDownList("GBUs", new SelectList(Model.GBUs.Select(t => new { Id = (long?)t.Id, Name = t.ShortName }).ToList().InsertAt(new { Id = (long?)-1, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" }).DisableIf(() => !isEditable)
+                    </div>
+                    <div class="col-md-2 form-group">
+                        <button type="button" class="btn btn-success btn-primary add-slid" role="button">Добавить</button>
+                    </div>
+                </div>
+            }
+            <h3><hr /></h3>
+            <div class="row">
+                <label class="col-md-4 text-center">
+                    Наименование
+                </label>
+                <label class="col-md-2 text-center">
+                    Дата последнего обновления
+                </label>
+            </div>
+            <div class="slid-list">
+                @if (Model.SmallLeisureInfoGBUs != null && Model.SmallLeisureInfoGBUs.Any())
+                {
+                    foreach (var key in Model.SmallLeisureInfoGBUs.Keys)
+                    {
+                        @Html.EditorFor(m => m.SmallLeisureInfoGBUs[key], "SmallLeisureInfoGBU", new { isEditable })
+                    }
+                }
+            </div>
+            if (Model.Data.Id > 0 && Model.Files != null)
+            {
+                <h3><hr /></h3>
+                <fieldset class="form-horizontal">
+                    @Html.HiddenFor(m => m.Data.LinkToFilesId)
+                    @Html.EditorFor(m => m.Files, "Files", new { isEditable })
+                </fieldset>
+            }
+        }
+    </div>
+</div>
+
+

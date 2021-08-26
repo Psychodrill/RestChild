@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="6d145724-a3f7-4a8f-9b3d-cd6270798bfd" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://172.16.240.1:7777/?wsdl" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="item.xsd" MetadataType="Schema" ID="afe00867-b492-4623-a545-d3a6c5c1f136" SourceId="1" SourceUrl="http://172.16.240.1:7777/?xsd=xsd1" />
+    <MetadataFile FileName="item1.xsd" MetadataType="Schema" ID="491ae52d-3b14-4bd0-a0c6-225b4f641ca6" SourceId="1" SourceUrl="http://172.16.240.1:7777/?xsd=xsd0" />
+    <MetadataFile FileName="item2.xsd" MetadataType="Schema" ID="f4ec90d1-2854-41f2-8a8c-2435202b7912" SourceId="1" SourceUrl="http://172.16.240.1:7777/?xsd=xsd2" />
+    <MetadataFile FileName="item.wsdl" MetadataType="Wsdl" ID="09e76396-2e90-4fc5-8384-9711a8bccdb8" SourceId="1" SourceUrl="http://172.16.240.1:7777/?wsdl=wsdl0" />
+    <MetadataFile FileName="BookingService.wsdl" MetadataType="Wsdl" ID="4614b959-01fe-443c-b016-de4fe2cfb4e8" SourceId="1" SourceUrl="http://172.16.240.1:7777/?wsdl" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

@@ -1,0 +1,52 @@
+﻿@model Dictionary<string, RestChild.Domain.FileOrLink>
+<table class="table table-striped thin-tr" id="filesTable" tablename="@Html.NameFor(m => m)">
+    <tbody>
+    @foreach (var i in Model.Where(ss => !ss.Value.IsPhoto).Select(ss => ss.Key))
+    {
+        <tr>
+            <td>
+                @Html.HiddenFor(m => m[i].Id)
+                @Html.HiddenFor(m => m[i].FileName)
+                @Html.HiddenFor(m => m[i].FileUrl)
+                @Html.HiddenFor(m => m[i].IsMain)
+                @Html.HiddenFor(m => m[i].IsPhoto)
+                @Html.HiddenFor(m => m[i].IsVideo)
+                @Html.HiddenFor(m => m[i].LinkId)
+                <a target="_blank" class="href-file" href="@(Url.Content("~/"))UploadPupilFile.ashx?f=@Url.Encode(Model[i].FileUrl)&t=@Url.Encode(Model[i].FileName)">@Model[i].FileName</a><br />
+            </td>
+            <td style="width: 40px">
+                <i class="glyphicon glyphicon-remove-circle text-danger request-file-remove" style="cursor: pointer" title="Удалить"></i>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<div class="row form-group file-upload-div">
+    <div class="col-md-12">
+        <div class="panel-file well well-sm">
+            <span class="file-span">
+                <em>Выберите файл для загрузки в качестве характеристики воспитанника или документа, подтверждающего нарушение Правил</em>
+            </span>
+        </div>
+        <span class="btn fileinput-button">
+            <i class="glyphicon glyphicon-paperclip"></i>
+            <input type="file" name="files[]" id="fileUpload">
+        </span>
+    </div>
+</div>
+<div class="file-uploading-div hidden">
+    <img src="@Url.Content("~/")Content/images/spinner.gif"/> Загрузка файла...
+</div>
+<script type="dot/template" id="fileRowTemplate">
+    <tr>
+        <td>
+            <a target="_blank" class="href-file" href="@(Url.Content("~/"))UploadPupilFile.ashx?f={{=encodeURIComponent(it.fileName)}}&t={{=encodeURIComponent(it.fileTitle)}}">{{=it.fileTitle}}</a>
+        </td>
+        <td style="width: 50px">
+            <span class="glyphicon glyphicon-remove-circle text-danger request-file-remove" aria-hidden="true" title="Удалить" style="cursor: pointer"></span>
+            <input type="hidden" name="{{=it.tableName}}[{{=it.fileName}}].FileUrl" class="FileUrl" value="{{=it.fileName}}" />
+            <input type="hidden" name="{{=it.tableName}}[{{=it.fileName}}].FileName" class="FileName" value="{{=it.fileTitle}}" />
+        </td>
+    </tr>
+</script>
+@*Files[b5992ca7-2021-4282-8213-635dae1c8718].FileName*@

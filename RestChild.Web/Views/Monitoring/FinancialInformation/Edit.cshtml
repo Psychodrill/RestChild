@@ -1,0 +1,167 @@
+﻿@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@using RestChild.Web.Extensions
+
+
+@model RestChild.Web.Models.Monitoring.FinancialInformationModel
+@{
+    ViewBag.Title = "Cведения о финансировании";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var isEditable = Model.State.State.Id == StateMachineStateEnum.Monitoring.FinanceInformation.Formation && Security.HasRight(AccessRightEnum.Monitoring.FinanceInformation.Edit);
+    Html.EnableClientValidation(false);
+}
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/HistoryModal.css")
+
+    @Styles.Render("~/Content/jQuery.FileUpload/css/jquery.fileupload.css")
+    @Styles.Render("~/Content/jQuery.FileUpload/css/jquery.fileupload-ui.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+
+    <script src="~/Scripts/globalize/globalize.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale("ru");
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Scripts.Render("~/Scripts/StateScript.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
+
+    @Scripts.Render("~/Scripts/Vocabulary/Monitoring.FinancialInformation.Edit.js")
+
+    <script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Cведения о финансировании</h2>
+    </div>
+</div>
+
+<div class="row">
+    <fieldset class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-4 control-label">Год формы: </label>
+            <div class="col-md-2">
+                @Html.DropDownListFor(m => m.Data.YearOfRestId, new SelectList(Model.YearsOfRest, "Id", "Name"), new { @class = "form-control select2" })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-4 control-label">Участник мониторинга: </label>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.Data.OrganisationId, new SelectList(Model.Organisations, "Id", "Name"), new { @class = "form-control select2" })
+            </div>
+        </div>
+    </fieldset>
+</div>
+<h3><hr /></h3>
+
+
+
+@Html.Partial("Assets/_StatePanel", Model.State)
+
+@if (!(Model.IsValid ?? true))
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="summary-block">@Html.Raw(Model.ErrorMessage)</div>
+        </div>
+    </div>
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("FinanceInformationSave", "Monitoring", new { organisationId = Model.Data.OrganisationId, yearOfRestId = Model.Data.YearOfRestId }, FormMethod.Post, new { enctype = "multipart/form-data", id = "financialInformationForm", autocomplete = "off" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Data.LastUpdateTick)
+            @Html.HiddenFor(m => m.Data.Id)
+            @Html.HiddenFor(m => m.Data.YearOfRestId)
+            @Html.HiddenFor(m => m.Data.OrganisationId)
+            @Html.HiddenFor(m => m.Data.HistoryLinkId)
+            @Html.HiddenFor(m => m.Data.StateId)
+            @Html.HiddenFor(m => m.StateMachineActionString)
+
+
+            if (Model.FinancialData != null)
+            {
+                foreach (var fdst in Model.FinancialData.Where(ss => ss.Value.MonitoringFinancialSource.ParrentId == null))
+                {
+                    <div>
+                        @Html.HiddenFor(m => m.FinancialData[fdst.Key].Id)
+                        @Html.HiddenFor(m => m.FinancialData[fdst.Key].MonitoringFinancialSourceId)
+                        <h4>@fdst.Value.MonitoringFinancialSource.Name</h4>
+                        <fieldset class="form-horizontal">
+                            <div class="form-group row">
+                                <label class="col-sm-6 text-center">&nbsp;</label>
+                                <label class="col-sm-1 text-center">План</label>
+                                <label class="col-sm-1 text-center">Июнь</label>
+                                <label class="col-sm-1 text-center">Июль</label>
+                                <label class="col-sm-1 text-center">Август</label>
+                                <label class="col-sm-1 text-center">Сентябрь</label>
+                                <label class="col-sm-1 text-center">Октябрь</label>
+                            </div>
+                            @foreach (var fds in Model.FinancialData.Where(ss => ss.Value.MonitoringFinancialSourceId != null && ss.Value.MonitoringFinancialSource.ParrentId == fdst.Value.MonitoringFinancialSourceId))
+                            {
+                                <div class="form-group row">
+                                    @Html.HiddenFor(m => m.FinancialData[fds.Key].Id)
+                                    @Html.HiddenFor(m => m.FinancialData[fds.Key].MonitoringFinancialSourceId)
+                                    <label class="col-sm-6 control-label text-right">@Model.FinancialData[fds.Key].MonitoringFinancialSource.Name</label>
+                                    <div class="col-md-1">
+                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Plan, new { @class = "form-control decimal" }).DisableIf(() => !isEditable)
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Jun, new { @class = "form-control decimal" }).DisableIf(() => !isEditable)
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Jul, new { @class = "form-control decimal" }).DisableIf(() => !isEditable)
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Aug, new { @class = "form-control decimal" }).DisableIf(() => !isEditable)
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Sep, new { @class = "form-control decimal" }).DisableIf(() => !isEditable)
+                                    </div>
+
+                                    <div class="col-md-1">
+                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Oct, new { @class = "form-control decimal" }).DisableIf(() => !isEditable)
+                                    </div>
+                                </div>
+                            }
+                        </fieldset>
+                    </div>
+                }
+            }
+
+            if (Model.Data.Id > 0 && Model.Files != null)
+            {
+                <h3><hr /></h3>
+                <fieldset class="form-horizontal">
+                    @Html.HiddenFor(m => m.Data.LinkToFilesId)
+                    @Html.EditorFor(m => m.Files, "Files", new { isEditable })
+                </fieldset>
+            }
+        }
+    </div>
+</div>
+
+
+
+

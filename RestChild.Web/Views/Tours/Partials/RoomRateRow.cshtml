@@ -1,0 +1,43 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.TourModel
+@if (Model.RoomRates != null)
+{
+	for (var index = 0; index < Model.RoomRates.Count; index++)
+	{
+		<tr>
+			<td class="typeOfRooms-name">
+				@Html.Raw(Model.RoomRates[index].NullSafe(r => r.TypeOfRooms.ToString()).FormatEx("-- Не выбрано --"))
+			</td>
+			<td class="accommodation-name">
+				@Html.Raw(Model.RoomRates[index].NullSafe(r => r.Accommodation.Name).FormatEx("-- Не выбрано --"))
+			</td>
+			<td class="roomrate-for-addon text-center">
+				<span class="glyphicon @(Model.RoomRates[index].IsAddonPlace ? "glyphicon-ok text-success" : "glyphicon-remove text-danger")"></span>
+			</td>
+			<td class="diningOptions-name">
+				@Html.Raw(Model.RoomRates[index].NullSafe(r => r.DiningOptions.Name).FormatEx("-- Не выбрано --"))
+			</td>
+			<td class="price">
+				@Html.TextBoxFor(m => m.RoomRates[index].Price, new { @class = "price form-control", maxlength = 20}).DisableIf(()=>!Model.IsEditable)
+			</td>
+			<td>
+				@Html.HiddenFor(m => m.RoomRates[index].Id)
+				@Html.HiddenFor(m => m.RoomRates[index].AccommodationId, new { @class = "accommodation" })
+				@Html.HiddenFor(m => m.RoomRates[index].DateFrom)
+				@Html.HiddenFor(m => m.RoomRates[index].DateTo)
+				@Html.HiddenFor(m => m.RoomRates[index].DiningOptionsId, new { @class = "diningOptions" })
+				@Html.HiddenFor(m => m.RoomRates[index].HotelId)
+				@Html.HiddenFor(m => m.RoomRates[index].TourId)
+				@Html.HiddenFor(m => m.RoomRates[index].TypeOfRoomsId, new { @class = "typeOfRooms" })
+				@Html.HiddenFor(m => m.RoomRates[index].YearOfRestId)
+				@Html.HiddenFor(m => m.RoomRates[index].IsAddonPlace, new { @class = "isAddonPlace" })
+				@if (Model.IsEditable)
+				{
+					<button class="btn btn-xs remove-roomrate-btn" type="button" title="Удалить"><i class="glyphicon glyphicon-remove"></i></button>
+				}
+			</td>
+		</tr>
+	}
+}

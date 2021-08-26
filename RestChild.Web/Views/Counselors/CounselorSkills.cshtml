@@ -1,0 +1,49 @@
+﻿@using System.Collections
+@using RestChild.Comon
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.CounselorsModel
+
+<fieldset class="form-horizontal">
+	<h3>
+		Навыки вожатого
+	</h3>
+	@if (Model.SkillGroups != null)
+	{
+		var skillNum = 0;
+		foreach (var skillGroup in Model.SkillGroups.OrderBy(s => s.Key.SortOrder))
+		{
+			<div class="counselor-skill-group row">
+				<h4>@skillGroup.Key.Name</h4>
+				@foreach (var skill in skillGroup.OrderBy(s => s.Skill.SortOrder))
+				{
+					var fullRow = skill.Skill.NeedText || (skill.Skill.NeedVocabulary ?? false);
+					<div class="counselor-skill @(fullRow ? "col-md-12 form-group" : "col-md-4") ">
+						<div class="@(fullRow ? "col-md-4" : "col-md-12")">
+							<div class="checkbox">
+								<label>@Html.CheckBox("Skills[" + skillNum + "].IsSelected", skill.IsSelected, new { @class = "counselor-skill-checkbox" }).DisableIf(() => !Model.IsEditable) @skill.Skill.Name</label>
+							</div>
+						</div>
+						@if (skill.Skill.NeedText)
+						{
+							<div class="col-md-4">
+								@Html.TextBox("Skills[" + skillNum + "].Text", skill.Text, new { @class = "form-control counselor-skill-input" }).DisableIf(() => !Model.IsEditable || !skill.IsSelected)
+							</div>
+						}
+						@if (skill.Skill.NeedVocabulary ?? false)
+						{
+							<div class="col-md-4">
+								@Html.DropDownList("Skills[" + skillNum + "].SkillVocabularyId", SelectListHelper.Create(skill.SkillVocabularies, v => new SelectListItem() { Value = v.Id.ToString(), Text = v.Name, Selected = v.Id == skill.SkillVocabularyId }), new { @class = "form-control  counselor-skill-input" }).DisableIf(() => !Model.IsEditable || !skill.IsSelected)
+							</div>
+						}
+
+						@Html.Hidden("Skills[" + skillNum + "].CounselorSkillId", skill.CounselorSkillId)
+						@Html.Hidden("Skills[" + skillNum + "].SkillId", skill.Skill.Id)
+					</div>
+
+						skillNum++;
+				}
+			</div>
+		}
+	}
+</fieldset>

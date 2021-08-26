@@ -1,0 +1,143 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Models.TradeUnion
+@model TradeUnionSearch
+@{
+	ViewBag.Title = "Списки профсоюзов";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "List";
+	ViewBag.InsertAction = "Edit";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "TradeUnion";
+	ViewBag.Caption = "Списки профсоюзов";
+	ViewBag.InsertButtonCaption = "Добавить список";
+	ViewBag.SearchPanelCaption = "Поиск списков";
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		@*<label class="col-md-2 control-label text-right">Наименование</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+		</div>*@
+		<label class="col-md-2 control-label text-right">Год кампании</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.YearOfRests, "Id", "Name"), new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Лагерь</label>
+		<div class="col-md-4">
+			@Html.HiddenFor(m => m.CampId, new { @class = "form-control CampId", titletext = Model.Camp != null ? Model.Camp.Name : string.Empty }).ReadonlyIf(() => Model.OnlyOneCamp)
+		</div>
+		<label class="col-md-2 control-label text-right hidden">Профсоюз</label>
+		<div class="col-md-4 hidden">
+			@Html.HiddenFor(m => m.TradeUnionId, new { @class = "form-control TradeUnionId", titletext = Model.TradeUnion != null ? Model.TradeUnion.Name : string.Empty }).ReadonlyIf(() => Model.OnlyOneTradeUnion)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Смена</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.TimeOfRestId, new SelectList(Model.TimeOfRests.InsertAt(new GroupedTimeOfRest {Id = 0, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control"})
+		</div>
+		<label class="col-md-2 control-label text-right">Статус</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.StateId, new SelectList(Model.States.InsertAt(new StateMachineState {Id = 0, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control"})
+		</div>
+	</div>
+}
+
+
+@section additionalFilters
+{
+	<a class="btn btn-default" href="@Url.Action("ExportTradeUnionListToExcel", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
+}
+
+
+@section searchResult
+{
+	@if (Model.Result != null && Model.Result.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					@*<th>Наименование</th>*@
+					<th>Лагерь</th>
+					<th>Смена/Время отдыха</th>
+					@*<th>Профсоюз</th>*@
+					<th>Кол-во детей</th>
+					<th>Статус</th>
+					<th>Полная сумма, руб.</th>
+					<th>Средства (бюджетные/профсоюза/предприятия/родителей), руб.</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var place in Model.Result)
+				{
+				    @*<tr @Html.Raw(TradeUnionSearch.IsExpired(place) ? " class='tuExpired' title='Просрочено'" : String.Empty)> функционал подсвечивания просроченных списков, отключен, но можетещё пригодится *@
+                    <tr>
+                        @*<td>
+							@Html.Raw(place.Name.FormatEx())
+						</td>*@
+                        <td>
+                            @Html.Raw(place.NullSafe(p => p.Camp.Name).FormatEx())
+                        </td>
+                        <td>
+                            @Html.Raw(place.NullSafe(p => p.GroupedTimeOfRest.Name).FormatEx()) /
+                            @Html.Raw(place.DateFrom.FormatEx()) - @Html.Raw(place.DateTo.FormatEx())
+                        </td>
+                        @*<td>
+							@Html.Raw(place.NullSafe(p => p.TradeUnion.Name).FormatEx())
+						</td>*@
+                        <td>
+                            @Html.Raw(place.Campers.Count.FormatEx())
+                        </td>
+                        <td>@Html.Raw(place.NullSafe(p => p.State.Name).FormatEx())</td>
+                        <td>@Html.Raw(place.Campers.Sum(c => c.Summa ?? 0).FormatEx())</td>
+                        <td>
+                            @Html.Raw(place.Campers.Sum(c => c.SummaBudget ?? 0).FormatEx()) /
+                            @Html.Raw(place.Campers.Sum(c => c.SummaTradeUnion ?? 0).FormatEx()) /
+                            @Html.Raw(place.Campers.Sum(c => c.SummaOrganization ?? 0).FormatEx()) /
+                            @Html.Raw(place.Campers.Sum(c => c.SummaParent ?? 0).FormatEx())
+                        </td>
+                        <td class="text-center">@Html.ActionLink(" ", "Edit", new {id = place.Id}, new {@class = " glyphicon glyphicon-pencil pull-right", target = "_blank"})</td>
+                    </tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model.Result, page =>
+					{
+						Model.Result = null;
+						Model.PageNumber = page;
+						Model.States = null;
+						return Url.Action("List", Model);
+					}, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+						<div class="row">
+							<div class="col-md-12">
+								<p>Поиск не дал результатов</p>
+							</div>
+						</div>
+	}
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section scripts
+{
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	@Scripts.Render("~/Scripts/TradeUnion/List.js")
+}

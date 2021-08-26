@@ -1,0 +1,353 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Extensions.Extensions
+@using RestChild.Web.App_Code
+@using RestChild.Web.Common
+@using RestChild.Web.Controllers
+@model List<RestChild.Web.Models.ApplicantViewModel>
+@{
+    var canExclude = Security.HasRight(AccessRightEnum.ExcludeChild);
+}
+
+@for (int index = 0; index < Model.Count; index++)
+{
+    int i = index;
+    long? typeOfRestId = null;
+    var isFirstCompany = false;
+
+    var docs = (ViewBag.DocumentsTypeOther as List<DocumentType>).ToList();
+
+    if (docs.All(d => d.Id != Model[i].Data.DocumentTypeId) && Model[i].Data.DocumentType != null)
+    {
+        docs.Add(Model[i].Data.DocumentType);
+    }
+
+    var violations = (ViewBag.TypeViolations as List<TypeViolation>).ToList();
+    if (violations.All(d => d.Id != Model[i].Data.TypeViolationId) && Model[i].Data.TypeViolation != null)
+    {
+        violations.Add(Model[i].Data.TypeViolation);
+    }
+
+    if (Model[i] != null && Model[i].Data != null && Model[i].Data.Request != null)
+    {
+        typeOfRestId = Model[i].Data.Request.TypeOfRestId;
+        if (Model[i].Data.Request.CountAttendants <= 1)
+        {
+            canExclude = false;
+        }
+    }
+
+    <fieldset class="bs-callout bs-callout-info request-block attendant-panel" data-attendant-num="@i">
+    <div class="row">
+        <div class="col-md-1 col-md-offset-11 anchor-list name-ref">
+            <button class="btn btn-danger @(Model[i].NotForDelete ?? false ? " hidden" : null) remove-attendant-button" title="Удалить" onclick="removeAttendantElement(this); " type="button">
+                <i class="glyphicon glyphicon-remove"></i>
+            </button>
+        </div>
+    </div>
+    @Html.HiddenFor(r => r[i].Data.Id, new {@class = "id"})
+    @Html.HiddenFor(r => r[i].Data.EntityId)
+    @Html.HiddenFor(r => r[i].Data.Payed)
+    @Html.HiddenFor(r => r[i].Guid, new {@class = "guid attendant-guid"})
+    @Html.HiddenFor(r => r[i].Data.IsAccomp)
+    @Html.HiddenFor(r => r[i].Data.IsApplicant)
+    @if (Model[i].Data != null && Model[i].Data.Request != null && !Model[i].Data.Request.RequestOnMoney &&
+         new[]
+         {
+             (long) StatusEnum.CertificateIssued, (long) StatusEnum.DecisionMaking, (long) StatusEnum.DecisionMakingCovid
+         }.Contains(Model[i].Data.Request.StatusId ?? 0)
+         &&
+         new[]
+         {
+             (long) TypeOfRestEnum.ChildRestFederalCamps,
+             (long) TypeOfRestEnum.ChildRestCamps,
+             (long) TypeOfRestEnum.TentChildrenCamp,
+             (long) TypeOfRestEnum.ChildRest,
+             (long) TypeOfRestEnum.RestWithParents,
+             (long) TypeOfRestEnum.RestWithParentsPoor,
+             (long) TypeOfRestEnum.RestWithParentsOther,
+             (long) TypeOfRestEnum.RestWithParentsOrphan,
+             (long) TypeOfRestEnum.RestWithParentsComplex,
+             (long) TypeOfRestEnum.RestWithParentsInvalid,
+             (long) TypeOfRestEnum.RestWithParentsInvalidOrphanComplex
+         }.Contains(typeOfRestId ?? 0)
+        )
+    {
+        <div class="row form-group">
+            <div class="pull-right col-md-3">
+                <div class="checkbox">
+                    <label>
+                        @Html.CheckBoxFor(m => m[i].Data.IsDeleted, new {@class = "exclude-from-request exclude-attendant"}).DisableIf(() => Model[i].Data.IsDeleted || !canExclude) Исключен из заявления
+                        @Html.Hidden("ExcludeFromRequestHiddenA" + i, Model[i].Data.IsDeleted, new {@class = "exclude-from-request-hidden"})
+                    </label>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Фамилия<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r[i].Data.LastName, new {@class = "form-control name-input attendant-lastname info-lastname", autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].LastNameEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Имя<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r[i].Data.FirstName, new {@class = "form-control name-input attendant-firstname info-firstname", autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].FirstNameEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-offset-3 col-md-9">
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(r => r[i].HasNotMiddlename, new {@class = "middlename-havenot"}).DisableIf(() => Model[i].Data.IsDeleted)
+                    Нет отчества
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Отчество</label>
+
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r[i].Data.MiddleName, new {@class = "form-control name-input middlename attendant-middlename info-middlename", autocomplete = "off", Value = Model.NullSafe(m => m[i].HasNotMiddlename) ? string.Empty : Model.NullSafe(m => m[i].Data.MiddleName)}).DisableIf(() => Model.NullSafe(m => m[i].HasNotMiddlename)).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].MiddleNameEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Пол<span class="requared">*</span></label>
+        <div class="col-md-9">
+            <label>
+                @Html.RadioButton("Attendant" + Html.NameFor(r => r[i].Data.Male).ToString(), true, Model[i].Data.Male == true).DisableIf(() => Model[i].Data.IsDeleted)
+                Мужской
+            </label>&nbsp;
+            <label>
+                @Html.RadioButton("Attendant" + Html.NameFor(r => r[i].Data.Male).ToString(), false, Model[i].Data.Male == false).DisableIf(() => Model[i].Data.IsDeleted)
+                Женский
+            </label>
+            <span class="field-validation-error">@Model[i].MaleEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">СНИЛС<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r[i].Data.Snils, new {@class = "form-control required snils", maxlength = "100"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].SnilsEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Дата рождения<span class="requared">*</span></label>
+        <div class="col-md-9">
+            <div class='input-group datepicker-my datepicker'>
+                @Html.TextBoxFor(r => r[i].Data.DateOfBirth, new {@class = "form-control required input-mask-date", placeholder = "", @Value = Model[i].Data.DateOfBirth.FormatEx(string.Empty, string.Empty), autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            <span class="field-validation-error">@Model[i].DateOfBirthEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Место рождения<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r[i].Data.PlaceOfBirth, new {@class = "form-control required", placeholder = "", autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].PlaceOfBirthEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Телефон<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r[i].Data.Phone, new {@class = "form-control required input-mask-phone", autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].PhoneEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Email</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r[i].Data.Email, new {@class = "form-control required input-mask-email", autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].EmailEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Тип документа удостоверяющего личность<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.DropDownListFor(r => r[i].Data.DocumentTypeId, new SelectList(docs, "Id", "Name", Model[i].Data.DocumentTypeId), new {@class = "form-control document-dropdown select2"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].DocumentTypeEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 col-xs-12 col-sm-12 control-label">Серия и номер<span class="requared">*</span></label>
+        <div class="col-md-3 col-xs-4 col-sm-4">
+            @Html.TextBoxFor(r => r[i].Data.DocumentSeria, new {@class = "form-control input-mask-passport-series " + (Model[i].NullSafe(m => m.Data.DocumentType.Name) == "Паспорт гражданина РФ" ? "input-mask-passport-series-active" : string.Empty), autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].DocumentSeriaEm.FormatEx(string.Empty)</span>
+        </div>
+        <div class="col-xs-8 col-md-6 col-sm-8">
+            @Html.TextBoxFor(r => r[i].Data.DocumentNumber, new {@class = "form-control input-mask-passport-number " + (Model[i].NullSafe(m => m.Data.DocumentType.Name) == "Паспорт гражданина РФ" ? "input-mask-passport-number-active" : string.Empty), autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].DocumentNumberEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Когда выдан документ<span class="requared">*</span></label>
+        <div class="col-md-9">
+            <div class='input-group datepicker-my datepicker'>
+                @Html.TextBoxFor(r => r[i].Data.DocumentDateOfIssue, new {@class = "form-control input-mask-date", @Value = Model[i].Data.DocumentDateOfIssue.FormatEx(string.Empty, string.Empty), autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            <span class="field-validation-error">@Model[i].DocumentDateOfIssueEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Кем выдан документ<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r[i].Data.DocumentSubjectIssue, new {@class = "form-control", autocomplete = "off", maxlength = "500"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].DocumentSubjectIssueEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Код подразделения</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r[i].Data.DocumentCode, new {@class = "form-control document-code", autocomplete = "off", maxlength = "500"}).DisableIf(() => Model[i].Data.IsDeleted)
+        </div>
+    </div>
+    @foreach (var e in (Model[i].Data.BaseRegistryInfo ?? new List<ExchangeBaseRegistry>
+        ()).Where(b => !b.NotActual).ToList())
+    {
+        var res = e.Parse();
+        Html.RenderPartial("BaseRegistryBenefitResult", res);
+    }
+
+    <div class="row form-group attendant-foreign-document @(Model[i].NullSafe(m => m.Data.Request.PlaceOfRest.IsForegin) ? string.Empty : " hidden")">
+        <label class="col-md-3 control-label">Фамилия в документе, удостоверяющем личность за рубежом</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r[i].Data.ForeginLastName, new {@class = "form-control", maxlength = 1000}).DisableIf(() => Model[i].Data.IsDeleted)
+        </div>
+    </div>
+    <div class="row form-group attendant-foreign-document @(Model[i].NullSafe(m => m.Data.Request.PlaceOfRest.IsForegin) ? string.Empty : " hidden")">
+        <label class="col-md-3 control-label">Имя в документе, удостоверяющем личность за рубежом</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r[i].Data.ForeginName, new {@class = "form-control", maxlength = 1000}).DisableIf(() => Model[i].Data.IsDeleted)
+        </div>
+    </div>
+    <div class="row form-group attendant-foreign-document @(Model[i].NullSafe(m => m.Data.Request.PlaceOfRest.IsForegin) ? string.Empty : " hidden")">
+        <label class="col-md-3 control-label">Тип документа, удостоверяющего личность за рубежом<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.DropDownListFor(r => r[i].Data.ForeginTypeId, new SelectList(ViewBag.DocumentsTypeForeignAttendant, "Id", "Name", Model[i].Data.ForeginTypeId), new {@class = "form-control select2"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].ForeginTypeEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group attendant-foreign-document @(Model[i].NullSafe(m => m.Data.Request.PlaceOfRest.IsForegin) ? string.Empty : " hidden")">
+        <label class="col-md-3 col-xs-12 col-sm-12 control-label">Серия и номер<span class="requared">*</span></label>
+        <div class="col-md-3 col-xs-4 col-sm-4">
+            @Html.TextBoxFor(r => r[i].Data.ForeginSeria, new {@class = "form-control", autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].ForeginSeriaEm.FormatEx(string.Empty)</span>
+        </div>
+        <div class="col-xs-8 col-md-6 col-sm-8 attendant-foreign-document @(Model[i].NullSafe(m => m.Data.Request.PlaceOfRest.IsForegin) ? string.Empty : " hidden")">
+            @Html.TextBoxFor(r => r[i].Data.ForeginNumber, new {@class = "form-control", autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].ForeginNumberEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group attendant-foreign-document @(Model[i].NullSafe(m => m.Data.Request.PlaceOfRest.IsForegin) ? string.Empty : " hidden")">
+        <label class="col-md-3 control-label">Дата выдачи<span class="requared">*</span></label>
+        <div class="col-md-9">
+            <div class='input-group datepicker-my datepicker'>
+                @Html.TextBoxFor(r => r[i].Data.ForeginDateOfIssue, new {@class = "form-control required input-mask-date", placeholder = "", @Value = Model[i].Data.ForeginDateOfIssue.FormatEx(string.Empty, string.Empty), autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            <span class="field-validation-error">@Model[i].ForeginDateOfIssueEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group attendant-foreign-document @(Model[i].NullSafe(m => m.Data.Request.PlaceOfRest.IsForegin) ? string.Empty : " hidden")">
+        <label class="col-md-3 control-label">Срок действия<span class="requared">*</span></label>
+        <div class="col-md-9">
+            <div class='input-group datepicker datepicker-future'>
+                @Html.TextBoxFor(r => r[i].Data.ForeginDateEnd, new {@class = "form-control required", placeholder = "", @Value = Model[i].Data.ForeginDateEnd.FormatEx(string.Empty, string.Empty), autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            <span class="field-validation-error">@Model[i].ForeginDateEndEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group attendant-foreign-document @(Model[i].NullSafe(m => m.Data.Request.PlaceOfRest.IsForegin) ? string.Empty : " hidden")">
+        <label class="col-md-3 control-label">Кем выдан<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r[i].Data.ForeginSubjectIssue, new {@class = "form-control  required", placeholder = "", autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+            <span class="field-validation-error">@Model[i].ForeginSubjectIssueEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+
+
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Статус по отношению к ребенку<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.DropDownListFor(r => r[i].Data.ApplicantTypeId, new SelectList(ViewBag.ApplicantType, "Id", "Name", Model[i].Data.ApplicantTypeId ?? 0), new {@class = "form-control applicantType select2 select-must-selected"}).DisableIf(() => Model[i].Data.IsDeleted)
+        </div>
+        <div class="col-md-offset-3 col-md-9 hidden">
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(r => r[i].Data.IsProxy, new {@class = "is-proxy"}).DisableIf(() => Model[i].Data.IsDeleted)
+                    Является доверенным лицом
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="proxy-block @Html.Raw(Model[i].Data.IsProxy && (Model[i].Data.Request.TypeOfRestId != (long) TypeOfRestEnum.Compensation && Model[i].Data.Request.TypeOfRestId != (long) TypeOfRestEnum.CompensationYouthRest) ? "" : "hidden")">
+        <h4>Сведения о доверенности</h4>
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Дата выдачи доверенности<span class="requared">*</span></label>
+            <div class="col-md-9">
+                <div class='input-group datepicker-my datepicker'>
+                    @Html.TextBoxFor(r => r[i].Data.ProxyDateOfIssure, new {@class = "form-control required input-mask-date", @Value = Model.NullSafe(m => m[i].Data.ProxyDateOfIssure).FormatEx(string.Empty, string.Empty)}).DisableIf(() => Model[i].Data.IsDeleted)
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+                <span class="field-validation-error">@Model[i].ProxyDateOfIssureEm.FormatEx(string.Empty)</span>
+            </div>
+        </div>
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Дата окончания срока действия доверенности<span class="requared">*</span></label>
+            <div class="col-md-9">
+                <div class='input-group datepicker datepicker-general'>
+                    @Html.TextBoxFor(r => r[i].Data.ProxyEndDate, new {@class = "form-control input-mask-date-anytime required", @Value = Model.NullSafe(m => m[i].Data.ProxyEndDate).FormatEx(string.Empty, string.Empty)}).DisableIf(() => Model[i].Data.IsDeleted)
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+                <span class="field-validation-error">@Model[i].ProxyEndDateEm.FormatEx(string.Empty)</span>
+            </div>
+        </div>
+        <div class="row form-group">
+            <label class="col-md-3 control-label">ФИО нотариуса<span class="requared">*</span></label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(r => r[i].Data.NotaryName, new {@class = "form-control  required", autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+                <span class="field-validation-error">@Model[i].NotaryNameEm.FormatEx(string.Empty)</span>
+            </div>
+        </div>
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Номер доверенности<span class="requared">*</span></label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(r => r[i].Data.ProxyNumber, new {@class = "form-control  required", autocomplete = "off"}).DisableIf(() => Model[i].Data.IsDeleted)
+                <span class="field-validation-error">@Model[i].ProxyNumberEm.FormatEx(string.Empty)</span>
+            </div>
+        </div>
+    </div>
+    @if (ViewBag.ModelStatusId == (long) StatusEnum.CertificateIssued)
+    {
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Вид нарушения</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(r => r[i].Data.TypeViolationId, new SelectList(violations, "Id", "Name", Model[i].Data.TypeViolationId), new {@class = "form-control select2  type-violation"}).DisableIf(() => !Security.HasRight(AccessRightEnum.RequestEditTypeViolation)).DisableIf(() => Model[i].Data.IsDeleted)
+            </div>
+        </div>
+    }
+    </fieldset>
+}

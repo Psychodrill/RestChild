@@ -1,0 +1,193 @@
+﻿@using System.Text
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Extensions
+@model RestChild.Comon.Dto.BaseRegistryCheckResult
+
+@functions
+{
+
+	private bool isDateValid(DateTime? dateTime)
+	{
+		if (dateTime.HasValue)
+		{
+			if (dateTime != new DateTime(0))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+}
+
+@if (Model != null)
+{
+	var child = Model.Child as RestChild.Domain.Child;
+	var applicant = Model.Applicant as RestChild.Domain.Applicant;
+	var addonStr = "";
+	if (child != null && applicant != null)
+	{
+		addonStr = string.Format(" между {0} {1} {2} и {3} {4} {5}", child.LastName, child.FirstName, child.MiddleName, applicant.LastName, applicant.FirstName, applicant.MiddleName);
+	}
+
+	<div class="row form-group">
+		<div class="col-md-9 col-md-offset-3">
+			<div class="@((Model.Approved ?? true) && (Model.ApprovedLowIncome ?? true) ? "bg-success" : (!Model.ResultAbsent ? "bg-danger" : "bg-warning")) panel-approve">
+				По запросу <span style="font-weight: bold">@(Model.RequestDate.HasValue ? Model.RequestNumber : "-")</span> от <span style="font-weight: bold">@Model.RequestDate.FormatEx()</span> на <b>@(Model.Type.GetNameCheck() + addonStr)</b> из Базового регистра <b>@(Model.ResultAbsent ? "не получен ответ" : " получен ответ:")</b>
+				@if (Model.ApprovedLowIncome.HasValue)
+				{
+					<div>Льгота <b>"Ребёнок из малообеспеченной семьи"</b> - <b>@(Model.ApprovedLowIncome == false ? "не " : "")подтверждена.</b></div>
+				}
+				@if (Model.Approved.HasValue && !Model.ResultAbsent && Model.Type == ExchangeBaseRegistryTypeEnum.Benefit)
+				{
+					<div>Выбранная льгота - <b>@(Model.Approved == false ? "не " : "")подтверждена.</b></div>
+				}
+				<div>
+					@Html.Raw(Model.Note.FormatEx(string.Empty))
+				</div>
+				@if (Model.Type == ExchangeBaseRegistryTypeEnum.Benefit && Model.BenefitCheckResult != null && Model.BenefitCheckResult.Any())
+				{
+					<div style="font-style: italic">Список льгот:</div>
+					<ol>
+						@foreach (var category in Model.BenefitCheckResult)
+						{
+							var result = new StringBuilder();
+							if (category.CanUse || category.LowIncome)
+							{
+								result.AppendLine("<b>");
+							}
+							result.Append(category.Preferentical);
+
+							if (isDateValid(category.StartDate) || isDateValid(category.EndDate))
+							{
+								result.Append(", срок действия:");
+								result.Append(isDateValid(category.StartDate) ? " с " + category.StartDate.FormatEx() : string.Empty);
+								result.Append(isDateValid(category.EndDate) ? " по " + category.EndDate.FormatEx() : string.Empty);
+							}
+							result.Append(".");
+
+							//if (!string.IsNullOrEmpty(category.StartReasonName) || !string.IsNullOrEmpty(category.StartReasonSeries) || !string.IsNullOrEmpty(category.StartReasonNumber) || !string.IsNullOrEmpty(category.StartReasonPlaceOfIssue) || isDateValid(category.StartReasonDateOfIssue))
+							//{
+							//	result.Append(" Документ, подтверждающий льготу");
+
+							//	if (!string.IsNullOrEmpty(category.StartReasonName) || !string.IsNullOrEmpty(category.StartReasonSeries) || !string.IsNullOrEmpty(category.StartReasonNumber))
+							//	{
+							//		result.Append(": ");
+							//		result.Append(string.Join(" ", new[] {category.StartReasonName, category.StartReasonSeries, category.StartReasonNumber}.Where(x => !x.IsNullOrWhiteSpace())));
+							//	}
+
+							//	if (!string.IsNullOrEmpty(category.StartReasonPlaceOfIssue) || isDateValid(category.StartReasonDateOfIssue))
+							//	{
+							//		result.Append(", выдан: ");
+							//		result.Append(string.Join(" ", new[] {category.StartReasonPlaceOfIssue, category.StartReasonDateOfIssue.FormatEx(string.Empty, string.Empty)}.Where(x => !x.IsNullOrWhiteSpace())));
+							//	}
+
+							//	result.Append(".");
+							//}
+
+
+							//result.Append("<br>");
+
+							//if (!string.IsNullOrEmpty(category.EndReasonName) || !string.IsNullOrEmpty(category.EndReasonSeries) || !string.IsNullOrEmpty(category.EndReasonNumber) || !string.IsNullOrEmpty(category.EndReasonPlaceOfIssue) || isDateValid(category.EndReasonDateOfIssue))
+							//{
+							//	result.Append(" Документ о прекращении льготы");
+
+							//	if (!string.IsNullOrEmpty(category.EndReasonName) || !string.IsNullOrEmpty(category.EndReasonSeries) || !string.IsNullOrEmpty(category.EndReasonNumber))
+							//	{
+							//		result.Append(": ");
+							//		result.Append(string.Join(" ", new[] {category.EndReasonName, category.EndReasonSeries, category.EndReasonNumber}.Where(x => !x.IsNullOrWhiteSpace())));
+							//	}
+
+							//	if (!string.IsNullOrEmpty(category.EndReasonPlaceOfIssue) || isDateValid(category.EndReasonDateOfIssue))
+							//	{
+							//		result.Append(", выдан: ");
+							//		result.Append(string.Join(" ", new[] {category.EndReasonPlaceOfIssue, category.EndReasonDateOfIssue.FormatEx(string.Empty, string.Empty)}.Where(x => !x.IsNullOrWhiteSpace())));
+							//	}
+
+							//}
+							if (category.CanUse || category.LowIncome)
+							{
+								result.AppendLine("</b>");
+							}
+
+							<li>
+								@Html.Raw(result.ToString())
+							</li>
+						}
+					</ol>
+				}
+
+				@if ((Model.Type == ExchangeBaseRegistryTypeEnum.Snils || Model.Type == ExchangeBaseRegistryTypeEnum.Snils2040) && Model.SnilsCheckResult != null)
+				{
+					<div style="font-weight: bold">
+						@Model.SnilsCheckResult.CheckResult
+					</div>
+				}
+
+				@if (Model.Type == ExchangeBaseRegistryTypeEnum.Payments && Model.PaymentCheckResults != null && Model.PaymentCheckResults.Any())
+				{
+					<div>
+						<div style="font-style: italic">Список назначенных выплат:</div>
+						<ol>
+							@foreach (var category in Model.PaymentCheckResults)
+							{
+								var result = new StringBuilder();
+								if (category.CanUse)
+								{
+									result.AppendLine("<b>");
+								}
+								result.Append(category.SocialSupportName);
+
+								if (category.Volumes != null && category.Volumes.Any(v => v.AssignmentDate.HasValue))
+								{
+									var lastDate = category.Volumes.Where(a => a.AssignmentDate.HasValue).Select(a => a.AssignmentDate.Value).Max();
+
+									result.Append(" (последняя выплата " + lastDate.FormatEx() + ")");
+								}
+								result.Append(".");
+								if (category.CanUse)
+								{
+									result.AppendLine("</b>");
+								}
+
+								<li>
+									@Html.Raw(result.ToString())
+								</li>
+							}
+						</ol>
+					</div>
+				}
+
+
+				@if (Model.Type == ExchangeBaseRegistryTypeEnum.Relationship && Model.RelationshipCheckResults != null && Model.RelationshipCheckResults.Any())
+				{
+					<div style="font-style: italic">Сведения из свидетельства о рождении:</div>
+					<table>
+						<tbody>
+						@foreach (var category in Model.RelationshipCheckResults)
+						{
+							<tr>
+								<td>Отец:<b> @category.FatherLastName @category.FatherFirstName @category.FatherPatronymic - @category.FatherBirthDate.FormatEx(string.Empty)</b></td>
+							</tr>
+							<tr>
+								<td>Мать: <b>@category.MotherLastName @category.MotherFirstName @category.MotherPatronymic - @category.MotherBirthDate.FormatEx(string.Empty)</b></td>
+							</tr>
+							<tr>
+								<td>Ребёнок: <b>@category.ChildLastName @category.ChildFirstName @category.ChildPatronymic - @category.ChildBirthDate.FormatEx(string.Empty) </b></td>
+							</tr>
+							<tr>
+								<td>Свидетельство о рождении: <b> @category.CertSeries @category.CertNumber от @category.CertlssueDate.FormatEx()</b></td>
+							</tr>
+							<tr>
+								<td>Номер записи:<b> @category.ActRequisitesActNumber от @category.ActRequisitesActDate.FormatEx(), @category.ActRequisitesNameOfRegistrar</b></td>
+							</tr>
+						}
+						</tbody>
+					</table>
+				}
+			</div>
+		</div>
+	</div>
+}

@@ -1,0 +1,85 @@
+﻿@using System.Globalization
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@model RestChild.Web.Models.RequestViewModel
+
+<fieldset id="Placements" class="bs-callout bs-callout-info request-block @(Model.Data.TypeOfRest.NullSafe(x => x.NeedPlacment) || (Model.Data.TypeOfRestId != (long) TypeOfRestEnum.Compensation && Model.Data.TypeOfRestId != (long) TypeOfRestEnum.CompensationYouthRest && !(Model.HasBooking) && !Model.Data.TypeOfRest.NullSafe(x => x.NotChildren)) ? string.Empty : "hidden")">
+    @if (Model.HasBooking)
+    {
+        <h3 id="Places" class="anchor bs-callout-info">Размещение</h3>
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Детей</label>
+            <div class="col-md-9 line-height35">
+                @Model.NullSafe(m => m.Data.CountPlace).FormatEx()
+                @Html.HiddenFor(m => m.Data.CountPlace)
+                @Html.HiddenFor(m => m.Data.MainPlaces)
+            </div>
+        </div>
+        <div class="row form-group @(Model.Data.TypeOfRest.NullSafe(x => x.NeedPlacment) ? "" : "hidden")" id="PlacesAttendants">
+            <label class="col-md-3 control-label">Сопровождающих</label>
+            <div class="col-md-9 line-height35">
+                @Model.NullSafe(m => m.Data.CountAttendants).FormatEx()
+                @Html.HiddenFor(m => m.Data.CountAttendants)
+                @Html.HiddenFor(m => m.Data.AdditionalPlaces)
+            </div>
+        </div>
+
+        if (Model.Location != null && Model.Location.Any())
+        {
+            <div class="row form-group">
+                <label class="col-md-3 control-label">Размещение</label>
+                <div class="col-md-9 line-height35">
+                    <table class="table">
+                        <tbody>
+                        @foreach (var location in Model.Location)
+                        {
+                            <tr>
+                                <td>@Html.Raw(location.Name.FormatEx()) (количество номеров: @(location.Count)) </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    }
+    else if (Model.Data.StatusId == (long) StatusEnum.Draft)
+    {
+        <h3 id="Places" class="anchor bs-callout-info">Размещение</h3>
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Детей<span class="requared">*</span></label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(r => r.Data.CountPlace, new SelectList(Enumerable.Range(1, 15).Select(x => new {val = x.ToString(CultureInfo.InvariantCulture), text = x.ToString(CultureInfo.InvariantCulture)}), "val", "text"), new {@class = "form-control required select2", id = "mainPlaces"})
+                <span class="field-validation-error">@Model.CountPlaceEm.FormatEx(string.Empty)</span>
+            </div>
+        </div>
+        <div class="row form-group @(Model.Data.TypeOfRest.NullSafe(x => x.NeedPlacment) ? "" : "hidden")" id="PlacesAttendants">
+            <label class="col-md-3 control-label">Сопровождающих<span class="requared">*</span></label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(r => r.Data.CountAttendants, new SelectList(Enumerable.Range(1, 15).Select(x => new {val = x.ToString(CultureInfo.InvariantCulture), text = x.ToString(CultureInfo.InvariantCulture)}).InsertAt(new {val = "", text = ""}), "val", "text"), new {@class = "form-control required select2", id = "Data_CountAttendants"})
+                <span class="field-validation-error">@Model.CountAttendantsEm.FormatEx(string.Empty)</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <h3 id="Places" class="anchor bs-callout-info">Размещение</h3>
+        <div class="row form-group">
+            <label class="col-md-3 control-label">Детей</label>
+            <div class="col-md-9 line-height35">
+                @Model.NullSafe(m => m.Data.CountPlace).FormatEx()
+                @Html.HiddenFor(m => m.Data.CountPlace, new {@id = "cc_1"})
+                @Html.HiddenFor(m => m.Data.MainPlaces, new {@id = "cc_2"})
+            </div>
+        </div>
+        <div class="row form-group @(Model.Data.TypeOfRest.NullSafe(x => x.NeedPlacment) ? "" : "hidden")" id="PlacesAttendants">
+            <label class="col-md-3 control-label">Сопровождающих</label>
+            <div class="col-md-9 line-height35">
+                @Model.NullSafe(m => m.Data.CountAttendants).FormatEx()
+                @Html.HiddenFor(m => m.Data.CountAttendants, new {@id = "ca_1"})
+                @Html.HiddenFor(m => m.Data.AdditionalPlaces, new {@id = "ca_2"})
+            </div>
+        </div>
+    }
+
+</fieldset>

@@ -1,0 +1,83 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.PartyFilter
+
+@{
+	Layout = null;
+	Model.UngroupedChilds = Model.UngroupedChilds ?? new List<Child>();
+}
+
+
+@Html.Partial("Filter", Model)
+
+
+@{ var groupCount = 0; }
+@if (Model.GroupedChilds != null && Model.GroupedChilds.Any())
+{
+	@Html.CheckBox("CheckAll", new { @class = "check-all-childs" }).DisableIf(() => Model.NullSafe(m => m.BoutState.Id) != StateMachineStateEnum.Bout.Editing)
+	@:Выбрать всех
+
+	foreach (var group in Model.GroupedChilds)
+	{
+		var childs = group.Childs ?? new List<Child>();
+		<div class="panel-group child-group" role="tablist" id="child-group-@groupCount">
+			<div class="panel panel-default">
+				<div class="panel-heading @(childs.All(c => c.PartyId.HasValue) ? "group-in-party" : string.Empty)" role="tab" id="headingOne">
+					<h4 class="panel-title">
+						@Html.CheckBox("CheckGroup_" + groupCount, false, new { id = "CheckGroup_" + groupCount, @class = "group-checkbox" }).DisableIf(() => childs == null || childs.All(c => c.PartyId.HasValue))
+						<a data-toggle="collapse" data-parent="#child-group-@groupCount" href="#child-group-@groupCount-body">@(groupCount + 1). Количество детей: @group.NullSafe(g => g.Childs.Count) @group.Name @group.NullSafe(g => g.Oiv.Name) @group.NullSafe(g => g.Organization.Name)</a>
+					</h4>
+				</div>
+			</div>
+			<div id="child-group-@groupCount-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+				<div class="panel-body">
+					@if (group.Childs != null && group.Childs.Any())
+					{
+						<table class="table table-striped table-hover">
+							<thead>
+								<tr>
+									<th></th>
+									<th>ФИО ребенка</th>
+									<th>Пол</th>
+									<th>Возраст</th>
+									<th>Дата заезда</th>
+									<th>Дата выезда</th>
+								</tr>
+							</thead>
+							<tbody>
+							@{
+								var childNum = 1;
+							}
+							@foreach (var child in group.Childs)
+							{
+								var childInParty = child.PartyId.HasValue;
+								var tour = child.NullSafe(c => c.Request.Tour) ?? child.NullSafe(c => c.ChildList.Tour);
+								<tr class="child @(childInParty ? "child-in-party" : string.Empty)">
+									<td width="5%">@Html.CheckBox("CheckChild_" + child.Id, false, new { id = "CheckChild_" + child.Id, data_id = child.Id, @class = "child-checkbox" }).DisableIf(() => childInParty)</td>
+									<td width="15%">@(childNum). @child.LastName @child.FirstName @child.MiddleName</td>
+									<td width="15%">@(child.Male ? "Мужской" : "Женский")</td>
+									<td width="15%">@child.GetAgeInYears()</td>
+									<td width="15%">@((tour != null ? (DateTime?)tour.DateIncome : null).FormatEx())</td>
+									<td width="15%">@((tour != null ? (DateTime?)tour.DateOutcome : null).FormatEx())</td>
+								</tr>
+								childNum++;
+							}
+							</tbody>
+						</table>
+					}
+					else
+					{
+						@:Дети не найдены
+					}
+				</div>
+			</div>
+		</div>
+		groupCount++;
+	}
+}
+else
+{
+	@:Дети не найдены
+}

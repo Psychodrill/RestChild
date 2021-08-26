@@ -1,0 +1,45 @@
+﻿@model IList<RestChild.Domain.ExchangeBaseRegistryType>
+@{
+    ViewBag.Title = "Управление отправкой запросов в базовый регистр";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Управление отправкой запросов в базовый регистр</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("SaveManage", "BaseRegistry", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <fieldset class="form-horizontal">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <h4>Отправка заявлений на проверку</h4>
+                @for (var i = 0; i < Model.Count; i++)
+                {
+                    <div class="form-group">
+                        @Html.HiddenFor(m => m[i].Id)
+                        <label class="col-md-offset-2 col-md-10 checkbox">
+                            @Html.CheckBoxFor(m => m[i].SendMessage) @Html.Raw(Model[i].Name)
+                        </label>
+                    </div>
+                }
+            </fieldset>
+        }
+    </div>
+</div>
+
+@section styles{
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" language="javascript">
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+    </script>
+}

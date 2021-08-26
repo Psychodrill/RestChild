@@ -1,0 +1,118 @@
+﻿@using RestChild.Comon
+@using RestChild.Domain
+@model RestChild.Web.Models.TimeOfRestModel
+@{
+	ViewBag.Title = "Справочник времени отдыха";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+	<div class="col-md-12">
+		<h2>Время отдыха</h2>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		@using (Html.BeginForm("Save", "RestTime", FormMethod.Post))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(model => model.Data.Id)
+			@Html.HiddenFor(model => model.Data.CreateUserId)
+			@Html.HiddenFor(model => model.Data.FactorDependence)
+			@Html.HiddenFor(model => model.Data.LastUpdateTick)
+			<fieldset class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Наименование<span class="requared">*</span></label>
+					<div class="col-md-9">
+						@Html.TextBoxFor(model => model.Data.Name, new {@class = "form-control"})
+						@Html.ValidationMessageFor(model => model.Data.Name, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Цель обращения<span class="requared">*</span></label>
+					<div class="col-md-9" data-toggle = "tooltip" data-placement = "right" title = "Выбор из справочника Видов отдыха">
+						@Html.DropDownListFor(model => model.TypeOfRestId, Model.RestTypes, new {@class = "form-control", @data_toggle = "tooltip", @data_placement = "right", @title = "Выбор из справочника Видов отдыха" })
+						@Html.ValidationMessageFor(model => model.TypeOfRestId, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Год отдыха(кампания)<span class="requared">*</span></label>
+					<div class="col-md-9" data-toggle = "tooltip" data-placement = "right" title = "Выбор года оздоровительной кампании из справочника заявочных кампаний">
+						@Html.DropDownListFor(model => model.YearOfRestId, Model.RestYears, new {@class = "form-control", @data_toggle = "tooltip", @data_placement = "right", @title = "Выбор года оздоровительной кампании из справочника заявочных кампаний" })
+						@Html.ValidationMessageFor(model => model.YearOfRestId, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Смена</label>
+					<div class="col-md-9" data-toggle = "tooltip" data-placement = "right" title = "Выбор из справочника смен">
+						@Html.DropDownListFor(model => model.Data.GroupedTimeOfRestId, Model.GroupedTimeOfRest, new {@class = "form-control", @data_toggle = "tooltip", @data_placement = "right", @title = "Выбор из справочника смен" })
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Дата начала:<span class="requared">*</span></label>
+					<div class="col-md-9">
+						<div class="input-group date datepicker-anytime" style="width: 170px" data-toggle = "tooltip" data-placement = "right" title = "Дата начала времени отдыха">
+							@Html.TextBoxFor(m => m.PeriodStart, new {@class = "form-control input-mask-date-anytime", @Value = Model.PeriodStart.FormatEx(string.Empty, string.Empty) })
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+						@Html.ValidationMessageFor(model => model.PeriodStart, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Продолжительность в днях<span class="requared">*</span></label>
+					<div class="col-md-1">
+						@Html.TextBoxFor(model => model.Data.PeriodLength, new {@class = "form-control integer", maxlength = "3", @data_toggle = "tooltip", @data_placement = "right", @title = "Продолжительность времени отдыха" })
+						@Html.ValidationMessageFor(model => model.Data.PeriodLength, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="checkbox col-md-9 col-md-offset-3">
+						<label>
+							@Html.CheckBoxFor(model => model.Data.IsActive) Активный
+						</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-9 col-md-offset-3">
+						<button type="submit" class="btn btn-default btn-primary">
+							<i class="glyphicon glyphicon-pencil"></i> Сохранить
+						</button>
+					</div>
+				</div>
+			</fieldset>
+		}
+	</div>
+</div>
+
+@section styles{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+}
+
+@section scripts
+{
+<script type="text/javascript" src="~/Scripts/moment.js"></script>
+<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+@Scripts.Render("~/bundles/global")
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/Scripts/select2.min.js")
+@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript">
+		moment.locale('ru');
+		Globalize.culture("ru");
+		$(function() {
+			$.datepicker.setDefaults($.datepicker.regional["ru"]);
+			jQuery.validator.methods["date"] = function (value, element) { return true; }
+			$('select').select2();
+			$('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
+		});
+		$(function () {
+			$('[data-toggle="tooltip"]').tooltip();
+		});
+	</script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+
+}

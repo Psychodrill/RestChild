@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="RestChild.Web.Services.Service" CodeBehind="AsGufService.svc.cs" %>

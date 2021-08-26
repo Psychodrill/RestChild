@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<BCPFORMAT xmlns="http://schemas.microsoft.com/sqlserver/2004/bulkload/format" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <RECORD>
+  <FIELD ID="1" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="2" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="3" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="4" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="5" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="6" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="7" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="8" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="9" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="10" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="11" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="12" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="13" xsi:type="CharTerm" TERMINATOR='";"' COLLATION="Cyrillic_General_CI_AS"/>
+  <FIELD ID="14" xsi:type="CharTerm" TERMINATOR="\n" COLLATION="Cyrillic_General_CI_AS"/>
+ </RECORD>
+ <ROW>
+  <COLUMN SOURCE="1" NAME="PK" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="2" NAME="L_NA" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="3" NAME="NAM" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="4" NAME="P_NA" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="5" NAME="D_R" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="6" NAME="SEX" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="7" NAME="S_PA" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="8" NAME="N_PA" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="9" NAME="S_SV" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="10" NAME="N_SV" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="11" NAME="U_ID" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="12" NAME="OUID" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="13" NAME="SNILS" xsi:type="SQLNVARCHAR"/>
+  <COLUMN SOURCE="14" NAME="STAT" xsi:type="SQLNVARCHAR"/>
+ </ROW>
+</BCPFORMAT>

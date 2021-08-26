@@ -1,0 +1,219 @@
+select * from dbo.DeclineReason where Id in (
+select DeclineReasonId from dbo.Request where YearOfRestId=6 and StatusId=1080 and IsDeleted=0
+)
+
+select * from dbo.ExchangeBaseRegistry where ApplicantId in (
+select ApplicantId from dbo.Request where YearOfRestId=6 and ((StatusId=1080 and DeclineReasonId in (201706,201707,201702)) or StatusId=1055) and IsDeleted=0
+) and NotActual=0 
+
+select Id into #TMP from dbo.Request where YearOfRestId=6 and ((StatusId=1080 and DeclineReasonId in (201706,201707,201702)) or StatusId=1055) and IsDeleted=0
+
+--select * from dbo.ExchangeBaseRegistry where ChildId in (
+
+select RequestId into #TMPRECHECK from (
+select distinct RequestId  from dbo.Child where RequestId in (select Id from #TMP)
+and Id in (select ChildId from dbo.ExchangeBaseRegistry where NotActual=0 and Success=0 and IsProcessed=1 and ExchangeBaseRegistryTypeId=260)
+) T
+
+
+select Id from #TMP where Id not in (select RequestId from #TMPRECHECK) -- 10687
+select count(*) from dbo.ExchangeBaseRegistry where ApplicantId in (select ApplicantId from dbo.Request where Id in (select Id from #TMP where Id not in (select RequestId from #TMPRECHECK))) and IsProcessed=1 and ExchangeBaseRegistryTypeId=2040 and NotActual=0
+
+begin tran
+--62002
+delete from dbo.ExchangeUTS 
+where RequestId in (select Id from #TMP) and Processed=0 and ToState in (10190,7704,7705,1080,1060)
+and Id in (select Id from BackupDb.dbo.ExchangeUTS20181109)
+--6402
+update dbo.Request set StatusId=1050, DeclineReasonId=null, NeedSendForBenefit=1 where Id in (select RequestId from #TMPRECHECK)
+--10687
+update dbo.Request set StatusId=1050, DeclineReasonId=null where Id in (select Id from #TMP where Id not in (select RequestId from #TMPRECHECK))
+--10687
+update dbo.ExchangeBaseRegistry set IsProcessed=0 where ApplicantId in (select ApplicantId from dbo.Request where Id in (select Id from #TMP where Id not in (select RequestId from #TMPRECHECK))) and IsProcessed=1 and ExchangeBaseRegistryTypeId=2040 and NotActual=0
+
+commit tran
+
+
+--select * from dbo.E
+
+---------------------------------------------
+/*commit tran
+update dbo.Request set NeedSendForBenefit=1 where TypeOfRestId=14 and YearOfRestId=6 and StatusId=1050 and IsDeleted=0
+
+update dbo.Request set NeedSendForBenefit=1 where Id=621823
+select * from dbo.Request where Id=621823
+
+select * from dbo.ExchangeUTS where RequestId=639856
+*/
+
+select * from dbo.Child where RequestId=639856
+
+select * from dbo.ExchangeBaseRegistry where ChildId=774119 and ExchangeBaseRegistryTypeId=260 and IsProcessed=0
+select count(*) from dbo.ExchangeBaseRegistry where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate>='2018-11-02'
+
+select count(*) from dbo.ExchangeBaseRegistry where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate is null and ExchangeBaseRegistryTypeId is not null and IsIncoming=0
+
+select top 100 * from dbo.ExchangeBaseRegistry
+order by Id desc
+
+select count(*) from dbo.Request where NeedSendForBenefit=1 and IsDeleted=0
+
+/*begin tran
+delete from dbo.ExchangeUTS where RequestId=639856 and Processed=0 and Id in (3236292,3236293,3236294)
+update dbo.Request set StatusId=1050, DeclineReasonId=null where Id=639856
+update dbo.ExchangeBaseRegistry set IsProcessed=0 where Id=1553572
+commit tran*/
+
+------------------------------------------------
+
+select Id, RequestNumber, DateRequest, StatusId from dbo.Request where Id in (
+select RequestId from Child where Id in (
+select ChildId from dbo.ExchangeBaseRegistry e
+where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate>='2018-11-02' and ExchangeBaseRegistryTypeId=22
+)
+) and StatusId in (1050,1052,1055) and IsDeleted=0
+order by DateRequest
+
+
+select Id, RequestNumber, DateRequest from dbo.Request where Id in (
+select RequestId from Child where Id in (
+select ChildId from dbo.ExchangeBaseRegistry where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate>='2018-11-02' and ExchangeBaseRegistryTypeId=2040 
+and ChildId is not null
+)
+union
+select RequestId from Applicant where Id in (
+select ApplicantId from dbo.ExchangeBaseRegistry where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate>='2018-11-02' and ExchangeBaseRegistryTypeId=2040 
+ and ApplicantId is not null
+) and RequestId is not null
+union
+select Id as RequestId from Request where ApplicantId in (
+select ApplicantId from dbo.ExchangeBaseRegistry where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate>='2018-11-02' and ExchangeBaseRegistryTypeId=2040 
+ and ApplicantId is not null
+) and StatusId in (1050,1052,1055) and IsDeleted=0
+)
+order by DateRequest
+
+
+------------------------------------------------
+
+select ExchangeBaseRegistryTypeId, count(*), count(ResponseDate) from dbo.ExchangeBaseRegistry where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate>='2018-11-02' group by ExchangeBaseRegistryTypeId
+select ExchangeBaseRegistryTypeId, count(*) from dbo.ExchangeBaseRegistry where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate is null and ExchangeBaseRegistryTypeId is not null and IsIncoming=0 group by ExchangeBaseRegistryTypeId
+
+select * from dbo.ExchangeBaseRegistry where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate>='2018-11-02' and ExchangeBaseRegistryTypeId=22 
+
+select Id, RequestNumber, DateRequest from dbo.Request where Id in (
+select RequestId from Child where Id in (
+select ChildId from dbo.ExchangeBaseRegistry e
+where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate>='2018-11-02' and ExchangeBaseRegistryTypeId=22
+)) and StatusId=1050 and IsDeleted=0 and SourceId=1
+order by DateRequest
+
+
+update dbo.Request set NeedSendForBenefit=1 where Id in (
+
+select RequestId from Child where Id in (
+select ChildId from dbo.ExchangeBaseRegistry where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate>='2018-11-02' and ExchangeBaseRegistryTypeId=2040 
+and Id<1786771 and ChildId is not null
+)
+union
+select RequestId from Applicant where Id in (
+select ApplicantId from dbo.ExchangeBaseRegistry where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate>='2018-11-02' and ExchangeBaseRegistryTypeId=2040 
+and Id<1786771 and ApplicantId is not null
+) and RequestId is not null
+union
+select Id as RequestId from Request where ApplicantId in (
+select ApplicantId from dbo.ExchangeBaseRegistry where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate>='2018-11-02' and ExchangeBaseRegistryTypeId=2040 
+and Id<1786771 and ApplicantId is not null
+))
+
+
+select count(*) from dbo.ExchangeUTS where Processed=0
+
+/*begin tran
+update dbo.Request set NeedSendForBenefit=1 where Id in (
+select RequestId from dbo.Child where Id in (
+select ChildId from 
+dbo.ExchangeBaseRegistry where IsProcessed=0 and NotActual=0 and ServiceNumber is not null and SendDate>='2018-11-02' and ExchangeBaseRegistryTypeId=2040 and Id<=1702799
+and ChildId is not null
+))
+*/
+--commit tran
+
+select r2.RequestNumber, r1.RequestNumber
+from dbo.Request r1 
+inner join dbo.Child a on a.RequestId=r1.Id
+inner join dbo.Child a2 on a2.Snils = a.Snils
+inner join dbo.Request r2 on r2.Id = a2.RequestId
+where r1.YearOfRestId=6 and r1.StatusId in (1050,1055) and r1.IsDeleted=0
+and r2.YearOfRestId=6 and r2.StatusId in (1050,1055) and r2.IsDeleted=0
+and r1.Id<r2.Id
+
+select * from dbo.Status
+
+
+-------------------------------------------
+
+select * from dbo.DeclineReason where Id in (
+select DeclineReasonId from dbo.Request where YearOfRestId=6 and StatusId=1080 and IsDeleted=0
+)
+
+select * from dbo.BenefitType where Id in (
+select distinct r.Id  from dbo.Request r
+inner join dbo.Child c on c.RequestId = r.Id
+where r.StatusId=1080 and r.IsDeleted=0 and r.YearOfRestId=6 and DeclineReasonId in (201707)
+and BenefitTypeId in (3,4,36, 47, 49, 50, 58, 59, 60,63,64,65,66)
+)
+
+3,4,36, 47, 49, 50, 58, 59, 60,63,64,65,66
+
+select * from dbo.ExchangeBaseRegistry where ApplicantId in (
+select ChildId from dbo.Request where YearOfRestId=6 and ((StatusId=1080 and DeclineReasonId in (201706))) and IsDeleted=0
+) and NotActual=0 
+
+select Id into #TMP from dbo.Request where YearOfRestId=6 and ((StatusId=1080 and DeclineReasonId in (201706,201707,201702)) or StatusId=1055) and IsDeleted=0
+
+--select * from dbo.ExchangeBaseRegistry where ChildId in (
+
+select RequestId into #TMPRECHECK from (
+select distinct RequestId  from dbo.Child where RequestId in (select Id from #TMP)
+and Id in (select ChildId from dbo.ExchangeBaseRegistry where NotActual=0 and Success=0 and IsProcessed=1 and ExchangeBaseRegistryTypeId=260)
+) T
+
+
+select Id from #TMP where Id not in (select RequestId from #TMPRECHECK) -- 10687
+select count(*) from dbo.ExchangeBaseRegistry where ApplicantId in (select ApplicantId from dbo.Request where Id in (select Id from #TMP where Id not in (select RequestId from #TMPRECHECK))) and IsProcessed=1 and ExchangeBaseRegistryTypeId=2040 and NotActual=0
+
+begin tran
+--62002
+delete from dbo.ExchangeUTS 
+where RequestId in (select Id from #TMP) and Processed=0 and ToState in (10190,7704,7705,1080,1060)
+and Id in (select Id from BackupDb.dbo.ExchangeUTS20181109)
+--6402
+update dbo.Request set StatusId=1050, DeclineReasonId=null, NeedSendForBenefit=1 where Id in (select RequestId from #TMPRECHECK)
+--10687
+update dbo.Request set StatusId=1050, DeclineReasonId=null where Id in (select Id from #TMP where Id not in (select RequestId from #TMPRECHECK))
+--10687
+update dbo.ExchangeBaseRegistry set IsProcessed=0 where ApplicantId in (select ApplicantId from dbo.Request where Id in (select Id from #TMP where Id not in (select RequestId from #TMPRECHECK))) and IsProcessed=1 and ExchangeBaseRegistryTypeId=2040 and NotActual=0
+
+commit tran
+
+-----------------
+выборки пятницы
+
+select Id, RequestNumber, DateRequest, DateChangeStatus from dbo.Request
+where YearOfRestId=6 and IsDeleted=0 and (AgentApplicant=1 or Id in (select RequestId from dbo.Applicant where IsProxy=1 and RequestId is not null))
+and StatusId = 1052
+order by DateChangeStatus
+
+select Id, RequestNumber, DateRequest, DateChangeStatus from dbo.Request
+where YearOfRestId=6 and IsDeleted=0 and (AgentApplicant=1 or Id in (select RequestId from dbo.Applicant where IsProxy=1 and RequestId is not null))
+and StatusId = 1050 and SourceId=2
+order by DateRequest
+
+
+select Id, RequestNumber, DateRequest, DateChangeStatus from dbo.Request
+where YearOfRestId=6 and IsDeleted=0 and Id in (select RequestId from dbo.Applicant where ApplicantTypeId=2 and RequestId is not null)
+and StatusId = 1052 
+order by DateChangeStatus
+
+

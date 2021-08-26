@@ -1,0 +1,5 @@
+﻿.comment-panel {
+	height: 300px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+}

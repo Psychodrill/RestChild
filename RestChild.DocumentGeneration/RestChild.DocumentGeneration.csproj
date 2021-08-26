@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{88D00CC2-CBEF-4AD2-986C-3A38478553D8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RestChild.DocumentGeneration</RootNamespace>
+    <AssemblyName>RestChild.DocumentGeneration</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.Extended, Version=5.0.0.0, Culture=neutral, PublicKeyToken=05b7e29bdd433584, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.Extended.5.0.0.73\lib\net45\EntityFramework.Extended.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.5.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.5\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="MimeTypeMap, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaTypeMap.2.1.0.0\lib\net40\MimeTypeMap.dll</HintPath>
+    </Reference>
+    <Reference Include="Morpher">
+      <HintPath>..\Components\Morpher.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DocumentProcessor.cs" />
+    <Compile Include="CshedDocumentResult.cs" />
+    <Compile Include="DocumentResult.cs" />
+    <Compile Include="DocumentSwitch.cs" />
+    <Compile Include="Filters\TradeUnionWordFilter.cs" />
+    <Compile Include="PDFDocuments\PdfProcessor.Certificate.cs" />
+    <Compile Include="PDFDocuments\PdfProcessor.Main.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="WordDocuments\WordProcessor.Main.cs" />
+    <Compile Include="WordDocuments\WordProcessor.TradeUnion.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RestChild.Comon\RestChild.Comon.csproj">
+      <Project>{4f2d7102-41a3-4a1a-86a7-b7bdd743de98}</Project>
+      <Name>RestChild.Comon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.DAL\RestChild.DAL.csproj">
+      <Project>{4c7c2237-1cd7-477d-b930-c375295317d8}</Project>
+      <Name>RestChild.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Domain\RestChild.Domain.csproj">
+      <Project>{2efdfafb-1b53-451a-be0e-2088dfff27c4}</Project>
+      <Name>RestChild.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Extensions\RestChild.Extensions.csproj">
+      <Project>{b7b0418c-522e-45d4-bc36-99e70984a1ad}</Project>
+      <Name>RestChild.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Security\RestChild.Security.csproj">
+      <Project>{d4e6dad9-febe-473a-8a13-538b387ad617}</Project>
+      <Name>RestChild.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Templates\RestChild.Templates.csproj">
+      <Project>{a2047876-feb1-46e9-aab6-f834a2ea1c8e}</Project>
+      <Name>RestChild.Templates</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="WordDocuments\WordProcessor.Notification.cs" />
+    <Compile Include="WordDocuments\WordProcessor.Refuse.cs" />
+    <Compile Include="WordDocuments\WordProcessor.Registration.cs" />
+    <Compile Include="WordDocuments\WordProcessor.Orphanage.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

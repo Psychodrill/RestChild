@@ -1,0 +1,109 @@
+﻿@using System.Collections
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Domain
+@model RestChild.Extensions.Filter.AdministratorTourFilterModel
+@{
+	ViewBag.Title = "Реестр администраторов смены";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "Search";
+	ViewBag.InsertAction = "Insert";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "AdministratorTour";
+	ViewBag.Caption = "Реестр администраторов смены";
+	ViewBag.InsertButtonCaption = "Добавить администратора смены";
+	ViewBag.SearchPanelCaption = "Поиск администраторов смены";
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">ФИО</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Возраст</label>
+		<div class="col-md-4">
+			<label class="col-md-1 control-label text-right">С</label>
+			<div class="col-md-4">@Html.TextBoxFor(m => m.AgeFrom, new { @class = "form-control col-md-6" })</div>
+			<label class="col-md-1 control-label text-right">По</label>
+			<div class="col-md-4">@Html.TextBoxFor(m => m.AgeTo, new { @class = "form-control col-md-6" })</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Пол</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(model => model.IsMale, new SelectList(new ArrayList() { new { Id = string.Empty, Name = "-- Не выбрано --" }, new { Id = "True", Name = "Мужской" }, new { Id = "False", Name = "Женский" } }, "Id", "Name"), new { @class = "form-control", autocomplete = "off" })
+		</div>
+		<label class="col-md-2 control-label text-right">Статус</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.StateId, new SelectList(Model.States.Select(s => new { Id = (long?)s.Id, s.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано -- "}), "Id", "Name"), new { @class = "form-control" })
+		</div>
+	</div>
+
+}
+
+@section searchResult
+{
+	@if (Model.Result != null && Model.Result.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="text-center" width="5%">№</th>
+					<th>ФИО</th>
+					<th>Дата рождения</th>
+					<th>Пол</th>
+					<th>Статус</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@{int rowNumber = Model.Result.FirstItemOnPage;}
+				@foreach (var counselor in Model.Result)
+				{
+					<tr>
+						<td class="text-center">@(rowNumber++)</td>
+						<td>@((counselor.LastName + " " + counselor.FirstName + " " + counselor.MiddleName).FormatEx())</td>
+						<td>@counselor.DateOfBirth.FormatEx()</td>
+						<td>@(counselor.Male ? "Мужской" : "Женский")</td>
+						<td>@(counselor.State != null ? counselor.State.Name : "-")</td>
+						<td class="text-center">@Html.ActionLink(" ", "Update", new { id = counselor.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model.Result, page =>
+						{
+							Model.Result = null;
+							Model.PageNumber = page;
+							Model.States = null;
+							return Url.Action("Search", Model);
+						}, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section scripts
+{
+	@Scripts.Render("~/Scripts/Vocabulary/CounselorsList.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+}

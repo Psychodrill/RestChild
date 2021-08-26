@@ -1,0 +1,88 @@
+﻿@using RestChild.Domain
+@model Tag
+@{
+	ViewBag.Title = "Тэги";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Тэг</h2>
+
+<a href="@Url.Action("List", "Tag")">Вернуться</a>
+<div class="row">&nbsp;</div>
+@using (Html.BeginForm("Save", "Tag", FormMethod.Post, new { @id = "form" }))
+{
+
+	<div class="row form-group">
+		<div class="col-md-8">
+			<button type="submit" class="btn btn-default btn-primary" role="button">
+				Сохранить
+			</button>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.Id)
+			@Html.HiddenFor(m => m.LastUpdateTick)
+			<fieldset class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Наименование</label>
+					<div class="col-md-9 line-height35">
+						@Html.TextBoxFor(m => m.Name, new {@class = "form-control", maxlength = 1000, placeholder = "Введите наименование"})
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Описание</label>
+					<div class="col-md-9 line-height35">
+						@Html.TextBoxFor(m => m.Description, new { @class = "form-control", maxlength = 1000, placeholder = "Введите наименование" })
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="checkbox col-md-10 col-md-offset-3">
+						<label data-toggle="tooltip" data-placement="right" title="Установка приводит к переводу записи в архив">
+							@Html.CheckBoxFor(m => m.IsDeleted) Архивная
+						</label>
+					</div>
+				</div>
+			</fieldset>
+		</div>
+	</div>
+}
+
+@Html.Partial("_ImageEditPartial")
+
+@section scripts
+{
+	@Scripts.Render("~/Scripts/jquery.Jcrop.min.js")
+	@Scripts.Render("~/Scripts/jquery.validate.min.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	@Scripts.Render("~/Scripts/jquery.numeric.js")
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale("ru");
+	</script>
+	@Scripts.Render("~/Scripts/CounselorTests/GroupEdit.js")
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+	@Html.Partial("Assets/HistoryLinkTemplate")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	@Scripts.Render("~/Scripts/Vocabulary/Vocabulary.js")
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/jquery.Jcrop.css")
+	@Styles.Render("~/Content/Vocabulary/VocabularyEdit.css")
+	@Styles.Render("~/Content/loading.css")
+	@Styles.Render("~/Content/css/font-awesome.min.css")
+	@Styles.Render("~/Content/summernote.css")
+	@Styles.Render("~/Content/jQuery.FileUpload/css/jquery.fileupload.css")
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+

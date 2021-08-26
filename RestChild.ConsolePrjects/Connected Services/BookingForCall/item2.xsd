@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://172.16.240.1:7777/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="bookingSearchRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:baseRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="attendants" type="xs:int" />
+          <xs:element minOccurs="0" name="countRows" type="xs:int" />
+          <xs:element minOccurs="0" name="firstRow" type="xs:int" />
+          <xs:element minOccurs="0" name="placeOfRestId" nillable="true" type="xs:long" />
+          <xs:element minOccurs="0" name="places" type="xs:int" />
+          <xs:element minOccurs="0" name="timeOfRestId" nillable="true" type="xs:long" />
+          <xs:element minOccurs="0" name="wbr" nillable="true" type="xs:boolean">
+            <xs:annotation>
+              <xs:appinfo>
+                <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="bookingSearchRequest" nillable="true" type="tns:bookingSearchRequest" />
+  <xs:complexType name="baseRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="dn" nillable="true" type="xs:string">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="typeOfRestId" nillable="true" type="xs:long">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="baseRequest" nillable="true" type="tns:baseRequest" />
+  <xs:complexType name="resultSearch">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="attendants" type="xs:int">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="count" type="xs:int" />
+      <xs:element minOccurs="0" name="hotels" nillable="true" type="tns:ArrayOfhotel" />
+      <xs:element minOccurs="0" name="mayBeMoney" type="xs:boolean" />
+      <xs:element minOccurs="0" name="places" type="xs:int">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="resultSearch" nillable="true" type="tns:resultSearch" />
+  <xs:complexType name="ArrayOfhotel">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="hotel" nillable="true" type="tns:hotel" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfhotel" nillable="true" type="tns:ArrayOfhotel" />
+  <xs:complexType name="hotel">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="accessibleEnvironment" type="xs:boolean" />
+      <xs:element minOccurs="0" name="address" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="key" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="name" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="photos" nillable="true" type="tns:ArrayOffileLink" />
+      <xs:element minOccurs="0" name="placeOfRestId" type="xs:long" />
+      <xs:element minOccurs="0" name="subjectOfRestId" nillable="true" type="xs:long" />
+      <xs:element minOccurs="0" name="timeOfRests" nillable="true" type="tns:ArrayOftimeOfRest" />
+      <xs:element minOccurs="0" name="typeOfRestId" type="xs:long" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="hotel" nillable="true" type="tns:hotel" />
+  <xs:complexType name="ArrayOffileLink">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="fileLink" nillable="true" type="tns:fileLink" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOffileLink" nillable="true" type="tns:ArrayOffileLink" />
+  <xs:complexType name="fileLink">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="title" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="url" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="fileLink" nillable="true" type="tns:fileLink" />
+  <xs:complexType name="ArrayOftimeOfRest">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="timeOfRest" nillable="true" type="tns:timeOfRest" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOftimeOfRest" nillable="true" type="tns:ArrayOftimeOfRest" />
+  <xs:complexType name="timeOfRest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="cb" nillable="true" type="xs:dateTime">
+        <xs:annotation>
+          <xs:appinfo>
+            <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="end" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="id" type="xs:long" />
+      <xs:element minOccurs="0" name="leftPlaces" type="xs:int" />
+      <xs:element minOccurs="0" name="rooms" nillable="true" type="tns:ArrayOfroomShedule" />
+      <xs:element minOccurs="0" name="start" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="timeOfRestId" type="xs:long" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="timeOfRest" nillable="true" type="tns:timeOfRest" />
+  <xs:complexType name="ArrayOfroomShedule">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="roomShedule" nillable="true" type="tns:roomShedule" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfroomShedule" nillable="true" type="tns:ArrayOfroomShedule" />
+  <xs:complexType name="roomShedule">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:rooms">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="left" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="roomShedule" nillable="true" type="tns:roomShedule" />
+  <xs:complexType name="rooms">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="countRooms" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="id" type="xs:long" />
+      <xs:element minOccurs="0" name="place" type="xs:int" />
+      <xs:element minOccurs="0" name="placeAddon" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="rooms" nillable="true" type="tns:rooms" />
+  <xs:complexType name="bookingVariationPlacementRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:baseRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="attendants" type="xs:int" />
+          <xs:element minOccurs="0" name="key" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="places" type="xs:int" />
+          <xs:element minOccurs="0" name="tourId" type="xs:long" />
+          <xs:element minOccurs="0" name="wbr" nillable="true" type="xs:boolean">
+            <xs:annotation>
+              <xs:appinfo>
+                <DefaultValue EmitDefaultValue="false" xmlns="http://schemas.microsoft.com/2003/10/Serialization/" />
+              </xs:appinfo>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="bookingVariationPlacementRequest" nillable="true" type="tns:bookingVariationPlacementRequest" />
+  <xs:complexType name="bookingVariationPlacementResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="locations" nillable="true" type="tns:ArrayOflocation" />
+      <xs:element minOccurs="0" name="tourId" nillable="true" type="xs:long" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="bookingVariationPlacementResponse" nillable="true" type="tns:bookingVariationPlacementResponse" />
+  <xs:complexType name="ArrayOflocation">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="location" nillable="true" type="tns:location" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOflocation" nillable="true" type="tns:ArrayOflocation" />
+  <xs:complexType name="location">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="places" nillable="true" type="tns:ArrayOfrooms" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="location" nillable="true" type="tns:location" />
+  <xs:complexType name="ArrayOfrooms">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="rooms" nillable="true" type="tns:rooms" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfrooms" nillable="true" type="tns:ArrayOfrooms" />
+  <xs:complexType name="bookingRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:baseRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="attendants" type="xs:int" />
+          <xs:element minOccurs="0" name="bookingGuid" nillable="true" type="ser:guid" />
+          <xs:element minOccurs="0" name="places" type="xs:int" />
+          <xs:element minOccurs="0" name="rooms" nillable="true" type="tns:ArrayOflocationRequest" />
+          <xs:element minOccurs="0" name="tourId" type="xs:long" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="bookingRequest" nillable="true" type="tns:bookingRequest" />
+  <xs:complexType name="ArrayOflocationRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="locationRequest" nillable="true" type="tns:locationRequest" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOflocationRequest" nillable="true" type="tns:ArrayOflocationRequest" />
+  <xs:complexType name="locationRequest">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="count" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="roomId" type="xs:long" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="locationRequest" nillable="true" type="tns:locationRequest" />
+  <xs:complexType name="bookingResult">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="bookingGuid" nillable="true" type="ser:guid" />
+      <xs:element minOccurs="0" name="errorMessage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="isError" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="bookingResult" nillable="true" type="tns:bookingResult" />
+</xs:schema>

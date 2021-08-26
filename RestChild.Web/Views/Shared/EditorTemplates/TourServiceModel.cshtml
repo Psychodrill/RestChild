@@ -1,0 +1,95 @@
+﻿@model RestChild.Web.Models.TourServiceModel
+
+<div class="row">
+	<div class="col-md-11">
+		<div class="service-description">
+			@Html.Partial("RequestServiceDescription", Model.Data)
+		</div>
+	</div>
+	<div class="col-md-1">
+		<a class="edit-service-btn" type="button" title="Редактировать/просмотр" href="javascript:void(0)"><i class="glyphicon glyphicon-pencil"></i></a>
+		@if (Model.IsEditable)
+		{
+			<a class="remove-service-btn" type="button" title="Удалить" href="javascript:void(0)"><i class="glyphicon glyphicon-remove"></i></a>
+		}
+	</div>
+</div>
+
+@Html.HiddenFor(m => m.Data.Id, new { @class = "Id" })
+@Html.HiddenFor(m => m.Data.TypeOfServiceId, new { @class = "TypeOfServiceId" })
+@Html.HiddenFor(m => m.Data.TourTransportId, new { @class = "TourTransportId" })
+@Html.HiddenFor(m => m.DirectoryFlightsId, new { @class = "DirectoryFlightsId", titletext = string.IsNullOrWhiteSpace(Model.DirectoryFlights) ? "-- Не указано --" : Model.DirectoryFlights })
+@Html.HiddenFor(m => m.Data.AccountId, new { @class = "AccountId" })
+@Html.HiddenFor(m => m.Data.Code, new { @class = "Code" })
+@Html.HiddenFor(m => m.Data.Name, new { @class = "Name serviceName" })
+@Html.HiddenFor(m => m.Data.HistoryLinkId, new { @class = "HistoryLinkId" })
+@Html.HiddenFor(m => m.Data.ParentId, new { @class = "ParentId addon-service-id" })
+@Html.HiddenFor(m => m.Data.TourId, new { @class = "TourId" })
+@Html.HiddenFor(m => m.Data.IsActive, new { @class = "IsActive" })
+@Html.HiddenFor(m => m.Description, new { @class = "Description" })
+@Html.HiddenFor(m => m.Data.CuratorId, new { @class = "CuratorId", titletext = Model.Data.CuratorId == null ? "-- Не указано --" : string.Format("{0} ({1})", Model.Data.Curator.Name, Model.Data.Curator.Login) })
+@Html.HiddenFor(m => m.Data.TypeOfRoomsId, new { @class = "TypeOfRoomsId", titletext = Model.Data.TypeOfRooms != null && Model.Data.TypeOfRooms.Hotel != null ? Model.Data.TypeOfRooms + " (" + Model.Data.TypeOfRooms.Hotel.Name + ")" : string.Empty })
+@Html.HiddenFor(m => m.Data.IsGroup, new { @class = "IsGroup" })
+@Html.HiddenFor(m => m.Data.SizeMax, new { @class = "SizeMax" })
+@Html.HiddenFor(m => m.Data.SizeMin, new { @class = "SizeMin" })
+@Html.HiddenFor(m => m.Data.DateFrom, new { @class = "DateFrom" })
+@Html.HiddenFor(m => m.Data.DateTo, new { @class = "DateTo" })
+@Html.HiddenFor(m => m.Data.DateBookingFrom, new { @class = "DateBookingFrom" })
+@Html.HiddenFor(m => m.Data.DateBookingTo, new { @class = "DateBookingTo" })
+@Html.HiddenFor(m => m.Data.ByDefault, new { @class = "ByDefault" })
+@Html.HiddenFor(m => m.Data.Requared, new { @class = "Requared" })
+@Html.HiddenFor(m => m.Data.Hidden, new { @class = "Hidden" })
+@Html.HiddenFor(m => m.Data.NeedApprove, new { @class = "NeedApprove" })
+@Html.HiddenFor(m => m.Data.OnlyWithRequest, new { @class = "OnlyWithRequest" })
+<div class="prices">
+	@for (var j = 0; j < Model.Prices.Count; j++)
+	{
+		<div>
+			@Html.HiddenFor(m => m.Prices[j].Id, new { @class = "prices-Id" })
+			@Html.HiddenFor(m => m.Prices[j].AddonServicesId, new { @class = "prices-AddonServicesId" })
+			@Html.HiddenFor(m => m.Prices[j].LastUpdateTick, new { @class = "prices-LastUpdateTick" })
+			@Html.HiddenFor(m => m.Prices[j].AgeFrom, new { @class = "prices-AgeFrom" })
+			@Html.HiddenFor(m => m.Prices[j].AgeTo, new { @class = "prices-AgeTo" })
+			@Html.HiddenFor(m => m.Prices[j].DateFrom, new { @class = "prices-DateFrom" })
+			@Html.HiddenFor(m => m.Prices[j].DateTo, new { @class = "prices-DateTo" })
+			@Html.HiddenFor(m => m.Prices[j].Price, new { @class = "prices-Price" })
+			@Html.HiddenFor(m => m.Prices[j].PriceInternal, new { @class = "prices-PriceInternal" })
+		</div>
+	}
+</div>
+@if (Model.Services != null)
+{
+	Model.Services = Model.Services.Where(s => s.Data.IsActive).ToList();
+}
+@if (Model.IsEditable || (Model.Services != null && Model.Services.Any()))
+{
+	<h5>
+		<b>Связанные услуги</b>
+	</h5>
+	<div class="selectServiceLinked">
+		@if (Model.IsEditable)
+		{
+		<div class="row form-group">
+			<div class="col-md-11">
+				<input type="hidden" class="form-control selectService" placeholder="Выберите услугу" />
+			</div>
+			<div class="col-md-1">
+				<button type="button" class="btn btn-primary addServiceDialogButton" title="Добавить"><i class="glyphicon glyphicon-plus"></i></button>
+			</div>
+		</div>
+		}
+
+		<table class="table table-striped serviceTable" parentname="@(Html.NameFor(m=>m))." newparentname="@(Html.NameFor(m=>m))." style="margin-bottom:0px">
+			<tbody>
+				@for (var i = 0; i < Model.Services.Count; i++)
+				{
+					<tr>
+						<td class="selectServiceMark">
+							@Html.EditorFor(m => m.Services[i])
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}

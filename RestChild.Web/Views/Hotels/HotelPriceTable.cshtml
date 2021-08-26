@@ -1,0 +1,88 @@
+﻿@using PagedList.Mvc
+@using Newtonsoft.Json
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.HotelPricesViewModel
+@{
+	Layout = null;
+	var isEditable = Security.HasRight(AccessRightEnum.Hotel.PricesEdit);
+}
+
+<table class="table table-striped table-hover">
+	<thead>
+		<tr>
+			@if (Model.Hotel.HotelTypeId == (int)HotelTypeEnum.Camp)
+			{
+				<th>Возраст</th>
+			}
+			else
+			{
+				<th>Вид номера</th>
+				<th>Вариант размещения</th>
+			}
+			<th>Питание</th>
+			<th>Даты</th>
+			<th>Стоимость, руб.</th>
+			<th>Себестоимость, руб.</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var hotelPrice in Model.Page)
+		{
+			var forJson = new HotelPrice(hotelPrice);
+			<tr>
+				@if (Model.Hotel.HotelTypeId == (int)HotelTypeEnum.Camp)
+				{
+					<td class="cell-hprice-ages">
+						с @(hotelPrice.AgeFrom.HasValue ? hotelPrice.AgeFrom.FormatEx() : string.Empty)
+						до @(hotelPrice.AgtTo.HasValue ? hotelPrice.AgtTo.FormatEx() : string.Empty)
+					</td>
+				}
+				else
+				{
+					<td class="cell-hprice-room">
+						@(hotelPrice.TypeOfRooms != null ? hotelPrice.TypeOfRooms.Name : string.Empty)
+					</td>
+					<td class="cell-hprice-type">
+						@(hotelPrice.Accommodation != null ? hotelPrice.Accommodation.Name : string.Empty)
+					</td>
+				}
+				<td class="cell-hprice-food">
+					@(hotelPrice.DiningOptions != null ? hotelPrice.DiningOptions.Name : string.Empty)
+				</td>
+				<td class="cell-hprice-dates">
+					@(hotelPrice.DateFrom.HasValue ? hotelPrice.DateFrom.FormatEx() : string.Empty) -
+					@(hotelPrice.DateTo.HasValue ? hotelPrice.DateTo.FormatEx() : string.Empty)
+				</td>
+				<td class="cell-hprice-price">
+					@(hotelPrice.Price.FormatEx())
+				</td>
+				<td class="cell-hprice-intprice">
+					@(hotelPrice.PriceInternal.FormatEx())
+				</td>
+				<td class="text-nowrap cell-hprice-rowbuttons">
+				@if (isEditable)
+				{
+					<text>
+					<a class="glyphicon glyphicon-pencil btn-hprice-edit" title="Изменить" href="javascript:void(0)"> </a>
+					&nbsp;
+					<a class="glyphicon glyphicon-remove btn-hprice-remove" title="Удалить" href="javascript:void(0)"> </a>
+					<input type="hidden" value='@Html.Raw(JsonConvert.SerializeObject(forJson))'/>
+					</text>
+				}
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+@Html.PagedListPager(Model.Page,
+	page => { return string.Format("javascript:hpriceGoPage({0})", page); },
+	new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " }
+)
+
+<div class="modal-backdrop in" style="position: absolute !important; background-color: #AAA !important; display: none;" id="divHpriceMute">
+</div>

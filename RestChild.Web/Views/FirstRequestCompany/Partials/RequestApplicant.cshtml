@@ -1,0 +1,349 @@
+﻿@using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Extensions.Extensions
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.RequestViewModel
+@{
+   var canExclude = Security.HasRight(AccessRightEnum.ExcludeChild);
+   var typeOfRestId = Model.Data.TypeOfRestId ?? 0;
+   if (Model.Data.CountAttendants <= 1)
+   {
+      canExclude = false;
+   }
+}
+<fieldset class="bs-callout bs-callout-info request-block" id="ApplicantFieldset">
+<h3 id="Applicant" class="anchor bs-callout-info">Сведения о заявителе</h3>
+<span class="field-validation-error">@Model.ApplicantEm.FormatEx(string.Empty)</span>
+@Html.HiddenFor(r => r.Applicant.Data.Id, new {@class = "id"})
+@Html.HiddenFor(r => r.Applicant.Data.IsApplicant)
+@Html.HiddenFor(r => r.Applicant.Data.Payed)
+@Html.HiddenFor(r => r.Applicant.Data.EntityId)
+@Html.HiddenFor(r => r.Applicant.Guid, new {@class = "guid applicant-guid"})
+@{
+    var violations = (ViewBag.TypeViolations as List<TypeViolation>).ToList();
+    if (violations.All(d => d.Id != Model.Data.Applicant.TypeViolationId) && Model.Data.Applicant.TypeViolation != null)
+    {
+        violations.Add(Model.Data.Applicant.TypeViolation);
+    }
+
+    var docs = (ViewBag.DocumentsTypeApplicant as List<DocumentType>).ToList();
+
+    if (docs.All(d => d.Id != Model.Applicant.Data.DocumentTypeId) && Model.Applicant.Data.DocumentType != null)
+    {
+        docs.Add(Model.Data.Applicant.DocumentType);
+    }
+}
+
+
+@if (Model.Data != null && !Model.Data.RequestOnMoney &&
+     (new []
+     {
+        (long) StatusEnum.DecisionMaking, (long) StatusEnum.DecisionMakingCovid
+     }.Contains(Model.Data.StatusId ?? 0) || (Model.Applicant.Data.IsDeleted))
+     &&
+     new[] {
+        (long) TypeOfRestEnum.RestWithParents,
+        (long) TypeOfRestEnum.RestWithParentsPoor,
+        (long) TypeOfRestEnum.RestWithParentsOther,
+        (long) TypeOfRestEnum.RestWithParentsOrphan,
+        (long) TypeOfRestEnum.RestWithParentsComplex,
+        (long) TypeOfRestEnum.RestWithParentsInvalid,
+        (long) TypeOfRestEnum.RestWithParentsInvalidOrphanComplex
+     }.Contains(typeOfRestId) && Model.Applicant.Data.IsAccomp
+   )
+{
+   <div class="row form-group">
+      <div class="pull-right col-md-3">
+         <div class="checkbox">
+            <label>
+               @Html.CheckBoxFor(m => m.Applicant.Data.IsDeleted, new {@class = "exclude-from-request-a exclude-attendant"}).DisableIf(() => Model.Applicant.Data.IsDeleted || !canExclude) Исключен из заезда
+               @Html.Hidden("ExcludeFromRequestHidden000", Model.Applicant.Data.IsDeleted, new {@class = "exclude-from-request-hidden-a"})
+            </label>
+         </div>
+      </div>
+   </div>
+}
+
+<div class="row form-group">
+   <label class="col-md-3 control-label">Фамилия<span class="requared">*</span></label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.LastName, new {@class = "form-control required name-input applicant-lastname name-input info-lastname"})
+      <span class="field-validation-error">@Model.Applicant.LastNameEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group">
+   <label class="col-md-3 control-label">Имя<span class="requared">*</span></label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.FirstName, new {@class = "form-control required name-input info-firstname applicant-firstname name-input"})
+      <span class="field-validation-error">@Model.Applicant.FirstNameEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group">
+   <div class="col-md-offset-3 col-md-9">
+      <div class="checkbox">
+         <label>
+            @Html.CheckBoxFor(r => r.Applicant.HasNotMiddlename, new {@class = "middlename-havenot"})
+            Нет отчества
+         </label>
+      </div>
+   </div>
+</div>
+<div class="row form-group">
+   <label class="col-md-3 control-label">Отчество</label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.MiddleName, new {@class = "form-control applicant-middlename info-middlename middlename name-input", Value = Model.NullSafe(m => m.Applicant.HasNotMiddlename) ? string.Empty : Model.NullSafe(m => m.Applicant.Data.MiddleName)}).DisableIf(() => Model.NullSafe(m => m.Applicant.HasNotMiddlename))
+      <span class="field-validation-error">@Model.Applicant.MiddleNameEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group">
+   <label class="col-md-3 control-label">Пол<span class="requared">*</span></label>
+   <div class="col-md-9">
+      <label>
+         @Html.RadioButtonFor(r => r.Applicant.Data.Male, true)
+         Мужской
+      </label>&nbsp;
+      <label>
+         @Html.RadioButtonFor(r => r.Applicant.Data.Male, false)
+         Женский
+      </label>
+      <span class="field-validation-error">@Model.Applicant.MaleEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group">
+   <label class="col-md-3 control-label">СНИЛС<span class="requared">*</span></label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.Snils, new {@class = "form-control required snils", maxlength = "100"})
+      <span class="field-validation-error">@Model.Applicant.SnilsEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group applicant-birth-date">
+   <label class="col-md-3 control-label">Дата рождения<span class="requared">*</span></label>
+   <div class="col-md-9">
+      <div class='input-group datepicker-my datepicker'>
+         @Html.TextBoxFor(r => r.Applicant.Data.DateOfBirth, new {@class = "form-control  required input-mask-date", placeholder = "", @Value = Model.Applicant.Data.DateOfBirth.FormatEx(string.Empty, string.Empty), autocomplete = "off"})
+         <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+         </span>
+      </div>
+      <span class="field-validation-error">@Model.Applicant.DateOfBirthEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group applicant-birth-place">
+   <label class="col-md-3 control-label">Место рождения<span class="requared">*</span></label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.PlaceOfBirth, new {@class = "form-control", placeholder = "", autocomplete = "off"})
+      <span class="field-validation-error">@Model.Applicant.PlaceOfBirthEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group">
+   <label class="col-md-3 control-label">Телефон<span class="requared">*</span></label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.Phone, new {@class = "form-control required input-mask-phone"})
+      <span class="field-validation-error">@Model.Applicant.PhoneEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group">
+   <label class="col-md-3 control-label">Доп. телефон</label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.AddonPhone, new {@class = "form-control required input-mask-phone"})
+   </div>
+</div>
+<div class="row form-group">
+   <label class="col-md-3 control-label">Email</label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.Email, new {@class = "form-control required input-mask-email"})
+      <span class="field-validation-error">@Model.Applicant.EmailEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group">
+   <label class="col-md-3 control-label">Тип документа удостоверяющего личность<span class="requared">*</span></label>
+   <div class="col-md-9">
+      @Html.DropDownListFor(r => r.Applicant.Data.DocumentTypeId, new SelectList(docs, "Id", "Name", Model.Applicant.Data.DocumentTypeId), new {@class = "form-control select2  document-dropdown"})
+      <span class="field-validation-error">@Model.Applicant.DocumentTypeEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group">
+   <label class="col-md-3 col-xs-12 col-sm-12 control-label">Серия и номер<span class="requared">*</span></label>
+   <div class="col-md-3 col-xs-4 col-sm-4">
+      @Html.TextBoxFor(r => r.Applicant.Data.DocumentSeria, new {@class = "form-control  required input-mask-passport-series"})
+      <span class="field-validation-error">@Model.Applicant.DocumentSeriaEm.FormatEx(string.Empty)</span>
+   </div>
+   <div class="col-xs-8 col-md-6 col-sm-8">
+      @Html.TextBoxFor(r => r.Applicant.Data.DocumentNumber, new {@class = "form-control  required input-mask-passport-number"})
+      <span class="field-validation-error">@Model.Applicant.DocumentNumberEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group">
+   <label class="col-md-3 control-label">Когда выдан документ<span class="requared">*</span></label>
+   <div class="col-md-9">
+      <div class='input-group datepicker-my datepicker'>
+         @Html.TextBoxFor(model => Model.Applicant.Data.DocumentDateOfIssue, new {@class = "form-control required input-mask-date", placeholder = "", @Value = Model.Applicant.Data.DocumentDateOfIssue.FormatEx(string.Empty, string.Empty)})
+         <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+         </span>
+      </div>
+      <span class="field-validation-error">@Model.Applicant.DocumentDateOfIssueEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+
+<div class="row form-group">
+   <label class="col-md-3 control-label">Кем выдан документ<span class="requared">*</span></label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.DocumentSubjectIssue, new {@class = "form-control  required"})
+      <span class="field-validation-error">@Model.Applicant.DocumentSubjectIssueEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group hidden">
+   <label class="col-md-3 control-label">СНИЛС</label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.Snils, new {@class = "form-control  required snils"})
+   </div>
+</div>
+@{
+   var hiddenApplicant = (Model.NullSafe(m => m.Data.PlaceOfRest.IsForegin)) && Model.NullSafe(m => m.Data.Applicant.IsAccomp);
+}
+<div class="row form-group applicant-foreign-document @(hiddenApplicant ? string.Empty : "hidden")">
+   <label class="col-md-3 control-label">Фамилия в документе, удостоверяющем личность за рубежом</label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.ForeginLastName, new {@class = "form-control", maxlength = 1000})
+   </div>
+</div>
+<div class="row form-group applicant-foreign-document @(hiddenApplicant ? string.Empty : "hidden")">
+   <label class="col-md-3 control-label">Имя в документе, удостоверяющем личность за рубежом</label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.ForeginName, new {@class = "form-control", maxlength = 1000})
+   </div>
+</div>
+<div class="row form-group applicant-foreign-document @(hiddenApplicant ? string.Empty : "hidden")">
+   <label class="col-md-3 control-label">Тип документа, удостоверяющего личность за рубежом<span class="requared">*</span></label>
+   <div class="col-md-9">
+      @Html.DropDownListFor(r => r.Applicant.Data.ForeginTypeId, new SelectList(ViewBag.DocumentsTypeForeignApplicant, "Id", "Name", Model.Applicant.Data.ForeginTypeId), new {@class = "form-control select2"})
+      <span class="field-validation-error">@Model.Applicant.ForeginTypeEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group applicant-foreign-document @(hiddenApplicant ? string.Empty : "hidden")">
+   <label class="col-md-3 col-xs-12 col-sm-12 control-label">Серия и номер<span class="requared">*</span></label>
+   <div class="col-md-3 col-xs-4 col-sm-4">
+      @Html.TextBoxFor(r => r.Applicant.Data.ForeginSeria, new {@class = "form-control"})
+      <span class="field-validation-error">@Model.Applicant.ForeginSeriaEm.FormatEx(string.Empty)</span>
+   </div>
+   <div class="col-xs-8 col-md-6 col-sm-8 applicant-foreign-document @(hiddenApplicant ? string.Empty : " hidden")">
+      @Html.TextBoxFor(r => r.Applicant.Data.ForeginNumber, new {@class = "form-control"})
+      <span class="field-validation-error">@Model.Applicant.ForeginNumberEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group applicant-foreign-document @(hiddenApplicant ? string.Empty : "hidden")">
+   <label class="col-md-3 control-label">Дата выдачи<span class="requared">*</span></label>
+   <div class="col-md-9">
+      <div class='input-group datepicker-my datepicker'>
+         @Html.TextBoxFor(r => r.Applicant.Data.ForeginDateOfIssue, new {@class = "form-control required input-mask-date", placeholder = "", @Value = Model.Applicant.Data.ForeginDateOfIssue.FormatEx(string.Empty, string.Empty)})
+         <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+         </span>
+      </div>
+      <span class="field-validation-error">@Model.Applicant.ForeginDateOfIssueEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group applicant-foreign-document @(hiddenApplicant ? string.Empty : "hidden")">
+   <label class="col-md-3 control-label">Срок действия<span class="requared">*</span></label>
+   <div class="col-md-9">
+      <div class='input-group datepicker-my datepicker'>
+         @Html.TextBoxFor(r => r.Applicant.Data.ForeginDateEnd, new {@class = "form-control required", placeholder = "", @Value = Model.Applicant.Data.ForeginDateEnd.FormatEx(string.Empty, string.Empty)})
+         <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+         </span>
+      </div>
+      <span class="field-validation-error">@Model.Applicant.ForeginDateEndEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group applicant-foreign-document @(hiddenApplicant ? string.Empty : "hidden")">
+   <label class="col-md-3 control-label">Кем выдан<span class="requared">*</span></label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.ForeginSubjectIssue, new {@class = "form-control  required", placeholder = ""})
+      <span class="field-validation-error">@Model.Applicant.ForeginSubjectIssueEm.FormatEx(string.Empty)</span>
+   </div>
+</div>
+<div class="row form-group">
+   <label class="col-md-3 control-label">Код подразделения</label>
+   <div class="col-md-9">
+      @Html.TextBoxFor(r => r.Applicant.Data.DocumentCode, new {@class = "form-control document-code", autocomplete = "off", maxlength = "500"})
+   </div>
+</div>
+<div class="row form-group address-control @(Model.Data.TypeOfRestId == (long) TypeOfRestEnum.MoneyOn18 || Model.Data.TypeOfRestId == (long) TypeOfRestEnum.YouthRestOrphanCamps || Model.Data.TypeOfRestId == (long) TypeOfRestEnum.YouthRestCamps ? string.Empty : " hidden")">
+   <div class="col-md-12">
+      <h4>Адрес регистрации</h4>
+   </div>
+</div>
+
+<div class="address-control @(Model.Data.TypeOfRestId == (long) TypeOfRestEnum.YouthRestOrphanCamps || Model.Data.TypeOfRestId == (long) TypeOfRestEnum.MoneyOn18 || Model.Data.TypeOfRestId == (long) TypeOfRestEnum.YouthRestCamps ? string.Empty : " hidden")">
+   <!-- -------AddressControlView--------- -->
+   @{
+      ViewBag.AddressControlViewPrefix = "Applicant.Address.";
+   }
+   @Html.Partial("Assets/AddressControlFIASView", Model.Applicant.Address, new ViewDataDictionary()
+   {
+      new KeyValuePair<string, object>
+         ("IsDisabled", false),
+      new KeyValuePair<string, object>
+         ("ViewBag", ViewBag)
+   })
+   <!-- -------AddressControlView--------- -->
+   <span class="field-validation-error">@Model.Applicant.AddressEm.FormatEx(string.Empty)</span>
+</div>
+
+@foreach (var e in (Model.Applicant.Data.BaseRegistryInfo ?? new List<ExchangeBaseRegistry>()).Where(b => !b.NotActual).ToList())
+{
+   var res = e.Parse();
+   Html.RenderPartial("BaseRegistryBenefitResult", res);
+}
+<div class="row form-group @(Model.Data.TypeOfRest.NullSafe(x => x.NeedPlacment) || Model.Data.TypeOfRestId == (long) TypeOfRestEnum.Compensation ? string.Empty : "hidden")" id="NeedPlacmentApplicant">
+   <label class="col-md-3 control-label">Заявитель является сопровождающим<span class="requared">*</span></label>
+   <div class="col-md-9">
+      @if (Model.Data.StatusId == (long) StatusEnum.Draft)
+      {
+         <select name="@Html.NameFor(r => r.Applicant.Data.IsAccomp)" class="form-control select2 is-accomp select-must-selected">
+            @if (Model.Data.Id == 0)
+            {
+               <option selected="selected" value="">-- Не выбрано --</option>
+            }
+            <option value="True" @Html.Raw(Model.Applicant.Data.IsAccomp == true ? "selected=\"selected\"" : "")>Да</option>
+            <option value="False" @Html.Raw(Model.Applicant.Data.IsAccomp == false && Model.Data.Id != 0 ? "selected=\"selected\"" : "")>Нет</option>
+         </select>
+      }
+      else
+      {
+         @Html.HiddenFor(m=>m.Applicant.Data.IsAccomp)
+         <select name="@Html.NameFor(r => r.Applicant.Data.IsAccomp)" class="form-control select2 is-accomp select-must-selected" disabled="disabled">
+            @if (Model.Data.Id == 0)
+            {
+               <option selected="selected" value="">-- Не выбрано --</option>
+            }
+            <option value="True" @Html.Raw(Model.Applicant.Data.IsAccomp == true ? "selected=\"selected\"" : "")>Да</option>
+            <option value="False" @Html.Raw(Model.Applicant.Data.IsAccomp == false && Model.Data.Id != 0 ? "selected=\"selected\"" : "")>Нет</option>
+         </select>
+      }
+   </div>
+</div>
+<div class="row form-group hidden">
+   <div class="col-md-offset-3 col-md-9">
+      <div class="checkbox">
+         <label>
+            @Html.CheckBoxFor(r => r.AgentApplicant)
+            Заявление подается представителем заявителя
+         </label>
+      </div>
+   </div>
+</div>
+@if (Model.Data.StatusId == (long) StatusEnum.CertificateIssued)
+{
+   <div class="row form-group">
+      <label class="col-md-3 control-label">Вид нарушения</label>
+      <div class="col-md-9">
+         @Html.DropDownListFor(r => r.Applicant.Data.TypeViolationId, new SelectList(violations, "Id", "Name", Model.Applicant.Data.TypeViolationId), new {@class = "form-control select2 type-violation"}).DisableIf(() => !Security.HasRight(AccessRightEnum.RequestEditTypeViolation))
+      </div>
+   </div>
+}
+</fieldset>

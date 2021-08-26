@@ -1,0 +1,230 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@using RestChild.Web.Extensions
+@model RestChild.Web.Models.BookingMosgorturReestrBooking
+@{
+    /**/
+
+    ViewBag.Title = "Запись на приём";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.MDisable = (Model.Id > 0);
+}
+@section styles
+{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/HistoryModal.css")
+}
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale('ru');
+
+        window.BookingMosgorturReestrAddChildUrl = '@Url.Action("AddChild", "BookingMosgorturReestr")';
+        window.BookingMosgorturReestrChooseGridUrl = '@Url.Action("GetGrid", "BookingMosgorturReestr")';
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/Vocabulary/BookingMosgorturBookingManage.js"></script>
+    @Html.Partial("Assets/HistoryLinkTemplate")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Scripts.Render("~/Scripts/doT.js")
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Запись на приём</h2>
+    </div>
+</div>
+<div class="row form-group">
+    @if (Model.Id > 0 && Model.StatusId == 3)
+    {
+        <div class="col-md-1">
+            <a href="@Url.Action("GetCertificateForVisitBooking", "Pdf", new { bookingId = Model.Id } )" class="btn btn-default history-button"><span class="glyphicon glyphicon-download-alt"></span> Талон</a>
+        </div>
+    }
+    @if (Model.Id > 0)
+    {
+        if (Model.HistoryLinkId.HasValue)
+        {
+            <div class="col-md-1">
+                <a data-history-id="@Model.HistoryLinkId" class="btn btn-default btn-hystory-link" href="#">История</a>
+            </div>
+        }
+        <div class="col-md-4 pull-right">
+            <div class="well well-sm" style="max-width: 300px; float: right;">
+                Статус: <strong>@Model.StatusName</strong>
+            </div>
+        </div>
+    }
+</div>
+@using (Html.BeginForm("SaveBooking", "BookingMosgorturReestr", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.HiddenFor(m => m.Id)
+    <legend>Сведения о записи на приём</legend>
+    <div class="error">
+        <div class="error-ul-block">
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <text>@Html.Raw(Model.ErrorMessage)</text><br /><br />
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">ПИН код</label>
+        <div class="col-md-4">
+            @Html.TextBox("PinCode", RestChild.MPGUIntegration.Utils.GeneratePin(Model.Id), new { @class = "form-control", autocomplete = "off", @readonly = true })
+        </div>
+        <label class="col-sm-2 control-label">Номер заявления</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(r => r.BookingCode, new { @class = "form-control", autocomplete = "off", @readonly = true })
+        </div>
+    </div>
+
+
+    <div class="visitGrid">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Цель обращения <span class="requared">*</span></label>
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.SelectedTarget, new SelectList(((ICollection<RestChild.Web.Models.MGTWorkingDayWindowModel.BookingTargets>)ViewBag.Targets).Select(ss => new { Val = (long?)ss.Id, Txt = ss.Name }).InsertAt(new { Val = (long?)null, Txt = "-- Не выбрано -- " }), "Val", "Txt"), new { @class = "form-control select2", @tabindex = "3", }).DisableIf(() => Model.Id > 0)
+                @Html.ValidationMessageFor(m => m.SelectedTarget)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Дата <span class="requared">*</span></label>
+            <div class="col-md-4">
+                <div class='input-group date datepicker-anytime visitDate'>
+                    @Html.TextBoxFor(r => r.Date, new { @class = "form-control input-mask-date-anytime request-period-start", @tabindex = "1", @autocomplete = "off", @Value = Model.NullSafe(m => m.Date).FormatEx(string.Empty, string.Empty) }).DisableIf(() => Model.Id > 0)
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+                @Html.ValidationMessageFor(m => m.Date)
+            </div>
+            <label class="col-sm-2 control-label">Количество детей <span class="requared">*</span></label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.SlotsCount, new SelectList(new List<object>() {
+                 new { Id = 1, Name = "1-2" },
+                 new { Id = 2, Name = "3+" },
+                 }, "Id", "Name"), new { @class = "form-control select2", @tabindex = "12", autocomplete = "off" }).DisableIf(() => Model.Id > 0)
+                @Html.ValidationMessageFor(m => m.SlotsCount)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.HiddenFor(m => m.Time)
+            <div class="grid">
+                @if (Model.Time.Ticks > 0)
+                {
+                    Html.RenderPartial("Partials/VisitGrid", new RestChild.Web.Models.VisitQueue.BookingVisitGridViewFilter() { VisitTime = string.Format("{0:hh\\:mm}", Model.Time) });
+                }
+            </div>
+            @Html.ValidationMessageFor(m => m.Time)
+        </div>
+    </div>
+
+
+    <legend>Сведения о заявителе</legend>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Фамилия <span class="requared">*</span></label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(r => r.LastName, new { @class = "form-control", @tabindex = "4", autocomplete = "off" }).DisableIf(() => Model.Id > 0)
+            @Html.ValidationMessageFor(m => m.LastName)
+        </div>
+        <label class="col-sm-2 control-label">СНИЛС <span class="requared">*</span></label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(r => r.Snils, new { @class = "form-control snils", @tabindex = "8", autocomplete = "off" }).DisableIf(() => Model.Id > 0)
+            @Html.ValidationMessageFor(m => m.Snils)
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Имя <span class="requared">*</span></label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(r => r.FirstName, new { @class = "form-control", @tabindex = "5", autocomplete = "off" }).DisableIf(() => Model.Id > 0)
+            @Html.ValidationMessageFor(m => m.FirstName)
+        </div>
+        <label class="col-sm-2 control-label">Телефон <span class="requared">*</span></label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(r => r.Phone, new { @class = "form-control input-mask-phone", @tabindex = "9", autocomplete = "off" }).DisableIf(() => Model.Id > 0)
+            @Html.ValidationMessageFor(m => m.Phone)
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Отчество <span class="requared">*</span></label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(r => r.MiddleName, new { @class = "form-control Middle-Name", @tabindex = "6", autocomplete = "off" }).DisableIf(() => Model.Id > 0).ReadOnlyIf(() => Model.NoMiddleName)
+            @Html.ValidationMessageFor(m => m.MiddleName)
+        </div>
+        <div class="col-md-4 col-md-offset-2" style="height: 34px; line-height: 34px;">
+            @Html.CheckBoxFor(m => m.NoMiddleName, new { @tabindex = "7", autocomplete = "off", @class = "No-Middle-Name", @style = "vertical-align: text-bottom;" }).DisableIf(() => Model.Id > 0)
+            <span>Нет отчества</span>
+        </div>
+
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">E-mail</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(r => r.Email, new { @class = "form-control", @tabindex = "10", autocomplete = "off" }).DisableIf(() => Model.Id > 0)
+        </div>
+        <label class="col-sm-2 control-label">Пол <span class="requared">*</span></label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(m => m.Male, new SelectList(new List<object>() {
+             new { Id = (bool?)null, Name = "-- Все -- " },
+             new { Id = (bool?)false, Name = "Женский" },
+             new { Id = (bool?)true, Name = "Мужской" },
+             }, "Id", "Name"), new { @class = "form-control", @tabindex = "11" }).DisableIf(() => Model.Id > 0)
+            @Html.ValidationMessageFor(m => m.Male)
+        </div>
+
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Дата рождения <span class="requared">*</span></label>
+        <div class="col-md-4">
+            <div class='input-group date datepicker-anytime'>
+                @Html.TextBoxFor(r => r.DateOfBirth, new { @class = "form-control input-mask-date-anytime request-period-start", @tabindex = "13", autocomplete = "off", @Value = Model.NullSafe(m => m.DateOfBirth).FormatEx(string.Empty, string.Empty) }).DisableIf(() => Model.Id > 0)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            @Html.ValidationMessageFor(m => m.DateOfBirth)
+        </div>
+    </div>
+
+    <legend>Сведения о ребёнке</legend>
+    for (int i = 0; i < Model.Children.Count(); i++)
+    {
+        @Html.EditorFor(m => m.Children[i], "Child")
+    }
+    if (Model.Id < 1)
+    {
+        <div class="row add-child-row">
+            <div class="col-md-offset-2 col-md-3">
+                <button type="button" class="btn btn-primary btn-success add-child"> <i class="glyphicon glyphicon-plus"></i> Добавить ребёнка</button>
+            </div>
+        </div>
+    }
+    <div class="row">&nbsp;</div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            @if (Model.Id > 1 && Model.StatusId == 3)
+            {
+                <a href="@Url.Action("BookingVisited", new { @Id = Model.Id })" class="btn btn-default btn-primary"> <i class="glyphicon glyphicon-ok"></i> Посетитель явился</a>
+            }
+            @if (Model.Id < 1)
+            {
+                <button type="submit" class="btn btn-default btn-primary">
+                    <i class="glyphicon glyphicon-ok"></i> Сохранить
+                </button>
+            }
+            else if (!Model.Canceld && RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCancel) && Model.Date.Add(Model.Time) >= DateTime.Now)
+            {
+                <a href="@Url.Action("CancelBooking", new { @Id = Model.Id })" class="btn btn-danger btn-primary"> <i class="glyphicon glyphicon-ok"></i> Анулировать</a>
+            }
+
+        </div>
+    </div>
+}

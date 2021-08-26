@@ -1,0 +1,100 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.CityModel
+@{
+	ViewBag.Title = "Справочник городов";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+	<div class="col-md-12">
+		<h2>Город</h2>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		@using (Html.BeginForm("Save", "City", FormMethod.Post))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.Data.Id)
+			<fieldset class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Название<span class="requared">*</span></label>
+					<div class="col-md-9">
+						@Html.TextBoxFor(m => m.Data.Name, new { @class = "form-control", maxlength = 1000 })
+						@Html.ValidationMessageFor(m => m.Data.Name, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Страна</label>
+					<div class="col-md-9" data-toggle="tooltip" data-placement="right" title="Выбор из справочника стран">
+						@Html.TextBoxFor(model => model.Data.CountryId, new {@class = "form-control", autocomplete = "off"})
+						@Html.ValidationMessageFor(model => model.Data.CountryId, "Заполните поле")
+						@Html.Hidden("_CountryId", Model.Data.CountryId, new {@class = "form-control", autocomplete = "off", Id = "_CountryId"})
+						@Html.Hidden("_CountryName", Model.NullSafe(m => m.Data.Country.FullName), new {@class = "form-control", autocomplete = "off", Id = "_CountryName"})
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-md-offset-3 col-md-9">
+						<div class="checkbox">
+							<label data-toggle="tooltip" data-placement="right" title="Указывает на наличие аэропорта">
+								@Html.CheckBoxFor(m => m.Data.HaveAero)
+								Есть аэропорт
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-md-offset-3 col-md-9">
+						<div class="checkbox">
+							<label data-toggle="tooltip" data-placement="right" title="Указывает на наличие ж/д вокзала">
+								@Html.CheckBoxFor(m => m.Data.HaveRailway)
+								Есть ж/д вокзал
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-md-offset-3 col-md-9">
+						<div class="checkbox">
+							<label data-toggle="tooltip" data-placement="right" title="При установке признака город будет доступен для выбора">
+								@Html.CheckBoxFor(m => m.Data.IsActive)
+								Активный
+							</label>
+						</div>
+					</div>
+				</div>
+				@if (Security.HasRight(AccessRightEnum.CityManage))
+				{
+					<div class="form-group">
+						<div class="col-md-9 col-md-offset-3">
+							<button type="submit" class="btn btn-default btn-primary">
+								<i class="glyphicon glyphicon-pencil"></i> Сохранить
+							</button>
+						</div>
+					</div>
+				}
+
+			</fieldset>
+		}
+	</div>
+</div>
+
+@section styles{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	@Scripts.Render("~/Scripts/Vocabulary/Country.js")
+	@Scripts.Render("~/Scripts/Vocabulary/CityEdit.js")
+	<script type="text/javascript" language="javascript">
+		$(function() {
+			$('[data-toggle="tooltip"]').tooltip();
+		})
+	</script>
+}

@@ -1,0 +1,172 @@
+﻿@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@using Styles = System.Web.Optimization.Styles
+@model RestChild.Web.Models.TourModel
+@{
+	ViewBag.Title = "Реестр размещений";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Размещения</h2>
+<a href="@Url.Action("Search", "Tours")">Вернуться</a>
+<div class="row">&nbsp;</div>
+@using (Html.BeginForm("Save", "Tours", FormMethod.Post, new { enctype = "multipart/form-data", id = "toursForm" }))
+{
+	@Html.AntiForgeryToken()
+	@Html.HiddenFor(m => m.Data.Id)
+	@Html.HiddenFor(m => m.Data.StateId)
+	@Html.HiddenFor(m => m.Data.HistoryLinkId)
+	@Html.HiddenFor(m => m.StateMachineActionString)
+	@Html.HiddenFor(m => m.Data.IsActive)
+	@Html.HiddenFor(m => m.Data.EkisId)
+	@Html.HiddenFor(m => m.Data.EkisNeedSend)
+	@Html.HiddenFor(m => m.ActiveTab)
+	@Html.HiddenFor(m => m.Data.LastUpdateTick)
+
+	<div class="form-group row">
+		<div class="col-md-12">
+			@Html.Partial("Assets/_StatePanel", Model.State)
+		</div>
+	</div>
+	if (!ViewData.ModelState.IsValid)
+	{
+		<div class="alert alert-danger" role="alert">
+			@Html.ValidationSummary(false)
+		</div>
+	}
+	<div class="row">
+		<div class="col-md-12">
+			<div role="tabpanel" id="MainTabs">
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="@(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)">
+						<a href="#CommonInfo" aria-controls="CommonInfo" role="tab" data-toggle="tab">Общая информация</a>
+					</li>
+					@if (Model.Services != null && Model.Data.Id > 0)
+					{
+						<li role="presentation" class="@(Model.ActiveTab == "RoomRates" ? "active" : string.Empty)">
+							<a href="#RoomRates" aria-controls="Description" role="tab" data-toggle="tab">Размещение</a>
+						</li>
+					}
+					@if (Model.Data.TypeOfRest != null && !Model.Data.TypeOfRest.Commercial && Model.Data.Id > 0)
+					{
+						<li role="presentation" class="@(Model.ActiveTab == "Campers" ? "active" : string.Empty)">
+							<a href="#Campers" aria-controls="Description" role="tab" data-toggle="tab">Реестр отдыхающих</a>
+						</li>
+					}
+				</ul>
+				<!-- Tab panes -->
+				<div class="tab-content">
+					@{ Html.RenderPartial("Partials/CommonInfoTab", Model); }
+					@{ Html.RenderPartial("Partials/CampersTab", Model); }
+					@{ Html.RenderPartial("Partials/RoomRatesTab", Model); }
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+@{ Html.RenderPartial("Partials/TypeOfRoomsChooseModalDialog", Model); }
+@{ Html.RenderPartial("Partials/ChildListsModalDialog", Model); }
+@{ Html.RenderPartial("Partials/RoomRateDialog", Model); }
+
+@section styles{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	@Styles.Render("~/Content/Vocabulary/VocabularyEdit.css")
+	@Styles.Render("~/Content/css/font-awesome.min.css")
+	@Styles.Render("~/Content/summernote.css")
+	@Styles.Render("~/Content/jQuery.FileUpload/css/jquery.fileupload.css")
+	@Styles.Render("~/Content/Tours.css")
+}
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/jquery.validate.min.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	@Scripts.Render("~/Scripts/moment.js")
+	@Scripts.Render("~/Scripts/moment-with-locales.js")
+	<script type="text/javascript">
+		moment.locale('ru');
+		var isProductEditable = @Model.IsEditable.ToString().ToLower();
+	</script>
+	@Scripts.Render("~/Scripts/jQuery.FileUpload/jquery.fileupload.js")
+	@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/Vocabulary/ToursEdit.js")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote.min.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote-ru-RU.js")
+	@{ Html.RenderPartial("Assets/HistoryLinkTemplate"); }
+	@{ Html.RenderPartial("Partials/TourEditDotTemplate", Model); }
+	<script type="text/javascript">
+		$(function() {
+			var data = ($('#@Html.IdFor(m => m.Memo)').val());
+			@if (Model.IsEditable)
+			{
+				<text>
+		$('#memo').summernote({
+			lang: 'ru-RU',
+			toolbar: [
+				['style', ['style']],
+				['font', ['bold', 'italic', 'underline', 'clear']],
+				['fontname', ['fontname']],
+				['color', ['color']],
+				['para', ['ul', 'ol', 'paragraph']],
+				['height', ['height']],
+				['table', ['table']],
+				['insert', ['link', 'hr']]
+			],
+			maxHeight: 300,
+			height: 300
+		});
+		$('#memo').code(data);
+		</text>
+			}
+			else
+			{
+				<text>
+		$('#memo').html(data);
+		</text>
+			}
+		});
+
+		function confirmStateButtonTour(formSelector, actionSelector, actionCode, buttonName, description, commentSelector) {
+			var isOk = true;
+			$('.service-date-from').each(function(i, val) {
+				var dateFrom = $(val).val();
+				var tr = $(val).closest('tr');
+				var checked = tr.find('input[type=checkbox]').prop('checked');
+				if (!checked) {
+					return;
+				}
+				if (!dateFrom) {
+					tr.find('.input-group:has(.service-date-from), .input-group:has(.service-date-to)').removeClass('has-error');
+					return;
+				}
+				var dateTo = tr.find('.service-date-to').val();
+				if (moment(dateFrom, "DD.MM.YYYY") > moment(dateTo, "DD.MM.YYYY")) {
+					tr.find('.input-group:has(.service-date-from), .input-group:has(.service-date-to)').addClass('has-error');
+					isOk = false;
+				} else {
+					tr.find('.input-group:has(.service-date-from), .input-group:has(.service-date-to)').removeClass('has-error');
+				}
+			});
+
+			if (isOk) {
+				$('#@Html.IdFor(m => m.Memo)').val(($('#memo').code()));
+				return confirmStateButton(formSelector, actionSelector, actionCode, buttonName, description, commentSelector);
+			} else {
+				BootstrapDialog.show({
+					message: 'Дата начала срока действия услуги не может быть больше даты окончания.',
+					title: 'Ошибка'
+				});
+			}
+		}
+	</script>
+
+	@Scripts.Render("~/Scripts/Vocabulary/Tour/addonServiceTab.js")
+	@Scripts.Render("~/Scripts/Vocabulary/Tour/TourCopyService.js")
+}

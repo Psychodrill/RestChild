@@ -1,0 +1,204 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@model RestChild.Web.Models.TourModel
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "Campers" ? "active" : string.Empty)" id="Campers">
+	<fieldset class="form-horizontal">
+		<h3>
+			Реестр отдыхающих
+		</h3>
+		@if (Model.Data.TypeOfRest != null  &&  Model.Data.TypeOfRest.NeedAccomodation)
+		{
+			<div id="listForCooperative">
+				@if (Model.Data.Bookings != null && Model.Data.Bookings.Any(b=>!b.Canceled))
+				{
+					<table class="table">
+						<thead>
+						<tr>
+							<th>№</th>
+							<th>Ребенок/сопровождающий</th>
+							<th>ФИО отдыхающего</th>
+							<th>Документ, подтверждающий личность</th>
+							<th>Забронированные номера</th>
+							<th>Удобства</th>
+						</tr>
+						</thead>
+						<tbody>
+						@{ var requestNum = 1; }
+						@foreach (var booking in Model.Data.Bookings.Where(b => !b.Canceled && b.TourVolume != null && b.TourVolume.TypeOfRoomsId.HasValue && b.Request != null && b.Request.StatusId == (long)StatusEnum.CertificateIssued).ToList())
+						{
+							var request = booking.Request;
+							var childrenCount = request.Child != null ? request.Child.Count : 0;
+							var attendantCount = request.Attendant != null ? request.Attendant.Count : 0;
+							var attendants = new List<Applicant>();
+							var firstCamper = true;
+
+							if (request.Applicant != null && request.Applicant.IsAccomp)
+							{
+								attendantCount++;
+								attendants.Add(request.Applicant);
+							}
+
+							if (booking.Request != null && (booking.Request.Child != null && booking.Request.Child.Any()
+                                                            || request.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps
+                                                            || request.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps
+                                                            || request.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn18))
+							{
+								foreach (var child in request.Child ?? new List<Child>())
+								{
+									<tr>
+										@if (firstCamper)
+										{
+											<td rowspan="@(childrenCount + attendantCount)">@requestNum</td>
+										}
+										<td>Ребенок</td>
+										<td>@string.Format("{0} {1} {2}", child.LastName, child.FirstName, child.MiddleName)</td>
+										<td>@string.Format("{0} {1} {2} дата выдачи: {3: dd.MM.yyyy}", child.NullSafe(c => c.DocumentType.Name), child.DocumentSeria, child.DocumentNumber, child.DocumentDateOfIssue)</td>
+										@if (firstCamper)
+										{
+											<td rowspan="@(childrenCount + attendantCount)">@booking.NullSafe(b => b.TourVolume.TypeOfRooms.Name) @(booking != null && booking.CountRooms > 1 ? " (" + booking.CountRooms.ToString() + " - номера)" : "")</td>
+											<td rowspan="@(childrenCount + attendantCount)">@(booking.NullSafe(b => b.TourVolume.TypeOfRooms) != null ? booking.NullSafe(b => b.TourVolume.TypeOfRooms).GetConviencsString() : null)</td>
+										}
+
+									</tr>
+									firstCamper = false;
+								}
+
+								if (booking.Request != null && booking.Request.Attendant != null && booking.Request.Attendant.Any())
+								{
+									attendants.AddRange(booking.Request.Attendant);
+								}
+
+								if (attendantCount > 0)
+								{
+									foreach (var attendant in attendants)
+									{
+										<tr>
+											@if (firstCamper)
+											{
+												<td rowspan="@(childrenCount + attendantCount)">@requestNum</td>
+											}
+											<td>Сопровождающий</td>
+											<td>@string.Format("{0} {1} {2}", attendant.LastName, attendant.FirstName, attendant.MiddleName)</td>
+											<td>@string.Format("{0} {1} {2} дата выдачи: {3: dd.MM.yyyy}", attendant.NullSafe(c => c.DocumentType.Name), attendant.DocumentSeria, attendant.DocumentNumber, attendant.DocumentDateOfIssue)</td>
+											@if (firstCamper)
+											{
+												<td rowspan="@(childrenCount + attendantCount)">@booking.NullSafe(b => b.TourVolume.TypeOfRooms.Name) @(booking != null && booking.CountRooms > 1 ? " (" + booking.CountRooms.ToString() + " - номера)" : "")</td>
+												<td rowspan="@(childrenCount + attendantCount)">@(booking.NullSafe(b => b.TourVolume.TypeOfRooms) != null ? booking.NullSafe(b => b.TourVolume.TypeOfRooms).GetConviencsString() : null)</td>
+											}
+
+										</tr>
+										firstCamper = false;
+									}
+								}
+								requestNum++;
+							}
+						}
+						</tbody>
+					</table>
+				}
+				else
+				{
+					<p>В блоке мест нет отдыхающих</p>
+				}
+			</div>
+		}
+
+		@if (Model.Data.TypeOfRestId == (long) TypeOfRestEnum.SpecializedСamp || Model.Data.TypeOfRestId == (long)TypeOfRestEnum.SpecializedСampFamily)
+		{
+			<div id="listForSpecializedCamps">
+				@if (Model.Data.ChildLists != null && Model.Data.ChildLists.Any(l => !l.IsDeleted && l.StateId != StateMachineStateEnum.Deleted))
+				{
+					<table class="table table-striped table-hover" id="ChildListsTable">
+						<thead>
+						<tr>
+							<th></th>
+							<th>ОИВ</th>
+							<th>Учреждение</th>
+							<th>Наименование</th>
+							<th>Отдыхающих</th>
+							<th>Сопровождающих</th>
+							<th>Статус</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody id="ChildListsTableBody">
+						@foreach (var list in Model.Data.ChildLists.Where(l => !l.IsDeleted && l.StateId != StateMachineStateEnum.Deleted))
+						{
+							<tr class="child-list-row">
+								<td class="text-center">
+									<a href="javascript:void(0);" class="childlist-expand">
+										<i class="glyphicon glyphicon-chevron-right"></i>
+									</a>
+								</td>
+								<td>@Html.Raw(list.NullSafe(l => l.LimitOnOrganization.LimitOnVedomstvo.Organization.Name).FormatEx())</td>
+								<td>@Html.Raw(list.NullSafe(l => l.LimitOnOrganization.Organization.Name).FormatEx())</td>
+								<td>@Html.Raw(list.Name.FormatEx())</td>
+								<td>@list.CountChild.FormatEx()</td>
+								<td>@list.CountAttendants.FormatEx()</td>
+								<td>@Html.Raw(list.NullSafe(l => l.State.Name).FormatEx())</td>
+								<td>
+									@if (Model.IsEditable)
+									{
+										<a href="javascript:void(0);" class="childlist-exclude pull-right">
+											<i class="glyphicon glyphicon-remove"></i>
+										</a>
+									}
+
+									<input type="hidden" class="child-list-table-id" name="Id" value="@list.Id" />
+								</td>
+							</tr>
+							<tr class="collapse out">
+								<td colspan="8" class="childs-in-list">
+									<div class="text-center">
+										Получение данных <img class="text-center" width="20" height="20" src="/Content/images/spinner.gif" />
+									</div>
+								</td>
+							</tr>
+						}
+						</tbody>
+					</table>
+				}
+				else
+				{
+					<p>В блоке мест нет отдыхающих</p>
+				}
+			</div>
+		}
+
+		@if (Model.Data.TypeOfRest != null && !Model.Data.TypeOfRest.NeedAccomodation && Model.Data.TypeOfRestId != (long)TypeOfRestEnum.SpecializedСamp)
+		{
+			<div id="listForIndividuals">
+				@if (Model.Data.Childs != null && Model.Data.Childs.Any(c => !c.IsDeleted))
+				{
+					<table class="table">
+						<thead>
+						<tr>
+							<th>№</th>
+							<th>ФИО отдыхающего</th>
+							<th>Документ, подтверждающий личность</th>
+						</tr>
+						</thead>
+						<tbody>
+						@{ var childsInCampNum = 1; }
+						@foreach (var child in Model.Data.Childs.Where(c => !c.IsDeleted && (c.Request == null || c.Request.StatusId == (long)StatusEnum.CertificateIssued)))
+						{
+							<tr>
+								<td>@childsInCampNum</td>
+								<td>@child.LastName @child.FirstName @child.MiddleName</td>
+								<td>@string.Format("{0} {1} {2} дата выдачи: {3: dd.MM.yyyy}", child.NullSafe(c => c.DocumentType.Name), child.DocumentSeria, child.DocumentNumber, child.DocumentDateOfIssue)</td>
+							</tr>
+							childsInCampNum++;
+						}
+						</tbody>
+					</table>
+				}
+				else
+				{
+					<p>В блоке мест нет отдыхающих</p>
+				}
+			</div>
+		}
+
+	</fieldset>
+</div>

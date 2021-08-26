@@ -1,0 +1,157 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="RestChild.Admin.Web.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="RestPlaceImagesPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\RestPlacesImages</Value>
+    </Setting>
+    <Setting Name="TablePageSize" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="RestPlaceImagesVirtualPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">/DownloadImage.ashx</Value>
+    </Setting>
+    <Setting Name="WebBtiStreetsResponseCount" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="WebSchoolsResponseCount" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="WebSchoolsCount" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="StorageRoot" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">~/</Value>
+    </Setting>
+    <Setting Name="StorageRootPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\RestPlacesImages\</Value>
+    </Setting>
+    <Setting Name="SecondaryInteragencyRequestPeriodDays" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="SendErrorStatus" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Setting" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="StorageHotelFilesRootpath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\HotelFiles\</Value>
+    </Setting>
+    <Setting Name="SystemUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost:3164/</Value>
+    </Setting>
+    <Setting Name="StoragePayment" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\Payment\</Value>
+    </Setting>
+    <Setting Name="StorageSign" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\SignInfo</Value>
+    </Setting>
+    <Setting Name="StorageRulesOfRest" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\RulesOfRest</Value>
+    </Setting>
+    <Setting Name="VocabularyResponseSize" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="EmailForReplicationReceiverMessages" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="CounselorsInParty" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="ChildOnCounselors" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">12</Value>
+    </Setting>
+    <Setting Name="StorageCounselorTaskPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\CounselorTask\</Value>
+    </Setting>
+    <Setting Name="StorageBoutJournal" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\BoutJournal\</Value>
+    </Setting>
+    <Setting Name="StorageProductFiles" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\ProductFiles\</Value>
+    </Setting>
+    <Setting Name="DogmNSIError" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\DogmNSIError\</Value>
+    </Setting>
+    <Setting Name="DogmNSIProcessed" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\DogmNSIProcessed\</Value>
+    </Setting>
+    <Setting Name="SecretKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">4bn*ivw%92kk3ZvLmu#kY|ruE#vB?Pc#CpGCDqjBHQ*20?X{bP55WI~</Value>
+    </Setting>
+    <Setting Name="CrossTime" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">201602</Value>
+    </Setting>
+    <Setting Name="CompensationCrossChild" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">203</Value>
+    </Setting>
+    <Setting Name="CrossChild" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">201703</Value>
+    </Setting>
+    <Setting Name="NoDocuments" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">201701</Value>
+    </Setting>
+    <Setting Name="BadDocuments" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">201702</Value>
+    </Setting>
+    <Setting Name="BrPaymentDocument" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">48</Value>
+    </Setting>
+    <Setting Name="ViolationToDecline" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;1;201708&lt;/string&gt;
+  &lt;string&gt;2;201709&lt;/string&gt;
+  &lt;string&gt;3;201710&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="BenefitNotForCheckPayment" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;38&lt;/string&gt;
+  &lt;string&gt;41&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="ReasonNotHavePayment" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">201707</Value>
+    </Setting>
+    <Setting Name="ReasonNotHaveBenefit" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">201706</Value>
+    </Setting>
+    <Setting Name="CertificateOnMoneyPricePerChild" Type="System.Decimal" Scope="Application">
+      <Value Profile="(Default)">30000</Value>
+    </Setting>
+    <Setting Name="RequestDeclineNotApproved" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;201627&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="BenefitNotDecline" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;41&lt;/string&gt;
+  &lt;string&gt;42&lt;/string&gt;
+  &lt;string&gt;43&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="LowIncomeType" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">48</Value>
+    </Setting>
+    <Setting Name="ReasonNotIncludedInList" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">201705</Value>
+    </Setting>
+    <Setting Name="BenefitCertificateOnAttendant" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;41&lt;/string&gt;
+  &lt;string&gt;42&lt;/string&gt;
+  &lt;string&gt;43&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="SnilsTestRequest" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

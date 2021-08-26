@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="8f49df23-742c-4b2e-ab16-92334eabcf22" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="net.tcp://localhost:7778/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="704003b4-fe1f-40ef-b44c-6c77c085626f" SourceId="1" SourceUrl="net.tcp://localhost:7778/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="a5028bef-e8ae-4f6c-a4d1-a6e459606b01" SourceId="1" SourceUrl="net.tcp://localhost:7778/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="cc5e51b3-2b93-4438-a6d8-71fb90775cf8" SourceId="1" SourceUrl="net.tcp://localhost:7778/mex" />
+    <MetadataFile FileName="RestChild.Comon.Services.xsd" MetadataType="Schema" ID="7edf5af5-8982-4dae-b220-7b815eac6e9b" SourceId="1" SourceUrl="net.tcp://localhost:7778/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="00e4356e-6804-4901-b097-27a157efe886" SourceId="1" SourceUrl="net.tcp://localhost:7778/mex" />
+    <MetadataFile FileName="RestChild.Comon.Dto.Commercial.xsd" MetadataType="Schema" ID="e373812b-99a9-4fa4-89cd-1464c2a56f40" SourceId="1" SourceUrl="net.tcp://localhost:7778/mex" />
+    <MetadataFile FileName="RestChild.Comon.Dto.Commercial.Request.xsd" MetadataType="Schema" ID="28a0cd79-571b-4746-b3c0-e6c0820ec5ad" SourceId="1" SourceUrl="net.tcp://localhost:7778/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

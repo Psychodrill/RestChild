@@ -1,0 +1,432 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4F2D7102-41A3-4A1A-86A7-B7BDD743DE98}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RestChild.Comon</RootNamespace>
+    <AssemblyName>RestChild.Comon</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.Logging">
+      <HintPath>..\packages\Castle.LoggingFacility.3.3.0\lib\net45\Castle.Facilities.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Logging.Log4netIntegration">
+      <HintPath>..\packages\Castle.Core-log4net.3.3.0\lib\net45\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.5.5631.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>..\packages\EPPlus.4.0.1.1\lib\net20\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList">
+      <HintPath>..\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Activation" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Case.cs" />
+    <Compile Include="Compression.cs" />
+    <Compile Include="Config\DeclineSection.cs" />
+    <Compile Include="Config\DeclineSectionProcess.cs" />
+    <Compile Include="Config\MappingSection.cs" />
+    <Compile Include="CustomDisplayNameAttribute.cs" />
+    <Compile Include="CustomFormatAttribute.cs" />
+    <Compile Include="Dto\Addressing\AddressBtiDTO.cs" />
+    <Compile Include="Dto\Addressing\BaseBtiDTO.cs" />
+    <Compile Include="Dto\Addressing\DistrictBtiDTO.cs" />
+    <Compile Include="Dto\Addressing\FeaturesBuildBtiDTO.cs" />
+    <Compile Include="Dto\Addressing\RegionBtiDTO.cs" />
+    <Compile Include="Dto\Addressing\StreetBtiDTO.cs" />
+    <Compile Include="Dto\BaseRegistryCheckResult.cs" />
+    <Compile Include="Dto\BenefitCheckRequest.cs" />
+    <Compile Include="Dto\Booking\BaseRequest.cs" />
+    <Compile Include="Dto\Booking\BookingVariationPlacementRespose.cs" />
+    <Compile Include="Dto\Booking\LocationRequest.cs" />
+    <Compile Include="Dto\Booking\BookingRequest.cs" />
+    <Compile Include="Dto\Booking\BookingResult.cs" />
+    <Compile Include="Dto\Booking\BookingSearchRequest.cs" />
+    <Compile Include="Dto\Booking\BookingVariationPlacementRequest.cs" />
+    <Compile Include="Dto\Booking\FileLink.cs" />
+    <Compile Include="Dto\Booking\Location.cs" />
+    <Compile Include="Dto\Booking\RequestDto.cs" />
+    <Compile Include="Dto\Booking\ResultSearch.cs" />
+    <Compile Include="Dto\Booking\RoomShedule.cs" />
+    <Compile Include="Dto\Booking\Rooms.cs" />
+    <Compile Include="Dto\Booking\Hotel.cs" />
+    <Compile Include="Dto\Booking\TimeOfRest.cs" />
+    <Compile Include="Dto\CheckResult.cs" />
+    <Compile Include="Dto\CheckResultRequest.cs" />
+    <Compile Include="Dto\Commercial\BaseResponse.cs" />
+    <Compile Include="Dto\DetailInfo.cs" />
+    <Compile Include="Dto\ForceChangePasswordModelBase.cs" />
+    <Compile Include="Dto\PaymentCheckResult.cs" />
+    <Compile Include="Dto\RelationshipCheckResult.cs" />
+    <Compile Include="Dto\SearchRestChild\IndexRestChildDto.cs" />
+    <Compile Include="Dto\LoginModelBase.cs" />
+    <Compile Include="Dto\ResidentPreferentialCategories.cs" />
+    <Compile Include="Dto\SearchRestChild\RestChildFilterDto.cs" />
+    <Compile Include="Dto\SearchRestChild\SearchIndexResult.cs" />
+    <Compile Include="Dto\SnilsCheckResult.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="Enumeration\AccessRightEnum.cs" />
+    <Compile Include="Enumeration\AggregatedStatusEnum.cs" />
+    <Compile Include="Enumeration\AnalyticsViewRowTypeEnum.cs" />
+    <Compile Include="Enumeration\ApplicantTypeEnum.cs" />
+    <Compile Include="Enumeration\BeneficiariesEnum.cs" />
+    <Compile Include="Enumeration\BenefitApproveTypeEnum.cs" />
+    <Compile Include="Enumeration\BenefitTypeEnum.cs" />
+    <Compile Include="Enumeration\BoutAggregatedStates.cs" />
+    <Compile Include="Enumeration\BoutJournalTypeEnum.cs" />
+    <Compile Include="Enumeration\BtiAddressEnum.cs" />
+    <Compile Include="Enumeration\CheckStateCheckRequestEnum.cs" />
+    <Compile Include="Enumeration\DocumentGenerationEnum.cs" />
+    <Compile Include="Enumeration\DocumentTypeEnum.cs" />
+    <Compile Include="Enumeration\EidSendStatusEnum.cs" />
+    <Compile Include="Enumeration\ExchangeBaseRegistryResponseStatusEnum.cs" />
+    <Compile Include="Enumeration\ExchangeBaseRegistryTypeEnum.cs" />
+    <Compile Include="Enumeration\MGTVisitBookingPersonTypes.cs" />
+    <Compile Include="Enumeration\MGTVisitBookingPrebookingStatuses.cs" />
+    <Compile Include="Enumeration\MGTVisitBookingStatuses.cs" />
+    <Compile Include="Enumeration\OrganizationStatusEnum.cs" />
+    <Compile Include="Enumeration\OrganizationTypeEnum.cs" />
+    <Compile Include="Enumeration\OrphanageCollaboratorType.cs" />
+    <Compile Include="Enumeration\OrphanagePupilGroupVacationPeriodEnum.cs" />
+    <Compile Include="Enumeration\ProcessedStatusEnum.cs" />
+    <Compile Include="Enumeration\RelationshipLoadServiceNumber.cs" />
+    <Compile Include="Enumeration\RequestEventEnum.cs" />
+    <Compile Include="Enumeration\RestCategoryEnum.cs" />
+    <Compile Include="Enumeration\RestrictionGroupEnum.cs" />
+    <Compile Include="Enumeration\SecuritySettingEnum.cs" />
+    <Compile Include="Enumeration\TaskExecutorTypeEnum.cs" />
+    <Compile Include="Enumeration\MatrialStatusEnum.cs" />
+    <Compile Include="Enumeration\MilitaryDutyEnum.cs" />
+    <Compile Include="Enumeration\ServiceEnum.cs" />
+    <Compile Include="Enumeration\TradeUnionPersonCheckTypeEnum.cs" />
+    <Compile Include="Enumeration\TypeOfCalculationEnum.cs" />
+    <Compile Include="Enumeration\CityEnum.cs" />
+    <Compile Include="Enumeration\CounselorTypeEnum.cs" />
+    <Compile Include="Enumeration\DeclineReasonEnum.cs" />
+    <Compile Include="Enumeration\FileTypeEnum.cs" />
+    <Compile Include="Enumeration\GroupedTimeOfRestEnum.cs" />
+    <Compile Include="Enumeration\HotelTypeEnum.cs" />
+    <Compile Include="Enumeration\NotNeedTicketReasonEnum.cs" />
+    <Compile Include="Enumeration\OrganisationEnum.cs" />
+    <Compile Include="Enumeration\ReportEnum.cs" />
+    <Compile Include="Enumeration\RequestActionEnum.cs" />
+    <Compile Include="Enumeration\RequestFileTypeEnum.cs" />
+    <Compile Include="Enumeration\SelectPlaceStepEnum.cs" />
+    <Compile Include="Enumeration\SignTypeEnum.cs" />
+    <Compile Include="Enumeration\SourceEnum.cs" />
+    <Compile Include="Enumeration\StateMachineEnum.cs" />
+    <Compile Include="Enumeration\StateMachineStateEnum.cs" />
+    <Compile Include="Enumeration\StatusEnum.cs" />
+    <Compile Include="Enumeration\StatusInteragencyRequestEnum.cs" />
+    <Compile Include="Enumeration\StatusResultEnum.cs" />
+    <Compile Include="Enumeration\TypeOfEducationEnum.cs" />
+    <Compile Include="Enumeration\TypeOfGroupCheckEnum.cs" />
+    <Compile Include="Enumeration\TypeOfLimitListEnum.cs" />
+    <Compile Include="Enumeration\TypeOfLinkPeopleEnum.cs" />
+    <Compile Include="Enumeration\TypeOfRestEnum.cs" />
+    <Compile Include="Enumeration\TypeOfRestERLEnum.cs" />
+    <Compile Include="Enumeration\TypeOfTransportEnum.cs" />
+    <Compile Include="Enumeration\TypePriceCalculationEnum.cs" />
+    <Compile Include="Enumeration\TypeRequestInformationVoucherEnum.cs" />
+    <Compile Include="ERL\ERLConstants.cs" />
+    <Compile Include="Exchange\AttributeFilter.cs" />
+    <Compile Include="Exchange\camps.cs">
+      <DependentUpon>camps.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Exchange\Cpmpk\CpmpkResponseDto.cs" />
+    <Compile Include="Exchange\ExchangePacket.cs" />
+    <Compile Include="Exchange\Message.cs" />
+    <Compile Include="Exchange\NSIDeltaService.xsd.cs">
+      <DependentUpon>NSIDeltaService.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Exchange\PassportRegistration\Registration.cs" />
+    <Compile Include="Exchange\PassportRegistration\ServiceProperties.cs" />
+    <Compile Include="Exchange\Passport\passport.cs">
+      <DependentUpon>passport.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Exchange\Snils\smev-supplementary-commons-1_0_1.cs" />
+    <Compile Include="Exchange\StatusMessage.cs" />
+    <Compile Include="Exchange\Zagz\zags-inform-types.cs" />
+    <Compile Include="Extensions\DbSetExtensions.cs" />
+    <Compile Include="Extensions\RequestHelpers.cs" />
+    <Compile Include="Extensions\SmevZagzExtension.cs" />
+    <Compile Include="GeneralExtensions.cs" />
+    <Compile Include="HashHelper.cs" />
+    <Compile Include="HttpHelpers.cs" />
+    <Compile Include="ICshedDocument.cs" />
+    <Compile Include="IDocument.cs" />
+    <Compile Include="IEntityBase.cs" />
+    <Compile Include="IEntityProcessedStatus.cs" />
+    <Compile Include="ILastUpdateTick.cs" />
+    <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="NullToDefaultVisitor.cs" />
+    <Compile Include="Numeric.cs" />
+    <Compile Include="OpenXmlExtensions\WordExtension.cs" />
+    <Compile Include="PagerState.cs" />
+    <Compile Include="PasswordUtility.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="Service References\NSIDogm\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Executor\ChannelWrapper.cs" />
+    <Compile Include="Services\Executor\ServiceExecutor.cs" />
+    <Compile Include="Services\IExchangeService.cs" />
+    <Compile Include="Services\IRestChildSearchService.cs" />
+    <Compile Include="Services\Log4NetTraceListener.cs" />
+    <Compile Include="Services\NullableQueryStringConverter.cs" />
+    <Compile Include="Services\NullableWebHttpBehavior.cs" />
+    <Compile Include="Services\NullableWebServiceHost.cs" />
+    <Compile Include="Services\NullableWebServiceHostFactory.cs" />
+    <Compile Include="Services\SearchToursParams.cs" />
+    <Compile Include="Sex.cs" />
+    <Compile Include="SMS\IMessage.cs" />
+    <Compile Include="SMS\OutputMessage.cs" />
+    <Compile Include="SMS\ResponseMessage.cs" />
+    <Compile Include="SMS\ResponseMessageResult.cs" />
+    <Compile Include="SMS\SMSSendClient.cs" />
+    <Compile Include="Tasks\BaseTask.cs" />
+    <Compile Include="Tasks\RepeaterTask.cs" />
+    <Compile Include="Serialization.cs" />
+    <Compile Include="Tasks\OneDayTask.cs" />
+    <Compile Include="ToExcel\BaseExcelColumn.cs" />
+    <Compile Include="ToExcel\BaseExcelHeader.cs" />
+    <Compile Include="ToExcel\BaseExcelRow.cs" />
+    <Compile Include="ToExcel\BaseExcelTable.cs" />
+    <Compile Include="ToExcel\BaseExcelTotalColumn.cs" />
+    <Compile Include="ToExcel\ExcelHeader{T}.cs" />
+    <Compile Include="ToExcel\ExcelRow{T}.cs" />
+    <Compile Include="ToExcel\ExcelColumn{T}.cs" />
+    <Compile Include="ToExcel\ExcelTable{T}.cs" />
+    <Compile Include="Services\Service References\AsGufV5\Reference.cs" />
+    <Compile Include="StringExtensions.cs" />
+    <Compile Include="StringWriterUtf8.cs" />
+    <Compile Include="ToExcel\HtmlReportCell.cs" />
+    <Compile Include="ToExcel\HtmlReportRow.cs" />
+    <Compile Include="WindsorHolder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="WindsorInstaller.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <EmbeddedResource Include="Exchange\camps.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="Exchange\NSIDeltaService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Exchange\PassportRegistration\PassportRegistrationRequest.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Exchange\PassportRegistration\PassportRegistrationResponse.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Exchange\Passport\passport.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Exchange\Snils\commons\pfr-common-types-1.0.0..xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Exchange\Snils\commons\smev-supplementary-commons-1.0.1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Exchange\Snils\snils-by-additionalData-1.0.1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Exchange\Zagz\commons\zags-inform-types.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Exchange\Zagz\zags-inform-ru-root.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Service References\NSIDogm\include.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\NSIDogm\NSI.wsdl" />
+    <None Include="Service References\NSIDogm\nsi.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.addFileResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.checkBatchStatusResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.createCategoryFromBatchResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.createLookupEntryFromBatchResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.deleteCategoryFromBatchResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.deleteFileResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.deleteLookupEntryFromBatchResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.getContentResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.getDynamicAddressAttributeValuesResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.loginResponse1.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.NSIResponseType.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.searchStudentsFromBatchResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\RestChild.Comon.NSIDogm.updateFileResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\NSIDogm\smev.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Services\Service References\AsGufV5\Model.ServiceReference.GetRequestListResponse.datasource" />
+    <None Include="Services\Service References\AsGufV5\Model.ServiceReference.GetRequestsResponse.datasource" />
+    <None Include="Services\Service References\AsGufV5\Service1.wsdl" />
+    <None Include="Services\Service References\AsGufV5\Service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\NSIDogm\configuration91.svcinfo" />
+    <None Include="Service References\NSIDogm\configuration.svcinfo" />
+    <None Include="Service References\NSIDogm\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="Services\Service References\AsGufV5\configuration.svcinfo" />
+    <Content Include="Services\Service References\AsGufV5\configuration91.svcinfo" />
+    <Content Include="Services\Service References\AsGufV5\Service1.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\NSIDogm\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,222 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.PartyFilter
+
+@{
+	Layout = null;
+	//var canChangeNotComeInPlaceOfRest = Security.HasRight(AccessRightEnum.Bout.NotComeInPlaceOfRestForAllBouts) || (Security.HasRight(AccessRightEnum.Bout.AdministratorTour) && Model.IsBoutAdministartor);
+	var disableAll = Model.Bout != null && Model.Bout.StateId == StateMachineStateEnum.Bout.Closed;
+}
+
+@{
+	var partyCount = 0;
+	var openedParty = Model.Parties.FirstOrDefault(p => p.Data.Id == Model.OpenedPartyId);
+	var canChangeNeedTicket = Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicket);
+	var canDeliverFlag = Model.Bout.StateId == StateMachineStateEnum.Bout.Formed;
+	var disableNeedTicket = Model.Bout.StateId != StateMachineStateEnum.Bout.Formed && Model.Bout.StateId != StateMachineStateEnum.Bout.Editing;
+}
+
+@if (Model.IsEditable)
+{
+	<div class="row form-group">
+		<div class="col-md-12">
+			<button type="button" id="CreateParty" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>Добавить отряд</button>
+			<button type="button" id="ExcludeFromParty" class="btn btn-primary" @(Model.OpenedPartyId.HasValue && openedParty != null && openedParty.Data.Childs != null && openedParty.Data.Childs.Any() ? string.Empty : "disabled=disabled")>Исключить из отряда</button>
+			<button type="button" id="RemoveParty" class="btn btn-primary" @(Model.OpenedPartyId.HasValue ? string.Empty : "disabled=disabled")>Удалить отряд</button>
+		</div>
+	</div>
+}
+
+@if (Model.Parties != null && Model.Parties.Any())
+{
+	<div class="panel-group" id="partyAccordion" role="tablist" aria-multiselectable="true">
+		<div class="panel panel-default">
+			@foreach (var party in Model.Parties)
+			{
+				var canChangeNotCome = party.Data.StateId == StateMachineStateEnum.Party.Formed; //party.Data.Bouts != null && party.Data.Bouts.StateId != StateMachineStateEnum.Bout.Confirmed;
+				var canParentsFlag = party.Data.StateId == StateMachineStateEnum.Party.Formed;//Model.Bout.StateId == StateMachineStateEnum.Bout.Confirmed;
+				var countNotIn = party.Data.Childs == null ? 0 : party.Data.Childs.Count(c =>
+				{
+					var toTransport = c.LinkToPeoples.FirstOrDefault(l => l.TransportId == Model.Bout.TransportInfoToId);
+					return toTransport == null || toTransport.NotComeInPlaceOfRest;
+				});
+
+				<div class="panel-heading" role="tab" id="partyheading-@partyCount">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-parent="#partyAccordion" href="#partycollapse-@partyCount" aria-expanded="true" aria-controls="collapseOne">
+							Номер: @(party.Data.PartyNumber.FormatEx())&nbsp;&nbsp; Детей: @(party.Data.Childs != null ? party.Data.Childs.Count : 0)&nbsp;&nbsp; Вожатых: @(party.Data.Counselors != null ? party.Data.Counselors.Count : 0)
+							&nbsp;&nbsp; Заехало: <span id="countIn@(partyCount)">@(party.Data.Childs != null ? party.Data.Childs.Count - countNotIn : 0)</span>&nbsp;&nbsp; Не заехало: <span id="countNotIn@(partyCount)">@(countNotIn)</span>
+							<span class="pull-right">@party.NullSafe(p => p.Data.State.Name)</span>
+						</a>
+					</h4>
+				</div>
+				<div id="partycollapse-@partyCount" class="panel-collapse collapse party-collapse @(Model.OpenedPartyId == party.Data.Id ? "in" : string.Empty)" party-number="@(partyCount)" data-id="@party.Data.Id" role="tabpanel" aria-labelledby="headingOne">
+					<div class="panel-body">
+						<div class="col-md-12">
+							@if (Model.IsEditable)
+							{
+								<button type="button" class="btn btn-primary btn-counselor-add-dialog @(!party.Data.StateId.HasValue || party.Data.StateId != StateMachineStateEnum.Party.Forming ? "hidden" : null)">Добавить вожатого</button>
+								if (party.State != null && party.State.Actions != null)
+								{
+									foreach (var action in party.State.Actions)
+									{
+										<div class="pull-right">
+											<button type="button" class="btn btn-primary btn-party-change-state" data-action-code="@action.ActionCode" data-id="@party.Data.Id">@action.ActionName</button>
+										</div>
+									}
+								}
+							}
+
+
+						</div>
+						<div class="col-md-12">
+							@if (party.Data.Counselors != null && party.Data.Counselors.Any())
+							{
+								<table class="table table-striped table-hover col-md-12">
+									<thead>
+										<tr>
+											<th>ФИО вожатого</th>
+											<th width="15%">Не нужен билет</th>
+											<th width="15%">Не нужен обрантый билет</th>
+											<th width="5%"></th>
+										</tr>
+									</thead>
+									<tbody>
+									@{
+										var counselorNum = 1;
+									}
+									@foreach (var counselor in party.Data.Counselors)
+									{
+										LinkToPeople forwardTransport;
+										LinkToPeople backwardTransport;
+
+										Model.CounselorTransportForward.TryGetValue(counselor.Id, out forwardTransport);
+										Model.CounselorTransportBackward.TryGetValue(counselor.Id, out backwardTransport);
+
+										<tr>
+											<td class="camper-name">@(string.Format("{0} {1} {2}", counselor.LastName, counselor.FirstName, counselor.MiddleName))</td>
+											@if (canChangeNeedTicket)
+											{
+												<td class="text-center">@(forwardTransport != null ? Html.CheckBox("ApplicantNeedTicketForward" + counselorNum, !forwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = forwardTransport.Id }).DisableIf(()=> !canChangeNotCome) : new MvcHtmlString("Нет информации по транспорту"))</td>
+												<td class="text-center">@(backwardTransport != null ? Html.CheckBox("ApplicantNeedTicketBackward" + counselorNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(() => !canChangeNotCome) : new MvcHtmlString("Нет информации по транспорту"))</td>
+											}
+											else
+											{
+												<td class="text-center">@(forwardTransport != null ? forwardTransport.NeedTicket.FormatEx() : "Нет информации по транспорту")</td>
+												<td class="text-center">@(backwardTransport != null ? backwardTransport.NeedTicket.FormatEx() : "Нет информации по транспорту")</td>
+											}
+
+											<td>
+												@if (Model.IsEditable)
+												{
+													<button type="button" class="btn btn-primary btn-counselor-remove @(!party.Data.StateId.HasValue || party.Data.StateId != StateMachineStateEnum.Party.Forming ? "hidden" : null)" data-party-id="@party.Data.Id" data-counselor-id="@counselor.Id">Удалить</button>
+												}
+
+											</td>
+										</tr>
+										counselorNum++;
+									}
+									</tbody>
+								</table>
+							}
+							else
+							{
+								@:Вожатые не добавлены
+							}
+						</div>
+						<div class="col-md-12">
+							@if (party.Data.Childs != null && party.Data.Childs.Any())
+							{
+								<table class="table col-md-12 table-childs-inparty">
+									<thead>
+										<tr>
+											<th>@Html.CheckBox("CheckAll", new { @class = "check-all-childs-in-party" }).DisableIf(() => Model.NullSafe(m => m.BoutState.Id) != StateMachineStateEnum.Bout.Editing)</th>
+											<th>ФИО ребенка</th>
+											<th>Пол</th>
+											<th>Возраст</th>
+											<th>Прибыл</th>
+											<th>Сдан родителям</th>
+											<th width="20%">Причина отказа от обратного билета</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach (var child in party.Data.Childs)
+										{
+											var partyState = party.NullSafe(p => p.Data.StateId);
+											var toTransport = child.LinkToPeoples.FirstOrDefault(l => l.TransportId == Model.Bout.TransportInfoToId);
+											var fromTransport = child.LinkToPeoples.FirstOrDefault(l => l.TransportId == Model.Bout.TransportInfoFromId);
+
+											<tr class="@(fromTransport != null ? Extensions.NotNeedTicketColor(fromTransport.NotNeedTicketReasonId) : string.Empty)">
+												<td>@Html.CheckBox("CheckChild_" + child.Id, false, new { id = "CheckChild_" + child.Id, @class = "child-in-party", data_id = child.Id }).DisableIf(() => partyState != StateMachineStateEnum.Party.Forming)</td>
+												<td class="camper-name">@child.LastName @child.FirstName @child.MiddleName</td>
+												<td>@(child.Male ? "Мужской" : "Женский")</td>
+												<td>@child.GetAgeInYears()</td>
+												<td>
+													@if (toTransport != null && fromTransport != null)
+													{
+														<input type="checkbox" @Html.Raw(!toTransport.NotComeInPlaceOfRest ? "checked='checked'" : string.Empty) class="notComeInPlaceOfRest" data-child-id="@child.Id" data-link-id="@toTransport.Id" data-from-link-id="@fromTransport.Id"  @Html.Raw(!canChangeNotCome || disableAll ? "disabled='disabled'" : "")/>}
+													else
+													{
+														<text>
+															Нет информации по транспорту
+														</text>
+													}
+												</td>
+												<td>
+													@if (fromTransport != null)
+													{
+														<input type="checkbox" @Html.Raw(fromTransport.DeliveredParents ? "checked='checked'" : string.Empty) class="deliveredParents" data-child-id="@child.Id" data-link-id="@fromTransport.Id" @Html.Raw((toTransport != null && toTransport.NotComeInPlaceOfRest) || !canParentsFlag ? "disabled='disabled'" : "") />
+														<div class="label-notComeInPlaceOfRest @Html.Raw(toTransport != null && toTransport.NotComeInPlaceOfRest?"":"hidden")" style="color: #888">Не прибыл</div>
+													}
+													else
+													{
+													<text>
+														Нет информации по транспорту
+													</text>
+													}
+												</td>
+												<td>
+													@if (fromTransport != null)
+													{
+														if (Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicketReason))
+														{
+															@Html.DropDownList("NotNeedTicket", SelectListHelper.Create(Model.NotNeedTicketReasons.Where(r => r.Id != (long)NotNeedTicketReasonEnum.NotCome || canChangeNotCome || fromTransport.NotNeedTicketReasonId == r.Id), t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = fromTransport.NotNeedTicketReasonId == t.Id }), new { @class = "form-control not-need-ticket-select not-need-ticket-child ", data_id = fromTransport.Id }).DisableIf(() => (fromTransport.NotNeedTicketReasonId == (long)NotNeedTicketReasonEnum.NotCome || !canChangeNotCome) || (toTransport != null && toTransport.NotComeInPlaceOfRest) || disableAll)
+														}
+														else
+														{
+															<text>@fromTransport.NullSafe(l => l.NotNeedTicketReason.Name).FormatEx("Не выбрано")</text>
+														}
+													}
+													else
+													{
+														<text>
+															Нет информации по транспорту
+														</text>
+													}
+												</td>
+											</tr>
+										}
+
+									</tbody>
+								</table>
+							}
+							else
+							{
+								@:Дети не добавлены
+							}
+						</div>
+					</div>
+				</div>
+				partyCount++;
+			}
+		</div>
+	</div>
+}
+else
+{
+	@:Не найдены отряды
+}
+

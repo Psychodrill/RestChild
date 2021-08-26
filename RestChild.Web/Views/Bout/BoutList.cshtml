@@ -1,0 +1,133 @@
+﻿@using System.Collections
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@model RestChild.Extensions.Filter.BoutFilterModel
+@{
+	ViewBag.Title = "Реестр заездов";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "Search";
+	ViewBag.InsertAction = "Insert";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "Bout";
+	ViewBag.Caption = "Реестр заездов";
+	ViewBag.InsertButtonCaption = "Добавить заезд";
+	ViewBag.SearchPanelCaption = "Поиск заездов";
+	ViewBag.NeedInsertButton = false;
+
+	Model.YearsOfRest = Model.YearsOfRest ?? new List<YearOfRest>();
+	var currentYear = Model.YearsOfRest.FirstOrDefault(y => y.Id == Model.YearOfRestId);
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Вид места отдыха</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.HotelTypeId, SelectListHelper.Create(Model.HotelTypes, s => new SelectListItem() { Value = s.Id.ToString(), Text = s.Name }), new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Место отдыха</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.HotelsId, new { @class = "form-control" })
+			@Html.Hidden("_HotelsId", Model.HotelsId, new { id = "_HotelsId" })
+			@Html.Hidden("_HotelsName", Model.NullSafe(m => m.Hotels.Name), new { id = "_HotelsName" })
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Смена</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.GroupedTimeOfRestId, SelectListHelper.Create(Model.GroupedTimesOfRest, s => new SelectListItem() { Value = s.Id.ToString(), Text = s.Name }), new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Год кампании</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.YearsOfRest, "Id", "Name", currentYear), new { @class = "form-control" })
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Статус</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.StateId, SelectListHelper.Create(Model.States, s => new SelectListItem() { Value = s.Id.ToString(), Text = s.Name }), new { @class = "form-control" })
+		</div>
+	</div>
+}
+
+@section searchResult
+{
+	@if (Model.Result != null && Model.Result.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+			<tr>
+				<th class="text-center" width="5%">№</th>
+				<th>Место отдыха</th>
+				<th>Смена</th>
+				<th>Количество отрядов</th>
+				<th>Количество детей</th>
+				<th>Количество нераспределенных детей</th>
+				<th>Статус</th>
+				<th></th>
+			</tr>
+			</thead>
+			<tbody>
+			@{ var rowNumber = Model.Result.FirstItemOnPage;}
+			@foreach (var bout in Model.Result)
+			{
+				<tr>
+					<td class="text-center">@(rowNumber++)</td>
+					<td>@Html.Raw(bout.NullSafe(b => b.Hotels.Name).FormatEx())</td>
+					<td>@Html.Raw(bout.GroupedTimeOfRest != null ? bout.NullSafe(b => b.GroupedTimeOfRest.Name).FormatEx() + string.Format("<br/> ({0} - {1})", bout.DateIncome.FormatEx(), bout.DateOutcome.FormatEx()) : string.Format("{0} - {1}", bout.DateIncome.FormatEx(), bout.DateOutcome.FormatEx()))</td>
+					<td>@((bout.Partys != null ? (int?)bout.Partys.Count(p => p.StateId != StateMachineStateEnum.Deleted) : null).FormatEx())</td>
+					<td>@bout.Chidren.Count()</td>
+					<td>@bout.Chidren.Count(c => !c.PartyId.HasValue)</td>
+					<td>@bout.NullSafe(b => b.State.Name).FormatEx("Новый")</td>
+					<td class="text-center">@Html.ActionLink(" ", "Update", new { id = bout.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+				</tr>
+			}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model.Result, page =>
+						{
+							Model.Result = null;
+							Model.PageNumber = page;
+							Model.States = null;
+							Model.GroupedTimesOfRest = null;
+							Model.YearsOfRest = null;
+							return Url.Action("Search", Model);
+						}, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+}
+
+@section scripts
+{
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+	@Scripts.Render("~/Scripts/Vocabulary/BoutList.js")
+}

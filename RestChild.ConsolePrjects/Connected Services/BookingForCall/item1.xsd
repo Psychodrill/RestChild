@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://aisdo.itopcase.ru/Booking" elementFormDefault="qualified" targetNamespace="http://aisdo.itopcase.ru/Booking" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://172.16.240.1:7777/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" />
+  <xs:element name="GetHotels">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" minOccurs="0" name="request" nillable="true" type="q1:bookingSearchRequest" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetHotelsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" minOccurs="0" name="GetHotelsResult" nillable="true" type="q2:resultSearch" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="VariationPlacement">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" minOccurs="0" name="request" nillable="true" type="q3:bookingVariationPlacementRequest" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="VariationPlacementResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" minOccurs="0" name="VariationPlacementResult" nillable="true" type="q4:bookingVariationPlacementResponse" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MakePreBooking">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" minOccurs="0" name="request" nillable="true" type="q5:bookingRequest" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MakePreBookingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" minOccurs="0" name="MakePreBookingResult" nillable="true" type="q6:bookingResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MakeBooking">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" minOccurs="0" name="request" nillable="true" type="q7:bookingRequest" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MakeBookingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" minOccurs="0" name="MakeBookingResult" nillable="true" type="q8:bookingResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ReleaseBooking">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" minOccurs="0" name="request" nillable="true" type="q9:bookingRequest" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ReleaseBookingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" minOccurs="0" name="ReleaseBookingResult" nillable="true" type="q10:bookingResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ReleasePreBooking">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" minOccurs="0" name="request" nillable="true" type="q11:bookingRequest" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ReleasePreBookingResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/RestChild.Comon.Dto.Booking" minOccurs="0" name="ReleasePreBookingResult" nillable="true" type="q12:bookingResult" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

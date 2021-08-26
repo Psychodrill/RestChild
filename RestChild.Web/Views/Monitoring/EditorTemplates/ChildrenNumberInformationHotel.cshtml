@@ -1,0 +1,67 @@
+﻿@using RestChild.Web.Extensions
+@using RestChild.Web.Models.Monitoring
+
+@model  HotelDataModel
+@{
+    var isEditable = (ViewData["isEditable"] as bool?) ?? true;
+}
+
+
+<div class="hotel">
+    <div class="row">
+        @Html.HiddenFor(m => m.Data.Id)
+        @Html.HiddenFor(m => m.Prefix, new { @class = "prefix" })
+        @Html.HiddenFor(m => m.Data.ChildrenNumberInformationId)
+        <fieldset class="form-horizontal">
+            @if (Model.Data.Hotel != null && Model.Data.Hotel.Region != null)
+            {
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">Регион: </label>
+                    <div class="col-md-4 form-control-static">
+                        @Model.Data.Hotel.Region.Name
+                    </div>
+                </div>
+            }
+            <div class="form-group row">
+                <label class="col-sm-4 control-label">Организация отдыха и оздоровления: </label>
+                <div class="col-md-6">
+                    @if (Model.Data.Id > 0)
+                    {
+                        @Html.TextBoxFor(m => m.Data.Hotel.ShortName, new {@class = "form-control"}).DisableIf(() => true)
+                        @Html.HiddenFor(m => m.Data.HotelId)
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(m => m.Data.HotelId, new {@class = "form-control ChooseHotel"})
+                    }
+                </div>
+                @if (isEditable)
+                {
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger btn-primary remove-hotel" role="button">Удалить организацию</button>
+                    </div>
+                }
+            </div>
+        </fieldset>
+    </div>
+    <div class="tours">
+        @if (isEditable)
+        {
+            <div class="row">
+                <div class="col-md-2 form-group">
+                    <button type="button" class="btn btn-success btn-primary add-tour" role="button">Добавить заезд</button>
+                </div>
+            </div>
+        }
+        <div class="tours-list">
+            @if (Model.Tours != null && Model.Tours.Any())
+            {
+                foreach (var key in Model.Tours.Keys)
+                {
+                    @Html.EditorFor(m => m.Tours[key], "ChildrenNumberInformationTour", new { isEditable })
+                }
+            }
+        </div>
+    </div>
+    <h3><hr /></h3>
+</div>

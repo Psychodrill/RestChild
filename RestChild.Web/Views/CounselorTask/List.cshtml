@@ -1,0 +1,217 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Extensions
+@using RestChild.Extensions.Filter
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Extensions.Filter.CounselorTaskListModel
+@{
+	ViewBag.Title = "Взаимодействие с сотрудниками";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "List";
+	ViewBag.InsertAction = "Create";
+	ViewBag.Controller = "CounselorTask";
+	ViewBag.Caption = "Взаимодействие с сотрудниками";
+	ViewBag.InsertButtonCaption = "Добавить задачу";
+	ViewBag.SearchPanelCaption = "Поиск задач";
+	ViewBag.NeedInsertButton = false;
+}
+
+@section additionalInserts
+{
+	@if (Security.HasRight(AccessRightEnum.CounselorTask.ToDelivered) && Security.HasRight(AccessRightEnum.CounselorTask.ViewAll))
+	{
+		<a class="btn btn-primary" href="@Url.Action("Create", new { notNessary = false })" target="_blank">
+			<i class="glyphicon glyphicon-plus"></i> Добавить задачу
+		</a>
+		<a class="btn btn-primary" href="@Url.Action("Create", new { notNessary = true })" target="_blank">
+			<i class="glyphicon glyphicon-plus"></i> Добавить сообщение
+		</a>
+	}
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Год компании</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.YearOfRestId, Model.Years.Select(y => new SelectListItem() { Value = y.Id.ToString(), Text = y.Name, Selected = Model.YearOfRestId == y.Id }), new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Место отдыха</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.HotelsId, new { @class = "form-control" })
+			@Html.Hidden("_HotelsId", Model.HotelsId, new { id = "_HotelsId" })
+			@Html.Hidden("_HotelsName", Model.NullSafe(m => m.Hotels.Name), new { id = "_HotelsName" })
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Тема</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.Subject, new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Содержание</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.Body, new { @class = "form-control" })
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Дата постановки</label>
+		<div class="col-md-10">
+			<div class="form-inline">
+				<div class="form-group">
+					<label class="control-label text-right input-label" style="padding-top: 0px">с</label>
+					<div class='input-group date datepicker-anytime'>
+						@Html.TextBoxFor(r => r.TaskStartDate, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.TaskStartDate).FormatEx(string.Empty, string.Empty) })
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+					<label class="control-label text-right input-label" style="padding-top: 0px">по</label>
+					<div class='input-group date datepicker-anytime'>
+						@Html.TextBoxFor(r => r.TaskEndDate, new { @class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.TaskEndDate).FormatEx(string.Empty, string.Empty) })
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Срок исполнения</label>
+		<div class="col-md-10">
+			<div class="form-inline">
+				<div class="form-group">
+					<label class="control-label text-right input-label" style="padding-top: 0px">с</label>
+					<div class='input-group date datepicker-anytime'>
+						@Html.TextBoxFor(r => r.ExecutionStartDate, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.ExecutionStartDate).FormatEx(string.Empty, string.Empty) })
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+					<label class="control-label text-right input-label" style="padding-top: 0px">по</label>
+					<div class='input-group date datepicker-anytime'>
+						@Html.TextBoxFor(r => r.ExecutionEndDate, new { @class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.ExecutionEndDate).FormatEx(string.Empty, string.Empty) })
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Статус</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.StateId, SelectListHelper.Create(Model.States, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Смена</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.GroupedTimeOfRestId, SelectListHelper.Create(Model.GroupedTimesOfRest, s => new SelectListItem() { Value = s.Id.ToString(), Text = s.Name }), new { @class = "form-control" })
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Тип</label>
+		<div class="col-md-4">
+			<select name="@Html.NameFor(m => m.NotNessesary)" class="form-control">
+				<option value="0">-- Не выбрано --</option>
+				<option value="1">Задача</option>
+				<option value="2">Сообщение</option>
+			</select>
+		</div>
+	</div>
+}
+
+@section searchResult
+{
+	@if (Model != null && Model.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="text-center" width="5%">№</th>
+					<th>Тип</th>
+					<th>Тема</th>
+					<th>Дата постановки</th>
+					<th>Срок исполнения</th>
+					<th>Заезд</th>
+					<th>Автор</th>
+					<th>Получатель</th>
+					<th>Статус</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@{int rowNumber = Model.FirstItemOnPage;}
+				@foreach (var task in Model)
+				{
+					<tr>
+						<td class="text-center">@(rowNumber++)</td>
+						<td>@Html.Raw(!task.NotNecessary ? "Задача" : "Сообщение")</td>
+						<td>@Html.Raw(task.Subject.FormatEx())</td>
+						<td>@Html.Raw(task.DateCreate.FormatEx())</td>
+						<td>@Html.Raw(task.DatePlanFinish.FormatEx())/@Html.Raw(task.DateFactFinish.FormatEx())</td>
+						<td>@Html.Raw(string.Format("{0} - <b>{2}</b><br/> <i><small>{1}</small></i>", task.NullSafe(t => t.Bout.Hotels.Name).FormatEx(), task.NullSafe(t => t.Bout.Hotels.Address).FormatEx(), task.Bout != null && task.Bout.GroupedTimeOfRest != null ? task.Bout.GroupedTimeOfRest.Name : string.Format("{0} - {1}", task.NullSafe(t => t.Bout.DateIncome).FormatEx(), task.NullSafe(t => t.Bout.DateOutcome).FormatEx())))</td>
+						<td>@Html.Raw(task.NullSafe(t => t.Author.GetInfo()))</td>
+						<td>@Html.Raw(task.NullSafe(t => t.Executor.GetInfo()))</td>
+						<td>@Html.Raw(task.NullSafe(t=>t.State.Name).FormatEx())</td>
+						<td class="text-center">@Html.ActionLink(" ", "Edit", new { id = task.Id, markAsReaded = true }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model, page =>
+					{
+						var model = new CounselorTaskListModel(new List<CounselorTask>(), page, Model.PageSize, Model.TotalItemCount )
+						{
+							PageNumberEx = page,
+							YearOfRestId = Model.YearOfRestId,
+							Body = Model.Body,
+							ExecutionEndDate = Model.ExecutionEndDate,
+							ExecutionStartDate = Model.ExecutionStartDate,
+							HotelsId = Model.HotelsId,
+							StateId = Model.StateId,
+							Subject = Model.Subject,
+							TaskEndDate = Model.TaskEndDate,
+							TaskStartDate = Model.TaskStartDate,
+							GroupedTimeOfRestId = Model.GroupedTimeOfRestId,
+						};
+						return Url.Action("List", model);
+					}, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+}
+
+@section scripts
+{
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+	@Scripts.Render("~/Scripts/Vocabulary/CounselorTaskList.js")
+}

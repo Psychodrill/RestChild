@@ -1,0 +1,262 @@
+﻿@using RestChild.Comon
+@using RestChild.Domain
+@model RestChild.Web.Models.SubjectOfRestModel
+@{
+	ViewBag.Title = "Справочник \"Тематика смены\"";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+	<div class="col-md-12">
+		<h2>Тематика смены</h2>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		@using (Html.BeginForm("Save", "SubjectOfRest", FormMethod.Post, new { enctype = "multipart/form-data", @id = "mainForm" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(model => model.Data.Id)
+			@Html.HiddenFor(model => model.Data.LastUpdateTick)
+			@Html.HiddenFor(model => model.Data.LinkToFile.Id)
+			@Html.HiddenFor(model => model.Data.PhotoUrl, new {@class= "photoUrl" })
+			<fieldset class="form-horizontal">
+				<div class="form-group">
+					<div class="col-md-12">
+						<button type="button" class="btn btn-default btn-primary" id="saveButton">
+							<i class="glyphicon glyphicon-pencil"></i> Сохранить
+						</button>
+						@if (Model.Data.HistoryLinkId.HasValue)
+						{
+							<a data-history-id="@Html.ValueFor(m => m.Data.HistoryLinkId)" class="btn btn-default btn btn-default btn-hystory-link" href="#">
+								История
+							</a>
+						}
+
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Название тематики смены<span class="requared">*</span></label>
+					<div class="col-md-9">
+						@Html.TextBoxFor(model => model.Data.Name, new { @class = "form-control", autocomplete = "off" })
+						@Html.ValidationMessageFor(model => model.Data.Name)
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Описание для ПГУ</label>
+					<div class="col-md-9">
+						@Html.TextAreaFor(model => model.Data.Description, new { @class = "form-control", autocomplete = "off", @data_toggle = "tooltip", @data_placement = "right", @title = "Описание, отображаемое на МПГУ" })
+						@Html.ValidationMessageFor(model => model.Data.Description)
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Описание для сайта</label>
+					<div class="col-md-9 line-height35" data-toggle = "tooltip" data-placement = "right" title = "Описание, отображаемое на сайте Мосгортур">
+						<div id="body">
+						</div>
+						@Html.HiddenFor(m => m.DescriptionHtml)
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Классификация</label>
+					<div class="col-md-9 line-height35" data-toggle = "tooltip" data-placement = "right" title = "Выбор из классификатора тематик смены">
+						@Html.DropDownListFor(m=>m.Data.SubjectOfRestClassificationId, new SelectList(Model.Classifications.InsertAt(new SubjectOfRestClassification { Id = 0, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control select2" })
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Главная фотография</label>
+					<div class="col-md-9">
+						<img id="imgPreview" src="@ViewBag.ImgUrl" width="100" height="100" />
+						<button id="editImageBtn" type="button" class="btn btn-primary glyphicon glyphicon-pencil voffset-6 hidden"></button>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-9 col-md-offset-3">
+						<span class="btn btn-primary btn-file">
+							<span class="glyphicon glyphicon-folder-open"></span><span> Открыть изображение</span><input type='file' id="photo" name="photo" accept="image/jpeg,image/png" />
+						</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Фотографии</label>
+					<div class="col-md-9">
+						<table class="table table-striped" id="photoTable" tablename="Photos">
+							<tbody>
+								@for (var i = 0; i < Model.Photos.Count; i++)
+								{
+									<tr>
+										<td>
+											<a target="_blank" class="href-file" href="@Url.Content("~/")UploadTaskFile.ashx?f=@Url.Encode(Model.Photos[i].FileUrl)&t=@Url.Encode(Model.Photos[i].FileName)">@Model.Photos[i].FileName</a>
+										</td>
+										<td style="width: 50px">
+											<span class="glyphicon glyphicon-remove-circle text-danger request-file-remove" aria-hidden="true" title="Удалить" style="cursor: pointer"></span>
+											@Html.HiddenFor(m => m.Photos[i].Id)
+											@Html.HiddenFor(m => m.Photos[i].LinkId)
+											@Html.HiddenFor(m => m.Photos[i].FileUrl)
+											@Html.HiddenFor(m => m.Photos[i].FileName)
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+						<div class="row form-group file-upload-div">
+							<div class="col-md-12">
+								<div class="panel-file well well-sm">
+									<span class="file-span">
+										<em>Выберите файл для загрузки</em>
+									</span>
+								</div>
+								<span class="btn fileinput-button">
+									<i class="glyphicon glyphicon-paperclip"></i>
+									<input type="file" name="files[]" multiple>
+								</span>
+							</div>
+						</div>
+						<div class="file-uploading-div hidden">
+							<img src="~/Content/images/spinner.gif" /> Загрузка файла...
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Файлы</label>
+					<div class="col-md-9">
+						<table class="table table-striped" id="filesTable" tablename="OtherFiles">
+							<tbody>
+								@for (var i = 0; i < Model.OtherFiles.Count; i++)
+								{
+									<tr>
+										<td>
+											<a target="_blank" class="href-file" href="@Url.Content("~/")UploadTaskFile.ashx?f=@Url.Encode(Model.OtherFiles[i].FileUrl)&t=@Url.Encode(Model.OtherFiles[i].FileName)">@Model.OtherFiles[i].FileName</a>
+										</td>
+										<td style="width: 50px">
+											<span class="glyphicon glyphicon-remove-circle text-danger request-file-remove" aria-hidden="true" title="Удалить" style="cursor: pointer"></span>
+											@Html.HiddenFor(m => m.OtherFiles[i].Id)
+											@Html.HiddenFor(m => m.OtherFiles[i].LinkId)
+											@Html.HiddenFor(m => m.OtherFiles[i].FileName)
+											@Html.HiddenFor(m => m.OtherFiles[i].FileUrl)
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+						<div class="row form-group file-upload-div">
+							<div class="col-md-12">
+								<div class="panel-file well well-sm">
+									<span class="file-span">
+										<em>Выберите файл для загрузки</em>
+									</span>
+								</div>
+								<span class="btn fileinput-button">
+									<i class="glyphicon glyphicon-paperclip"></i>
+									<input type="file" name="files[]" multiple>
+								</span>
+							</div>
+						</div>
+						<div class="file-uploading-div hidden">
+							<img src="~/Content/images/spinner.gif" /> Загрузка файла...
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="checkbox col-md-9 col-md-offset-3">
+						<label data-toggle = "tooltip" data-placement = "right" title = "При установке признака тематика будет доступен для выбора">
+							@Html.CheckBoxFor(model => model.Data.IsActive) Активный
+						</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="checkbox col-md-9 col-md-offset-3">
+						<label data-toggle = "tooltip" data-placement = "right" title = "Установка приводит к отображению тематики на МПГУ">
+							@Html.CheckBoxFor(model => model.Data.ViewOnMpgu) Отображать на МПГУ
+						</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="checkbox col-md-9 col-md-offset-3">
+						<label data-toggle = "tooltip" data-placement = "right" title = "Установка приводит к отображению тематики на сайте Мосгортур">
+							@Html.CheckBoxFor(model => model.Data.ViewOnSite) Отображать на сайте
+						</label>
+					</div>
+				</div>
+			</fieldset>
+		}
+	</div>
+</div>
+
+@Html.Partial("_ImageEditPartial")
+
+@section styles{
+	@Styles.Render("~/Content/jquery.Jcrop.css")
+	@Styles.Render("~/Content/Vocabulary/VocabularyEdit.css")
+	@Styles.Render("~/Content/loading.css")
+	@Styles.Render("~/Content/css/font-awesome.min.css")
+	@Styles.Render("~/Content/summernote.css")
+	@Styles.Render("~/Content/jQuery.FileUpload/css/jquery.fileupload.css")
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/moment.js")
+	@Scripts.Render("~/Scripts/moment-with-locales.js")
+	<script type="text/javascript">
+				moment.locale('ru');
+	</script>
+	@Scripts.Render("~/Scripts/jquery.Jcrop.min.js")
+	@Scripts.Render("~/Scripts/jquery.numeric.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote.min.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote-ru-RU.js")
+	@Scripts.Render("~/Scripts/Vocabulary/Vocabulary.js")
+	@Scripts.Render("~/Scripts/Vocabulary/SubjectOfRestEdit.js")
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+	@Html.Partial("Assets/HistoryLinkTemplate")
+
+
+	<script type="text/javascript" language="javascript">
+		$(function () {
+			var body = ($('#@Html.IdFor(m => m.DescriptionHtml)').val());
+			$('#body').summernote({
+				lang: 'ru-RU',
+				toolbar: [
+					['style', ['style']],
+					['font', ['bold', 'italic', 'underline', 'clear']],
+					['fontname', ['fontname']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['height', ['height']],
+					['table', ['table']],
+					['insert', ['link', 'hr']]
+				],
+				maxHeight: 300,
+				height: 300
+			});
+			$('#body').code(body);
+
+			$('#saveButton').click(function () {
+				$('#@Html.IdFor(m => m.DescriptionHtml)').val($('#body').code());
+				$('#mainForm').submit();
+			});
+
+			$('.select2').select2();
+			$('[data-toggle="tooltip"]').tooltip();
+		});
+	</script>
+	<script type="dot/template" id="fileRowTemplate">
+		<tr>
+			<td>
+				<a target="_blank" class="href-file" href="/UploadTaskFile.ashx?f={{=encodeURIComponent(it.fileName)}}&t={{=encodeURIComponent(it.fileTitle)}}">{{=it.fileTitle}}</a>
+			</td>
+			<td style="width: 50px">
+				<span class="glyphicon glyphicon-remove-circle text-danger request-file-remove" aria-hidden="true" title="Удалить" style="cursor: pointer"></span>
+				<input type="hidden" name="{{=it.tableName}}[0].FileUrl" class="FileUrl" value="{{=it.fileName}}" />
+				<input type="hidden" name="{{=it.tableName}}[0].FileName" class="FileName" value="{{=it.fileTitle}}" />
+			</td>
+		</tr>
+	</script>
+}

@@ -1,0 +1,1419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2018 rel. 2 sp1 (x64) (http://www.altova.com) by Petr1 (IP Petr inc1) -->
+<xs:schema xmlns:tns="http://erl.msr.com/schemas/oiv" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://erl.msr.com/schemas/oiv" version="1.0">
+    <xs:complexType name="person_incoming">
+        <xs:annotation>
+            <xs:documentation>Информация о новом человеке</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="person" type="tns:person">
+                <xs:annotation>
+                    <xs:documentation>Информация о персоне</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="provider_identifier" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор в других системах</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="citizen_addresses" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Список адресов человека</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="citizen_address" type="tns:citizen_address" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Адрес нахождения человека.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="identity_document">
+        <xs:annotation>
+            <xs:documentation>ДУЛ</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="doctype_pk" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>ИД типа документа</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="serial" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Серия документа</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="number" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Номер документа</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="docauthority_pk" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>ИД органа, выдавшего документ</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="docauthority_name" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Место выдачи документа</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="doc_issuedate" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Дата выдачи</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="document">
+        <xs:annotation>
+            <xs:documentation>Документ</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="doctype_pk" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>ИД типа документа</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="serial" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Серия документа</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="number" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Номер документа</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="docauthority_pk" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>ИД органа, выдавшего документ</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="docauthority_name" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Место выдачи документа</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="doc_issuedate" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Дата выдачи</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="begin_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата начала действия документа/перава</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="end_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата окончания действия документа/права</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="realness" type="xs:boolean" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Действительность</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="reassessment_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата переосвидетельствования</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="address_birth">
+        <xs:annotation>
+            <xs:documentation>Место рождения</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="address_text" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Текст адреса рождения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="region_code" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Код региона по ФИАС</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="area_code" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Код района по ФИАС</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="settlement_code" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Код населенного пункта по ФИАС</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="address">
+        <xs:annotation>
+            <xs:documentation>Адрес</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="bti_identity" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор БТИ</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="post_index" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Почтовый индекс</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="settlement_code" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Населенный пункт</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:choice minOccurs="0">
+                <xs:element name="street_code" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Код ФИАС улицы</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="street_name" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Наименование улицы</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:choice>
+            <xs:element name="house_code" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Код ФИАС дома</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="house" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Наименование дома</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="corpus" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Корпус</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="building" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Строение</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="flat" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Квартира</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="address_text" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Адрес: текстовое значение</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="person_outgoing">
+        <xs:annotation>
+            <xs:documentation>Данные о людях, исходящих из ИС РМСП</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="citizen_pk" type="tns:UUID">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор человека в ИС РМСП (GUID)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="provider_identifier" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор в других системах</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="citizen">
+        <xs:annotation>
+            <xs:documentation>Информация о человеке</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="citizen_pk" type="tns:UUID" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор человека в ИС РМСП (GUID)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="surname" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Фамилия</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="firstname" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Имя</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="patronymic" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Отчество</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="birthday" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Дата рождения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="sex" type="tns:sex" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Пол</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="birth_place" type="tns:address_birth" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Место рождения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="birth_surname" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Фамилия при рождении</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="snils" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>СНИЛС</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="variate_citizen">
+        <xs:all>
+            <xs:element name="citizen_pk" type="tns:UUID">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор человека в ИС РМСП (GUID)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="surname" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Фамилия</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="firstname" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Имя</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="patronymic" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Отчество</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="birthday" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата рождения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="sex" type="tns:sex" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Пол</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="birth_place" type="tns:address_birth" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Место рождения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="birth_surname" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Фамилия при рождении</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="snils" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>СНИЛС</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="citizen_address">
+        <xs:annotation>
+            <xs:documentation>Адрес нахождения человека</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="address_type">
+                <xs:annotation>
+                    <xs:documentation xml:lang="RU">Код типа адреса</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="1">
+                            <xs:annotation>
+                                <xs:documentation xml:lang="RU">адрес места жительства</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="2">
+                            <xs:annotation>
+                                <xs:documentation xml:lang="RU">адрес места пребывания</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                        <xs:enumeration value="3">
+                            <xs:annotation>
+                                <xs:documentation xml:lang="RU">адрес фактического пребывания</xs:documentation>
+                            </xs:annotation>
+                        </xs:enumeration>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="address" type="tns:address">
+                <xs:annotation>
+                    <xs:documentation>Адрес</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="registration_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата регистрации</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="departure_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата выбытия</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="response">
+        <xs:annotation>
+            <xs:documentation>Ответ</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="processing_date" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Время обработки</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="result" type="tns:result">
+                <xs:annotation>
+                    <xs:documentation>Результат обработки</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="record_errors" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Ошибки обработки записей</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="error" type="tns:record_error" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Ошбка для записи</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="result">
+        <xs:annotation>
+            <xs:documentation>Результат обработки</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код результата</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="message" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Описание результата</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:simpleType name="sex">
+        <xs:annotation>
+            <xs:documentation>Пол</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="F"/>
+            <xs:enumeration value="M"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="benefit_category_status">
+        <xs:annotation>
+            <xs:documentation>Статус льготной категории</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="benefit_category_status_code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код статуса ЛК в справочнике</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="begin_date" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Начало действие статуса ЛК</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="change_reason_code" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Код причина изменений статуса в справочнике</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="atom">
+        <xs:annotation>
+            <xs:documentation>Атом</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="atom_code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код атома в справочнике</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="atom_state" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Значение юридически значимого события и фактического обстоятельства
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="last_modified" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Дата последнего обновления значения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="atom_date" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Дата юридически значимого события и фактического обстоятельства</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="source_value_code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор (код) источника значения юридически значимого события и фактического
+                        обстоятельства (поставщик сведений Регистра, предоставивший сведения)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="person">
+        <xs:annotation>
+            <xs:documentation>Информация о персоне</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="citizen" type="tns:citizen">
+                <xs:annotation>
+                    <xs:documentation>Информация о человеке</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="identity_document" type="tns:identity_document" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>ДУЛ</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="inn" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>ИНН</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="oms" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Полис обязательного медицинского страхования</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="citizen_benefitcategory">
+        <xs:annotation>
+            <xs:documentation>Льготная категория</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="citizen_benefitcategory_identity" type="tns:citizen_benefitcategory_identity">
+                <xs:annotation>
+                    <xs:documentation>ЛК</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="action_code" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>Код действия
+                        0: добавление
+                        1: изменение
+                        2: удаление (архивация)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="statement_number" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Номер заявления</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="confirming_documents" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Данные по документам, на основании которых присвоена ЛК</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="confirming_document" type="tns:document" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Документ, подтверждающий право на ЛК</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="citizen_relations" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Сведения о лицах, являющихся основанием для предоставления гражданину меры
+                        социальной поддержки (ЛК)
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="citizen_relation" type="tns:citizen_relation" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Группа (семья, домохозяйства), связи граждан</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="citizen_benefitcategory_identity">
+        <xs:annotation>
+            <xs:documentation>ЛК</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="benefitcategory_pk" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код льготной категории в справочнике</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="begin_date" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Дата начала действия</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="end_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата окончания действия</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="wrong_citizen_benefitcategory">
+        <xs:annotation>
+            <xs:documentation>Сведения о льготной категории, к которой в соответствии с данными ИС РМСП неправомерно
+                отнесено физическое лицо
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="citizen_benefitcategory_identity" type="tns:citizen_benefitcategory_identity">
+                <xs:annotation>
+                    <xs:documentation>ЛК</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="wrong_atoms" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Сведения не позволяющие отнести физическое лицо к льготной категории
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="wrong_atom" type="tns:atom" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Производный атом, не позволяющий отнести физическое лицо к льготной
+                                    категории
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="benefit_status">
+        <xs:annotation>
+            <xs:documentation>Статус МСП</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="benefit_status_code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код статуса МСП в справочнике</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="benefit_status_date" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Дата изменения статуса МСП</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="change_reson_code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код причины изменения статуса в справочнике</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="description" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Примечание</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="citizen_benefit">
+        <xs:annotation>
+            <xs:documentation>Мера социальной поддержки (МСП)</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="benefittype_pk" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код МСП в справочнике</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="action_code" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>Код действия
+                        0: добавление
+                        1: изменение
+                        2: удаление (архивация)
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="begin_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата начала предоставления</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="end_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата окончания предоставления</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="statement_number" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Номер заявления</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="decision" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Основание для принятия решения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="decision_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата принятия решения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="decision_document_pk" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>ID документа решения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="needs_criteria" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Перечень использованных критериев нуждаемости</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="criteria" type="xs:string" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Критерий нуждаемости</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="benefit_info">
+                <xs:annotation>
+                    <xs:documentation>Сведения о назначении</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="benefit_summa" type="xs:nonNegativeInteger">
+                            <xs:annotation>
+                                <xs:documentation>Сумма факта назначения в копейках для денежной формы предоставления
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="natural_form" type="tns:benefit_form">
+                            <xs:annotation>
+                                <xs:documentation>Специфические сведения о фактах назначения по натуральной форме
+                                    предоставления
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                        <xs:element name="exemption_form">
+                            <xs:annotation>
+                                <xs:documentation>Специфические сведения о фактах назначения по форме предоставления
+                                    «льгота»
+                                </xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:complexContent>
+                                    <xs:extension base="tns:benefit_form">
+                                        <xs:sequence>
+                                            <xs:element name="monetization" type="xs:boolean">
+                                                <xs:annotation>
+                                                    <xs:documentation>Признак монетизации</xs:documentation>
+                                                </xs:annotation>
+                                            </xs:element>
+                                        </xs:sequence>
+                                    </xs:extension>
+                                </xs:complexContent>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="service_form" type="tns:benefit_form">
+                            <xs:annotation>
+                                <xs:documentation>Специфические сведения о фактах назначения по форме предоставления
+                                    «услуга»
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="benefit_documents" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Документы решения о предоставлении МСП</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="benefit_document" type="tns:document" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Документ решения о предоставлении МСП</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="benefitcategories" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Данные по категориям получателей мер социальной поддержки, на основании которых
+                        назначена мера социальной поддержки
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="benefitcategory" type="tns:citizen_benefitcategory_identity"
+                                    maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>ЛК</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="citizen_relations" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Сведения о лицах, являющихся основанием для предоставления гражданину меры
+                        социальной поддержки (ЛК)
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="citizen_relation" type="tns:citizen_relation" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Группа (семья, домохозяйства), связи граждан</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="benefit_form">
+        <xs:annotation>
+            <xs:documentation>Специфические сведения о фактах назначения</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="amount" type="xs:nonNegativeInteger">
+                <xs:annotation>
+                    <xs:documentation>Количество</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:choice>
+                <xs:element name="measuryCode" type="xs:nonNegativeInteger">
+                    <xs:annotation>
+                        <xs:documentation>Код единицы измерения по справочнику ЕГИССО</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="OKEICode" type="xs:nonNegativeInteger">
+                    <xs:annotation>
+                        <xs:documentation>Код единицы измерения по ОКЕИ</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:choice>
+            <xs:element name="money_equivalent" type="xs:nonNegativeInteger" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Эквивалентная сумма</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="wrong_citizen_benefit">
+        <xs:annotation>
+            <xs:documentation>Сведения о мерах социальной поддержки, решение о предоставлении которых является
+                неправомерным в соответствии с данными Регистра
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="benefittype_pk" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код МСП в справочнике</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="begin_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата начала назначения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="end_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата окончания назначения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="statement_number" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Номер заявления</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="decision" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Решение по мере социальной поддержки</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="decision_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата принятия решения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="decision_document_pk" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>ID документа решения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="wrong_atoms" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Сведения не позволяющие отнести физическое лицо в качестве получателя мер
+                        социальной поддержки
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="wrong_atom" type="tns:atom" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Производный атом, не позволяющий отнести физическое лицо в качестве
+                                    получателя мер социальной поддержки
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="citizen_relation">
+        <xs:annotation>
+            <xs:documentation>Группа (семья, домохозяйства), связи граждан</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="citizen_pk" type="tns:UUID" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор человека в ИС РМСП</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="provider_identifier" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор человека в других системах</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="person_relation_type_code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код типа связи для семьи или домохозяйства из справочника. Отношение человека к
+                        человеку для которого передаются указанные связи
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="full_person_citizen_relation">
+        <xs:all>
+            <xs:element name="full_person" type="tns:full_person"/>
+            <xs:element name="person_relation_type_code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код типа связи для семьи или домохозяйства из справочника. Отношение человека к
+                        человеку для которого передаются указанные связи
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="person_benefitcategory">
+        <xs:annotation>
+            <xs:documentation>Льготные категории для человека</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="citizen_pk" type="tns:UUID" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор человека в ИС РМСП (GUID)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="provider_identifier" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Уникальный идентификатор получателя МСП в системе Поставщика</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="citizen_benefitcategories">
+                <xs:annotation>
+                    <xs:documentation>Льготные категории</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="citizen_benefitcategory" type="tns:citizen_benefitcategory"
+                                    maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Льготная категория</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="person_benefit">
+        <xs:annotation>
+            <xs:documentation>МСП для человека</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="citizen_pk" type="tns:UUID" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор человека в ИС РМСП (GUID)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="provider_identifier" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Уникальный идентификатор получателя МСП в системе Поставщика</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="citizen_benefits">
+                <xs:annotation>
+                    <xs:documentation>Список МСП</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="citizen_benefit" type="tns:citizen_benefit" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>МСП</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="education">
+        <xs:annotation>
+            <xs:documentation>Образование</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="eduinstitution_pk" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код образовательного учереждения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="parallel" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Параллель</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="parallel_year" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Год параллели</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="start_date" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Дата начала обучения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="end_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата окончания обучения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="citizen_phone">
+        <xs:annotation>
+            <xs:documentation>Телефон</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="phone_number" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Номер телефона</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="phone_type" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Тип телефона</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="citizen_email">
+        <xs:annotation>
+            <xs:documentation>Электронная почта</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="email" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Адрес электронной почты</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="email_type" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Тип электронной почты</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="contacts">
+        <xs:annotation>
+            <xs:documentation>Контакты человека (не используются)</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="phones">
+                <xs:annotation>
+                    <xs:documentation>Телефоны</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="citizen_phone" type="tns:citizen_phone" minOccurs="0" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Телефон</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="emails">
+                <xs:annotation>
+                    <xs:documentation>E-mail</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="citizen_email" type="tns:citizen_email" minOccurs="0" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Электронная почта</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="wrong_person">
+        <xs:annotation>
+            <xs:documentation>Информация о человеке с изменившимися значениями атомов для ЛК и МСП.</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="full_person" type="tns:full_person">
+                <xs:annotation>
+                    <xs:documentation>Информация о человеке с данными, на основании которых изменились ЛК и МСП
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="citizen_relations" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Группа (семья. домохозяйства) для изменившихся атомов</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="citizen_relation" type="tns:full_person_citizen_relation"
+                                    maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="wrong_citizen_benefitcategories" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Льготные категории с изменившимися атомами</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="wrong_citizen_benefitcategory" type="tns:wrong_citizen_benefitcategory"
+                                    maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Сведения о льготной категории, к которой в соответствии с данными ИС
+                                    РМСП неправомерно отнесено физическое лицо
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="wrong_citizen_benefits" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Список МСП с изменившимися атомами</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="wrong_citizen_benefit" type="tns:wrong_citizen_benefit" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Сведения о мерах социальной поддержки, решение о предоставлении
+                                    которых является неправомерным в соответствии с данными Регистра
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="full_person">
+        <xs:annotation>
+            <xs:documentation>Вся информация о человеке</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="person" type="tns:variate_person"/>
+            <xs:element name="provider_identifier" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор человека в других системах</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="others_documents" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Иные документы</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="other_document" type="tns:document" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="citizen_addresses" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Список адресов человека</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="citizen_address" type="tns:citizen_address" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Адрес нахождения человека.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="education" type="tns:education" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Образование</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="variate_person">
+        <xs:all>
+            <xs:element name="citizen" type="tns:variate_citizen">
+                <xs:annotation>
+                    <xs:documentation>Информация о человеке</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="identity_document" type="tns:identity_document" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>ДУЛ</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="inn" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>ИНН</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="oms" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Полис обязательного медицинского страхования</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="record_error">
+        <xs:annotation>
+            <xs:documentation>Ошибка для записи</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="citizen_pk" type="tns:UUID" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор человека в ИС РМСП (GUID)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="provider_identifier" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Уникальный идентификатор гражданина в системе Поставщика</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="errors">
+                <xs:annotation>
+                    <xs:documentation>Ошибки</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="error" type="tns:error" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Ошибка</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="error">
+        <xs:annotation>
+            <xs:documentation>Ошибка</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код ошибки</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="comment" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Коментарии к ошибке</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="granting_citizen_benefit">
+        <xs:annotation>
+            <xs:documentation>Сведенья для гражданина, обосновывающие отсутствие оснований утраты права на получение МСП
+            </xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="citizen_pk" type="tns:UUID" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор человека в ИС РМСП (GUID)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="provider_identifier" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор в других системах</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="granting_benefits">
+                <xs:annotation>
+                    <xs:documentation>МСП с обоснованием отсутствия основания утраты права</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="granting_benefit" type="tns:granting_benefit" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>МСП с обоснованием отсутствия основания утраты права
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:simpleType name="UUID">
+        <xs:annotation>
+            <xs:documentation>Тип данных: UUID</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="granting_benefit">
+        <xs:annotation>
+            <xs:documentation>МСП с обоснованием отсутствия основания утраты права</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="benefittype_pk" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код МСП в справочнике</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:choice>
+                <xs:element name="statement_number" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Номер заявления</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:group ref="tns:decision_group"/>
+            </xs:choice>
+            <xs:element name="justification" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Обоснование отсутствия основания утраты права на МСП</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="decision_code_pk" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код решения, значение из справочника</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:group name="decision_group">
+        <xs:sequence>
+            <xs:element name="decision" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Основание для принятия решения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="decision_date" type="xs:date" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Дата принятия решения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="decision_document_pk" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>ID документа решения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:group>
+    <xs:complexType name="person_transactions">
+        <xs:annotation>
+            <xs:documentation>Факты оказания МСП для человека</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="citizen_pk" type="tns:UUID" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Идентификатор человека в ИС РМСП (GUID)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="provider_identifier" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Уникальный идентификатор получателя МСП в системе Поставщика</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="transaction" type="tns:person_transaction" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>Факт оказания МСП</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="person_transaction">
+        <xs:annotation>
+            <xs:documentation>Факт оказания МСП</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="benefittype_pk" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Код МСП в справочнике</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="date" type="xs:dateTime">
+                <xs:annotation>
+                    <xs:documentation>Дата предоставления МСП</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="money_equivalent" type="xs:nonNegativeInteger">
+                <xs:annotation>
+                    <xs:documentation>Эквивалентная сумма в копейках</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

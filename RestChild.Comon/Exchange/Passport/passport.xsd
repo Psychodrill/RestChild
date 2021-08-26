@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://asur/fms/" targetNamespace="http://asur/fms/" elementFormDefault="unqualified" attributeFormDefault="unqualified">
+ <xs:element name="OutPassport" type="ns1:OutPassportType"/>
+ <xs:complexType name="OutPassportType">
+  <xs:all>
+   <xs:element name="State" type="xs:string" minOccurs="0"/>
+   <xs:element name="SNILS" type="xs:string" minOccurs="0"/>
+   <xs:element name="FirstName" type="xs:string" minOccurs="0"/>
+   <xs:element name="LastName" type="xs:string" minOccurs="0"/>
+   <xs:element name="Patronymic" type="xs:string" minOccurs="0"/>
+   <xs:element name="BirthDate" type="xs:string" minOccurs="0"/>
+   <xs:element name="Comment" type="xs:string" minOccurs="0"/>
+   <xs:element name="Documents" type="ns1:DocumentsFNSType" minOccurs="0"/>
+  </xs:all>
+ </xs:complexType>
+ <xs:complexType name="DocumentsFNSType">
+  <xs:sequence>
+   <xs:element name="DocumentFMS" type="ns1:DocumentFMSType" minOccurs="0" maxOccurs="unbounded"/>
+  </xs:sequence>
+ </xs:complexType>
+ <xs:complexType name="DocumentFMSType">
+  <xs:all>
+   <xs:element name="Number" type="xs:string" minOccurs="0"/>
+   <xs:element name="NameDocument" type="xs:string" minOccurs="0"/>
+   <xs:element name="CodeDocument" type="xs:string" minOccurs="0"/>
+   <xs:element name="Series" type="xs:string" minOccurs="0"/>
+   <xs:element name="Issue" type="xs:string" minOccurs="0"/>
+   <xs:element name="IssueDate" type="xs:string" minOccurs="0"/>
+   <xs:element name="Status" type="xs:string" minOccurs="0"/>
+   <xs:element name="StatusCode" type="xs:string" minOccurs="0"/>
+   <xs:element name="InvalidityReasonCode" type="xs:string" minOccurs="0"/>
+   <xs:element name="InvalidityReason" type="xs:string" minOccurs="0"/>
+   <xs:element name="InvaliditySince" type="xs:string" nillable="true" minOccurs="1"/>
+  </xs:all>
+ </xs:complexType>
+</xs:schema>

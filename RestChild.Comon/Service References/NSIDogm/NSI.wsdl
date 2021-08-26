@@ -1,0 +1,1214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:nsiout="http://rstyle.com/nsi/services/out" xmlns:nsiin="http://rstyle.com/nsi/services/in" xmlns:nsiws="http://rstyle.com/nsi/services" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:smev="http://smev.gosuslugi.ru/rev110801" name="NSI" targetNamespace="http://rstyle.com/nsi/services" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xs:schema xmlns:nsi="http://rstyle.com/nsi/beans" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://rstyle.com/nsi/beans" version="1.0">
+      <xs:include schemaLocation="nsi.xsd" />
+      <xs:simpleType name="Action">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="SET" />
+          <xs:enumeration value="DELETE" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:complexType name="Attribute">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" />
+          <xs:element name="type" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="value">
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="occurrence" type="xs:int" />
+                  <xs:attribute default="SET" name="action" type="nsi:Action" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="groupValue" type="nsi:GroupValue" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="AttributeDef">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" />
+          <xs:element name="type" type="xs:string" />
+          <xs:element name="length" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="localizedName">
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="locale" type="xs:string" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+            <xs:key name="localeKey">
+              <xs:selector xpath="localizedName" />
+              <xs:field xpath="@locale" />
+            </xs:key>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="1" name="lookup_table" type="xs:string" />
+          <xs:element name="minOccurs" type="xs:int" />
+          <xs:element name="maxOccurs" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="attributeDef" type="nsi:AttributeDef" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="ref_catalog" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="possible_value" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="attrName" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Имя атрибута</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="catalogName" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Имя каталога</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="category" type="nsi:Category">
+        <xs:annotation>
+          <xs:documentation>Категория</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:complexType name="Category">
+        <xs:complexContent mixed="false">
+          <xs:extension base="nsi:Entry">
+            <xs:sequence>
+              <xs:element name="categoryPath" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="categoryNames" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Список имен категорий</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="categoryPath" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Путь категории</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:complexType name="Entry">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="id" type="xs:int" />
+          <xs:element minOccurs="0" name="primaryKey" type="xs:string" />
+          <xs:element minOccurs="0" name="displayName" type="xs:string" />
+          <xs:element name="containerName" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="attribute" type="nsi:Attribute" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="from" type="xs:long" />
+      <xs:element name="fromDate" type="xs:date" />
+      <xs:element name="attributePath" type="xs:string" />
+      <xs:element name="content" type="xs:base64Binary" />
+      <xs:element name="generalResponse" type="nsi:GeneralResponse" />
+      <xs:complexType name="GeneralResponse">
+        <xs:complexContent mixed="false">
+          <xs:extension base="nsi:Response">
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="catalogName" type="xs:string" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="tableName" type="xs:string" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="primaryKey" type="xs:string" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="categoryPath" type="xs:string" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="attributeValue" type="xs:string" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="lookupKey" type="xs:string" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="history" type="xs:string" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="queryResult" type="nsi:QueryResult" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="attribute" type="nsi:Attribute" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="item" type="nsi:Item" />
+              <xs:element maxOccurs="unbounded" name="category" type="nsi:Category" />
+              <xs:element minOccurs="0" name="found" type="xs:long" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="entry" type="nsi:RsEntry" />
+              <xs:element maxOccurs="unbounded" name="rsItem" type="nsi:RsItem" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="rsCategory" type="nsi:RsCategory" />
+              <xs:element minOccurs="0" maxOccurs="1" name="batchCheck" type="nsi:BatchCheck" />
+              <xs:element minOccurs="0" maxOccurs="1" name="content" type="xs:base64Binary" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="getInformationFromEgrulRequest" type="nsi:getInformationFromEgrulRequest" />
+      <xs:complexType name="getInformationFromEgrulRequest">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="inn" type="xs:string" />
+          <xs:element minOccurs="0" name="kpp" type="xs:string" />
+          <xs:element minOccurs="0" name="ogrn" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="getSpecResponse" type="nsi:GetSpecResponse" />
+      <xs:complexType name="GetSpecResponse">
+        <xs:complexContent mixed="false">
+          <xs:extension base="nsi:Response">
+            <xs:sequence>
+              <xs:element name="primarySpec" type="nsi:Spec" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="secondarySpec" type="nsi:Spec" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="GroupValue">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="attribute" type="nsi:Attribute" />
+        </xs:sequence>
+        <xs:attribute name="occurrence" type="xs:int" />
+        <xs:attribute default="SET" name="action" type="nsi:Action" />
+      </xs:complexType>
+      <xs:element name="hierarchyName" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Имя иерархии</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="item" type="nsi:Item">
+        <xs:annotation>
+          <xs:documentation>Элемент</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:complexType name="Item">
+        <xs:complexContent mixed="false">
+          <xs:extension base="nsi:Entry">
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="categoryPath" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="itemPk" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Первичный ключ элемента</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="items" type="nsi:Item">
+        <xs:annotation>
+          <xs:documentation>Элементы</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="limit" type="xs:int" />
+      <xs:element name="checkRequest" type="xs:string" />
+      <xs:element name="loginResponse" type="nsi:LoginResponse" />
+      <xs:element name="eo_id" type="xs:string" />
+      <xs:complexType name="LoginResponse">
+        <xs:complexContent mixed="false">
+          <xs:extension base="nsi:Response">
+            <xs:sequence>
+              <xs:element name="fio" type="xs:string" />
+              <xs:element maxOccurs="unbounded" name="role" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="lookupKey" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Поисковой ключ</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="lookupTableName" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Имя поисковой таблицы</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="matchAllCategories" type="xs:boolean">
+        <xs:annotation>
+          <xs:documentation>Флаг соответсвия всем категориям</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="query" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Запрос</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:complexType name="QueryResult">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="qrValue" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Response">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="error" type="nsi:NSIError" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="RsCategory">
+        <xs:complexContent mixed="false">
+          <xs:extension base="nsi:RsEntry">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="path" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="RsItem">
+        <xs:complexContent mixed="false">
+          <xs:extension base="nsi:RsEntry">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="containerName" type="xs:string" />
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:element name="searchPredicate" type="nsi:SearchPredicate">
+        <xs:annotation>
+          <xs:documentation>Поисковой предикат</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:complexType name="SearchPredicate">
+        <xs:sequence>
+          <xs:element name="attributeName" type="xs:string" />
+          <xs:element name="attributeType" type="xs:string" />
+          <xs:element name="attributeValue" type="xs:string" />
+          <xs:element name="attributeOp" type="xs:string" />
+          <xs:element default="false" name="caseInsensitive" type="xs:boolean" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="selectAttributes" type="nsi:SelectAttributes">
+        <xs:annotation>
+          <xs:documentation>Список возвращаемых полей</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:complexType name="SelectAttributes">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="attributePath" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Spec">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" />
+          <xs:element name="primary" type="xs:boolean" />
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="attributeDef" type="nsi:AttributeDef" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="specName" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Имя спецификации</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="toDate" type="xs:date" />
+      <xs:complexType name="RsEntry">
+        <xs:choice>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="error" type="nsi:NSIError" />
+          </xs:sequence>
+          <xs:sequence>
+            <xs:element minOccurs="0" name="primaryKey" />
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="attribute" type="nsi:Attribute" />
+          </xs:sequence>
+        </xs:choice>
+      </xs:complexType>
+      <xs:element name="studentSearch" type="nsi:StudentSearch">
+        <xs:annotation>
+          <xs:documentation>Поиск студента</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:complexType name="StudentSearch">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" ref="nsi:searchPredicate" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="BatchCheck">
+        <xs:sequence>
+          <xs:element name="uid" type="xs:string" />
+          <xs:element minOccurs="0" name="checkInterval" type="xs:long" />
+          <xs:element minOccurs="0" name="message" type="xs:string" />
+          <xs:element minOccurs="0" name="processTime" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema xmlns:nsi="http://rstyle.com/nsi/beans" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://smev.gosuslugi.ru/rev110801" version="1.0">
+      <xs:import schemaLocation="include.xsd" namespace="http://www.w3.org/2004/08/xop/include" />
+      <xs:import namespace="http://rstyle.com/nsi/beans" />
+      <xs:include schemaLocation="smev.xsd" />
+      <xs:complexType name="ExtAppDataType">
+        <xs:complexContent mixed="false">
+          <xs:extension base="smev:AppDataType">
+            <xs:sequence>
+              <xs:element minOccurs="0" maxOccurs="1" ref="nsi:context" />
+              <xs:choice minOccurs="0" maxOccurs="1">
+                <xs:sequence>
+                  <xs:element minOccurs="0" ref="nsi:catalogName" />
+                  <xs:element minOccurs="0" ref="nsi:specName" />
+                  <xs:element minOccurs="0" ref="nsi:hierarchyName" />
+                  <xs:element minOccurs="0" ref="nsi:itemPk" />
+                  <xs:element minOccurs="0" ref="nsi:categoryPath" />
+                  <xs:element minOccurs="0" ref="nsi:lookupTableName" />
+                  <xs:element minOccurs="0" ref="nsi:lookupKey" />
+                  <xs:element minOccurs="0" ref="nsi:attrName" />
+                  <xs:element minOccurs="0" ref="nsi:query" />
+                  <xs:element minOccurs="0" maxOccurs="unbounded" ref="nsi:categoryNames" />
+                  <xs:element minOccurs="0" ref="nsi:matchAllCategories" />
+                  <xs:element minOccurs="0" maxOccurs="unbounded" ref="nsi:category" />
+                  <xs:element minOccurs="0" maxOccurs="unbounded" ref="nsi:item" />
+                  <xs:element minOccurs="0" maxOccurs="unbounded" ref="nsi:searchPredicate" />
+                  <xs:element minOccurs="0" maxOccurs="1" ref="nsi:selectAttributes" />
+                  <xs:element minOccurs="0" ref="nsi:fromDate" />
+                  <xs:element minOccurs="0" ref="nsi:toDate" />
+                  <xs:element minOccurs="0" maxOccurs="1" ref="nsi:from" />
+                  <xs:element minOccurs="0" maxOccurs="1" ref="nsi:limit" />
+                  <xs:element minOccurs="0" maxOccurs="1" ref="nsi:checkRequest" />
+                  <xs:element minOccurs="0" maxOccurs="unbounded" ref="nsi:studentSearch" />
+                  <xs:element minOccurs="0" maxOccurs="1" ref="nsi:attributePath" />
+                  <xs:element minOccurs="0" maxOccurs="1" ref="nsi:content" />
+                  <xs:element minOccurs="0" maxOccurs="1" ref="nsi:eo_id" />
+                </xs:sequence>
+                <xs:element ref="nsi:getInformationFromEgrulRequest" />
+                <xs:element ref="nsi:loginResponse" />
+                <xs:element ref="nsi:generalResponse" />
+                <xs:element ref="nsi:getSpecResponse" />
+              </xs:choice>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="ExtMessageDataType">
+        <xs:sequence>
+          <xs:element name="AppData" type="smev:ExtAppDataType" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="MessageData" type="smev:ExtMessageDataType" />
+    </xs:schema>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://rstyle.com/nsi/services/in" version="1.0">
+      <xs:import namespace="http://smev.gosuslugi.ru/rev110801" />
+      <xs:element name="loginRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getAllCatalogsRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getCatalogsUsingSpecRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getAllEntriesInLookupTableRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getAllItemsInCatalogRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getAllLookupTablesRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getAllLookupTablesUsingSpecRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getCategoriesForCatalogRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getCategoryAttributeValuesRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getDynamicItemAttributeValuesRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getItemAttributeValuesRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getItemCategoriesRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getLookupAttributeValuesRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getLookupTableValuesRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getHistoryCatalogRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getHistoryItemRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getItemAttributeValueRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getCatalogSpecRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getHierarchySpecRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getQueryResultsRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="createCategoryRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="createCategoryFromBatchRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="createItemRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="createItemFromBatchRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="deleteItemFromBatchRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="setItemAttributeValuesFromBatchRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="createLookupEntryRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="createLookupEntryFromBatchRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="deleteCategoryRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="deleteCategoryFromBatchRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="deleteItemRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="deleteLookupEntryRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="deleteLookupEntryFromBatchRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="searchItemsInCatalogRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="setCategoryAttributeValuesRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="setCategoryAttributeValuesFromBatchRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="setItemAttributeValuesRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="setLookupAttributeValuesRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getCatalogChangesRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getInformationFromEgrulRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="searchStudentsFromBatchRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="checkBatchStatusRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="addFileRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="updateFileRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="deleteFileRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getContentRequest" type="nsiin:NSIRequestType" />
+      <xs:element name="getDynamicAddressAttributeValuesRequest" type="nsiin:NSIRequestType" />
+      <xs:complexType name="NSIRequestType">
+        <xs:sequence>
+          <xs:element ref="smev:Message" />
+          <xs:element ref="smev:MessageData" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://rstyle.com/nsi/services/out" version="1.0">
+      <xs:import namespace="http://smev.gosuslugi.ru/rev110801" />
+      <xs:element name="nsiResponse" type="nsiout:NSIResponseType" />
+      <xs:complexType name="NSIResponseType">
+        <xs:sequence>
+          <xs:element ref="smev:Message" />
+          <xs:element ref="smev:MessageData" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="reference" type="xs:base64Binary" />
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="getHierarchySpecRequest">
+    <wsdl:part name="getHierarchySpecRequest" element="nsiin:getHierarchySpecRequest" />
+  </wsdl:message>
+  <wsdl:message name="deleteItemRequest">
+    <wsdl:part name="deleteItemRequest" element="nsiin:deleteItemRequest" />
+  </wsdl:message>
+  <wsdl:message name="searchItemsInCatalogRequest">
+    <wsdl:part name="searchItemsInCatalogRequest" element="nsiin:searchItemsInCatalogRequest" />
+  </wsdl:message>
+  <wsdl:message name="getDynamicAddressAttributeValuesRequest">
+    <wsdl:part name="getDynamicAddressAttributeValuesRequest" element="nsiin:getDynamicAddressAttributeValuesRequest" />
+  </wsdl:message>
+  <wsdl:message name="getAllLookupTablesUsingSpecRequest">
+    <wsdl:part name="getAllLookupTablesUsingSpecRequest" element="nsiin:getAllLookupTablesUsingSpecRequest" />
+  </wsdl:message>
+  <wsdl:message name="createLookupEntryFromBatchRequest">
+    <wsdl:part name="createLookupEntryFromBatchRequest" element="nsiin:createLookupEntryFromBatchRequest" />
+  </wsdl:message>
+  <wsdl:message name="getAllEntriesInLookupTableRequest">
+    <wsdl:part name="getAllEntriesInLookupTableRequest" element="nsiin:getAllEntriesInLookupTableRequest" />
+  </wsdl:message>
+  <wsdl:message name="updateFileResponse">
+    <wsdl:part name="updateFileResponse" element="nsiout:nsiResponse" />
+  </wsdl:message>
+  <wsdl:message name="setItemAttributeValuesRequest">
+    <wsdl:part name="setItemAttributeValuesRequest" element="nsiin:setItemAttributeValuesRequest" />
+  </wsdl:message>
+  <wsdl:message name="getCatalogsUsingSpecRequest">
+    <wsdl:part name="getCatalogsUsingSpecRequest" element="nsiin:getCatalogsUsingSpecRequest" />
+  </wsdl:message>
+  <wsdl:message name="getContentRequest">
+    <wsdl:part name="getContentRequest" element="nsiin:getContentRequest" />
+  </wsdl:message>
+  <wsdl:message name="deleteLookupEntryFromBatchRequest">
+    <wsdl:part name="deleteLookupEntryFromBatchRequest" element="nsiin:deleteLookupEntryFromBatchRequest" />
+  </wsdl:message>
+  <wsdl:message name="deleteFileRequest">
+    <wsdl:part name="deleteFileRequest" element="nsiin:deleteFileRequest" />
+  </wsdl:message>
+  <wsdl:message name="getInformationFromEgrulRequest">
+    <wsdl:part name="getInformationFromEgrul" element="nsiin:getInformationFromEgrulRequest" />
+  </wsdl:message>
+  <wsdl:message name="deleteCategoryFromBatchResponse">
+    <wsdl:part name="deleteCategoryFromBatchResponse" element="nsiout:nsiResponse" />
+  </wsdl:message>
+  <wsdl:message name="getAllCatalogsRequest">
+    <wsdl:part name="getAllCatalogsRequest" element="nsiin:getAllCatalogsRequest" />
+  </wsdl:message>
+  <wsdl:message name="getItemCategoriesRequest">
+    <wsdl:part name="getItemCategoriesRequest" element="nsiin:getItemCategoriesRequest" />
+  </wsdl:message>
+  <wsdl:message name="checkBatchStatusRequest">
+    <wsdl:part name="checkBatchStatusRequest" element="nsiin:checkBatchStatusRequest" />
+  </wsdl:message>
+  <wsdl:message name="createLookupEntryFromBatchResponse">
+    <wsdl:part name="createLookupEntryFromBatchResponse" element="nsiout:nsiResponse" />
+  </wsdl:message>
+  <wsdl:message name="getAllItemsInCatalogRequest">
+    <wsdl:part name="getAllItemsInCatalogRequest" element="nsiin:getAllItemsInCatalogRequest" />
+  </wsdl:message>
+  <wsdl:message name="getCatalogSpecRequest">
+    <wsdl:part name="getCatalogSpecRequest" element="nsiin:getCatalogSpecRequest" />
+  </wsdl:message>
+  <wsdl:message name="setCategoryAttributeValuesRequest">
+    <wsdl:part name="setCategoryAttributeValuesRequest" element="nsiin:setCategoryAttributeValuesRequest" />
+  </wsdl:message>
+  <wsdl:message name="createLookupEntryRequest">
+    <wsdl:part name="createLookupEntryRequest" element="nsiin:createLookupEntryRequest" />
+  </wsdl:message>
+  <wsdl:message name="createCategoryFromBatchRequest">
+    <wsdl:part name="createCategoryFromBatchRequest" element="nsiin:createCategoryFromBatchRequest" />
+  </wsdl:message>
+  <wsdl:message name="getCategoryAttributeValuesRequest">
+    <wsdl:part name="getCategoryAttributeValuesRequest" element="nsiin:getCategoryAttributeValuesRequest" />
+  </wsdl:message>
+  <wsdl:message name="loginRequest">
+    <wsdl:part name="loginRequest" element="nsiin:loginRequest" />
+  </wsdl:message>
+  <wsdl:message name="createItemRequest">
+    <wsdl:part name="createItemRequest" element="nsiin:createItemRequest" />
+  </wsdl:message>
+  <wsdl:message name="getLookupAttributeValuesRequest">
+    <wsdl:part name="getLookupAttributeValuesRequest" element="nsiin:getLookupAttributeValuesRequest" />
+  </wsdl:message>
+  <wsdl:message name="deleteLookupEntryRequest">
+    <wsdl:part name="deleteLookupEntryRequest" element="nsiin:deleteLookupEntryRequest" />
+  </wsdl:message>
+  <wsdl:message name="getCategoriesForCatalogRequest">
+    <wsdl:part name="getCategoriesForCatalogRequest" element="nsiin:getCategoriesForCatalogRequest" />
+  </wsdl:message>
+  <wsdl:message name="getLookupTableValuesRequest">
+    <wsdl:part name="getLookupTableValuesRequest" element="nsiin:getLookupTableValuesRequest" />
+  </wsdl:message>
+  <wsdl:message name="setItemAttributeValuesFromBatchRequest">
+    <wsdl:part name="setItemAttributeValuesFromBatchRequest" element="nsiin:setItemAttributeValuesFromBatchRequest" />
+  </wsdl:message>
+  <wsdl:message name="updateFileRequest">
+    <wsdl:part name="updateFileRequest" element="nsiin:updateFileRequest" />
+  </wsdl:message>
+  <wsdl:message name="getQueryResultsRequest">
+    <wsdl:part name="getQueryResultsRequest" element="nsiin:getQueryResultsRequest" />
+  </wsdl:message>
+  <wsdl:message name="getDynamicAddressAttributeValuesResponse">
+    <wsdl:part name="getDynamicAddressAttributeValuesResponse" element="nsiout:nsiResponse" />
+  </wsdl:message>
+  <wsdl:message name="createCategoryRequest">
+    <wsdl:part name="createCategoryRequest" element="nsiin:createCategoryRequest" />
+  </wsdl:message>
+  <wsdl:message name="createCategoryFromBatchResponse">
+    <wsdl:part name="nsiResponse" element="nsiout:nsiResponse" />
+  </wsdl:message>
+  <wsdl:message name="getItemAttributeValueRequest">
+    <wsdl:part name="getItemAttributeValueRequest" element="nsiin:getItemAttributeValueRequest" />
+  </wsdl:message>
+  <wsdl:message name="searchStudentsFromBatchResponse">
+    <wsdl:part name="searchStudentsFromBatchResponse" element="nsiout:nsiResponse" />
+  </wsdl:message>
+  <wsdl:message name="addFileRequest">
+    <wsdl:part name="addFileRequest" element="nsiin:addFileRequest" />
+  </wsdl:message>
+  <wsdl:message name="setCategoryAttributeValuesFromBatchRequest">
+    <wsdl:part name="setCategoryAttributeValuesFromBatchRequest" element="nsiin:setCategoryAttributeValuesFromBatchRequest" />
+  </wsdl:message>
+  <wsdl:message name="addFileResponse">
+    <wsdl:part name="addFileResponse" element="nsiout:nsiResponse" />
+  </wsdl:message>
+  <wsdl:message name="checkBatchStatusResponse">
+    <wsdl:part name="checkBatchStatusResponse" element="nsiout:nsiResponse" />
+  </wsdl:message>
+  <wsdl:message name="deleteCategoryRequest">
+    <wsdl:part name="deleteCategoryRequest" element="nsiin:deleteCategoryRequest" />
+  </wsdl:message>
+  <wsdl:message name="createItemFromBatchRequest">
+    <wsdl:part name="createItemFromBatchRequest" element="nsiin:createItemFromBatchRequest" />
+  </wsdl:message>
+  <wsdl:message name="getCatalogChangesRequest">
+    <wsdl:part name="getCatalogChangesRequest" element="nsiin:getCatalogChangesRequest" />
+  </wsdl:message>
+  <wsdl:message name="getHistoryCatalogRequest">
+    <wsdl:part name="getHistoryCatalogRequest" element="nsiin:getHistoryCatalogRequest" />
+  </wsdl:message>
+  <wsdl:message name="deleteItemFromBatchRequest">
+    <wsdl:part name="deleteItemFromBatchRequest" element="nsiin:deleteItemFromBatchRequest" />
+  </wsdl:message>
+  <wsdl:message name="getHistoryItemRequest">
+    <wsdl:part name="getHistoryItemRequest" element="nsiin:getHistoryItemRequest" />
+  </wsdl:message>
+  <wsdl:message name="searchStudentsFromBatchRequest">
+    <wsdl:part name="searchStudentsFromBatchRequest" element="nsiin:searchStudentsFromBatchRequest" />
+  </wsdl:message>
+  <wsdl:message name="getItemAttributeValuesRequest">
+    <wsdl:part name="getItemAttributeValuesRequest" element="nsiin:getItemAttributeValuesRequest" />
+  </wsdl:message>
+  <wsdl:message name="getContentResponse">
+    <wsdl:part name="getContentResponse" element="nsiout:nsiResponse" />
+  </wsdl:message>
+  <wsdl:message name="deleteLookupEntryFromBatchResponse">
+    <wsdl:part name="deleteLookupEntryFromBatchResponse" element="nsiout:nsiResponse" />
+  </wsdl:message>
+  <wsdl:message name="nsiResponse">
+    <wsdl:part name="nsiResponse" element="nsiout:nsiResponse" />
+  </wsdl:message>
+  <wsdl:message name="getAllLookupTablesRequest">
+    <wsdl:part name="getAllLookupTablesRequest" element="nsiin:getAllLookupTablesRequest" />
+  </wsdl:message>
+  <wsdl:message name="getDynamicItemAttributeValuesRequest">
+    <wsdl:part name="getDynamicItemAttributeValuesRequest" element="nsiin:getDynamicItemAttributeValuesRequest" />
+  </wsdl:message>
+  <wsdl:message name="deleteFileResponse">
+    <wsdl:part name="deleteFileResponse" element="nsiout:nsiResponse" />
+  </wsdl:message>
+  <wsdl:message name="deleteCategoryFromBatchRequest">
+    <wsdl:part name="deleteCategoryFromBatchRequest" element="nsiin:deleteCategoryFromBatchRequest" />
+  </wsdl:message>
+  <wsdl:portType name="NSIService">
+    <wsdl:operation name="login">
+      <wsdl:input name="loginRequest" message="nsiws:loginRequest" />
+      <wsdl:output name="loginResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getAllCatalogs">
+      <wsdl:input name="getAllCatalogsRequest" message="nsiws:getAllCatalogsRequest" />
+      <wsdl:output name="getAllCatalogsResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getCatalogsUsingSpec">
+      <wsdl:input name="getCatalogsUsingSpecRequest" message="nsiws:getCatalogsUsingSpecRequest" />
+      <wsdl:output name="getCatalogsUsingSpecResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getAllEntriesInLookupTable">
+      <wsdl:input name="getAllEntriesInLookupTableRequest" message="nsiws:getAllEntriesInLookupTableRequest" />
+      <wsdl:output name="getAllEntriesInLookupTableResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getAllItemsInCatalog">
+      <wsdl:input name="getAllItemsInCatalogRequest" message="nsiws:getAllItemsInCatalogRequest" />
+      <wsdl:output name="getAllItemsInCatalogResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getAllLookupTables">
+      <wsdl:input name="getAllLookupTablesRequest" message="nsiws:getAllLookupTablesRequest" />
+      <wsdl:output name="getAllLookupTablesResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getAllLookupTablesUsingSpec">
+      <wsdl:input name="getAllLookupTablesUsingSpecRequest" message="nsiws:getAllLookupTablesUsingSpecRequest" />
+      <wsdl:output name="getAllLookupTablesUsingSpecResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getCategoriesForCatalog">
+      <wsdl:input name="getCategoriesForCatalogRequest" message="nsiws:getCategoriesForCatalogRequest" />
+      <wsdl:output name="getCategoriesForCatalogResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getCategoryAttributeValues">
+      <wsdl:input name="getCategoryAttributeValuesRequest" message="nsiws:getCategoryAttributeValuesRequest" />
+      <wsdl:output name="getCategoryAttributeValuesResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getDynamicItemAttributeValues">
+      <wsdl:input name="getDynamicItemAttributeValuesRequest" message="nsiws:getDynamicItemAttributeValuesRequest" />
+      <wsdl:output name="getDynamicItemAttributeValuesResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getItemAttributeValues">
+      <wsdl:input name="getItemAttributeValuesRequest" message="nsiws:getItemAttributeValuesRequest" />
+      <wsdl:output name="getItemAttributeValuesResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getItemCategories">
+      <wsdl:input name="getItemCategoriesRequest" message="nsiws:getItemCategoriesRequest" />
+      <wsdl:output name="getItemCategoriesResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getLookupAttributeValues">
+      <wsdl:input name="getLookupAttributeValuesRequest" message="nsiws:getLookupAttributeValuesRequest" />
+      <wsdl:output name="getLookupAttributeValuesResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getLookupTableValues">
+      <wsdl:input name="getLookupTableValuesRequest" message="nsiws:getLookupTableValuesRequest" />
+      <wsdl:output name="getLookupTableValuesResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getHistoryCatalog">
+      <wsdl:input name="getHistoryCatalogRequest" message="nsiws:getHistoryCatalogRequest" />
+      <wsdl:output name="getHistoryCatalogResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getHistoryItem">
+      <wsdl:input name="getHistoryItemRequest" message="nsiws:getHistoryItemRequest" />
+      <wsdl:output name="getHistoryItemResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getItemAttributeValue">
+      <wsdl:input name="getItemAttributeValueRequest" message="nsiws:getItemAttributeValueRequest" />
+      <wsdl:output name="getItemAttributeValueResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getCatalogSpec">
+      <wsdl:input name="getCatalogSpecRequest" message="nsiws:getCatalogSpecRequest" />
+      <wsdl:output name="getCatalogSpecResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getHierarchySpec">
+      <wsdl:input name="getHierarchySpecRequest" message="nsiws:getHierarchySpecRequest" />
+      <wsdl:output name="getHierarchySpecResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getQueryResults">
+      <wsdl:input name="getQueryResultsRequest" message="nsiws:getQueryResultsRequest" />
+      <wsdl:output name="getQueryResultsResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="createCategory">
+      <wsdl:input name="createCategoryRequest" message="nsiws:createCategoryRequest" />
+      <wsdl:output name="createCategoryResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="createItem">
+      <wsdl:input name="createItemRequest" message="nsiws:createItemRequest" />
+      <wsdl:output name="createItemResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="createItemFromBatch">
+      <wsdl:input name="createItemFromBatchRequest" message="nsiws:createItemFromBatchRequest" />
+      <wsdl:output name="createItemFromBatchResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="deleteItemFromBatch">
+      <wsdl:input name="deleteItemFromBatchRequest" message="nsiws:deleteItemFromBatchRequest" />
+      <wsdl:output name="deleteItemFromBatchResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="setItemAttributeValuesFromBatch">
+      <wsdl:input name="setItemAttributeValuesFromBatchRequest" message="nsiws:setItemAttributeValuesFromBatchRequest" />
+      <wsdl:output name="setItemAttributeValuesFromBatchResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="createLookupEntry">
+      <wsdl:input name="createLookupEntryRequest" message="nsiws:createLookupEntryRequest" />
+      <wsdl:output name="createLookupEntryResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="deleteCategory">
+      <wsdl:input name="deleteCategoryRequest" message="nsiws:deleteCategoryRequest" />
+      <wsdl:output name="deleteCategoryResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="deleteItem">
+      <wsdl:input name="deleteItemRequest" message="nsiws:deleteItemRequest" />
+      <wsdl:output name="deleteItemResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="deleteLookupEntry">
+      <wsdl:input name="deleteLookupEntryRequest" message="nsiws:deleteLookupEntryRequest" />
+      <wsdl:output name="deleteLookupEntryResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="searchItemsInCatalog">
+      <wsdl:input name="searchItemsInCatalogRequest" message="nsiws:searchItemsInCatalogRequest" />
+      <wsdl:output name="searchItemsInCatalogResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="setCategoryAttributeValues">
+      <wsdl:input name="setCategoryAttributeValuesRequest" message="nsiws:setCategoryAttributeValuesRequest" />
+      <wsdl:output name="setCategoryAttributeValuesResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="setCategoryAttributeValuesFromBatch">
+      <wsdl:input name="setCategoryAttributeValuesFromBatchRequest" message="nsiws:setCategoryAttributeValuesFromBatchRequest" />
+      <wsdl:output name="setCategoryAttributeValuesFromBatchResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="setItemAttributeValues">
+      <wsdl:input name="setItemAttributeValuesRequest" message="nsiws:setItemAttributeValuesRequest" />
+      <wsdl:output name="setItemAttributeValuesResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getCatalogChanges">
+      <wsdl:input name="getCatalogChangesRequest" message="nsiws:getCatalogChangesRequest" />
+      <wsdl:output name="getCatalogChangesResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getInformationFromEgrul">
+      <wsdl:input name="getInformationFromEgrulRequest" message="nsiws:getInformationFromEgrulRequest" />
+      <wsdl:output name="getInformationFromEgrulResponse" message="nsiws:nsiResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="createCategoryFromBatch">
+      <wsdl:input name="createCategoryFromBatchRequest" message="nsiws:createCategoryFromBatchRequest" />
+      <wsdl:output name="createCategoryFromBatchResponse" message="nsiws:createCategoryFromBatchResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="deleteCategoryFromBatch">
+      <wsdl:input message="nsiws:deleteCategoryFromBatchRequest" />
+      <wsdl:output message="nsiws:deleteCategoryFromBatchResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="createLookupEntryFromBatch">
+      <wsdl:input message="nsiws:createLookupEntryFromBatchRequest" />
+      <wsdl:output message="nsiws:createLookupEntryFromBatchResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="deleteLookupEntryFromBatch">
+      <wsdl:input message="nsiws:deleteLookupEntryFromBatchRequest" />
+      <wsdl:output message="nsiws:deleteLookupEntryFromBatchResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="searchStudentsFromBatch">
+      <wsdl:input message="nsiws:searchStudentsFromBatchRequest" />
+      <wsdl:output message="nsiws:searchStudentsFromBatchResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="checkBatchStatus">
+      <wsdl:input message="nsiws:checkBatchStatusRequest" />
+      <wsdl:output message="nsiws:checkBatchStatusResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="addFile">
+      <wsdl:input message="nsiws:addFileRequest" />
+      <wsdl:output message="nsiws:addFileResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="updateFile">
+      <wsdl:input message="nsiws:updateFileRequest" />
+      <wsdl:output message="nsiws:updateFileResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="deleteFile">
+      <wsdl:input message="nsiws:deleteFileRequest" />
+      <wsdl:output message="nsiws:deleteFileResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getContent">
+      <wsdl:input message="nsiws:getContentRequest" />
+      <wsdl:output message="nsiws:getContentResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="getDynamicAddressAttributeValues">
+      <wsdl:input message="nsiws:getDynamicAddressAttributeValuesRequest" />
+      <wsdl:output message="nsiws:getDynamicAddressAttributeValuesResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NSIServiceSoapBinding" type="nsiws:NSIService">
+    <wsdlsoap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="login">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="loginRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="loginResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getAllCatalogs">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getAllCatalogsRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getAllCatalogsResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCatalogsUsingSpec">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getCatalogsUsingSpecRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getCatalogsUsingSpecResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getAllEntriesInLookupTable">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getAllEntriesInLookupTableRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getAllEntriesInLookupTableResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getAllItemsInCatalog">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getAllItemsInCatalogRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getAllItemsInCatalogResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getAllLookupTables">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getAllLookupTablesRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getAllLookupTablesResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getAllLookupTablesUsingSpec">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getAllLookupTablesUsingSpecRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getAllLookupTablesUsingSpecResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCategoriesForCatalog">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getCategoriesForCatalogRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getCategoriesForCatalogResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCategoryAttributeValues">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getCategoryAttributeValuesRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getCategoryAttributeValuesResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDynamicItemAttributeValues">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getDynamicItemAttributeValuesRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getDynamicItemAttributeValuesResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getItemAttributeValues">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getItemAttributeValuesRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getItemAttributeValuesResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getItemCategories">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getItemCategoriesRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getItemCategoriesResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLookupAttributeValues">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getLookupAttributeValuesRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getLookupAttributeValuesResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getLookupTableValues">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getLookupTableValuesRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getLookupTableValuesResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getHistoryCatalog">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getHistoryCatalogRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getHistoryCatalogResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getHistoryItem">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getHistoryItemRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getHistoryItemResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getItemAttributeValue">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getItemAttributeValueRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getItemAttributeValueResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCatalogSpec">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getCatalogSpecRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getCatalogSpecResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getHierarchySpec">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getHierarchySpecRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getHierarchySpecResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getQueryResults">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getQueryResultsRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getQueryResultsResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createCategory">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="createCategoryRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="createCategoryResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createItem">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="createItemRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="createItemResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createItemFromBatch">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="createItemFromBatchRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="createItemFromBatchResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteItemFromBatch">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="deleteItemFromBatchRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="deleteItemFromBatchResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="setItemAttributeValuesFromBatch">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="setItemAttributeValuesFromBatchRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="setItemAttributeValuesFromBatchResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createLookupEntry">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="createLookupEntryRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="createLookupEntryResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteCategory">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="deleteCategoryRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="deleteCategoryResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteItem">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="deleteItemRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="deleteItemResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteLookupEntry">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="deleteLookupEntryRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="deleteLookupEntryResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="searchItemsInCatalog">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="searchItemsInCatalogRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="searchItemsInCatalogResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="setCategoryAttributeValues">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="setCategoryAttributeValuesRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="setCategoryAttributeValuesResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="setCategoryAttributeValuesFromBatch">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="setCategoryAttributeValuesFromBatchRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="setCategoryAttributeValuesFromBatchResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="setItemAttributeValues">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="setItemAttributeValuesRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="setItemAttributeValuesResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getCatalogChanges">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getCatalogChangesRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getCatalogChangesResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getInformationFromEgrul">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getInformationFromEgrulRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getInformationFromEgrulResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createCategoryFromBatch">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="createCategoryFromBatchRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="createCategoryFromBatchResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteCategoryFromBatch">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="deleteCategoryFromBatchRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="deleteCategoryFromBatchResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createLookupEntryFromBatch">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="createLookupEntryFromBatchRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="createLookupEntryFromBatchResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteLookupEntryFromBatch">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="deleteLookupEntryFromBatchRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="deleteLookupEntryFromBatchResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="searchStudentsFromBatch">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="searchStudentsFromBatchRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="searchStudentsFromBatchResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="checkBatchStatus">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="checkBatchStatusRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="checkBatchStatusResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addFile">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="addFileRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="addFileResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateFile">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="updateFileRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="updateFileResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteFile">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="deleteFileRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="deleteFileResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getContent">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getContentRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getContentResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDynamicAddressAttributeValues">
+      <wsdlsoap:operation soapAction="" />
+      <wsdl:input name="getDynamicAddressAttributeValuesRequest">
+        <wsdlsoap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="getDynamicAddressAttributeValuesResponse">
+        <wsdlsoap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="NSIServiceService">
+    <wsdl:port name="NSIService" binding="nsiws:NSIServiceSoapBinding">
+      <wsdlsoap:address location="http://185.26.52.130:9080/em/nsiws/v2/services/NSIService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

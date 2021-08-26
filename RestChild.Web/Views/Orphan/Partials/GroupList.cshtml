@@ -1,0 +1,125 @@
+﻿@using PagedList.Mvc
+@using RestChild.Domain
+@using RestChild.Comon
+
+@model RestChild.Web.Models.Orphans.OrphanageGroupsFilterModel
+
+@Html.HiddenFor(ss => ss.OrphanageId)
+<div class="form-horizontal">
+    <div class="row">
+        <div class="col-md-12">
+            <p class="panel-operation-button">
+                <a class="btn btn-primary" href="@Url.Action("OrphanageGroupNew", new {orphanageId = Model.OrphanageId})" target="_blank"><i class="glyphicon glyphicon-plus"></i> Добавить группу </a>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="col-md-2 control-label text-right">Год потребности</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.YearOfRest, new SelectList(Model.YearsOfRest.Select(o => new { Id = (long?)o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" })
+            </div>
+            <label class="col-md-2 control-label text-right">Порядковый номер группы</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(r => r.Name, new { @class = "form-control", autocomplete = "off" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="col-md-2 control-label text-right">Форма отдыха и оздоровления</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.FormOfRest, new SelectList(Model.FormsOfRest.Select(o => new { Id = (long?)o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" })
+            </div>
+            <label class="col-md-2 control-label text-right">Регион отдыха</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.RegionsOfRest, new SelectList(Model.RegionsOfRest.Select(o => new { Id = (long?)o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="col-md-2 control-label text-right">Период отдыха</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.TimeOfRest, new SelectList(Model.TimesOfRest.Select(o => new { Id = (long?)o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" })
+            </div>
+            <label class="col-md-2 control-label text-right">Статус</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.StateId, new SelectList(Model.States.Select(o => new { Id = (long?)o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label class="col-md-2 control-label text-right">Каникулярный период</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.VacationPeriod, new SelectList(Model.VacationPeriods.Select(o => new { Id = (long?)o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <div class="col-md-1 col-md-offset-3">
+                <button type="submit" class="btn btn-default btn-primary form-control"><i class="glyphicon glyphicon-search"></i> Поиск </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (Model.Result != null && Model.Result.Any())
+{
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th class="text-center" width="5%">№</th>
+                <th class="text-center">Порядковый номер группы</th>
+                <th class="text-center">Год потребности</th>
+                <th class="text-center">Каникулярный период</th>
+                <th class="text-center">Форма отдыха и оздоровления</th>
+                <th class="text-center">Регион и период отдыха</th>
+                <th class="text-center">Статус</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @{ var rowNumber = Model.Result.FirstItemOnPage; }
+        @foreach (var Group in Model.Result.ToList())
+        {
+            <tr>
+                <td class="text-center">@(rowNumber++)</td>
+                <td class="text-center">@Group.Name</td>
+                <td class="text-center">@Group.Year</td>
+                <td class="text-left">@Group.VacationPeriod</td>
+                <td class="text-left">@Group.FormOfRest</td>
+                <td class="text-left">@Html.Raw(string.Join("</br>", Group.RegionsOfRest))</td>
+                <td class="text-center">@Group.Status</td>
+                <td class="text-center">@Html.ActionLink(" ", "OrphanageGroupEdit", new { groupId = Group.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-12">
+            @Html.PagedListPager(
+                Model.Result,
+                page =>
+                {
+                    Model.Result = null;
+                    Model.PageNumber = page;
+                    return Url.Action("OrphanageGroupsSearch", "Orphan", Model);
+                },
+                PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                    new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} ", },
+                    new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "GroupsForm", InsertionMode = InsertionMode.Replace }))
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-12">
+            <p>Поиск не дал результатов</p>
+        </div>
+    </div>
+}

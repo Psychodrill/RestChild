@@ -1,0 +1,143 @@
+﻿@using RestChild.Comon
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.DirectoryFlightsModel
+
+@{
+	ViewBag.Title = "Рейс";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+	<div class="col-md-12">
+		<h2>Рейс</h2>
+	</div>
+</div>
+
+<a href="@Url.Action("Search", "DirectoryFlights")">Вернуться</a>
+<div class="row">&nbsp;</div>
+
+@Html.Partial("Assets/_StatePanel", Model.State)
+
+
+<div class="row">
+	<div class="col-md-12">
+		@using (Html.BeginForm("Save", "DirectoryFlights", FormMethod.Post, new { enctype = "multipart/form-data", @id = "directoryFlightForm" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.Data.Id)
+			@Html.HiddenFor(m => m.Data.StateId)
+			@Html.HiddenFor(m => m.StateMachineActionString)
+			@Html.HiddenFor(m => m.Data.HistoryLinkId)
+			if (!ViewData.ModelState.IsValid)
+			{
+				<div class="alert alert-danger" role="alert">
+					@Html.ValidationSummary(false)
+				</div>
+			}
+			<fieldset class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Год кампании<span class="requared">*</span></label>
+					<div class="col-md-9">
+						@Html.DropDownListFor(model => model.YearId, SelectListHelper.Create(Model.Years, t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control", autocomplete = "off", @id= "yearOfRestId" }).DisableIf(() => !Model.IsEditable)
+						@Html.ValidationMessageFor(model => model.YearId, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Номер рейса<span class="requared">*</span></label>
+					<div class="col-md-9">
+						@Html.TextBoxFor(model => model.Data.FilightNumber, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.ValidationMessageFor(model => model.Data.FilightNumber, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Время отбытия</label>
+					<div class="col-md-9">
+						@Html.TextBoxFor(model => model.Data.TimeOfDeparture, new { @class = "form-control time", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.ValidationMessageFor(model => model.Data.TimeOfDeparture, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Время прибытия</label>
+					<div class="col-md-9">
+						@Html.TextBoxFor(model => model.Data.TimeOfArrival, new { @class = "form-control time", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.ValidationMessageFor(model => model.Data.TimeOfArrival, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Транспортный узел отбытия</label>
+					<div class="col-md-9">
+						@Html.TextBoxFor(model => model.Data.CodeDeparture, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.ValidationMessageFor(model => model.Data.CodeDeparture, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Транспортный узел прибытия</label>
+					<div class="col-md-9">
+						@Html.TextBoxFor(model => model.Data.CodeArrival, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.ValidationMessageFor(model => model.Data.CodeArrival, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Вид транспорта</label>
+					<div class="col-md-9">
+						@Html.DropDownListFor(model => model.Data.TypeOfTransportId, SelectListHelper.Create(Model.TypesOfTransports, t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.ValidationMessageFor(model => model.Data.TypeOfTransportId, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Место отбытия</label>
+					<div class="col-md-9">
+						@Html.DropDownListFor(model => model.Data.DepartureId, SelectListHelper.Create(Model.Cities, t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.ValidationMessageFor(model => model.Data.DepartureId, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Место прибытия</label>
+					<div class="col-md-9">
+						@Html.DropDownListFor(model => model.Data.ArrivalId, SelectListHelper.Create(Model.Cities, t => new SelectListItem() {Value = t.Id.ToString(), Text = t.Name}), new {@class = "form-control", autocomplete = "off"}).DisableIf(() => !Model.IsEditable)
+						@Html.ValidationMessageFor(model => model.Data.ArrivalId, "Заполните поле")
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Контракт</label>
+					<div class="col-md-9 ">
+						@Html.TextBoxFor(m => m.Data.ContractId, new {@class = "form-control contract-select"}).DisableIf(() => !Model.IsEditable)
+						@if (!Model.IsEditable)
+						{
+							@Html.HiddenFor(m => m.Data.ContractId)
+						}
+						<input type="hidden" id="_ContractId" class="form-control required" value="@Model.Data.ContractId"/>
+						<input type="hidden" id="_ContractName" class="form-control required" value="@Model.Data.NullSafe(m => m.Contract.SignNumber)@(Model.Data.Contract != null && Model.Data.Contract.Supplier != null ? String.Format(" ({0})", Model.Data.Contract.Supplier.Name) : string.Empty)"/>
+					</div>
+				</div>
+</fieldset>
+
+		}
+
+	</div>
+</div>
+
+@section styles{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	<link href="~/Content/Vocabulary/VocabularyEdit.css" rel="stylesheet" />
+}
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/jquery.validate.min.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/Vocabulary/DirectoryFlightsEdit.js")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+	@Html.Partial("Assets/HistoryLinkTemplate")
+}

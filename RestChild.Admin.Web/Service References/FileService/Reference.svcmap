@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="30643eed-efa2-474d-aff8-42b6229990ac" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>false</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://esep.itopcase.ru/Esep-Services/FileService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="FileService.xsd" MetadataType="Schema" ID="d7aa4992-b401-480a-95ab-c530e560a491" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/FileService.svc?xsd=xsd0" />
+    <MetadataFile FileName="FileService1.xsd" MetadataType="Schema" ID="71b0dc67-e3ef-407f-bd9c-556594c7fca0" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/FileService.svc?xsd=xsd1" />
+    <MetadataFile FileName="FileService.disco" MetadataType="Disco" ID="7f91519a-41b5-4667-a2b6-6f441f88ff3f" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/FileService.svc?disco" />
+    <MetadataFile FileName="FileService2.xsd" MetadataType="Schema" ID="6fbc01d0-05f5-47fc-b1d7-8d8a6a9aa4de" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/FileService.svc?xsd=xsd3" />
+    <MetadataFile FileName="FileService.wsdl" MetadataType="Wsdl" ID="f5433d2d-f4a0-4aa4-a9f4-c02e302c434e" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/FileService.svc?wsdl" />
+    <MetadataFile FileName="FileService3.xsd" MetadataType="Schema" ID="291bacaf-1d6a-48b2-8948-d6ae4d8cc703" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/FileService.svc?xsd=xsd2" />
+    <MetadataFile FileName="FileService1.wsdl" MetadataType="Wsdl" ID="5f9d89ab-607d-47be-a1f2-c6dcbbd57e0e" SourceId="1" SourceUrl="http://esep.itopcase.ru/Esep-Services/FileService.svc?wsdl=wsdl0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

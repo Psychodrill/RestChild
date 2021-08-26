@@ -1,0 +1,76 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@model RestChild.Web.Models.AnalyticsViewModel
+
+@if (Model != null && Model.Rows != null && Model.Rows.Any())
+{
+	<div class="row">
+		<div class="col-md-offset-3 col-md-9">
+			<h2>Статистика оказания государственной услуги</h2>
+		</div>
+	</div>
+	foreach (var row in Model.Rows.Where(r => r.AnalyticsViewRowTypeId == (long)AnalyticsViewRowTypeEnum.ByDays))
+	{
+		<text>
+			<h4>@row.Name</h4>
+			<table class="main-report-table">
+				<thead>
+					<tr>
+						<th>@row.DataDay1.FormatEx()</th>
+						<th>@row.DataDay2.FormatEx()</th>
+						<th>@row.DataDay3.FormatEx()</th>
+						<th>@row.DataDay4.FormatEx()</th>
+						<th>@row.DataDay5.FormatEx()</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>@row.Day1.FormatEx()</td>
+						<td>@row.Day2.FormatEx()</td>
+						<td>@row.Day3.FormatEx()</td>
+						<td>@row.Day4.FormatEx()</td>
+						<td>@row.Day5.FormatEx()</td>
+					</tr>
+				</tbody>
+			</table>
+		</text>
+	}
+	<table class="main-report-table">
+		<thead>
+			<tr>
+				<th></th>
+				<th>За час</th>
+				<th>За сутки</th>
+				<th>За неделю</th>
+				<th>Всего</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var row in Model.Rows.Where(r => r.AnalyticsViewRowTypeId == (long)AnalyticsViewRowTypeEnum.EightColumns || r.AnalyticsViewRowTypeId == (long)AnalyticsViewRowTypeEnum.FourColumns))
+			{
+				<tr>
+					<td class="main-report-header">@row.Name</td>
+					@if (row.AnalyticsViewRowTypeId == (long)AnalyticsViewRowTypeEnum.EightColumns)
+					{
+						<td style="@(!string.IsNullOrEmpty(row.ByHourColor) ? string.Format("background-color:#{0}", row.ByHourColor) : string.Empty)">@row.ByHour / @row.ByHour2.FormatEx()</td>
+						<td style="@(!string.IsNullOrEmpty(row.ByDayColor) ? string.Format("background-color:#{0}", row.ByDayColor) : string.Empty)">@row.ByDay / @row.ByDay2.FormatEx()</td>
+						<td style="@(!string.IsNullOrEmpty(row.ByWeekColor) ? string.Format("background-color:#{0}", row.ByWeekColor) : string.Empty)">@row.ByWeek / @row.ByWeek2.FormatEx()</td>
+						<td style="@(!string.IsNullOrEmpty(row.TotalColor) ? string.Format("background-color:#{0}", row.TotalColor) : string.Empty)">@row.Total / @row.Total2.FormatEx()</td>
+					}
+					else
+					{
+						<td style="@(!string.IsNullOrEmpty(row.ByHourColor) ? string.Format("background-color:#{0}", row.ByHourColor) : string.Empty)">@row.ByHour</td>
+						<td style="@(!string.IsNullOrEmpty(row.ByDayColor) ? string.Format("background-color:#{0}", row.ByDayColor) : string.Empty)">@row.ByDay</td>
+						<td style="@(!string.IsNullOrEmpty(row.ByWeekColor) ? string.Format("background-color:#{0}", row.ByWeekColor) : string.Empty)">@row.ByWeek</td>
+						<td style="@(!string.IsNullOrEmpty(row.TotalColor) ? string.Format("background-color:#{0}", row.TotalColor) : string.Empty)">@row.Total</td>
+					}
+				</tr>
+			}
+		</tbody>
+	</table>
+	foreach (var row in Model.Rows.Where(r => r.AnalyticsViewRowTypeId == (long)AnalyticsViewRowTypeEnum.OneColumn || r.AnalyticsViewRowTypeId == (long)AnalyticsViewRowTypeEnum.TwoColumn))
+	{
+		<h4 class="well">@row.Name:@row.Total / @row.Total2.FormatEx()</h4>
+	}
+
+}

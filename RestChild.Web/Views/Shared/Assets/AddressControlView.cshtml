@@ -1,0 +1,134 @@
+﻿@using System.Linq
+@using System.Globalization
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.AddressViewModel
+
+@{
+	var viewBag = ViewData["viewBag"] ?? ViewBag;
+	string prefix = viewBag.AddressControlViewPrefix ?? string.Empty;
+	var isDisabled = (bool)(ViewData["IsDisabled"] ?? false);
+	// Нужен IEnumerable<BtiDistrict> в viewBag.Districts
+}
+
+<div class="address-control-body">
+	@Html.Hidden(prefix + "Id", Model.Data.Id)
+	@Html.Hidden(prefix + "IsDisabled", isDisabled, new { @class = "address-control-disabled" })
+
+	<div class="row form-group">
+		<div class="col-md-12">
+			@Html.CheckBox(prefix + "ManualType", Model.ManualType, new { @class = "StreetNotFoundCheckbox" }).DisableIf(() => isDisabled)
+			Улицы нет в списке
+		</div>
+	</div>
+
+	<div class="hidden" name="@(prefix + "StreetAutocompleteDiv")">
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Улица<span class="requared">*</span></label>
+			<div class="col-md-9">
+				@Html.Hidden(prefix + "Data.StreetAutocomplete",
+						 Model.Data.Street,
+					new
+					{
+						@class = "form-control street-autocomplete",
+						data_default_id = Model.Data != null && Model.Data.BtiAddress != null && Model.Data.BtiAddress.BtiStreet != null ? Model.Data.BtiAddress.BtiStreet.Id.ToString(CultureInfo.InvariantCulture) : string.Empty,
+						data_default_text = Model.Data.BtiAddress != null && Model.Data.BtiAddress.BtiStreet != null ? Model.Data.BtiAddress.BtiStreet.Name : string.Empty
+					}).DisableIf(() => isDisabled)
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-md-9 col-md-offset-3 col-xs-12">
+				Для адресов вида <strong>Зеленоград, корпус NNN</strong>, следует вводить улицу "Зеленоград"
+			</div>
+		</div>
+		<div class="row form-group has-feedback">
+			<div class="col-md-5 col-md-offset-3 col-xs-7">
+				@Html.DropDownList(prefix + "Data.BtiAddressId", new List<SelectListItem>(), new { @class = "form-control bti-address has-feedback address-control-select2", data_selectedId = @Model.Data.BtiAddressId ?? 0 }).DisableIf(() => isDisabled)
+				<img src="@Url.Content("~/Content/images/spinner.gif")" width="20" class="loading form-control-feedback invisible" />
+			</div>
+			<div class="col-md-3 col-md-push-1 col-xs-3 col-xs-push-2">
+				@Html.TextBox(prefix + "Data.Appartment", Model.Data.Appartment, new { @class = "form-control appartment-simple", placeholder = "Квартира" }).DisableIf(() => isDisabled)
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-md-9 col-md-offset-3 col-xs-12">
+				В случае отсутствия номера квартиры (для частных домов и др.) необходимо указывать значение "1"
+			</div>
+		</div>
+
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Округ</label>
+			<label class="col-md-3 control-label" name="@(prefix + "Data.District")"></label>
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Район</label>
+			<label class="col-md-3 control-label" name="@(prefix + "Data.Region")"></label>
+		</div>
+	</div>
+
+	<div class="hidden" name="@(prefix + "StreetWithoutAutocompleteDiv")">
+		<div class="row form-group has-feedback">
+			<label class="col-md-3 control-label">Округ<span class="requared">*</span></label>
+			<div class="col-md-9">
+				@Html.DropDownList(prefix + "Data.BtiDistrictId",
+				new SelectList(viewBag.Districts,
+					"Id",
+					"Name",
+					Model.Data.BtiDistrictId ?? 0),
+					new
+					{
+						@class = "form-control bti-district-id address-control-select2"
+					}).DisableIf(() => isDisabled)
+			</div>
+		</div>
+		<div class="row form-group has-feedback">
+			<label class="col-md-3 control-label">Район<span class="requared">*</span></label>
+			<div class="col-md-9">
+				@Html.DropDownList(prefix + "Data.BtiRegionId",
+			new List<SelectListItem>()
+				{
+					new SelectListItem() { Value = "0", Text = "-- Не выбрано --" }
+				},
+			new
+				{
+					@class = "form-control bti-region-id address-control-select2",
+					data_selectedId = Model.Data.BtiRegionId ?? 0
+				}).DisableIf(() => isDisabled)
+				<img src="@Url.Content("~/Content/images/spinner.gif")" width="20" class="loading form-control-feedback invisible" />
+			</div>
+		</div>
+		<div class="row form-group has-feedback">
+			<label class="col-md-3 control-label">Улица<span class="requared">*</span></label>
+			<div class="col-md-9">
+				@Html.TextBox(prefix + "Data.Street", Model.Data.Street ?? string.Empty, new { @class = "form-control street", placeholder = "Улица" }).DisableIf(() => isDisabled)
+			</div>
+		</div>
+		<div class="row form-group has-feedback">
+			<label class="col-md-3 control-label">Дом<span class="requared">*</span>/корпус/строение/владение</label>
+			<div class="col-md-3">
+				@Html.TextBox(prefix + "Data.House", Model.Data.House ?? string.Empty, new { @class = "form-control house", placeholder = "Дом" }).DisableIf(() => isDisabled)
+			</div>
+			<div class="col-md-2">
+				@Html.TextBox(prefix + "Data.Corpus", Model.Data.Corpus ?? string.Empty, new { @class = "form-control corpus", placeholder = "Корпус" }).DisableIf(() => isDisabled)
+			</div>
+			<div class="col-md-2">
+				@Html.TextBox(prefix + "Data.Stroenie", Model.Data.Stroenie ?? string.Empty, new { @class = "form-control stroenie", placeholder = "Строение" }).DisableIf(() => isDisabled)
+			</div>
+			<div class="col-md-2">
+				@Html.TextBox(prefix + "Data.Vladenie", Model.Data.Vladenie ?? string.Empty, new { @class = "form-control vladenie", placeholder = "Владение" }).DisableIf(() => isDisabled)
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-md-9 col-md-offset-3 col-xs-12">
+				@Html.TextBox(prefix + "Data.Appartment", Model.Data.Appartment, new { @class = "form-control appartment", placeholder = "Квартира" }).DisableIf(() => isDisabled)
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-md-9 col-md-offset-3 col-xs-12">
+				При вводе названия улиц вручную, автоматическое подтверждение введенных данных не гарантируется
+			</div>
+		</div>
+	</div>
+
+</div>
+

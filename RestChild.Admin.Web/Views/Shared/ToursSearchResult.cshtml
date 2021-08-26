@@ -1,0 +1,82 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Admin.Web.Controllers
+@model RestChild.Extensions.Filter.ToursFilterModel
+
+@if (Model != null && Model.Result != null && Model.Result.Any())
+{
+	<table class="table table-striped table-hover">
+		<thead>
+		<tr>
+			<th class="text-center" width="5%">№</th>
+			<th>Наименование</th>
+			<th>Время отдыха</th>
+			@if (Model.ContractFiltered)
+			{
+				<th>Кол-во отдыхающих</th>
+			}
+			<th>Статус</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+		@{ var rowNumber = Model.Result.FirstItemOnPage; }
+		@foreach (var place in Model.Result)
+		{
+			<tr>
+				<td class="text-center">@(rowNumber++)</td>
+				@*<td>@Html.Raw(place.Name.FormatEx())</td>*@
+				<td>
+					<div style="font-style: italic">
+						@place.NullSafe(p => p.TypeOfRest.Name)
+						@if (place.ForMultipleStageCompany)
+						{
+							<span>(Многоэтапная кампания)</span>
+						}
+					</div>
+					<div style="font-weight: bold">
+						@Html.Raw(place.NullSafe(p => p.Hotels.Name).FormatEx())
+					</div>
+					<small>
+						<i>@Html.Raw(place.NullSafe(p => p.Hotels.Address).FormatEx())</i>
+					</small>
+				</td>
+				<td>
+					@Html.Raw(string.Format("{2}, {0}-{1}", place.DateIncome.FormatEx(), place.DateOutcome.FormatEx(), place.NullSafe(p => p.TimeOfRest.Name).FormatEx()))
+				</td>
+				@if (Model.ContractFiltered)
+				{
+					<td>@place.ChildrenCount</td>
+				}
+				<td>@Html.Raw(place.NullSafe(p => p.State.Name).FormatEx())</td>
+				@if (Security.HasRight(AccessRightEnum.ToursView) || Security.HasRight(AccessRightEnum.Tour.WorkWithServices))
+				{
+					<td class="text-center">@Html.ActionLink(" ", "Update", "Tours", new { id = place.Id }, new { @class = " glyphicon glyphicon-pencil pull-right", target = "_blank" })</td>
+				}
+			</tr>
+		}
+		</tbody>
+	</table>
+	<div class="row">
+		<div class="col-md-12">
+			@Html.PagedListPager(Model.Result, page =>
+			{
+				Model.Result = null;
+				Model.PageNumber = page;
+				Model.TypesOfRests = null;
+				Model.YearsOfRests = null;
+				Model.States = null;
+				return Url.Action("Search", "Tours", Model);
+			}, new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+		</div>
+	</div>
+}
+else
+{
+	<div class="row">
+		<div class="col-md-12">
+			<p>Поиск не дал результатов</p>
+		</div>
+	</div>
+}

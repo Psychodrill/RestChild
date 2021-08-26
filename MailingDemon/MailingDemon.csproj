@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F368DB55-FB24-4E38-B97C-AC2DCE61F28B}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MailingDemon</RootNamespace>
+    <AssemblyName>MailingDemon</AssemblyName>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <ManifestCertificateThumbprint>BA0B06ADFF9390E73509A5FC39CA08FD17C40D61</ManifestCertificateThumbprint>
+    <ManifestKeyFile>MailingDemon_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>true</GenerateManifests>
+    <SignManifests>false</SignManifests>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\EIIP\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <PublishUrl>C:\RELEASE\MailingDaemon\27042010\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="amqmdnet, Version=8.0.0.1, Culture=neutral, PublicKeyToken=dd3cb1c9aae9ec97, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Components\amqmdnet.dll</HintPath>
+    </Reference>
+    <Reference Include="Apache.NMS, Version=1.8.0.0, Culture=neutral, PublicKeyToken=82756feee3957618, processorArchitecture=MSIL">
+      <HintPath>..\packages\Apache.NMS.1.8.0\lib\net40\Apache.NMS.dll</HintPath>
+    </Reference>
+    <Reference Include="Apache.NMS.ActiveMQ, Version=1.7.2.4108, Culture=neutral, PublicKeyToken=82756feee3957618, processorArchitecture=MSIL">
+      <HintPath>..\packages\Apache.NMS.ActiveMQ.1.7.2\lib\net40\Apache.NMS.ActiveMQ.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper, Version=3.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="AutoMapper.Net4, Version=3.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.Logging, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Castle.LoggingFacility.3.3.0\lib\net45\Castle.Facilities.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Logging.Log4netIntegration">
+      <HintPath>..\packages\Castle.Core-log4net.3.3.0\lib\net45\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging, Version=3.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.3.0.0\lib\net40\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Core.3.0.0\lib\net40\Common.Logging.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Aop, Version=2.0.1.45000, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spring.Aop.2.0.1\lib\net45\Spring.Aop.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Core, Version=2.0.1.45000, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spring.Core.2.0.1\lib\net45\Spring.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Data, Version=2.0.1.45000, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spring.Data.2.0.1\lib\net45\Spring.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Spring.Messaging.Nms, Version=2.0.1.45000, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
+      <HintPath>..\packages\Spring.Messaging.Nms.2.0.1\lib\net45\Spring.Messaging.Nms.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\AppConfigLoader.cs" />
+    <Compile Include="Common\AppConfigStorage.cs" />
+    <Compile Include="Common\BaseConfigStorage.cs" />
+    <Compile Include="Common\ConfigManager.cs" />
+    <Compile Include="Common\ExternalFileStorage.cs" />
+    <Compile Include="Common\Helpers.cs" />
+    <Compile Include="Common\XmlNodeConfigStorage.cs" />
+    <Compile Include="Common\XNameValueCollection.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="DebugConfig.cs" />
+    <Compile Include="EntryPoint.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\VersionInfo.cs" />
+    <Compile Include="Services\Bout.cs" />
+    <Compile Include="Services\BoutPersonal.cs" />
+    <Compile Include="Services\ExchangeRequest.cs" />
+    <Compile Include="Services\ExchangeServiceExImplementation.cs" />
+    <Compile Include="Services\IExchangeServiceEx.cs" />
+    <Compile Include="Tasks\AisoLegalRepresentationCheckTask.cs" />
+    <Compile Include="Tasks\BookingMosgorturParseTask.cs" />
+    <Compile Include="Tasks\CheckRequestAddress.cs" />
+    <Compile Include="Tasks\CheckRequestInBaseRegistry.cs" />
+    <Compile Include="Tasks\CheckRequestPassport.cs" />
+    <Compile Include="Tasks\CheckRequestRelative.cs" />
+    <Compile Include="Tasks\CheckRequestSnils.cs" />
+    <Compile Include="Tasks\CpmpkExchangeTask.cs" />
+    <Compile Include="Tasks\CpmpkExchangeTaskConfig.cs" />
+    <Compile Include="Tasks\CshedSignTask.cs" />
+    <Compile Include="Tasks\EGASIntegrationTask.cs" />
+    <Compile Include="Tasks\ERLIntegrationTask.cs" />
+    <Compile Include="Tasks\ERLQueue25Listener.cs" />
+    <Compile Include="Tasks\ERLQueueResponseListener.cs" />
+    <Compile Include="Tasks\ERLStatusTableFillConfig.cs" />
+    <Compile Include="Tasks\ERLStatusTableFillTask.cs" />
+    <Compile Include="Tasks\ExchangeBaseRegistryV6.cs" />
+    <Compile Include="Tasks\ExchangeBaseRegistryV6Listener.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Scheduler\TaskArray.cs" />
+    <Compile Include="Scheduler\TaskCollection.cs" />
+    <Compile Include="Scheduler\TaskScheduler.cs" />
+    <Compile Include="Scheduler\Triggers\BaseTrigger.cs" />
+    <Compile Include="Scheduler\Triggers\EveryDay.cs" />
+    <Compile Include="Scheduler\Triggers\EveryInterval.cs" />
+    <Compile Include="Scheduler\Triggers\EveryWeek.cs" />
+    <Compile Include="Scheduler\Triggers\TaskTrigger.cs" />
+    <Compile Include="Scheduler\Triggers\TimerBasedTrigger.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\BaseConfig.cs" />
+    <Compile Include="Tasks\BaseUpdateTour.cs" />
+    <Compile Include="Tasks\BoatCreatorTask.cs" />
+    <Compile Include="Tasks\ConfigBalance.cs" />
+    <Compile Include="Tasks\ExchangeBaseRegistry.cs" />
+    <Compile Include="Tasks\ExchangeBaseRegistryConfig.cs" />
+    <Compile Include="Tasks\ExchangeDataConfig.cs" />
+    <Compile Include="Tasks\FreeBooking.cs" />
+    <Compile Include="Tasks\GroupItemsTask.cs" />
+    <Compile Include="Tasks\ITaskController.cs" />
+    <Compile Include="Tasks\MapRequestInList2021.cs" />
+    <Compile Include="Tasks\MigrateDataForMobileTask.cs" />
+    <Compile Include="Tasks\MigrateUserForMobileTask.cs" />
+    <Compile Include="Tasks\MPGUIntegrationParseTask.cs" />
+    <Compile Include="Tasks\MqListener.cs" />
+    <Compile Include="Tasks\CheckFlagsToRefreshIndexTask.cs" />
+    <Compile Include="Tasks\MqListenerMPGURequest.cs" />
+    <Compile Include="Tasks\MqListenerMPGURequestStatus.cs" />
+    <Compile Include="Tasks\MqListenerStatus.cs" />
+    <Compile Include="Tasks\ProcessIncomingRequest.cs" />
+    <Compile Include="Tasks\FullRefreshRestManIndexTask.cs" />
+    <Compile Include="Tasks\RejectRequestAutomatic.cs" />
+    <Compile Include="Tasks\ScheduleWatcher.cs" />
+    <Compile Include="Tasks\ScheduleWatcherMPGURequstStatus.cs" />
+    <Compile Include="Tasks\SecurityEmailSendTask.cs" />
+    <Compile Include="Tasks\SendEmails.cs" />
+    <Compile Include="Tasks\SendMobileEmails.cs" />
+    <Compile Include="Tasks\SendRequestEvent.cs" />
+    <Compile Include="Tasks\SendSms.cs" />
+    <Compile Include="Tasks\TaskNameConfig.cs" />
+    <Compile Include="Tasks\TaskName.cs" />
+    <Compile Include="Tasks\BaseTask.cs" />
+    <Compile Include="Tasks\TaskAttribute.cs" />
+    <Compile Include="Tasks\TradeUnionPersonDoubleCheckTask.cs" />
+    <Compile Include="Tasks\TransportCreator.cs" />
+    <Compile Include="Tasks\UpdateAnalytics.cs" />
+    <Compile Include="Tasks\UpdateSpecializedCampsReports.cs" />
+    <Compile Include="Tasks\UpdateReportTour.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EntryPoint.resx">
+      <DependentUpon>EntryPoint.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MailingDemon_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RestChild.Booking.Logic\RestChild.Booking.Logic.csproj">
+      <Project>{8fc3c2ae-70b2-44e2-bc5b-13466832d16e}</Project>
+      <Name>RestChild.Booking.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Comon\RestChild.Comon.csproj">
+      <Project>{4f2d7102-41a3-4a1a-86a7-b7bdd743de98}</Project>
+      <Name>RestChild.Comon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.CshedIntegration\RestChild.CshedIntegration.csproj">
+      <Project>{b49e98c5-a613-4d25-a527-52cf25530c56}</Project>
+      <Name>RestChild.CshedIntegration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.DAL\RestChild.DAL.csproj">
+      <Project>{4c7c2237-1cd7-477d-b930-c375295317d8}</Project>
+      <Name>RestChild.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.DocumentGeneration\RestChild.DocumentGeneration.csproj">
+      <Project>{88d00cc2-cbef-4ad2-986c-3a38478553d8}</Project>
+      <Name>RestChild.DocumentGeneration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Domain\RestChild.Domain.csproj">
+      <Project>{2efdfafb-1b53-451a-be0e-2088dfff27c4}</Project>
+      <Name>RestChild.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.EGASIntegration\RestChild.EGASIntegration.csproj">
+      <Project>{3563c5d6-3624-48a9-8a53-b6c0efb3a141}</Project>
+      <Name>RestChild.EGASIntegration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.ERL\RestChild.ERL.csproj">
+      <Project>{546a6d76-cbcc-42d9-a262-3bf79bc1e4ec}</Project>
+      <Name>RestChild.ERL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Extensions\RestChild.Extensions.csproj">
+      <Project>{b7b0418c-522e-45d4-bc36-99e70984a1ad}</Project>
+      <Name>RestChild.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Mobile.DAL\RestChild.Mobile.DAL.csproj">
+      <Project>{85329ae0-8e45-43e8-8567-9fa3abf9146a}</Project>
+      <Name>RestChild.Mobile.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Mobile.Domain\RestChild.Mobile.Domain.csproj">
+      <Project>{9ebf576c-2aed-439d-b110-804faeb18f93}</Project>
+      <Name>RestChild.Mobile.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.MPGUIntegration\RestChild.MPGUIntegration.csproj">
+      <Project>{42f5f670-36b0-46dd-b40e-3f9a0d382f36}</Project>
+      <Name>RestChild.MPGUIntegration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Security\RestChild.Security.csproj">
+      <Project>{d4e6dad9-febe-473a-8a13-538b387ad617}</Project>
+      <Name>RestChild.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Templates\RestChild.Templates.csproj">
+      <Project>{a2047876-feb1-46e9-aab6-f834a2ea1c8e}</Project>
+      <Name>RestChild.Templates</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UtilsSmev\UtilsSmev.csproj">
+      <Project>{295c4d25-269d-4cd2-a567-709d9d9a6bc1}</Project>
+      <Name>UtilsSmev</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <Import Project="..\packages\Revision.1.1.1\tools\Revision.targets" Condition="Exists('..\packages\Revision.1.1.1\tools\Revision.targets')" />
+  <Import Project="..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

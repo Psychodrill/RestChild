@@ -1,0 +1,38 @@
+﻿@using RestChild.Web.Extensions
+@using RestChild.Comon
+@using RestChild.Domain
+
+@model  PupilGroupListCollaborator
+@{
+    var isEditable = (ViewData["isEditable"] as bool?) ?? true;
+    var possibleTransferAdresses = new SelectList(((List<OrphanageAddress>)ViewBag.PossibleTransferAdresses ?? new List<OrphanageAddress>()).Select(o => new { Id = (long?)o.Id, Name = o.Address.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name");
+}
+
+<tr>
+    @Html.Hidden(System.Guid.NewGuid().ToString(), Model.Id, new { @class = "pkey" })
+    @Html.Hidden(System.Guid.NewGuid().ToString(), Model.OrganisatonCollaborator.EntityId, new { @class = "pekey" })
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.OrganisatonCollaboratorId, new { @class = "ppkey" })
+    <td>
+        <a href="@Url.Action("OrphanageCollaboratorEdit", "Orphan", new {collaboratorId = Model.OrganisatonCollaborator.EntityId ?? Model.OrganisatonCollaboratorId})">
+            @Model.OrganisatonCollaborator.Applicant.GetFio()
+        </a>
+    </td>
+    <td class="text-center">
+        @Html.CheckBoxFor(m => m.TicketTo).DisableIf(() => !isEditable)
+    </td>
+    <td class="text-center">
+        @Html.CheckBoxFor(m => m.TicketFrom).DisableIf(() => !isEditable)
+    </td>
+    <td>
+        @Html.DropDownListFor(m => m.OrganisatonAddresId, possibleTransferAdresses, new { @class = "form-control select2 possibleTransferOrganisatonAddresId" }).DisableIf(() => !isEditable)
+    </td>
+    <td class="text-center">
+        @if (isEditable)
+        {
+            <button type="button" class="btn btn-danger btn-primary remove-сollaborator" role="button">
+                <i class="glyphicon glyphicon-trash"></i>
+            </button>
+        }
+    </td>
+</tr>

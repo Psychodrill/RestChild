@@ -1,0 +1,109 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.Orphans.OrphanageFilterModel
+@{
+    ViewBag.Title = "Реестр учреждений социальной защиты";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.SearchAction = "OrphanageSearch";
+    ViewBag.Controller = "Orphan";
+    ViewBag.Caption = "Реестр учреждений социальной защиты";
+    ViewBag.SearchPanelCaption = "Поиск";
+    ViewBag.NeedInsertButton = false;
+    ViewBag.InsertButtonCaption = "Добавить учреждение";
+    ViewBag.InsertAction = "OrphanageNew";
+}
+
+@section searchForm
+{
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Наименование</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        </div>
+        <label class="col-md-2 control-label text-right">Краткое наименование</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.ShortName, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Адрес</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+        </div>
+        <label class="col-md-2 control-label text-right">Директор</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.DirectorName, new { @class = "form-control" })
+        </div>
+    </div>
+}
+
+@section additionalFilters
+{
+    <a class="btn btn-default" href="@Url.Action("ExcelOrphanageList", "Orphan", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
+}
+
+@section searchResult
+{
+    @if (Model.Result != null && Model.Result.Any())
+    {
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center" width="5%">№</th>
+                    <th>Наименование</th>
+                    <th>Краткое наименование</th>
+                    <th>Адрес</th>
+                    <th>Телефон</th>
+                    <th>E-mail</th>
+                    <th>Директор</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ var rowNumber = Model.Result.FirstItemOnPage; }
+                @foreach (var orphanage in Model.Result)
+                {
+                    <tr>
+                        <td class="text-center">@(rowNumber++)</td>
+                        <td class="text-left">
+                            <a href="@Url.Action("OrphanageEdit", new {organizationId = orphanage.Id})" target="_blank">
+                                @(orphanage.Name ?? "Не указано")
+                            </a>
+                        </td>
+                        <td class="text-left">@orphanage.ShortName</td>
+                        <td class="text-left">
+                            @if (orphanage.Address != null && orphanage.Address.Any())
+                            {
+                                foreach (var address in orphanage.Address)
+                                {
+                                    @(address)<br />
+                                }
+                            }
+                        </td>
+                        <td class="text-left">@orphanage.Phone</td>
+                        <td class="text-left">@orphanage.EMail</td>
+                        <td class="text-left">@orphanage.DirectorName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.PagedListPager(Model.Result, page =>
+                {
+                    Model.Result = null;
+                    Model.PageNumber = page;
+                    return Url.Action("OrphanageSearch", Model);
+                }, new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
+}

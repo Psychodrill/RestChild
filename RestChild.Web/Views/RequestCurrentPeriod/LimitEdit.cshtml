@@ -1,0 +1,326 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.LimitEditModel
+@{
+    ViewBag.Title = Model.Data.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var canIncludeExclude = Model.Data != null && Model.Data.YearOfRest != null && Model.Data.YearOfRest.ListComplited == false;
+    var delta = (Model.Data.Limit ?? 0) - Model.FactIncludedCount - Model.FactAttendantCount;
+}
+
+<h2>@Model.Data.Point @Model.Data.Name</h2>
+<a href="@Url.Action("Update", "RequestCurrentPeriod", new {@id = Model.Data.YearOfRestId})">Назад</a>
+<h4>Размер квоты: <b>@Model.Data.Limit</b></h4>
+<h4>Фактически включено в квоту детей: <b id="factIncludedCount">@Model.FactIncludedCount</b><span class="@Html.Raw(Model.FactAttendantCount > 0 ? "" : "hidden")" id="factAttendantCountSpan">, сопровождающих: <b id="factAttendantCount">@Model.FactAttendantCount</b></span></h4>
+<h4>Расхождение с квотой: <b limit="@Model.Data.Limit" class="@((delta >= 0) ? "success" : "danger")" id="factDeltaCount">@((delta >= 0) ? "+" : "-")</b><b class="@((delta >= 0) ? "success" : "danger")" id="factDeltaCountAbs">@(Math.Abs(delta))</b></h4>
+@if (Model.Data.HistoryLinkId.HasValue)
+{
+    <a class="btn btn-default btn-hystory-link" data-history-id="@Model.Data.HistoryLinkId">История</a>
+    <div class="row">
+        <div class="col-md-12">&nbsp;</div>
+    </div>
+}
+@using (Html.BeginForm("LimitEdit", "RequestCurrentPeriod", FormMethod.Post, new {@class = "mainForm", autocomplete = "off"}))
+{
+    <!-- Сворачиваемая панель "Поиск"-->
+    <div class="panel-group" role="tablist">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="collapseListGroupHeading1">
+                <h4 class="panel-title">
+                    <a class="" data-toggle="collapse" href="#searchCriteriaPanel">
+                        Поиск
+                    </a>
+                </h4>
+            </div>
+            <div id="searchCriteriaPanel" class="panel-collapse collapse in" role="tabpanel">
+                <div class="panel">
+                    <div class="panel-body">
+                        @Html.HiddenFor(m => m.Data.Id, new {@id = "dataId"})
+                        @Html.HiddenFor(m => m.PageNumber, new {@id = "pageNumber"})
+                        @Html.HiddenFor(m => m.Action, new {@id = "action"})
+                        <div class="row">
+                            <div class="col-md-12">
+                                <fieldset class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label text-right">Номер заявления</label>
+                                        <div class="col-md-4">
+                                            @Html.TextBoxFor(m => m.RequestNumber, new {@class = "form-control", autocomplete = "off", maxlength = "100"})
+                                        </div>
+                                        <label class="col-md-2 control-label text-right">Статус проверки:</label>
+                                        <div class="col-md-4">
+                                            @Html.DropDownListFor(m => m.StatusOfCheck, new[] {new SelectListItem {Value = "0", Text = "Все"}, new SelectListItem {Value = "1", Text = "Подтверждено"}, new SelectListItem {Value = "2", Text = "Не подтверждено"}}, new {@class = "form-control select2", autocomplete = "off"})
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label text-right">Льготная категория</label>
+                                        <div class="col-md-4">
+                                            @Html.DropDownListFor(m => m.BenefitTypeId, new SelectList(Model.BenefitTypes, "Id", "Name").InsertAt(new SelectListItem {Value = "0", Text = "Все"}), new {@class = "form-control select2", autocomplete = "off"})
+                                        </div>
+                                        <label class="col-md-2 control-label text-right">Время отдыха:</label>
+                                        <div class="col-md-4">
+                                            @Html.DropDownListFor(m => m.TimeOfRestId, new SelectList(Model.TimeOfRests, "Id", "Name").InsertAt(new SelectListItem {Value = "0", Text = "Все"}), new {@class = "form-control select2", autocomplete = "off"})
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label text-right">ФИО отдыхающего</label>
+                                        <div class="col-md-4">
+                                            @Html.TextBoxFor(m => m.Fio, new {@class = "form-control", autocomplete = "off", maxlength = "100"})
+                                        </div>
+                                        <label class="col-md-2 control-label text-right">Направление отдыха:</label>
+                                        <div class="col-md-4">
+                                            @Html.DropDownListFor(m => m.PlaceOfRestId, new SelectList(Model.PlaceOfRests, "Id", "Name").InsertAt(new SelectListItem {Value = "0", Text = "Все"}), new {@class = "form-control select2", autocomplete = "off"})
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label text-right">Количество баллов</label>
+                                        <div class="form-inline">
+                                            <div class="col-md-4">
+                                                <label>с</label>
+                                                @Html.TextBoxFor(r => r.RankFrom, new {@class = "form-control decimal", autocomplete = "off", maxlength = "6"})
+                                                <label class="checkbox">
+                                                    @Html.CheckBoxFor(r => r.ExcludeRankFrom)
+                                                    исключая
+                                                </label>
+
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label>по</label>
+                                                @Html.TextBoxFor(r => r.RankTo, new {@class = "form-control decimal", autocomplete = "off", maxlength = "6"})
+                                                <label class="checkbox">
+                                                    @Html.CheckBoxFor(r => r.ExcludeRankTo)
+                                                    исключая
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label text-right">Период подачи заявления</label>
+                                        <div class="form-inline">
+                                            <div class="col-md-4">
+                                                <label class="control-label text-right input-label">c</label>
+                                                <div class='input-group date datepicker-anytime'>
+                                                    @Html.TextBoxFor(r => r.DateRequestFrom, new {@class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.DateRequestFrom).FormatEx(string.Empty, string.Empty)})
+                                                    <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="control-label text-right input-label">по</label>
+                                                <div class='input-group date datepicker-anytime'>
+                                                    @Html.TextBoxFor(r => r.DateRequestTo, new {@class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.DateRequestTo).FormatEx(string.Empty, string.Empty)})
+                                                    <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label text-right">Отображать заявления:</label>
+                                        <div class="col-md-4">
+                                            @Html.DropDownListFor(m => m.ViewRequestType, new[] {new SelectListItem {Value = "0", Text = "Все"}, new SelectListItem {Value = "1", Text = "Только включенные"}, new SelectListItem {Value = "2", Text = "Не включенные"}}, new {@class = "form-control select2", autocomplete = "off"})
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-9 col-md-offset-3">
+                                            <button type="submit" class="btn btn-default btn-primary" id="MainSearchButton">
+                                                <i class="glyphicon glyphicon-search"></i> Применить
+                                            </button>
+                                            @Html.ActionLink("Очистить фильтр", "LimitEdit", "RequestCurrentPeriod", new {@id = Model.Data.Id}, new {@class = "btn btn-primary"})
+                                            <button type="submit" class="btn btn-default" id="btnExcelExport">
+                                                Excel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    if (canIncludeExclude)
+    {
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-2">@Html.TextBoxFor(m => m.CountToInclude, new {@class = "form-control integer", maxlength = "5"})</div>
+                <div class="col-md-1">
+                    <div class="form-control-static">заявлений</div>
+                </div>
+                <div class="col-md-8">
+                    <button type="submit" class="btn btn-default" id="includeItems">
+                        Включить
+                    </button>
+                    <button type="submit" class="btn btn-default" id="excludeAll">
+                        Исключить все
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+}
+<script id="detailInfoTemplate" type="text/template">
+	<div class="modal fade" id="detailInfo">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>
+					<h4 class="modal-title">Датализация ранга</h4>
+				</div>
+				<div class="modal-body">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
+
+
+@if (Model.Requests != null && Model.Requests.Any())
+{
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th class="text-center"></th>
+            <th class="text-center">№</th>
+            <th class="text-center">Номер и дата заявления</th>
+            <th class="text-center">Отдыхающий/льгота</th>
+            <th class="text-center">Направление отдыха</th>
+            <th class="text-center">Времена отдыха</th>
+            <th class="text-center">Кол-во баллов</th>
+            <th class="text-center">Очередь</th>
+        </tr>
+        </thead>
+        <tbody>
+        @{ int rowNumber = Model.Requests.FirstItemOnPage; }
+        @foreach (var r in Model.Requests)
+        {
+            <tr>
+                <td class="text-center">
+                    @Html.CheckBox(" ", r.IsIncluded, new {@listrequestid = r.Id, @class = "include-in-list"}).DisableIf(() => !canIncludeExclude)
+                </td>
+                <td class="text-center">@(rowNumber++)</td>
+                <td>
+                    <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = r.RequestId})">
+                        @r.Request.RequestNumber<br/>@r.Request.DateRequest.FormatEx("dd.MM.yyyy HH:mm:ss")
+                    </a>
+                </td>
+                <td>
+                    <table>
+                        <tbody>
+                        @foreach (var c in r.Request.Child)
+                        {
+                            <tr>
+                                <td style="width: 50%; vertical-align: top;">@c.LastName @c.FirstName @c.MiddleName</td>
+                                <td style="width: 50%; vertical-align: top;">
+                                    @c.BenefitType.Name<br/>
+                                    @(c.BaseRegistryInfo.Any(b => !b.NotActual && (!b.IsProcessed || !b.Success)) ? "" : "(подтверждено)")
+                                </td>
+                            </tr>
+                        }
+                        @if (r.Request.Applicant.IsAccomp)
+                        {
+                            <tr>
+                                <td style="width: 50%; vertical-align: top;">@r.Request.Applicant.LastName @r.Request.Applicant.FirstName @r.Request.Applicant.MiddleName</td>
+                                <td style="width: 50%; vertical-align: top;">
+                                    <i>Сопровождающий</i>
+                                </td>
+                            </tr>
+                        }
+
+                        @foreach (var c in r.Request.Attendant)
+                        {
+                            <tr>
+                                <td style="width: 50%; vertical-align: top;">@c.LastName @c.FirstName @c.MiddleName</td>
+                                <td style="width: 50%; vertical-align: top;">
+                                    <i>Сопровождающий</i>
+                                </td>
+                            </tr>
+                        }
+
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+
+                    @(r.Request.PlaceOfRest != null ? r.Request.PlaceOfRest.Name : string.Empty)<br>
+                    @foreach (var t in r.Request.PlacesOfRest ?? new List<RequestPlaceOfRest>())
+                    {
+                        @(t.PlaceOfRest != null ? t.PlaceOfRest.Name : string.Empty)<br>
+                    }
+                </td>
+                <td>
+                    @(r.Request.TimeOfRest != null ? r.Request.TimeOfRest.Name : string.Empty)
+                    @foreach (var t in r.Request.TimesOfRest ?? new List<RequestsTimeOfRest>())
+                    {
+                        @(t.TimeOfRest != null ? t.TimeOfRest.Name : string.Empty)<br>
+                    }
+                </td>
+                <td class="text-center detail-rank" listrequestid="@r.Id">@(r.Rank.HasValue ? (Convert.ToDecimal(r.Rank) / 10000).FormatEx() : "-")</td>
+                <td class="text-center detail-rank" listrequestid="@r.Id">
+                    @(r.Rank.HasValue ? (r.Rank == 100000 ? "1"
+                        : r.Rank >= 50000 ? "2"
+                            : "3") : "-")
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-12">
+            @Html.PagedListPager(Model.Requests, page =>
+            {
+                var m = Model;
+                m.PageNumber = page;
+                return Url.Action("LimitEdit", m);
+            }, new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+        </div>
+    </div>
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    <style type="text/css">
+		.detail-rank {
+			text-decoration: underline;
+			cursor: pointer;
+		}
+
+		b.danger {
+			color: #c7254e;
+		}
+
+		b.success {
+			color: #3c763d;
+		}
+	</style>
+}
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/moment.js")
+    @Scripts.Render("~/Scripts/moment-with-locales.js")
+    <script type="text/javascript">
+		moment.locale('ru');
+</script>
+    @Scripts.Render("~/Scripts/bootstrap-datetimepicker.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/underscore.min.js")
+    @Scripts.Render("~/Scripts/YearOfCompany/LimitEdit.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @{ Html.RenderPartial("Assets/HistoryLinkTemplate"); }
+
+}

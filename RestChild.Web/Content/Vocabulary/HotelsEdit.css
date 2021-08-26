@@ -1,0 +1,33 @@
+﻿td.child-accomodation-td {
+	border-top: none !important;
+}
+
+.add-button {
+	margin-left: 10px;
+}
+
+.accomodation-name {
+	display: inline-block;
+	width: 88%;
+	margin-left: 15px;
+}
+
+.accomodation-name-label {
+	display: inline-block;
+	width: 9%;
+}
+
+.remove-accomodation {
+	margin-right: 5px;
+}
+
+.isMainPhoto {
+    background-color: #fff;
+    border-color: #357ebd;
+	border-width: 1px;
+	box-shadow:  0 0 2px 2px #357ebd;
+}
+
+#Data_addRoomPhotoModalUpload {
+	margin: 20px;
+}

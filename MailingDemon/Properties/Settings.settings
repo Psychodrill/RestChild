@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MailingDemon.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DsznNotAnswer" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="CrossChild" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">201603</Value>
+    </Setting>
+    <Setting Name="NoDocuments" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">201604</Value>
+    </Setting>
+    <Setting Name="NotParticipateInSecondStage" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">201704</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

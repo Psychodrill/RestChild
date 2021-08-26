@@ -1,0 +1,142 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Filter
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Extensions.Filter.CounselorGroupFilterModel
+@{
+	ViewBag.Title = "Группы обучения вожатых";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "GroupList";
+	ViewBag.InsertAction = "GroupEdit";
+	ViewBag.Controller = "CounselorTest";
+	ViewBag.Caption = "Поиск групп обучения";
+	ViewBag.InsertButtonCaption = "Добавить группу";
+	ViewBag.SearchPanelCaption = "Поиск групп";
+	ViewBag.NeedInsertButton = false;
+}
+
+@section additionalInserts
+{
+	@if (Security.HasRight(AccessRightEnum.CounselorTest.Edit))
+	{
+		<a class="btn btn-primary" href="@Url.Action("GroupEdit")" target="_blank">
+			<i class="glyphicon glyphicon-plus"></i> Добавить группу
+		</a>
+	}
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Наименование</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.SearchString, new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Статус</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.StateId, SelectListHelper.Create(Model.States, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" })
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Дата начала обучения</label>
+		<div class="col-md-10">
+			<div class="form-inline">
+				<div class="form-group">
+					<label class="control-label text-right input-label" style="padding-top: 0px">с</label>
+					<div class='input-group date datepicker-anytime'>
+						@Html.TextBoxFor(r => r.DateCreateStart, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.DateCreateStart.FormatEx(string.Empty, string.Empty) })
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+					<label class="control-label text-right input-label" style="padding-top: 0px">по</label>
+					<div class='input-group date datepicker-anytime'>
+						@Html.TextBoxFor(r => r.DateCreateEnd, new { @class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.DateCreateEnd.FormatEx(string.Empty, string.Empty) })
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+@section searchResult
+{
+	@if (Model != null && Model.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="text-center" width="5%">№</th>
+					<th>Наименование</th>
+					<th>Срок обучения</th>
+					<th>Статус</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@{int rowNumber = Model.FirstItemOnPage;}
+				@foreach (var test in Model)
+				{
+					<tr>
+						<td class="text-center">@(rowNumber++)</td>
+						<td>@Html.Raw(test.Name.FormatEx())</td>
+						<td>с @Html.Raw(test.StartTraining.FormatEx()) по @Html.Raw(test.EndTraining.FormatEx())</td>
+						<td>@Html.Raw(test.State != null ? test.State.Name.FormatEx() : "-")</td>
+						<td class="text-center">@Html.ActionLink(" ", "GroupEdit", new { id = test.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model, page =>
+		   {
+			   var model = new CounselorGroupFilterModel(new List<TrainingCounselors>(), page, Model.PageSize, Model.TotalItemCount)
+			   {
+				   PageNumberEx = page,
+				   StateId = Model.StateId,
+				   DateCreateStart = Model.DateCreateStart,
+				   DateCreateEnd = Model.DateCreateEnd,
+				   SearchString = Model.SearchString
+			   };
+			   return Url.Action("GroupList", model);
+		   }, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+						<div class="row">
+							<div class="col-md-12">
+								<p>Поиск не дал результатов</p>
+							</div>
+						</div>
+	}
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+}
+
+@section scripts
+{
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+		$(function() {
+			$('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
+		});
+		$('select').on('change', function (event) {
+				goSearch();
+		});
+	</script>
+	@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+}

@@ -1,0 +1,55 @@
+﻿@using RestChild.Web.Extensions
+@model RestChild.Web.Models.MGTWorkingDayWindowModel
+
+@{
+    bool _dis = (ViewData["HasBookings"] as bool?) ?? false;
+}
+
+<div class="window" @(Html.Raw(Model.IsDeleted ? " style=\"display: none;\"" : string.Empty))>
+   @Html.HiddenFor(m => m.Id)
+   @Html.HiddenFor(m => m.IsDeleted, new { @class = "windowdeleted" })
+   @Html.Hidden("window-number", null, new { @class = "window-num form-control" })
+
+   <div class="form-group">
+      <label class="col-sm-2 control-label">№ Окна</label>
+      <div class="col-md-4">
+         @Html.TextBoxFor(m => m.WindowNumber, null, new { @class = "form-control", maxlength = 2 })
+      </div>
+      @if (!_dis)
+      {
+         <div class="col-md-6" style="text-align: right;">
+            <a class="delete-window" style="cursor: pointer;">Удалить окно</a>
+         </div>
+      }
+   </div>
+   <div class="form-group" style="border-bottom: 1px solid #e5e5e5; padding-bottom: 8px;">
+      <label class="col-sm-2 control-label">Цели обращения <span class="requared">*</span></label>
+      <div class="col-md-10">
+         @Html.ListBoxFor(m => m.SelectedTargets, new MultiSelectList(ViewBag.Targets, "Id", "Name"), new { @class = "form-control select2" }).DisableIf(() => Model.IsDeleted)
+         @Html.ValidationMessageFor(m => m.SelectedTargets)
+      </div>
+   </div>
+
+
+   @for (int i = 0; i < Model.TimeIntervals.Count(); i++)
+   {
+      @Html.EditorFor(m => m.TimeIntervals[i], "TimeInterval", new { HasBookings = _dis })
+   }
+
+
+   @if (!_dis)
+   {
+      <div class="form-group">
+         <div class="col-md-offset-2 col-md-3">
+            <button type="button" class="btn btn-primary btn-warning add-interval"> <i class="glyphicon glyphicon-plus"></i> Добавить итервал</button>
+         </div>
+      </div>
+   }
+
+   <div class="form-group" style="border-bottom: 1px solid #e5e5e5; padding-bottom: 8px;">
+      <div class="col-md-offset-2 col-md-10">
+         @Html.ValidationMessageFor(m => m)
+      </div>
+   </div>
+</div>
+

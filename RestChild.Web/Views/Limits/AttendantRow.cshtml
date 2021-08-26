@@ -1,0 +1,116 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@model RestChild.Domain.Applicant
+
+@helper GetServiceName()
+{
+	if (Model.AddonServices != null && Model.AddonServices.Any())
+	{
+		@(string.Join(", ", Model.AddonServices.Select(service => service.Name)))
+	}
+	else
+	{
+		@:Не выбрано
+	}
+}
+@{
+   var sameAttendants = (ViewData["SameApplicants"] as ICollection<RestChild.Domain.Applicant> ?? new List<RestChild.Domain.Applicant>()).FirstOrDefault(c => (c.DocumentSeria == Model.DocumentSeria && c.DocumentNumber == Model.DocumentNumber && c.Id != Model.Id) || (string.Equals(c.FirstName, Model.FirstName, StringComparison.OrdinalIgnoreCase) && string.Equals(c.LastName, Model.LastName, StringComparison.OrdinalIgnoreCase) && string.Equals(c.MiddleName, Model.MiddleName, StringComparison.OrdinalIgnoreCase) && c.DateOfBirth == Model.DateOfBirth));
+	var attendantsInSameTime = (ViewData["AttendantInSameTime"] as ICollection<RestChild.Domain.Applicant> ?? new List<RestChild.Domain.Applicant>()).FirstOrDefault(c => c.Key == Model.Key && c.Id != Model.Id);
+	var type = (TypeOfLimitListEnum) (ViewBag.TypeLimit ?? TypeOfLimitListEnum.Profile);
+}
+
+<tr class="@(attendantsInSameTime != null || sameAttendants != null ? "has-error" : string.Empty)">
+	<td class="number-title"></td>
+   <td class="fio-title">
+      @string.Format("{0} {1} {2}", Model.LastName, Model.FirstName, Model.MiddleName)
+      <br />
+      Контактный телефон: <i class="telephone-title">@(string.IsNullOrWhiteSpace(Model.AddonPhone) ? "-" : Model.AddonPhone)</i>
+
+      @if (attendantsInSameTime != null)
+      {
+         var requestNumber = attendantsInSameTime.NullSafe(c => c.Request.RequestNumber);
+         var organization = attendantsInSameTime.NullSafe(c => c.ChildList.LimitOnOrganization.Organization);
+         if (!string.IsNullOrEmpty(requestNumber))
+         {
+            <br />
+            <i><small>Заявление на то же время @requestNumber</small></i>
+         }
+         if (organization != null)
+         {
+            <br />
+            <i><small>Список на то же время. @Html.Raw(string.Format("{0} тел.: {1}", organization.NullSafe(o => o.Name).FormatEx(), organization.NullSafe(o => o.Phone).FormatEx("нет данных")))</small></i>
+         }
+      }
+      @if (sameAttendants != null)
+      {
+         var organization = sameAttendants.NullSafe(c => c.ChildList.LimitOnOrganization.Organization);
+         <br />
+         <i><small>Дубль. @Html.Raw(organization != null ? string.Format("{0} тел.: {1}", organization.NullSafe(o => o.Name).FormatEx(), organization.NullSafe(o => o.Phone).FormatEx("нет данных")) : string.Empty)</small></i>
+
+      }
+   </td>
+	<td class="male-title">@(Model.Male.HasValue ? (Model.Male.Value ? "Мужской" : "Женский") : "-")</td>
+	<td class="datebirth-title">@Model.DateOfBirth.FormatEx()</td>
+	<td class="position-title">@Html.Raw(Model.Position.FormatEx())</td>
+	<td class="document-title">@string.Format("{0}, {1} {2}", Model.DocumentType.NullSafe(d => d.Name), Model.DocumentSeria, Model.DocumentNumber)</td>
+	@if (type != TypeOfLimitListEnum.Orphan)
+	{
+	<td class="text-center text-success">@Html.Raw(Model.NullSafe(m => m.Payed) ? "<i class='glyphicon glyphicon-ok'></i>" : string.Empty)</td>
+	}
+	<td>
+		@if (Model.ChildList == null || Model.ChildList.StateId == StateMachineStateEnum.Limit.List.Formation || Security.HasRight(AccessRightEnum.Limit.List.EditInAllStates))
+		{
+			<button class="btn btn-xs edit-btn" type="button" title="Редактировать"><i class="glyphicon glyphicon-pencil"></i></button>
+			<button class="btn btn-xs remove-btn" type="button" title="Удалить"><i class="glyphicon glyphicon-remove"></i></button>
+		}
+		<input type="hidden" value="@Model.Id" name="Id" class="attendant-id" />
+		@Html.HiddenFor(m => m.IsLast)
+		@Html.HiddenFor(m => m.EntityId)
+		@Html.HiddenFor(m => m.IsAccomp)
+		@Html.HiddenFor(m => m.IsApplicant)
+		@Html.HiddenFor(m => m.IsLast)
+		@Html.HiddenFor(m => m.TourVolumeId)
+		@Html.HiddenFor(m => m.Snils)
+		@Html.HiddenFor(m => m.Key)
+		@Html.HiddenFor(m => m.Payed)
+		@Html.HiddenFor(m => m.LastName, new { @class = "lastName-h" })
+		@Html.HiddenFor(m => m.MiddleName, new { @class = "middleName-h" })
+		@Html.HiddenFor(m => m.FirstName, new { @class = "firstName-h" })
+		@Html.HiddenFor(m => m.Male, new { @class = "male-h" })
+		@Html.HiddenFor(m => m.DateOfBirth, new { @class = "datebirth-h" })
+		@Html.HiddenFor(m => m.DocumentTypeId, new { @class = "document-type-h" })
+		@Html.HiddenFor(m => m.DocumentSeria, new { @class = "document-seria-h" })
+		@Html.HiddenFor(m => m.DocumentNumber, new { @class = "document-number-h" })
+		@Html.HiddenFor(m => m.DocumentDateOfIssue, new { @class = "document-date-issue-h" })
+		@Html.HiddenFor(m => m.DocumentSubjectIssue, new { @class = "document-subject-issue-h" })
+		@Html.HiddenFor(m => m.Position, new { @class = "position-h" })
+		@Html.HiddenFor(m => m.PlaceOfBirth, new { @class = "placebirth-h" })
+		@Html.HiddenFor(m => m.CountryId, new { @class = "country-h" })
+		@Html.HiddenFor(m => m.Country.FullName, new { @class = "countryName" })
+      @Html.HiddenFor(m => m.AddonPhone, new { @class = "telephone-h" })
+
+		@if (type != TypeOfLimitListEnum.Orphan && Model.ChildList != null && Model.ChildList.Tour != null && (Model.ChildList.StateId == StateMachineStateEnum.Limit.List.Formed || Model.ChildList.StateId == StateMachineStateEnum.Limit.List.IncludedPayment) && (Model.ChildList.LimitOnOrganization.StateId == StateMachineStateEnum.Limit.Organization.Confirmed))
+		{
+			<a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.PaymentFileUrl) ? "hidden" : string.Empty)" href="/UploadPayment.ashx?f=@Url.Encode(Model.PaymentFileUrl)&t=@Url.Encode(Model.PaymentFileTitle)">@Html.Raw(Model.PaymentFileTitle.FormatEx())</a>
+			@Html.HiddenFor(r => r.PaymentFileTitle, new { @class = "PaymentFileTitle" })
+			@Html.HiddenFor(r => r.PaymentFileUrl, new { @class = "PaymentFileUrl" })
+			if (Model.ChildList != null && Model.ChildList.Tour != null && Model.ChildList != null && Model.ChildList.StateId == StateMachineStateEnum.Limit.List.Formed
+				&& Model.ChildList.NullSafe(d => d.LimitOnOrganization.Tour.StateId) == StateMachineStateEnum.Tour.Formed)
+			{
+				<a class="btn btn-xs glyphicon glyphicon-file" title="Квитанция" href="@Url.Action("GetPaymentAttendant", "Pdf", new {id = Model.Id})"></a>
+			}
+
+			if (Model.ChildList != null && Model.ChildList.Tour != null && Model.ChildList != null && (Model.ChildList.StateId == StateMachineStateEnum.Limit.List.Formed)
+				&& Model.ChildList.NullSafe(d => d.LimitOnOrganization.Tour.StateId) == StateMachineStateEnum.Tour.Formed)
+			{
+
+				<span class="btn btn-xs glyphicon glyphicon-paperclip fileinput-button fileinput-attendant-button @(!string.IsNullOrEmpty(Model.PaymentFileUrl) ? "hidden" : string.Empty)">
+					<input type="file" name="files[]" multiple>
+				</span>
+
+				<a title="Удалить" class="remove-attendant-file-btn btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.PaymentFileUrl) ? "hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
+			}
+		}
+	</td>
+</tr>

@@ -1,0 +1,45 @@
+﻿@using RestChild.Web.App_Code
+@model RestChild.Web.Models.PartyModel
+@{
+	ViewBag.Title = "Формирование отрядов";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("FormPartial")
+
+<div class="modal fade" id="CounselorsModal">
+	<div class="modal-dialog big-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Вожатые</h4>
+			</div>
+			<div class="modal-body modal-body-autosize modal-lg" id="CounselorsDialogBody">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+@section styles{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	<link href="~/Content/Vocabulary/VocabularyEdit.css" rel="stylesheet" />
+}
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/jquery.validate.min.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/PartyForm.js")
+}

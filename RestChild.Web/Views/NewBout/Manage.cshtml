@@ -1,0 +1,323 @@
+﻿@using Newtonsoft.Json
+@using RestChild.Comon
+@using RestChild.Domain
+@using RestChild.Mobile.DAL.Enum
+@using RestChild.Mobile.Domain
+@using RestChild.Web.Models.Task
+@model RestChild.Web.Models.NewBout.ManageModel
+@{
+    ViewBag.Title = "Заезд";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input hidden id="boutId" value="@(Model.Data.Id)"/>
+
+<div class="form-group row">
+    <div class="col-md-12">
+        <h2>Заезд</h2>
+        @Html.ActionLink("Вернуться", "List")
+    </div>
+</div>
+
+<div role="tabpanel" id="MainTabs">
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="@(Model.ActiveTab == "common" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)">
+        <a href="#common" aria-controls="common" role="tab" data-toggle="tab">Основные данные</a>
+    </li>
+    @if (Model.Data.Personals.Any())
+    {
+        <li role="presentation" class="@(Model.ActiveTab == "personal" ? "active" : string.Empty)">
+            <a href="#personal" aria-controls="personal" role="tab" data-toggle="tab">Персонал</a>
+        </li>
+    }
+    @if (Model.Data.Campers.Any())
+    {
+        <li role="presentation" class="@(Model.ActiveTab == "party" ? "active" : string.Empty)">
+            <a href="#party" aria-controls="party" role="tab" data-toggle="tab">Отряды</a>
+        </li>
+    }
+    <li role="presentation" class="@(Model.ActiveTab == "task" ? "active" : string.Empty)">
+        <a href="#task" aria-controls="task" role="tab" data-toggle="tab">Задания</a>
+    </li>
+</ul>
+<div class="tab-content">
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "common" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)" id="common">
+    <fieldset class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-md-4">Место отдыха</label>
+            <div class="col-md-8 form-control-static">
+                @if (Model.HotelId.HasValue && Model.HotelId > 0)
+                {
+                    <a href="@Url.Action("Update", "Hotels", new {id = Model.HotelId})">@Model.Data.Camp.Name</a>
+                }
+                else
+                {
+                    @Model.Data.Camp.Name
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">Ближайший город</label>
+            <div class="col-md-8 form-control-static">@Model.Data.Camp.NearestCity</div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">Смена</label>
+            <div class="col-md-8 form-control-static">@Model.Data.Change</div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-4">Год кампании</label>
+            <div class="col-md-8 form-control-static">@Model.Data.YearOfCompany</div>
+        </div>
+    </fieldset>
+</div>
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "personal" ? "active" : string.Empty)" id="personal">
+    <fieldset class="form-horizontal">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th class="text-center">ФИО</th>
+                <th class="text-center">Вид</th>
+                <th class="text-center">Отряд</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var c in Model.Data.Personals
+                .OrderBy(p => p.Personal.PersonalType.Name)
+                .ThenBy(p => p.Party != null ? p.Party.SortOrder ?? 0 : -1)
+                .ThenBy(p => p.Personal.Name).ToList())
+            {
+                <tr>
+                    <td>@c.Personal.Name</td>
+                    <td class="text-center">@c.Personal.PersonalType.Name</td>
+                    <td class="text-center">@(c.Party != null ? c.Party.SortOrder.ToString() : "-")</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-xs btn-primary link-personal" uid="@c.Id" title="Связать">
+                            <i class="glyphicon glyphicon-link"></i>
+                        </button>
+                        <div class="link-set" style="color: #777; font-size: smaller">
+                            @if (c.Personal.AccountId.HasValue)
+                            {
+                                <span>Пользователь @c.Personal.Account.AccountKey</span>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+
+    </fieldset>
+</div>
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "party" ? "active" : string.Empty)" id="party">
+    <fieldset class="form-horizontal">
+        <div role="tabpanel" id="partys">
+            <ul class="nav nav-tabs" role="tablist">
+                @{ var first = true; }
+                @if (Model.Data.Campers.Any(c => !c.PartyId.HasValue))
+                {
+                    <li role="presentation" class="@(first ? "active" : string.Empty)">
+                        <a href="#pabsent" aria-controls="pabsent" role="tab" data-toggle="tab">Без отряда</a>
+                    </li>
+                    first = false;
+                }
+                @foreach (var p in Model.Data.Partys.Where(p => p.Campers.Any()).OrderBy(p => p.SortOrder).ToList())
+                {
+                    <li role="presentation" class="@(first ? "active" : string.Empty)">
+                        <a href="#p@(p.Id)" aria-controls="p@(p.Id)" role="tab" data-toggle="tab">@p.SortOrder</a>
+                    </li>
+                    first = false;
+                }
+            </ul>
+            <div class="tab-content">
+                @{ first = true; }
+                @if (Model.Data.Campers.Any(c => !c.PartyId.HasValue))
+                {
+                    var i = 1;
+                    <div role="tabpanel" class="tab-pane @(first ? "active" : string.Empty)" id="pabsent">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="text-center">№</th>
+                                <th class="text-center">ФИО ребенка</th>
+                                <th class="text-center">Дата рождения</th>
+                                <th class="text-center">Пол</th>
+                                <th class="text-center">Возраст</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var child in Model.Data.Campers.Where(c => !c.PartyId.HasValue).OrderBy(c => c.Name))
+                            {
+                                <tr>
+                                    <td class="text-center">@(i++)</td>
+                                    <td>@child.Name</td>
+                                    <td class="text-center">@child.DateOfBirth.FormatEx()</td>
+                                    <td class="text-center">@child.Male.FormatEx("Женский", "Мужской", "Женский")</td>
+                                    <td class="text-center">@child.DateOfBirth.GetAgeInYears(Model.Data.DateIncome)</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                    first = false;
+                }
+                @foreach (var p in Model.Data.Partys.Where(p => p.Campers.Any()).OrderBy(p => p.SortOrder).ToList())
+                {
+                    var i = 1;
+                    <div role="tabpanel" class="tab-pane @(first ? "active" : string.Empty)" id="p@(p.Id)">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="text-center">№</th>
+                                <th class="text-center">ФИО ребенка</th>
+                                <th class="text-center">Дата рождения</th>
+                                <th class="text-center">Пол</th>
+                                <th class="text-center">Возраст</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var child in p.Campers.OrderBy(c => c.Name))
+                            {
+                                <tr>
+                                    <td class="text-center">@(i++)</td>
+                                    <td>@child.Name</td>
+                                    <td class="text-center">@child.DateOfBirth.FormatEx()</td>
+                                    <td class="text-center">@child.Male.FormatEx("Женский", "Мужской", "Женский")</td>
+                                    <td class="text-center">@child.DateOfBirth.GetAgeInYears(Model.Data.DateIncome)</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                    first = false;
+                }
+            </div>
+        </div>
+
+    </fieldset>
+</div>
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "task" ? "active" : string.Empty)" id="task">
+    <fieldset class="form-horizontal">
+        <div class="form-group">
+            <a class="btn btn-primary" href="@Url.Action("Manage", "Task", new {bid = Model.Data.Id})">Добавить</a>
+            <a class="btn btn-primary copy-tasks">Скопировать задания из другого заезда</a>
+        </div>
+        <div class="form-group">
+            <table class="table table-bordered @(Model.Data.Tasks.Any() ? "" : "hidden")">
+                <thead>
+                <tr>
+                    <th class="text-center" style="width: 5%">№</th>
+                    <th class="text-center" style="width: 40%">Название задания</th>
+                    <th class="text-center">Расписание</th>
+                    <th class="text-center">Стоимость</th>
+                    <th class="text-center">Статус</th>
+                </tr>
+                </thead>
+                <tbody>
+                @{ var rowNumber = 1; }
+                @foreach (var task in Model.Data.Tasks.Where(t => t.StateId.HasValue && t.StateId != StateEnum.Deleted && t.StateId != StateEnum.BoutTask.Archive).OrderBy(d => d.StartDate).ThenBy(d => d.Name).ToList())
+                {
+                    <tr>
+                        <td class="text-center">@(rowNumber++)</td>
+                        <td class="text-left">
+                            <a href="@Url.Action("Manage", "Task", new {id = task.Id})" target="_blank">
+                                @(task.Name ?? "Не указано")
+                            </a>
+                        </td>
+                        <td class="text-left">
+                            @{
+                                var ts = string.IsNullOrWhiteSpace(task.Timesheet) ? new Timesheet() : JsonConvert.DeserializeObject<Timesheet>(task.Timesheet);
+                            }
+                            @Html.Raw(ts.ToString())
+                        </td>
+                        <td class="text-right">
+                            @Html.Raw(task.Price.FormatEx())
+                        </td>
+                        <td class="text-center">
+                            @(task.State != null ? task.State.Name : "-")
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+</div>
+
+<div class="modal fade" id="copyTasksModal">
+    <div class="modal-dialog big-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" id="сloseModal">&times;</span>
+                </button>
+                <h4 class="modal-title">Копирование заданий</h4>
+            </div>
+
+            <div class="modal-header container-fluid">
+                <div class="row">
+                    <label for="campsCollectionBlock" class="control-label col-md-6 text-left">Место отдыха</label>
+                    <div class="col-md-2"></div>
+                    <label for="changesCollectionBlock" class="control-label col-md-6 text-left">Смена</label>
+                </div>
+                <div class="row">
+                    <div class="col-md-4" id="campsCollectionBlock">
+                        @Html.DropDownList("campsCollection", new SelectList(Model.CampsCollection.Select(x => x).InsertAt(new Camp {Id = -1, Name = "-- Не выбрано -- "}), "Id", "Name"), new {@class = "form-control select2"})
+                    </div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4" id="changesCollectionBlock">
+                        @Html.DropDownList("changesCollection", new SelectList(new List<GroupedTimeOfRest> {new GroupedTimeOfRest {Id = -1, Name = "-- Не выбрано -- "}}, "Id", "Name"), new {@class = "form-control select2"})
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-body form-group" hidden id="tasksBlock">
+                <div class="row">
+                    <div class="col-md-3">
+                        <input type="checkbox" class="form-check-input " id="selectAll">
+                        <label class="form-check-label" for="selectAll">Выбрать все задания</label>
+                    </div>
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th class="text-left col-md-2"></th>
+                        <th class="text-left col-md-2" width="5%">№</th>
+                        <th class="text-left col-md-5">Название задания</th>
+                        <th class="text-left col-md-3">Рейтинг</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tasksCollection">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-footer form-group">
+                <div class="row">
+                    <div class="col-md-8 text-left">
+                        <h5 hidden id="tasksNotFoundMsg" style="color:red">В выбранном заезде заданий не найдено</h5>
+                    </div>
+                    <div class="col-md-4 text-right row">
+                        <button hidden disabled type="button" id="copyTasksAccept" data-dismiss="modal" class="btn btn-primary mx-5">Копировать задания</button>
+                        <button type="button" id="сloseModal" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+</div>
+</div>
+</div>
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/newBout/manage.js")
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+}

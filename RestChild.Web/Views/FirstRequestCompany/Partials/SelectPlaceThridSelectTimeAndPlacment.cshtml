@@ -1,0 +1,105 @@
+﻿@using System.Configuration
+@using System.Globalization
+@using Newtonsoft.Json
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using Styles = System.Web.Optimization.Styles
+@model RestChild.Web.Models.SelectPlaceModel
+
+<div id="ThridSelectTimeAndPlacment" @Html.Raw(Model.SelectPlaceStep != SelectPlaceStepEnum.ThridSelectTimeAndPlacment ? "style='display:none'" : string.Empty)>
+	<div class="form-group row">
+		<div class="col-md-12">
+			<h3>@(Model.Request == null ? "Шаг 2." : "") Выбор организации отдыха и оздоровления </h3>
+			@{
+				var placeSelected = Model.PlaceOfRests.FirstOrDefault(p => p.Id == Model.SelectedItem.NullSafe(s => s.PlaceOfRestId));
+				var subjectSelected = Model.SubjectOfRests.FirstOrDefault(p => p.Id == Model.SelectedItem.NullSafe(s => s.SubjectOfRestId));
+			}
+			<div class="row">
+				<strong style="color: #777">@Html.Raw(placeSelected.NullSafe(p => p.Name).FormatEx())</strong>
+			</div>
+			<div class="row">
+				<strong>@Html.Raw(Model.SelectedItem.NullSafe(p => p.Name).FormatEx())</strong>
+			</div>
+			<div class="row">
+				<small><i>@Html.Raw(Model.SelectedItem.NullSafe(p => p.Address).FormatEx())</i></small>
+			</div>
+			<div class="row">
+				<strong>Описание</strong>
+			</div>
+			<div class="row">
+				<div class="select-place-description">@Html.Raw(Model.SelectedItem.NullSafe(p => p.Description))</div>
+			</div>
+			@if (subjectSelected != null)
+			{
+				<div class="row">
+					<strong>Тематика смены: </strong><a data-toggle="collapse" href="#collapseSubjectSelect" aria-expanded="false" aria-controls="collapseSubjectSelect">@subjectSelected.Name</a>
+				</div>
+				<div class="collapse" id="collapseSubjectSelect">
+					<div class="well well-sm" style="white-space: pre-wrap">@subjectSelected.Description</div>
+				</div>
+
+				<div class="row ">
+					<a onclick="showPhoto(this)" style="cursor: pointer">Фотографии</a>
+					<script type="text/template">
+						@for (var i = 0; i < Model.SelectedItem.Photos.Count; i++)
+						{
+							<li data-target="#carousel-info" data-slide-to="@i" @Html.Raw(i == 0 ? "class=\" active\"" : string.Empty)></li>
+						}
+					</script>
+					<script type="text/template">
+						@for (var i = 0; i < Model.SelectedItem.Photos.Count; i++)
+						{
+							<div class="item @Html.Raw(i == 0 ? " active" : string.Empty)">
+								<img src="@Model.SelectedItem.Photos[i].Url.Replace(ConfigurationManager.AppSettings["ChangeBookingPhotoUrl"], ConfigurationManager.AppSettings["SystemPhotosUrl"])" alt="@Model.SelectedItem.Photos[i].Title" style="width:600px">
+								<div class="carousel-caption">
+									@Model.SelectedItem.Photos[i].Title
+								</div>
+							</div>
+						}
+					</script>
+				</div>
+			}
+			<div class="row form-group">
+				<label class="col-md-3 control-label">Время отдыха<span class="requared">*</span></label>
+				<div class="col-md-5">
+					@if (Model.SelectedItem != null)
+					{
+						@Html.DropDownListFor(r => r.TourId, Model.NullSafe(s => new SelectList(s.SelectedItem.TimeOfRests.Select(t => new { t.Id, Name = string.Format("{0}-{1}", t.Start.FormatEx(string.Empty, string.Empty), t.End.FormatEx(string.Empty, string.Empty)) }), "Id", "Name", Model.TourId)) ?? new SelectList(new List<TimeOfRest>
+							()), new { @class = "form-control select2" })
+					}
+				</div>
+			</div>
+
+			@if (Model.Placement != null)
+			{
+				<table class="table">
+					<tbody>
+						@foreach (var placement in Model.Placement.Locations)
+						{
+							<tr>
+								<td>
+									@foreach (var rooms in placement.Places)
+									{
+										<div class="row"><strong>Тип номера:</strong>@Html.Raw(rooms.Description.FormatEx())</div>
+										<div class="row"><strong>Число мест:</strong>@rooms.Place</div>
+										<div class="row"><strong>Количество номеров:</strong>@rooms.CountRooms</div>
+									}
+								</td>
+								<td>
+									<button type="button" class="btn btn-primary btn-default" onclick="booking(@placement.Index) ">Забронировать</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			}
+			else
+			{
+				<div class="row">
+					<button type="button" class="btn btn-primary btn-default" onclick="booking(-1)">Забронировать</button>
+				</div>
+			}
+		</div>
+	</div>
+</div>

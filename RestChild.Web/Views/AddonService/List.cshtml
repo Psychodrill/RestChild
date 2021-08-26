@@ -1,0 +1,169 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+
+@model RestChild.Extensions.Filter.AddonServiceFilterModel
+@{
+	ViewBag.Title = "Реестр услуг";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "Search";
+	ViewBag.InsertAction = "Edit";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "AddonService";
+	ViewBag.Caption = "Реестр услуг";
+	ViewBag.InsertButtonCaption = "Добавить";
+	ViewBag.SearchPanelCaption = "Поиск услуг";
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Наименование</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.Name, (string)ViewBag.Name, new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Место отдыха</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.HotelId, new { @class = "form-control" })
+			@Html.Hidden("_HotelsId", Model.HotelId, new { id = "_HotelsId" })
+			@Html.Hidden("_HotelsName", Model.HotelName, new { id = "_HotelsName" })
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Статус</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.StateId, SelectListHelper.Create(Model.States, s => new SelectListItem() {Value = s.Id.ToString(), Text = s.Name}), new {@class = "form-control"})
+		</div>
+		<label class="col-md-2 control-label text-right">Вид услуги</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.TypeId, SelectListHelper.Create(Model.Types, s => new SelectListItem() { Value = s.Id.ToString(), Text = s.Name }), new { @class = "form-control" })
+		</div>
+	</div>
+}
+
+@section searchResult
+{
+	@if (Model.Result != null && Model.Result.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="text-center" width="5%">№</th>
+					<th>Описание</th>
+					<th style="width: 150px;max-width: 150px">Статус</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@{int rowNumber = Model.Result.FirstItemOnPage;}
+				@foreach (var place in Model.Result)
+				{
+					<tr>
+						<td class="text-center">@(rowNumber++)</td>
+						<td>
+							<div style="font-weight: bold; font-size: 14px">
+								@Html.Raw(place.Name.FormatEx())
+							</div>
+							<small><b><i>@Html.Raw(place.TypeOfService != null ? "" + place.TypeOfService.Name : string.Empty)</i></b></small>
+
+							@if (place.TypePriceCalculation != null)
+							{
+								<div>
+									Вид цены: <i>@place.TypePriceCalculation.Name</i>
+								</div>
+							}
+							@if (place.DateFrom.HasValue && place.DateTo.HasValue)
+							{
+								<div>
+									Срок оказания услуги: <i>@place.DateFrom.FormatEx()</i> - <i>@place.DateTo.FormatEx()</i>
+								</div>
+							}
+							else if (place.DateFrom.HasValue)
+							{
+								<div>
+									Срок оказания услуги: с <i>@place.DateFrom.FormatEx()</i>
+								</div>
+							}
+							else if (place.DateTo.HasValue)
+							{
+								<div>
+									Срок оказания услуги: по <i>@place.DateTo.FormatEx()</i>
+								</div>
+							}
+							@if (place.Partner != null)
+							{
+								<div>
+									Партнер: <i>@place.Partner.Name</i>
+								</div>
+							}
+							@if (place.TourTransport != null)
+							{
+								<div>
+									Отправление из: <i>@(place.TourTransport.CityOfDeparture != null ? place.TourTransport.CityOfDeparture.Name + (!string.IsNullOrWhiteSpace(place.TourTransport.PlaceOfDeparture) ? " - " : string.Empty) : string.Empty) @place.TourTransport.PlaceOfDeparture</i>
+								</div>
+								<div>
+									Прибытие в: <i>@(place.TourTransport.CityOfArrival != null ? place.TourTransport.CityOfArrival.Name + (!string.IsNullOrWhiteSpace(place.TourTransport.PlaceOfArrival) ? " - " : string.Empty) : string.Empty) @place.TourTransport.PlaceOfArrival</i>
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(place.Description))
+							{
+								<div style="padding: 5px; border: 1px solid #d3d3d3; -ms-border-radius: 3px; border-radius: 3px; max-height: 200px; overflow: hidden; -moz-text-overflow: clip; text-overflow: clip">
+									@Html.Raw(place.Description)
+								</div>
+							}
+							@if (place.Hotels != null && place.Hotels.Any())
+							{
+								<div>Места отдыха:</div>
+								<ul>
+									@foreach (var hotel in place.Hotels)
+									{
+										<li>
+											@Html.Raw(hotel.Name.FormatEx())
+											<br/>
+											<small><i>@Html.Raw(hotel.Address.FormatEx(String.Empty))</i></small>
+										</li>
+									}
+								</ul>
+							}
+						</td>
+						<td style="width: 150px;max-width: 150px">@Html.Raw(place.NullSafe(p => p.State.Name).FormatEx())</td>
+						<td class="text-center">@Html.ActionLink(" ", "Edit", new { id = place.Id }, new { @class = " glyphicon glyphicon-pencil pull-right", target = "_blank" })</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model.Result, page =>
+					{
+						Model.Result = null;
+						Model.PageNumber = page;
+						return Url.Action("Search", Model);
+					}, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section scripts
+{
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	@Scripts.Render("~/Scripts/Vocabulary/AddonServiceList.js")
+}

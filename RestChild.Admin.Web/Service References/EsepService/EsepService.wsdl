@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://schemas.granit.ru/esep" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schemas.granit.ru/esep" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://schemas.granit.ru/esep/Imports">
+      <xsd:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd0" namespace="http://schemas.granit.ru/esep" />
+      <xsd:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService" />
+      <xsd:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" />
+      <xsd:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging" />
+      <xsd:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+      <xsd:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd6" namespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging.GetOperationInfo" />
+      <xsd:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd7" namespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.AppServices.Contracts.OperationService" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IEsepService_CreateUIToSing_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUIToSing" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateUIToSing_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUIToSingResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateUIToSingEx_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUIToSingEx" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateUIToSingEx_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUIToSingExResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateUIToSignDocument_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUIToSignDocument" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateUIToSignDocument_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUIToSignDocumentResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateUIToSignForSmev_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUIToSignForSmev" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateUIToSignForSmev_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUIToSignForSmevResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateSignMobilePhaseOne_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateSignMobilePhaseOne" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateSignMobilePhaseOne_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateSignMobilePhaseOneResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateSignMobilePhaseTwo_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateSignMobilePhaseTwo" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateSignMobilePhaseTwo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateSignMobilePhaseTwoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_SignFile_InputMessage">
+    <wsdl:part name="parameters" element="tns:SignFile" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_SignFile_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SignFileResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetSignatureExistenceInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetSignatureExistenceInfo" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetSignatureExistenceInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetSignatureExistenceInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetFileSignatureInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileSignatureInfo" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetFileSignatureInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileSignatureInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetFileSignatureInfoWithRul_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileSignatureInfoWithRul" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetFileSignatureInfoWithRul_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileSignatureInfoWithRulResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetFileCertificatesUserInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileCertificatesUserInfo" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetFileCertificatesUserInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetFileCertificatesUserInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateUIToShowDocuments_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUIToShowDocuments" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateUIToShowDocuments_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUIToShowDocumentsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateUIToShowSignatures_InputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUIToShowSignatures" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_CreateUIToShowSignatures_OutputMessage">
+    <wsdl:part name="parameters" element="tns:CreateUIToShowSignaturesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetOriginal_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOriginal" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetOriginal_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOriginalResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_SignXml_InputMessage">
+    <wsdl:part name="parameters" element="tns:SignXml" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_SignXml_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SignXmlResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_ServerSignSmev_InputMessage">
+    <wsdl:part name="parameters" element="tns:ServerSignSmev" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_ServerSignSmev_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ServerSignSmevResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_ServerSignSmevEx_InputMessage">
+    <wsdl:part name="parameters" element="tns:ServerSignSmevEx" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_ServerSignSmevEx_OutputMessage">
+    <wsdl:part name="parameters" element="tns:ServerSignSmevExResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetCertificateInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetCertificateInfo" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetCertificateInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetCertificateInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetOperationInfo_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOperationInfo" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetOperationInfo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOperationInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetOperationState_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetOperationState" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_GetOperationState_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetOperationStateResponse" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_AddSignatureTimestamp_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddSignatureTimestamp" />
+  </wsdl:message>
+  <wsdl:message name="IEsepService_AddSignatureTimestamp_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddSignatureTimestampResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IEsepService">
+    <wsdl:operation name="CreateUIToSing">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateUIToSing" message="tns:IEsepService_CreateUIToSing_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateUIToSingResponse" message="tns:IEsepService_CreateUIToSing_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToSingEx">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateUIToSingEx" message="tns:IEsepService_CreateUIToSingEx_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateUIToSingExResponse" message="tns:IEsepService_CreateUIToSingEx_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToSignDocument">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateUIToSignDocument" message="tns:IEsepService_CreateUIToSignDocument_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateUIToSignDocumentResponse" message="tns:IEsepService_CreateUIToSignDocument_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToSignForSmev">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateUIToSignForSmev" message="tns:IEsepService_CreateUIToSignForSmev_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateUIToSignForSmevResponse" message="tns:IEsepService_CreateUIToSignForSmev_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateSignMobilePhaseOne">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateSignMobilePhaseOne" message="tns:IEsepService_CreateSignMobilePhaseOne_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateSignMobilePhaseOneResponse" message="tns:IEsepService_CreateSignMobilePhaseOne_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateSignMobilePhaseTwo">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateSignMobilePhaseTwo" message="tns:IEsepService_CreateSignMobilePhaseTwo_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateSignMobilePhaseTwoResponse" message="tns:IEsepService_CreateSignMobilePhaseTwo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SignFile">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/SignFile" message="tns:IEsepService_SignFile_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/SignFileResponse" message="tns:IEsepService_SignFile_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetSignatureExistenceInfo">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetSignatureExistenceInfo" message="tns:IEsepService_GetSignatureExistenceInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetSignatureExistenceInfoResponse" message="tns:IEsepService_GetSignatureExistenceInfo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFileSignatureInfo">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetFileSignatureInfo" message="tns:IEsepService_GetFileSignatureInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetFileSignatureInfoResponse" message="tns:IEsepService_GetFileSignatureInfo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFileSignatureInfoWithRul">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetFileSignatureInfoWithRul" message="tns:IEsepService_GetFileSignatureInfoWithRul_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetFileSignatureInfoWithRulResponse" message="tns:IEsepService_GetFileSignatureInfoWithRul_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFileCertificatesUserInfo">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetFileCertificatesUserInfo" message="tns:IEsepService_GetFileCertificatesUserInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetFileCertificatesUserInfoResponse" message="tns:IEsepService_GetFileCertificatesUserInfo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToShowDocuments">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateUIToShowDocuments" message="tns:IEsepService_CreateUIToShowDocuments_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateUIToShowDocumentsResponse" message="tns:IEsepService_CreateUIToShowDocuments_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="CreateUIToShowSignatures">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateUIToShowSignatures" message="tns:IEsepService_CreateUIToShowSignatures_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/CreateUIToShowSignaturesResponse" message="tns:IEsepService_CreateUIToShowSignatures_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOriginal">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetOriginal" message="tns:IEsepService_GetOriginal_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetOriginalResponse" message="tns:IEsepService_GetOriginal_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="SignXml">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/SignXml" message="tns:IEsepService_SignXml_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/SignXmlResponse" message="tns:IEsepService_SignXml_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ServerSignSmev">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/ServerSignSmev" message="tns:IEsepService_ServerSignSmev_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/ServerSignSmevResponse" message="tns:IEsepService_ServerSignSmev_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="ServerSignSmevEx">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/ServerSignSmevEx" message="tns:IEsepService_ServerSignSmevEx_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/ServerSignSmevExResponse" message="tns:IEsepService_ServerSignSmevEx_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCertificateInfo">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetCertificateInfo" message="tns:IEsepService_GetCertificateInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetCertificateInfoResponse" message="tns:IEsepService_GetCertificateInfo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOperationInfo">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetOperationInfo" message="tns:IEsepService_GetOperationInfo_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetOperationInfoResponse" message="tns:IEsepService_GetOperationInfo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetOperationState">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetOperationState" message="tns:IEsepService_GetOperationState_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/GetOperationStateResponse" message="tns:IEsepService_GetOperationState_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="AddSignatureTimestamp">
+      <wsdl:input wsaw:Action="http://schemas.granit.ru/esep/IEsepService/AddSignatureTimestamp" message="tns:IEsepService_AddSignatureTimestamp_InputMessage" />
+      <wsdl:output wsaw:Action="http://schemas.granit.ru/esep/IEsepService/AddSignatureTimestampResponse" message="tns:IEsepService_AddSignatureTimestamp_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

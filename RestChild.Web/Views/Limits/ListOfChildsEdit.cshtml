@@ -1,0 +1,1085 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.Models
+@model RestChild.Web.Models.Limits.ListsOfChildModel
+@{
+    ViewBag.Title = "Заявка от учреждения (список детей)";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var childrenInAnotherLists = Model.ChildrenInAnotherLists ?? new List<Child>();
+    var similarChildrenInAnotherList = Model.SimilarChildrenInAnotherLists ?? new List<Child>();
+    var childrenInRequests = Model.ChildrenInSameTimeRequests ?? new List<Child>();
+    var attendantInSameTime = Model.ApplicantsInSameTimeRequests ?? new List<Applicant>();
+    var attendantInAnotherLists = Model.ApplicantsInAnotherLists ?? new List<Applicant>();
+    var type = (TypeOfLimitListEnum)(Model.Data.TypeOfLimitListId ?? (long)TypeOfLimitListEnum.Profile);
+    ViewBag.TypeLimit = type;
+    ViewBag.TypeOfRest = (Model.Data.Tour != null ? Model.Data.Tour.TypeOfRestId : (long?)null) ?? (long)TypeOfRestEnum.SpecializedСamp;
+    ViewBag.TypeOfRestrictions = Model.TypeOfRestrictions;
+
+    ViewBag.OldArdessInUse = (Model.Data.Id > 0 && Model.Data.Childs.Any(ss => ss.Address.BtiAddressId != null));
+
+    var family = ((long?)ViewBag.TypeOfRest ?? (long)TypeOfRestEnum.SpecializedСamp) == (long)TypeOfRestEnum.SpecializedСampFamily;
+}
+<div class="row">&nbsp;</div>
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("ListOfChildsEditSave", "Limits", FormMethod.Post, new { enctype = "multipart/form-data", @class = "main-form" }))
+        {
+            <h3>Заявка от учреждения (список детей)</h3>
+            if (Model.Data.LimitOnOrganization != null)
+            {
+                <a href="@Url.Action("ListOfChildsList", "Limits", new {limitOnOrganizationId = Model.Data.LimitOnOrganizationId})">Вернуться</a>
+            }
+            <br />
+            <br />
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Data.Id)
+            @Html.HiddenFor(m => m.Data.DateChange)
+            @Html.HiddenFor(m => m.Data.IsDeleted)
+            @Html.HiddenFor(m => m.Data.IsLast)
+            @Html.HiddenFor(m => m.Data.StateId)
+            @Html.HiddenFor(m => m.Data.TimeOfRestId)
+            @Html.HiddenFor(m => m.Data.TypeOfLimitListId)
+            @Html.HiddenFor(m => m.Data.PlaceOfRestId)
+            @Html.HiddenFor(m => m.Data.TourId)
+            @Html.HiddenFor(m => m.StringStateCode, new { @class = "stringStateCode" })
+            @Html.Partial("Assets/_StatePanel", Model.State)
+            <input type="hidden" id="DateIncome" value="@((Model.Data != null && Model.Data.Tour != null ? Model.Data.Tour.DateIncome ?? DateTime.Now : DateTime.Now).ToString("dd.MM.yyyy"))" />
+
+            <div class="row">&nbsp;</div>
+            <fieldset class="form-horizontal">
+                <ul class="error-ul-block">
+                    @foreach (var error in Model.Errors)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">@Html.Raw(type == TypeOfLimitListEnum.Profile ? "Наименование коллектива/вид спорта" : "Наименование группы")</label>
+                    <div class="col-md-9">
+                        @if (Model.CanEdit)
+                        {
+                            @Html.TextBoxFor(m => m.Data.Name, new { @class = "form-control ", maxlength = 1000, autocomplete = "off" })
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(m => m.Data.Name)
+                            @Html.Raw(Model.Data.Name.FormatEx())
+                        }
+                    </div>
+                </div>
+                @if (type == TypeOfLimitListEnum.Profile)
+                {
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Категория детей</label>
+                        <div class="col-md-9">
+                            @if (Model.CanEdit)
+                            {
+                                @Html.DropDownListFor(m => m.Data.ListOfChildsCategoryId, new SelectList(Model.ListOfChildsCategorys, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+                            }
+                            else
+                            {
+                                @Html.HiddenFor(m => m.Data.ListOfChildsCategoryId)
+                                @Html.Raw(Model.Data.NullSafe(d => d.ListOfChildsCategory.Name).FormatEx())
+                            }
+                        </div>
+                    </div>
+                }
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">ФИО ответственного за выезд<span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @if (Model.CanEdit)
+                        {
+                            @Html.TextBoxFor(m => m.Data.Responsible, new { @class = "form-control", maxlength = 1000, autocomplete = "off" })
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(m => m.Data.Responsible)
+                            @Html.Raw(Model.Data.Responsible.FormatEx())
+                        }
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Телефон ответственного за выезд<span class="requared">*</span></label>
+                    <div class="col-md-3">
+                        @if (Model.CanEdit)
+                        {
+                            @Html.TextBoxFor(m => m.Data.ResponsiblePhone, new { @class = "form-control input-mask-phone", autocomplete = "off" })
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(m => m.Data.ResponsiblePhone)
+                            @Html.Raw(Model.Data.ResponsiblePhone.FormatEx())
+                        }
+                    </div>
+                </div>
+
+                @if (Model.Data.LimitOnOrganization != null)
+                {
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Учреждение</label>
+                        <div class="col-md-9" style="line-height: 35px">
+                            @Html.Raw(Model.Data.LimitOnOrganization.Organization.Name.FormatEx())
+                            @Html.HiddenFor(m => m.Data.LimitOnOrganizationId, new { @class = "form-control select2 " })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Место отдыха</label>
+                        <div class="col-md-9">
+                            <div>
+                                @Html.Raw(Model.Data.NullSafe(d => d.Tour.Hotels.Name))
+                            </div>
+                            <div>
+                                <small>
+                                    <i>(@Html.Raw(Model.Data.NullSafe(d => d.Tour.Hotels.Address)))</i>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Смена</label>
+                        <div class="col-md-9" style="line-height: 35px">
+                            @Html.Raw(string.Format("{0} - {1}", Model.Data.NullSafe(d => d.Tour.DateIncome).FormatEx(), Model.Data.NullSafe(d => d.Tour.DateOutcome).FormatEx()))
+                            <small>
+                                <i>@Html.Raw(Model.Data.NullSafe(d => d.TimeOfRest.Name))</i>
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Размер квоты</label>
+                        <div class="col-md-9" style="line-height: 35px">
+                            @Model.Data.LimitOnOrganization.Volume.FormatEx()
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Вид квоты</label>
+                        <div class="col-md-9" style="line-height: 35px">
+                            @Model.Data.LimitOnOrganization.NullSafe(l => l.TypeOfLimitList.Name).FormatEx() /
+                            @Model.Data.NullSafe(l => l.Tour.TypeOfRest.Name).FormatEx()
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Квота по учреждения</label>
+                        <div class="col-md-9">
+                            @Html.HiddenFor(m => m.Data.LimitOnOrganizationId, new { @class = "form-control select2 " })
+                        </div>
+                    </div>
+                }
+                <h3 class="anchor">
+                    @Html.Raw(family ? "Отдыхающие" : "Дети") <span class="requared">*</span>
+                </h3>
+                @if (Model.CanEdit)
+                {
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-default btn-primary" id="AddChild">
+                                <i class="glyphicon glyphicon-plus"></i> Добавить
+                            </button>
+                        </div>
+                    </div>
+                }
+                <table class="table autorownumber table-striped" id="childTable">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="text-center">ФИО</th>
+                            <th class="text-center">Пол</th>
+                            <th class="text-center">Дата рождения</th>
+                            <th class="text-center">Документ</th>
+                            @if (type != TypeOfLimitListEnum.Orphan)
+                            {
+                                <th class="text-center">Оплачено</th>
+                            }
+
+                            <th>
+                                @if (type != TypeOfLimitListEnum.Orphan && Model != null && Model.Data != null && Model.Data.Tour != null
+                                     && Model.Data.NullSafe(d => d.LimitOnOrganization.StateId) == StateMachineStateEnum.Limit.Organization.Confirmed
+                                     && Model.Data.NullSafe(d => d.LimitOnOrganization.Tour.StateId) == StateMachineStateEnum.Tour.Formed)
+                                {
+                                    <a class="btn btn-xs glyphicon glyphicon-file" title="Квитанции" href="@Url.Action("GetPaymentListOfChilds", "Pdf", new {id = Model.Data.Id})"></a>
+                                }
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in Model.Data.Childs.OrderBy(c => c.LastName).ThenBy(c => c.FirstName))
+                        {
+                            @Html.Partial("ChildRow", row, new ViewDataDictionary()
+                            {
+                                new KeyValuePair<string, object>("SameChildren", childrenInAnotherLists),
+                                new KeyValuePair<string, object>("SimilarChildren", similarChildrenInAnotherList),
+                                new KeyValuePair<string, object>("ChildrenInRequests", childrenInRequests),
+                                new KeyValuePair<string, object>("TypeLimit", type)
+                            })
+                        }
+                    </tbody>
+                </table>
+                @if (type == TypeOfLimitListEnum.Profile)
+                {
+                    <h3 class="anchor">Тренеры и педагоги</h3>
+                    <div class="alert alert-warning" role="alert">
+                        Уважаемые коллеги!
+                        <br />
+                        В случае, если группу сопровождает педагог или тренер, не являющийся вожатым, необходимо оформить заявку для приобретения путевки за полную стоимость. Для оформления заявки свяжитесь с менеджером по работе с корпоративными клиентами по телефонам <a href="tel:+79255000337">+7 (925) 500-03-37</a> Дмитриева Евгения <a href="tel:+79255000267">+7 (925) 500-02-67</a> Антонова Алина или отправить заявку на e-mail: <a href="mailto:corp@mosgortur.ru">corp@mosgortur.ru</a>
+                    </div>
+                }
+                else
+                {
+                    <h3 class="anchor">Воспитатели и сопровождающие</h3>
+                    <div class="alert alert-warning" role="alert">
+                        Уважаемые коллеги!
+                        <br />
+                        В случае, если вы хотите взять на отдых своего ребенка то для оформления заявки свяжитесь с менеджером по телефону <a href="tel:89255000338">8 925 5000 338</a> или <a href="tel:84952411291">8 495 241 12 91 доб.2</a> или отправьте заявку на е-mail:<a href="mailto:sales@mosgortur.ru">sales@mosgortur.ru</a>
+                    </div>
+                }
+                @if (Model.CanEdit)
+                {
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-default btn-primary" id="AddAttendant">
+                                <i class="glyphicon glyphicon-plus"></i> Добавить
+                            </button>
+                        </div>
+                    </div>
+                }
+                <table class="table autorownumber table-striped" id="attendantTable">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="text-center">ФИО</th>
+                            <th class="text-center">Пол</th>
+                            <th class="text-center">Дата рождения</th>
+                            <th class="text-center">Должность</th>
+                            <th class="text-center">Документ</th>
+                            @if (type != TypeOfLimitListEnum.Orphan)
+                            {
+                                <th class="text-center">Оплачено</th>
+                            }
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var attendant in Model.Data.Attendants.OrderBy(c => c.LastName).ThenBy(c => c.FirstName))
+                        {
+                            @Html.Partial("AttendantRow", attendant, new ViewDataDictionary()
+                         {
+                            new KeyValuePair<string, object>("AttendantInSameTime", attendantInSameTime),
+                            new KeyValuePair<string, object>("SameApplicants", attendantInAnotherLists),
+                            new KeyValuePair<string, object>("TypeLimit", type)
+                         })
+                        }
+                    </tbody>
+                </table>
+            </fieldset>
+        }
+    </div>
+</div>
+
+@Html.Partial("ChildDialog", Model.DocumentTypesChild)
+
+@Html.Partial("AttendantDialog", Model.DocumentTypesAttendat)
+
+@Html.Partial("ListCopyDialog", Model.ListOfLimitsToCopy)
+
+@section styles
+{
+    @Styles.Render("~/Content/bootstrap-multiselect.css")
+    <link href="~/Content/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet"></link>
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    <style type="text/css">
+        .input-table tbody tr td {
+            border-top-style: none;
+        }
+
+        table.autorownumber tbody {
+            counter-reset: rowNumber;
+        }
+
+            table.autorownumber tbody tr {
+                counter-increment: rowNumber;
+            }
+
+                table.autorownumber tbody tr td:first-child::before {
+                    content: counter(rowNumber);
+                    min-width: 1em;
+                }
+
+        #dialogChild .form-group {
+            margin-bottom: 5px;
+        }
+
+        #dialogChild h5 {
+            margin-bottom: 0px;
+            font-weight: bold;
+        }
+
+        #dialogChild .control-label {
+            font-weight: normal;
+        }
+    </style>
+    <link href="~/Content/jQuery.FileUpload/css/jquery.fileupload.css" type="text/css" rel="stylesheet"></link>
+    <link href="~/Content/jQuery.FileUpload/css/jquery.fileupload-ui.css" type="text/css" rel="stylesheet"></link>
+}
+
+@section scripts{
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/moment.js")
+    @Scripts.Render("~/Scripts/moment-with-locales.js")
+    <script type="text/javascript">
+        @if (type == TypeOfLimitListEnum.Profile)
+        {
+            <text>
+        var listOfChildsDialogEditRequired = [
+            '.lastName', '.firstName', '.datebirth', 'select.document-type', '.document-number', '.document-date-issue',
+            '.document-subject-issue', '.attendant-lastName', '.attendant-firstName', '.input-mask-phone'
+        ];
+            </text>
+        }
+        else
+        {
+            <text>
+                var listOfChildsDialogEditRequired = [
+                    '.lastName', '.firstName', '.datebirth', 'select.document-type', '.document-number',
+                    '.document-date-issue',
+                    '.document-subject-issue'
+                ];
+            </text>
+        }
+        var familyListOfChildsEdit = @Html.Raw(family.ToString().ToLower());
+        moment.locale('ru');
+    </script>
+    @Scripts.Render("~/bundles/global")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryinputmask")
+    @Scripts.Render("~/Scripts/bootstrap-multiselect.js")
+    @Scripts.Render("~/Scripts/bootstrap-datetimepicker.js")
+    @Scripts.Render("~/Scripts/assets/multipleSelect.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/StateScript.js")
+    @Scripts.Render("~/Scripts/jQuery.FileUpload/jquery.fileupload.js")
+    @Scripts.Render("~/Scripts/assets/AddressControlFIAS.js")
+    @Scripts.Render("~/Scripts/AttendantDialogValidation.js")
+    @Scripts.Render("~/Scripts/ChildDialogValidation.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Scripts.Render("~/Scripts/Vocabulary/Country.js")
+    <script type="text/javascript" language="javascript">
+        addressControl(rootPath);
+
+        function processTable($table, collectionName) {
+            $table.find('tbody tr').each(function(i, item) {
+                $(item).find('input').each(function(j, element) {
+                    var $item = $(element);
+                    var name = $item.attr('saved-name');
+                    if (!name) {
+                        name = $item.attr('name');
+                    }
+
+                    $item.attr('name', collectionName + '[' + i + '].' + name);
+                    $item.attr('saved-name', name);
+                });
+
+
+                @if (!Model.CanEdit)
+                {
+                    <text>
+                        $(item).find('button').remove();
+                    </text>
+                }
+            });
+        }
+
+        //dialogLimitsToCopy
+        //$('#myModal').modal('show')
+        function GroupCopyDialog() {
+            $('#dialogLimitsToCopy').modal('show');
+        }
+
+
+        $(function() {
+            $('.fileinput-child-button').each(function() {
+                var realName = '';
+
+                var fu = $(this).fileupload({
+                    url: '/UploadPayment.ashx',
+                    dataType: 'json',
+                    pasteZone: null,
+                    dropZone: null,
+                    maxChunkSize: 1000000,
+                    beforeSend: function(xhr, data) {
+                        xhr.setRequestHeader("X-FileName", realName);
+                    },
+                    submit: function(e, data) {
+                    },
+                    always: function(e, data) {
+                    },
+                    done: function(e, data) {
+                        var target = $(e.target);
+                        var parent = $(target.parent().parent()[0]);
+                        realName = '';
+                        $.each(data.result,
+                            function(index, file) {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: rootPath +
+                                        'Api/Limits/SavePaymentLinkToFile?childId=' +
+                                        parent.find('.child-id').val() +
+                                        '&url=' +
+                                        encodeURIComponent(file.realname) +
+                                        '&title=' +
+                                        encodeURIComponent(file.name),
+                                    data: null,
+                                    success: function(result) {
+                                        parent.find('.remove-child-file-btn').removeClass("hidden");
+                                        target.addClass('hidden');
+                                        parent.find('.file-span').addClass('hidden');
+                                        parent.find('.PaymentFileTitle').val(file.name);
+                                        parent.find('.PaymentFileUrl').val(file.realname);
+                                        var href = parent.find('.href-file');
+                                        href.attr('href',
+                                            '/UploadPayment.ashx?f=' +
+                                            encodeURIComponent(file.realname) +
+                                            '&t=' +
+                                            encodeURIComponent(file.name));
+                                        href.html(file.name);
+                                        href.removeClass('hidden');
+                                    },
+                                    error: function() {
+                                    }
+                                });
+                            });
+                    }
+                });
+
+                fu.on('fileuploadchunkdone',
+                    function(e, data) {
+                        $.each(data.result,
+                            function(index, file) {
+                                realName = file.realname;
+                            });
+                    });
+            });
+
+            $('.fileinput-attendant-button').each(function() {
+                var realName = '';
+
+                var fu = $(this).fileupload({
+                    url: '/UploadPayment.ashx',
+                    dataType: 'json',
+                    pasteZone: null,
+                    dropZone: null,
+                    maxChunkSize: 1000000,
+                    beforeSend: function(xhr, data) {
+                        xhr.setRequestHeader("X-FileName", realName);
+                    },
+                    submit: function(e, data) {
+                    },
+                    always: function(e, data) {
+                    },
+                    done: function(e, data) {
+                        var target = $(e.target);
+                        var parent = $(target.parent().parent()[0]);
+                        realName = '';
+                        $.each(data.result,
+                            function(index, file) {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: rootPath +
+                                        'Api/Limits/SavePaymentLinkAttendantToFile?attendantId=' +
+                                        parent.find('.attendant-id').val() +
+                                        '&url=' +
+                                        encodeURIComponent(file.realname) +
+                                        '&title=' +
+                                        encodeURIComponent(file.name),
+                                    data: null,
+                                    success: function(result) {
+                                        parent.find('.remove-attendant-file-btn').removeClass("hidden");
+                                        target.addClass('hidden');
+                                        parent.find('.file-span').addClass('hidden');
+                                        parent.find('.PaymentFileTitle').val(file.name);
+                                        parent.find('.PaymentFileUrl').val(file.realname);
+                                        var href = parent.find('.href-file');
+                                        href.attr('href',
+                                            '/UploadPayment.ashx?f=' +
+                                            encodeURIComponent(file.realname) +
+                                            '&t=' +
+                                            encodeURIComponent(file.name));
+                                        href.html(file.name);
+                                        href.removeClass('hidden');
+                                    },
+                                    error: function() {
+                                    }
+                                });
+                            });
+                    }
+                });
+
+                fu.on('fileuploadchunkdone',
+                    function(e, data) {
+                        $.each(data.result,
+                            function(index, file) {
+                                realName = file.realname;
+                            });
+                    });
+            });
+
+            $('#dialogChild .middleName-present').change(function() {
+                if ($('#dialogChild .middleName-present').prop('checked')) {
+                    $('#dialogChild .middleName').val('');
+                    $('#dialogChild .middleName').prop('disabled', true);
+                } else {
+                    $('#dialogChild .middleName').prop('disabled', false);
+                }
+            });
+
+            $('#dialogChild .attendant-middleName-present').change(function() {
+                if ($('#dialogChild .attendant-middleName-present').prop('checked')) {
+                    $('#dialogChild .attendant-middleName').val('');
+                    $('#dialogChild .attendant-middleName').prop('disabled', true);
+                } else {
+                    $('#dialogChild .attendant-middleName').prop('disabled', false);
+                }
+            });
+
+            $('#dialogAttendant .middleName-present').change(function() {
+                if ($('#dialogAttendant .middleName-present').prop('checked')) {
+                    $('#dialogAttendant .middleName').val('');
+                    $('#dialogAttendant .middleName').prop('disabled', true);
+                } else {
+                    $('#dialogAttendant .middleName').prop('disabled', false);
+                }
+            });
+
+            $('#dialogChild .school-not-present').change(function(e) {
+                if ($(e.target).is(':checked')) {
+                    $('#dialogChild .school-select2').closest('.form-group').addClass('hidden');
+                } else {
+                    $('#dialogChild .school-select2').closest('.form-group').removeClass('hidden');
+                }
+            });
+
+            $('.school-select2').not('.select2-container, .inited').addClass('inited').select2({
+                minimumInputLength: 1,
+                ajax: {
+                    url: rootPath + 'api/WebSchools',
+                    dataType: 'json',
+                    quietMillis: 250,
+                    data: function(term, page) {
+                        return {
+                            query: term,
+                        };
+                    },
+                    results: function(data, page) {
+                        for (var i in data) {
+                            data[i] = { id: data[i].id, text: data[i].name };
+                        }
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            $('.remove-child-file-btn').click(function(e) {
+                var target = $(e.target);
+                var parent = target.parent().parent().parent();
+                $.ajax({
+                    type: 'POST',
+                    url: rootPath +
+                        'Api/Limits/SavePaymentLinkToFile?childId=' +
+                        parent.find('.child-id').val() +
+                        '&url=&title=',
+                    data: null,
+                    success: function(result) {
+                        parent.find('.remove-child-file-btn').addClass("hidden");
+                        parent.find('.fileinput-button').removeClass('hidden');
+                        parent.find('.file-span').removeClass('hidden');
+                        parent.find('.PaymentFileTitle').val('');
+                        parent.find('.PaymentFileUrl').val('');
+                        var href = parent.find('.href-file');
+                        href.attr('href', '');
+                        href.html('');
+                        href.addClass('hidden');
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
+            $('.remove-attendant-file-btn').click(function(e) {
+                var target = $(e.target);
+                var parent = target.parent().parent().parent();
+                $.ajax({
+                    type: 'POST',
+                    url: rootPath +
+                        'Api/Limits/SavePaymentLinkAttendantToFile?attendantId=' +
+                        parent.find('.attendant-id').val() +
+                        '&url=&title=',
+                    data: null,
+                    success: function(result) {
+                        parent.find('.remove-attendant-file-btn').addClass("hidden");
+                        parent.find('.fileinput-button').removeClass('hidden');
+                        parent.find('.file-span').removeClass('hidden');
+                        parent.find('.PaymentFileTitle').val('');
+                        parent.find('.PaymentFileUrl').val('');
+                        var href = parent.find('.href-file');
+                        href.attr('href', '');
+                        href.html('');
+                        href.addClass('hidden');
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
+            $('#dialogLimitsToCopy').on('click',
+                '.save-button',
+                function(e) {
+                    var listFromId = $(this).attr('data-list-id');
+                    var listToId = $('#Data_Id').val();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: rootPath + '@Url.Action("ListOfChildsMerge", "Limits")',
+                        data: { From: listFromId, To: listToId },
+                        success: function(result) {
+                            window.location.reload();
+                        },
+                        error: function() {
+                        }
+                    });
+                });
+
+            function editOrAdd(row, selectorDialog, callback) {
+                $(selectorDialog + ' .dialog-validation-alert').addClass('hidden');
+                $(selectorDialog).find('.has-error').removeClass('has-error');
+                row.find('input').each(function(e, item) {
+
+                    var cls = $(item).attr('class');
+                    if (cls) {
+                        cls = cls.replace(new RegExp("-h", 'g'), "");
+                        if (cls === 'appartment') {
+                            if (row.find('.StreetNotFoundCheckbox-h').val() === 'True') {
+                                $(selectorDialog + ' .appartment').val($(item).val());
+                            } else {
+                                $(selectorDialog + ' .appartment-simple').val($(item).val());
+                            }
+                        } else if (cls === 'bti-address') {
+                            if ($(item).val()) {
+                                $(selectorDialog + ' .' + cls).attr('data-selectedId', $(item).val());
+                            } else {
+                                $(selectorDialog + ' .' + cls).select2('data', null);
+                                $(selectorDialog + ' .' + cls).trigger('change');
+                            }
+                        } else if (cls === 'country') {
+                            if ($(item).val()) {
+                                $(selectorDialog + ' .' + cls)
+                                    .select2('data', { id: $(item).val(), text: row.find('input.countryName').val() });
+                            } else {
+                                $(selectorDialog + ' .' + cls).select2('data', null);
+                            }
+                        } else if (cls === 'countryName') {
+                        } else if (cls === 'bti-region-id') {
+                            if ($(item).val()) {
+                                $(selectorDialog + ' .' + cls).attr('data-selectedId', $(item).val());
+                                $(selectorDialog + ' .' + cls).trigger('change');
+                            } else {
+                                $(selectorDialog + ' .' + cls).select2('data', null);
+                            }
+                        } else if (cls === 'street-autocomplete-AR') {
+                            if ($(item).val()) {
+                                var idVal = $(item).val();
+                                var textVal = row.find('.bti-address-name-h').val();
+                                var regVal = row.find('.district-bti-h').val();
+                                var disVal = row.find('.region-bti-h').val();
+
+                                var selectorAR = selectorDialog + ' input.street-autocompleteAR';
+                                if ($(selectorAR).length) {
+                                    $(selectorAR).select2('data', { id: idVal, text: textVal });
+
+                                    $(selectorDialog + ' .Data-District').html(regVal);
+                                    $(selectorDialog + ' .Data-Region').html(disVal);
+
+                                    //$(selectorDialog + ' #Data_Region').val(regVal);
+                                    //$(selectorDialog + ' #Data_District').val(disVal);
+                                }
+                            } else {
+                                var selectorARDuo = selectorDialog + ' input.street-autocompleteAR';
+                                $(selectorARDuo).select2('data', { id: null, text: "" });
+                            }
+
+                        } else if (cls === 'street-autocomplete') {
+                            if ($(item).val()) {
+                                $(selectorDialog + ' input.' + cls).attr('data-default-id', $(item).val());
+                                $(selectorDialog + ' input.' + cls).attr('data-default-text',
+                                    row.find('.street-autocomplete-name-h').val());
+                                $(selectorDialog + ' input.' + cls).select2('data',
+                                    {
+                                        id: parseInt($(item).val()),
+                                        text: row.find('.street-autocomplete-name-h').val()
+                                    });
+                                $(selectorDialog + ' .' + cls).trigger('change');
+                            } else {
+                                $(selectorDialog + ' .' + cls).select2('data', null);
+                            }
+                        } else if ($(selectorDialog + ' .' + cls).attr('type') === 'radio') {
+                            var $radios = $(selectorDialog + ' input:radio[name=' + cls + ']');
+                            $radios.prop('checked', false);
+                            if ($(item).val()) {
+                                $radios.filter('[value=' + $(item).val() + ']').prop('checked', true);
+                            }
+
+                            $(selectorDialog + ' .' + cls).trigger('change');
+                        } else if ($(selectorDialog + ' .' + cls).attr('type') === 'checkbox') {
+                            $(selectorDialog + ' .' + cls).prop('checked', $(item).val() === 'True');
+                            $(selectorDialog + ' .' + cls).trigger('change');
+                        } else if ($(selectorDialog + ' .' + cls).is('select')) {
+                            if ($(item).val()) {
+                                $(selectorDialog + ' .' + cls).select2('val', $(item).val());
+                            } else {
+                                $(selectorDialog + ' .' + cls).select2('data', null);
+                            }
+
+                            $(selectorDialog + ' .' + cls).trigger('change');
+                        } else if (cls == 'school-select2') {
+                            $(selectorDialog + ' .' + cls)
+                                .select2('data', { id: $(item).val(), text: row.find('.school-select2-name-h').val() });
+                        } else {
+                            $(selectorDialog + ' .' + cls).val($(item).val());
+                            $(selectorDialog + ' .' + cls).trigger('change');
+                        }
+                    }
+                });
+
+                $(selectorDialog + ' select.bti-district-id').trigger('change');
+                $(selectorDialog + ' .save-button').unbind();
+                $(selectorDialog + ' .save-button').click(function() {
+                    var isValid = true;
+
+                    if (selectorDialog == '#dialogAttendant') {
+                        isValid = validateAttendant($(selectorDialog));
+                    }
+
+                    if (selectorDialog == '#dialogChild') {
+                        isValid = validateChild($(selectorDialog));
+                    }
+
+                    if (!isValid) {
+                        return;
+                    }
+                    row.find('input').each(function(e, item) {
+                        var cls = $(item).attr('class');
+                        if (cls) {
+                            cls = cls.replace(new RegExp("-h", 'g'), "");
+                            if (cls === 'appartment') {
+                                if ($(selectorDialog + ' .StreetNotFoundCheckbox').prop('checked')) {
+                                    $(item).val($(selectorDialog + ' .appartment').val());
+                                } else {
+                                    $(item).val($(selectorDialog + ' .appartment-simple').val());
+                                }
+                            } else if (cls === 'street-autocomplete') {
+                                let selectorDR = selectorDialog + ' input.' + cls;
+                                let selectorDRAR = selectorDR + 'AR';
+
+                                if ($(selectorDR).length) {
+                                    if (!$(selectorDialog + ' .StreetNotFoundCheckbox').prop('checked')) {
+                                        var data = $(selectorDR).select2('data');
+                                        if (data) {
+                                            $(item).val(data.id);
+                                            row.find('.street-autocomplete-name-h').val(data.text);
+                                        } else {
+                                            $(item).val('');
+                                        }
+                                    } else {
+                                        $(item).val('');
+                                    }
+                                } else if ($(selectorDRAR).length) {
+                                    if (!$(selectorDialog + ' .StreetNotFoundCheckbox').prop('checked')) {
+                                        var data = $(selectorDRAR).select2('data');
+                                        if (data) {
+                                            //$(item).val(data.id);
+                                            row.find('.bti-address-name-h').val(data.text);
+                                            row.find('.street-autocomplete-AR-h').val(data.id);
+                                            let r1 = $(selectorDialog + ' #Data_Region').val();
+                                            row.find('.region-h').val(r1);
+                                            let d1 = $(selectorDialog + ' #Data_District').val();
+                                            row.find('.district-h').val(d1);
+                                        } else {
+                                            $(item).val('');
+                                        }
+                                    } else {
+                                        $(item).val('');
+                                    }
+                                } else {
+                                    $(item).val('');
+                                }
+                            } else if ($(selectorDialog + ' .' + cls).attr('type') === 'radio') {
+                                $(item).val($(selectorDialog + ' .' + cls + ':checked').val());
+                            } else if ($(selectorDialog + ' .' + cls).attr('type') === 'checkbox') {
+                                $(item).val($(selectorDialog + ' .' + cls).prop('checked') ? 'True' : 'False');
+                            } else if (cls === 'country') {
+                                var datacountry = $(selectorDialog + ' .' + cls).select2('data');
+                                if (datacountry && datacountry.id) {
+                                    $(item).val(datacountry.id);
+                                    row.find('input.countryName').val(datacountry.text);
+                                } else {
+                                    $(item).val('');
+                                    row.find('input.countryName').val('');
+                                }
+                            } else if (cls === 'countryName') {
+                            } else if ($(selectorDialog + ' .' + cls).is('select') ||
+                                $(selectorDialog + ' .' + cls).hasClass('select2')) {
+                                $(item).val($(selectorDialog + ' .' + cls).select2('val'));
+                            } else if (cls === 'school-select2-name') {
+                                var selectedData = $(selectorDialog + ' input.school-select2').select2('data');
+                                if (selectedData != null) {
+                                    $(item).val(selectedData.text);
+                                }
+                            } else {
+                                $(item).val($(selectorDialog + ' .' + cls).val());
+                            }
+                        }
+                    });
+
+                    $(row.find('.fio-title')).html($(selectorDialog + ' .lastName').val() +
+                        ' ' +
+                        $(selectorDialog + ' .firstName').val() +
+                        ' ' +
+                        $(selectorDialog + ' .middleName').val()
+                    );
+                    let telephone = $(selectorDialog + ' .telephone').val();
+                    if (telephone && telephone.length > 0) {
+                        var _rhtml = $(row.find('.fio-title')).html();
+                        _rhtml = _rhtml + '<br />Контактный телефон: <i class="telephone-title">' + telephone + '</i>';
+                        $(row.find('.fio-title')).html(_rhtml);
+                    }
+
+                    if (!$(row.find('.fio-title')).html().trim()) {
+                        $(row.find('.fio-title')).html('-');
+                    }
+
+                    $(row.find('.datebirth-title')).html($(selectorDialog + ' .datebirth').val());
+                    if (!$(row.find('.datebirth-title')).html().trim()) {
+                        $(row.find('.datebirth-title')).html('-');
+                    }
+                    $(row.find('.position-title')).html($(selectorDialog + ' .position').val());
+                    if (row.find('.position-title').attr('class') && !$(row.find('.position-title')).html().trim()) {
+                        $(row.find('.position-title')).html('-');
+                    }
+                    var maleValue = $(selectorDialog + ' .male:checked').val();
+                    $(row.find('.male-title'))
+                        .html(maleValue === 'True' ? 'Мужской' : maleValue === 'False' ? 'Женский' : '-');
+
+                    var documentTypeText = $(selectorDialog + ' .document-type').find("option:selected").html();
+                    if (!documentTypeText) {
+                        documentTypeText = '';
+                    }
+
+                    var restriction = $(selectorDialog + ' select.typeOfRestrictionId').select2('data');
+
+                    if (restriction && restriction.id && restriction.id !== '0' && restriction.id !== 0) {
+                        row.find('.fio-title')
+                            .append('<div class="typeOfRestriction-div" style="font-style: italic; font-size: small">' +
+                                restriction.text +
+                                '</div>');
+                    }
+
+                    $(row.find('.document-title')).html(documentTypeText +
+                        ', ' +
+                        $(selectorDialog + ' .document-seria').val() +
+                        ' ' +
+                        $(selectorDialog + ' .document-number').val());
+
+                    if ($(row.find('.document-title')).html().trim() === ",") {
+                        $(row.find('.document-title')).html('-');
+                    }
+
+                    $(row).removeClass('has-error');
+
+                    if (callback) {
+                        callback(row);
+                    }
+
+                    $(selectorDialog).modal('hide');
+                });
+
+                $(selectorDialog + ' .document-type').unbind();
+                $(selectorDialog + ' .document-type').change(function(e) {
+                    var birthCertId = '22';
+                    var passport = '50001';
+                    var attendantPassport = '60001';
+                    var val = $(e.target).select2('val');
+                    if (val === passport || val === attendantPassport) {
+                        $(selectorDialog + ' .document-seria').inputmask('9999', { clearIncomplete: true });
+                        $(selectorDialog + ' .document-number').inputmask('999999', { clearIncomplete: true });
+                    } else if (val === birthCertId) {
+                        $(selectorDialog + ' .document-seria')
+                            .inputmask('Regex', { regex: '[a-zA-Z]{1,7}-[а-яА-Я][а-яА-Я]', clearIncomplete: true });
+                        $(selectorDialog + ' .document-number').inputmask('999999', { clearIncomplete: true });
+                    } else {
+                        $(selectorDialog + ' .document-number').inputmask('remove');
+                        $(selectorDialog + ' .document-seria').inputmask('remove');
+                    }
+                });
+
+                $(selectorDialog + ' .document-type').trigger('change');
+
+                var birthCertificateId = 22;
+                var passport = '50001';
+                var date = moment($(selectorDialog + ' .datebirth').val(), "DD.MM.YYYY").add(14, 'y');
+                if (date.isValid() && moment().subtract(1, 'M').isAfter(date)) {
+                    $(selectorDialog + ' select.document-type option[value="' + birthCertificateId + '"]')
+                        .attr('disabled', 'disabled');
+                    if ($(selectorDialog + ' select.document-type option[value="' + birthCertificateId + '"]')
+                        .is(':selected')) {
+                        $(selectorDialog + ' select.document-type').select2('val', []);
+                    }
+                } else {
+                    $(selectorDialog + ' select.document-type option[value="' + birthCertificateId + '"]')
+                        .removeAttr('disabled');
+                }
+
+                if (date.isValid() && moment().isBefore(date)) {
+                    $(selectorDialog + ' select.document-type option[value="' + passport + '"]')
+                        .attr('disabled', 'disabled');
+                    if ($(selectorDialog + ' select.document-type option[value="' + passport + '"]').is(':selected')) {
+                        $(selectorDialog + ' select.document-type').select2('val', []);
+                    }
+                } else {
+                    $(selectorDialog + ' select.document-type option[value="' + passport + '"]').removeAttr('disabled');
+                }
+
+
+                $(selectorDialog).modal();
+
+            }
+
+            function editAttendant(event) {
+                var row = $(event.currentTarget).parent().parent();
+                editOrAdd(row, '#dialogAttendant');
+            }
+
+            function removeAttendant(event) {
+                var row = $(event.currentTarget).parent().parent();
+                row.remove();
+                processTable($('#attendantTable'), 'Data.Attendants');
+            }
+
+            $('#attendantTable').on('click', '.edit-btn', editAttendant);
+            $('#attendantTable').on('click', '.remove-btn', removeAttendant);
+            $('#AddAttendant').click(function() {
+                editOrAdd($($('#attendantRow').html()),
+                    '#dialogAttendant',
+                    function(row) {
+                        $('#attendantTable tbody').append(row);
+                        processTable($('#attendantTable'), 'Data.Attendants');
+                    });
+            });
+
+            function editChild(event) {
+                var row = $(event.currentTarget).parent().parent();
+                editOrAdd(row, '#dialogChild');
+            }
+
+            function removeChild(event) {
+                var row = $(event.currentTarget).parent().parent();
+                row.remove();
+                processTable($('#childTable'), 'Data.Childs');
+            }
+
+            processTable($('#attendantTable'), 'Data.Attendants');
+            processTable($('#childTable'), 'Data.Childs');
+
+            $('#childTable').on('click', '.edit-btn', editChild);
+            $('#childTable').on('click', '.remove-btn', removeChild);
+
+            $('#AddChild').click(function() {
+                editOrAdd($($('#childRow').html()),
+                    '#dialogChild',
+                    function(row) {
+                        $('#childTable tbody').append(row);
+                        processTable($('#childTable'), 'Data.Childs');
+                    });
+            });
+
+            $('select.select2').select2();
+            @if (!Model.Data.LimitOnOrganizationId.HasValue)
+            {
+                <text>
+                    $('#@Html.IdFor(m => m.Data.LimitOnOrganizationId)').select2({
+                        minimumInputLength: 1,
+                        ajax: {
+                            url: rootPath + '/api/Limits/GetLimitForChildList',
+                            dataType: 'json',
+                            quietMillis: 250,
+                            data: function(term, page) {
+                                return {
+                                    query: term
+                                };
+                            },
+                            results: function(data, page) {
+                                retrocycle(data);
+                                for (var i in data) {
+                                    data[i] = {
+                                        id: data[i].id,
+                                        text: data[i].organization.name + ' (' + data[i].volume + ' детей)'
+                                    }
+                                }
+                                return {
+                                    results: data
+                                };
+                            },
+                            cache: true
+                        }
+                    })
+                </text>
+            }
+
+            $('.datepicker').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY', maxDate: new Date() });
+            $('.datebirth').datetimepicker().on('dp.change',
+                function(e) {
+                    var birthCertificateId = 22;
+                    var passport = 50001;
+                    var date = moment($(e.target).val(), "DD.MM.YYYY").add(14, 'y');
+                    if (date.isValid() && moment().subtract(1, 'M').isAfter(date)) {
+                        $('select.document-type option[value="' + birthCertificateId + '"]')
+                            .attr('disabled', 'disabled');
+                        if ($('select.document-type option[value="' + birthCertificateId + '"]').is(':selected')) {
+                            $('select.document-type').select2('val', []);
+                        }
+                    } else {
+                        $('select.document-type option[value="' + birthCertificateId + '"]').removeAttr('disabled');
+                    }
+
+                    if (date.isValid() && moment().isBefore(date)) {
+                        $('select.document-type option[value="' + passport + '"]').attr('disabled', 'disabled');
+                        if ($('select.document-type option[value="' + passport + '"]').is(':selected')) {
+                            $('select.document-type').select2('val', []);
+                        }
+                    } else {
+                        $('select.document-type option[value="' + passport + '"]').removeAttr('disabled');
+                    }
+                });
+
+            countrySelect2('#dialogAttendant .country', '#_CountryId', '#_CountryName', rootPath);
+        });
+    </script>
+
+    @Scripts.Render("~/Scripts/ListOfChildsEdit.js")
+
+    <script id="childRow" type="text/template">
+        @Html.Partial("ChildRow", new Child { IsLast = true, Id = 0 })
+    </script>
+    <script id="attendantRow" type="text/template">
+        @Html.Partial("AttendantRow", new Applicant { IsLast = true, Id = 0, CountryId = 643, Country = new Country { FullName = "Российская Федерация" } })
+    </script>
+
+    @Html.Partial("Assets/HistoryLinkTemplate")
+}
+

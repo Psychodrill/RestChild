@@ -1,0 +1,143 @@
+﻿@using RestChild.Comon.Enumeration
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.Orphans.OrphanageModel
+
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)" id="CommonInfo">
+    @using (Html.BeginForm("OrphanageSave", "Orphan", FormMethod.Post, new { enctype = "multipart/form-data", id = "OrphanageForm", autocomplete = "off" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Data.Id)
+        @Html.HiddenFor(m => m.Data.LastUpdateTick)
+        <fieldset class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Название учреждения<span class="requared">*</span></label>
+                <div class="col-md-9">
+                    @Html.TextAreaFor(model => model.Data.Name, new { @class = "form-control", maxlength = 1000, autocomplete = "off", Rows = "3", style = "resize: none;" }).ReadonlyIf(() => Model.Data.Id > 0)
+                    @Html.ValidationMessageFor(model => model.Data.Name, "Заполните поле")
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Краткое название учреждения</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.Data.ShortName, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).ReadonlyIf(() => Model.Data.Id > 0)
+                    @Html.ValidationMessageFor(model => model.Data.ShortName, "Заполните поле")
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">&nbsp;</label>
+                <div class="col-md-9">
+                    <button type="button" class="btn btn-default btn-success btn-sm address-add" role="button"><i class="glyphicon glyphicon-plus"></i> Добавить адрес</button>
+                </div>
+            </div>
+            @if (Model.OrphanageAddress != null && Model.OrphanageAddress.Any())
+            {
+                var index = 0;
+                foreach (var key in Model.OrphanageAddress.Keys)
+                {
+                    <div class="OrphanageAddress">
+                        <div class="form-group">
+                            @Html.Hidden("OrphanageAddressIndex", key, new { @class = "OrphanageAddressIndex" })
+                            @Html.HiddenFor(model => model.OrphanageAddress[key].Id, new { @class = "OrphanageAddressId forClear" })
+                            @Html.HiddenFor(model => model.OrphanageAddress[key].Address.Id, new { @class = "AddressId forClear" })
+                            @Html.HiddenFor(model => model.OrphanageAddress[key].Address.Name, new { @class = "OrphanageAddressName forClear" })
+                            <label class="col-md-3 control-label text-right">Адрес<span class="requared">*</span></label>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.OrphanageAddress[key].Address.FiasId, new
+                                {
+                                    @class = "form-control street-autocompleteAR forClear",
+                                    maxlength = 1000,
+                                    autocomplete = "off",
+                                    data_default_id = Model.OrphanageAddress[key].Address.FiasId,
+                                    data_default_text = string.IsNullOrWhiteSpace(Model.OrphanageAddress[key].Address.FiasId) ? string.Empty : Model.OrphanageAddress[key].Address.Name,
+                                    data_default_district = Model.OrphanageAddress[key].Address.BtiDistrict,
+                                    data_default_region = Model.OrphanageAddress[key].Address.BtiRegion
+                                })
+                                @Html.ValidationMessageFor(model => model.OrphanageAddress[key].Address.Name, "Заполните поле")
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3">&nbsp;</label>
+                            <div class="col-md-3 text-right">Наличие огороженной территории</div>
+                            <div class="col-md-1">
+                                @Html.CheckBoxFor(model => model.OrphanageAddress[key].FencedArea)
+                            </div>
+                            <div class="col-md-3 text-right">Возможность для разворота ТС</div>
+                            <div class="col-md-1">
+                                @Html.CheckBoxFor(model => model.OrphanageAddress[key].LargeParking)
+                            </div>
+                            <div class="col-md-1 text-right">
+                                <a href="#" type="button" class="btn btn-default btn-danger btn-sm address-remove" role="button">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {
+                        index++;
+                    }
+                }
+            }
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Телефон</label>
+                <div class="col-md-3">
+                    @Html.TextBoxFor(model => model.Data.Phone, new { @class = "form-control input-mask-phone-new", maxlength = 100, autocomplete = "off" })
+                    @Html.ValidationMessageFor(model => model.Data.Phone, "Заполните поле")
+                </div>
+                <label class="col-md-3 control-label text-right">E-mail</label>
+                <div class="col-md-3">
+                    @Html.TextBoxFor(model => model.Data.Email, new { @class = "form-control", maxlength = 100, autocomplete = "off" })
+                    @Html.ValidationMessageFor(model => model.Data.Email, "Заполните поле")
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Ген. директор</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.Data.HeadPerson, new { @class = "form-control", maxlength = 100, autocomplete = "off" })
+                    @Html.ValidationMessageFor(model => model.Data.HeadPerson, "Заполните поле")
+                </div>
+            </div>
+        </fieldset>
+    }
+
+
+    @if (Model.Collaborators != null && Model.Collaborators.Values.Any(ss => ss.PositionId == (long)OrphanageCollaboratorType.AdditionalContactPerson || ss.PositionId == (long)OrphanageCollaboratorType.ResponsibleForRest))
+    {
+        <h3>
+            <hr />
+        </h3>
+        foreach (var Collaborator in Model.Collaborators.Values.Where(ss => ss.PositionId == (long)OrphanageCollaboratorType.AdditionalContactPerson || ss.PositionId == (long)OrphanageCollaboratorType.ResponsibleForRest))
+        {
+            <div class="col-md-6">
+                <fieldset class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-md-12 text-center">@Collaborator.Position.Name</label>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">ФИО</label>
+                        <div class="col-md-9">
+                            @Html.TextBox("CollaboratorFIO", Collaborator.Applicant.GetFio(), new { @class = "form-control", maxlength = 100, autocomplete = "off" }).ReadonlyIf(() => true)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Телефон</label>
+                        <div class="col-md-9">
+                            @Html.TextBox("CollaboratorPhone", Collaborator.Applicant.Phone, new { @class = "form-control", maxlength = 100, autocomplete = "off" }).ReadonlyIf(() => true)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">Телефон (моб)</label>
+                        <div class="col-md-9">
+                            @Html.TextBox("CollaboratorPhone2", Collaborator.AditionalPhone, new { @class = "form-control", maxlength = 100, autocomplete = "off" }).ReadonlyIf(() => true)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label text-right">E-mail</label>
+                        <div class="col-md-9">
+                            @Html.TextBox("CollaboratorEmail", Collaborator.Applicant.Email, new { @class = "form-control", maxlength = 100, autocomplete = "off" }).ReadonlyIf(() => true)
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        }
+    }
+</div>

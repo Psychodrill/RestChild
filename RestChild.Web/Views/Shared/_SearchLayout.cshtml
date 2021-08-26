@@ -1,0 +1,107 @@
+﻿@using PagedList.Mvc
+@using System.Linq;
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (!string.IsNullOrEmpty(@ViewBag.Caption))
+{
+	<div class="row">
+		<div class="col-md-12">
+			<h2>@ViewBag.Caption</h2>
+		</div>
+	</div>
+}
+<div class="row">
+	<div class="col-md-12 form-group">
+		@if (ViewBag.NeedInsertButton ?? true)
+		{
+			<a class="btn btn-primary" href="@Url.Action((string) ViewBag.InsertAction, (string) ViewBag.Controller)" target="_blank">
+				<i class="glyphicon glyphicon-plus"></i> @ViewBag.InsertButtonCaption
+			</a>
+		}@RenderSection("additionalInserts", required: false)
+	</div>
+</div>
+
+<!-- Сворачиваемая панель "Поиск"-->
+
+<div class="@((ViewBag.NeedCaption ?? true)?"panel-group":string.Empty)" role="tablist">
+	<div class="@((ViewBag.NeedCaption ?? true)?"panel panel-default":string.Empty)">
+		@if (ViewBag.NeedCaption ?? true)
+		{
+			<div class="panel-heading" role="tab" id="collapseListGroupHeading1">
+				<h4 class="panel-title">
+					<a class="" data-toggle="collapse" href="#searchCriteriaPanel">
+						@ViewBag.SearchPanelCaption
+					</a>
+				</h4>
+			</div>
+		}
+		<div id="searchCriteriaPanel" class="@((ViewBag.NeedCaption ?? true)?"panel-collapse collapse in":string.Empty)" role="tabpanel">
+			<div class="@((ViewBag.NeedCaption ?? true)?"panel":string.Empty)">
+				<div class="@((ViewBag.NeedCaption ?? true)?"panel-body":string.Empty)">
+					@using (Html.BeginForm((string)@ViewBag.SearchAction, (string)@ViewBag.Controller, FormMethod.Post, new { @class = "mainForm", autocomplete="off" }))
+					{
+						@Html.Hidden("pageNumber", 1)
+						<div class="row">
+							<div class="col-md-12">
+								<fieldset class="form-horizontal">
+									@RenderSection("searchForm", required: false)
+									@if (ViewBag.NeedSearchButton ?? true)
+									{
+										<div class="form-group">
+											<div class="col-md-9 col-md-offset-3">
+												<button type="button" class="btn btn-default btn-primary" id="MainSearchButton">
+													<i class="glyphicon glyphicon-search"></i> @(ViewBag.SearchButtonCaption ?? "Поиск")
+												</button>
+												@if (ViewBag.NeedClearButton ?? true)
+												{
+													@Html.ActionLink("Очистить фильтр", (string)ViewBag.SearchAction, (string)ViewBag.Controller, new { }, new { @class = "btn btn-primary" })
+												}
+												@RenderSection("additionalFilters", required: false)
+											</div>
+										</div>
+									}
+								</fieldset>
+							</div>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@RenderSection("searchResult", required: false)
+
+
+@section styles
+{
+	@RenderSection("styles", required: false)
+}
+
+@section scripts
+{
+	@RenderSection("scripts", required: false)
+	<script>
+		var goSearch = function() {
+			$('#pageNumber').val('1');
+			$('.mainForm').submit();
+		};
+
+		$('#MainSearchButton').click(goSearch);
+
+		$('body,#SignDate,.input-mask-date-anytime').on('keyup', function (event) {
+			if (event.which === 13) {
+				goSearch();
+			};
+		});
+	</script>
+}
+
+
+
+
+
+

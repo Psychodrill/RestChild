@@ -1,0 +1,94 @@
+﻿@using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical
+@using RestChild.Comon
+@model RestChild.Web.Models.CounselorTaskModel
+<div class="col-md-12">
+	<fieldset class="form-horizontal" id="mainFieldSet">
+
+		<div class="form-group">
+			<div class="col-md-3">
+				<label class="input-label">Дата постановки<span class="requared">*</span></label>
+			</div>
+			<div class="col-md-2">
+				<div class='input-group date datepicker-anytime'>
+					@Html.TextBoxFor(r => r.DateTask, new { @class = "form-control input-mask-date-anytime datepicker-anytime DateTaskFld", autocomplete = "off", @Value = Model.NullSafe(m => m.DateTask).FormatEx(string.Empty, string.Empty) })
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-md-3">
+				<label class="input-label">Тема<span class="requared">*</span></label>
+			</div>
+			<div class="col-md-9">
+				@Html.TextBoxFor(m => m.Title, new { @class = "form-control TitleFld" })
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-md-3">
+				<label class="input-label">Содержание<span class="requared">*</span></label>
+			</div>
+			<div class="col-md-9">
+				<div id="body">
+				</div>
+				@Html.HiddenFor(m => m.Content, new {@class = "ContentFld"})
+			</div>
+		</div>
+		@if (!Model.NotNessary)
+		{
+			<div class="form-group">
+				<div class="col-md-3">
+					<label class="input-label">Срок исполнения<span class="requared">*</span></label>
+				</div>
+				<div class="col-md-2">
+					<div class='input-group date datepicker-anytime'>
+						@Html.TextBoxFor(r => r.Deadline, new {@class = "form-control input-mask-date-anytime datepicker-anytime DeadlineFld", autocomplete = "off", @Value = Model.NullSafe(m => m.Deadline).FormatEx(string.Empty, string.Empty)})
+						<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+					</div>
+				</div>
+			</div>
+		}
+		<div class="form-group">
+			<div class="col-md-3">
+				<label class="input-label">Файлы</label>
+			</div>
+			<div class="col-md-9">
+				<table class="table table-striped" id="filesTable">
+					<tbody>
+					</tbody>
+				</table>
+				<div class="row form-group file-upload-div">
+					<div class="col-md-12">
+						<div class="panel-file well well-sm">
+							<span class="file-span">
+								<em>Выберите файл для загрузки</em>
+							</span>
+						</div>
+						<span class="btn fileinput-button">
+							<i class="glyphicon glyphicon-paperclip"></i>
+							<input type="file" name="files[]" multiple>
+						</span>
+					</div>
+				</div>
+				<div class="file-uploading-div hidden">
+					<img src="~/Content/images/spinner.gif"/> Загрузка файла...
+				</div>
+			</div>
+		</div>
+	</fieldset>
+</div>
+<script type="dot/template" id="fileRowTemplate">
+	<tr>
+		<td>
+			<a target="_blank" class="href-file" href="/UploadTaskFile.ashx?f={{=encodeURIComponent(it.fileName)}}&t={{=encodeURIComponent(it.fileTitle)}}">{{=it.fileTitle}}</a>
+		</td>
+		<td style="width: 50px">
+			<span class="glyphicon glyphicon-remove-circle text-danger request-file-remove" aria-hidden="true" title="Удалить" style="cursor: pointer"></span>
+			<input type="hidden" name="TaskFiles[0].FileName" class="FileName" value="{{=it.fileName}}"  />
+			<input type="hidden" name="TaskFiles[0].FileTitle" class="FileTitle" value="{{=it.fileTitle}}" />
+		</td>
+	</tr>
+</script>

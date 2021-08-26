@@ -1,0 +1,181 @@
+﻿@using System.Text
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Dto.SearchRestChild
+@model RestChild.Extensions.Filter.RestManFilterModel
+@{
+	ViewBag.Title = "Реестр отдыхающих";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "PreRegisterList2";
+	ViewBag.InsertAction = "";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "FirstRequestCompany";
+	ViewBag.Caption = "Реестр отдыхающих";
+	ViewBag.SearchPanelCaption = "Поиск заявлений";
+	ViewBag.NeedStatus = false;
+	ViewBag.NeedInsertButton = false;
+	ViewBag.NeedAdditionalButtons = true;
+	ViewBag.NeedTypeOfRestriction = true;
+	ViewBag.NeedDepartmentSearchAndFilter = true;
+	ViewBag.NeedSpecializedCampFilter = true;
+}
+
+@section searchForm
+{
+	@Html.Partial("RequestSearchForm", Model)
+});
+
+@section additionalFilters
+{
+	<a class="btn btn-default" href="@Url.Action("ExportPreRequestToExcel2", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
+}
+
+@helper PrintRequest(FullIndexRestChildDto record)
+{
+	if (record == null)
+	{
+		return;
+	}
+
+	<tr>
+		<td>@record.IndexRestChildDto.RequestNumber.FormatEx()</td>
+		<td>@string.Format("{0} {1} {2} / {3}", record.IndexRestChildDto.LastName, record.IndexRestChildDto.FirstName, record.IndexRestChildDto.MiddleName, record.BenefitType.FormatEx())</td>
+		<td>@record.IndexRestChildDto.BirthDate.FormatEx()</td>
+		<td>
+			@{
+				var builder = new StringBuilder();
+				builder.AppendFormat("{0} /",record.IndexRestChildDto.DocumentType);
+				if (!string.IsNullOrWhiteSpace(record.IndexRestChildDto.DocumentSeria))
+				{
+					builder.AppendFormat(" {0}", record.IndexRestChildDto.DocumentSeria);
+				}
+				if (!string.IsNullOrWhiteSpace(record.IndexRestChildDto.DocumentNumber))
+				{
+					builder.AppendFormat(" {0}",record.IndexRestChildDto.DocumentNumber);
+				}
+				@Html.Raw(builder.ToString());
+			}
+		</td>
+		<td>@Html.Raw(@record.NullSafe(a => a.IndexRestChildDto.ListOfChildrenName).FormatEx())</td>
+		<td>
+			@if (string.IsNullOrWhiteSpace(record.IndexRestChildDto.RequestNumber))
+			   {
+				   @Html.Raw(string.Format("\"Профильные лагеря\" / {0} / {1}", record.IndexRestChildDto.VedomstvoShortName, record.IndexRestChildDto.OrganizationShortName));
+			   }
+			   else
+			   {
+				   @Html.Raw(record.TypeOfRest != null && record.ParentTypeOfRest != null ? string.Format("{0} / {1}", record.ParentTypeOfRest, record.TypeOfRest) : record.TypeOfRest ?? record.NullSafe(r => r.TypeOfRest).FormatEx())
+			   }
+		</td>
+		<td>
+			@Html.Raw(record.NullSafe(r => r.IndexRestChildDto.HotelName).FormatEx())
+			<div>
+				<small>
+					<i style="color: #666">@Html.Raw(record.NullSafe(r => r.PlaceOfRest).FormatEx())</i>
+				</small>
+			</div>
+		</td>
+		<td>@Html.Raw(@record.IndexRestChildDto.RestCategory.GetDisplayValue())</td>
+		<td>
+			@record.NullSafe(r => r.TimeOfRest).FormatEx()
+			@if (record.IndexRestChildDto.DateIncome != default(DateTime))
+			{
+				<div>
+					<small>
+						<i style="color: #666">@string.Format("{0}-{1}", record.IndexRestChildDto.DateIncome.FormatEx(), record.IndexRestChildDto.DateOutcome.FormatEx())</i>
+					</small>
+				</div>
+			}
+		</td>
+		<td>
+			@record.NullSafe(r => r.IndexRestChildDto.PaymentStatus).FormatEx("Оплачено", "Не оплачено")
+		</td>
+	</tr>
+}
+
+@section searchResult
+{
+	@if (Model.Records != null && Model.Records.Any())
+	{
+		<table class="table table-hover table-striped">
+			<thead>
+			<tr>
+				<th>Номер заявления</th>
+				<th>ФИО / Вид льготы</th>
+				<th>Дата рождения</th>
+				<th>Документ</th>
+				<th>Список</th>
+				<th>Цель обращения</th>
+				<th>Место отдыха</th>
+				<th>Категория</th>
+				<th>Время отдыха</th>
+				<th>Статус оплаты</th>
+			</tr>
+			</thead>
+			<tbody>
+			@foreach (var r in Model.Records)
+			{
+				@PrintRequest(r)
+			}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				<p>Найдено отдыхающих: @Model.TotalRecordsCount</p>
+			</div>
+		</div>
+		<div>
+			@Html.PagedListPager(Model.Records, page =>
+			{
+				var m = Model;
+				m.PageNumber = page;
+				return Url.Action("PreRegisterList2", "FirstRequestCompany", m);
+			})
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	@Styles.Render("~/Content/RequestList.css")
+}
+
+@section scripts
+{
+	<script type="text/javascript" src="~/Scripts/doT.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/RequestList.js"></script>
+	<script type="text/javascript" src="~/Scripts/Selectors/Organization.js"></script>
+	<script type="text/javascript" src="~/Scripts/Selectors/Vedomstvo.js"></script>
+	<script>
+		$(function() {
+			$("#OrganizationId").on("change", function() {
+				var currentVal = $("#OrganizationId").select2('data');
+				$("#OrganizationName").val(currentVal.text);
+			});
+
+			$("#VedomstvoId").on("change", function() {
+				var currentVal = $("#VedomstvoId").select2('data');
+				$("#VedomstvoName").val(currentVal.text);
+			});
+		});
+	</script>
+}

@@ -1,0 +1,85 @@
+﻿.jcrop-keymgr {
+	opacity: 0;
+}
+
+textarea {
+	resize: vertical; 
+	min-height:200px;  
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+.glyphicon-folder-open {
+	margin-right: 5px;
+}
+
+.photo-set {
+	overflow-x: scroll;
+	overflow-y: hidden;
+	height: 270px;
+	white-space: nowrap;
+}
+
+.photo {
+	margin: 20px;
+	display: inline-block;
+	text-align: center
+}
+
+.photo-inner {
+	display: inline-block;
+	text-align: center;
+	width: 150px;
+}
+
+.photo img {
+	display: inline-block;
+}
+
+.photo-text {
+	height: 100px;
+	height: 1%;
+}
+
+.remove-photo {
+	color: #DA0000
+}
+
+.remove-photo:hover,  .remove-photo:active{
+	color: #A00000
+}
+
+.modal-body-resizeable {
+	position: relative;
+	overflow-y: auto;
+	max-height: 500px;
+	padding: 15px;
+}
+
+
+.glyphicon-rotate {
+	-moz-transform: rotate(90deg);
+	-o-transform: rotate(90deg);
+	-webkit-transform: rotate(90deg);
+	transform: rotate(90deg);
+	filter: FlipH;
+	-ms-filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+}

@@ -1,0 +1,68 @@
+﻿@using PagedList.Mvc
+@model RestChild.Web.Models.Orphans.OrphanageCollaboratorsFilterModel
+
+@Html.HiddenFor(ss => ss.OrphanageId)
+
+<div class="form-horizontal">
+    <div class="row">
+        <div class="form-group">
+            <label class="col-md-2 control-label text-right">ФИО работника</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.Name, new {@class = "form-control"})
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-default btn-primary"><i class="glyphicon glyphicon-search"></i> Поиск </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (Model.Collaborators != null && Model.Collaborators.Any())
+{
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+            <th class="text-center" width="5%">№</th>
+            <th class="text-center">ФИО работника</th>
+            <th class="text-center">Должность</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @{ var rowNumber = Model.Collaborators.FirstItemOnPage; }
+        @foreach (var Collaborator in Model.Collaborators.ToList())
+        {
+            <tr>
+                <td class="text-center">@(rowNumber++)</td>
+                <td class="text-left">@Collaborator.Name</td>
+                <td class="text-left">@Collaborator.Position</td>
+                <td class="text-center">@Html.ActionLink(" ", "OrphanageCollaboratorEdit", new {collaboratorId = Collaborator.Id}, new {@class = " glyphicon glyphicon-pencil", target = "_blank"})</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-12">
+            @Html.PagedListPager(
+                Model.Collaborators,
+                page =>
+                {
+                    Model.Collaborators = null;
+                    Model.PageNumber = page;
+                    return Url.Action("OrphanageCollaboratorsSearch", "Orphan", Model);
+                },
+                PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                    new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} ", },
+                    new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "PersonalForm", InsertionMode = InsertionMode.Replace }))
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-12">
+            <p>Поиск не дал результатов</p>
+        </div>
+    </div>
+}

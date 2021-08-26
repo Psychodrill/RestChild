@@ -1,0 +1,142 @@
+﻿@using Castle.MicroKernel.Registration
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.Controllers
+@using RestChild.Web.Models
+@model RestChild.Domain.Child
+
+@helper GetServiceName()
+{
+	if (Model.AddonServices != null && Model.AddonServices.Any())
+	{
+		@(string.Join(", ", Model.AddonServices.Select(service => service.Name)))
+	}
+	else
+	{
+		@:Не выбрано
+	}
+}
+@{
+    var sameChild = (ViewData["SameChildren"] as ICollection<RestChild.Domain.Child> ?? new List<RestChild.Domain.Child>()).FirstOrDefault(c => (c.DocumentSeria == Model.DocumentSeria && c.DocumentNumber == Model.DocumentNumber && c.Id != Model.Id) || (string.Equals(c.FirstName, Model.FirstName, StringComparison.OrdinalIgnoreCase) && string.Equals(c.LastName, Model.LastName, StringComparison.OrdinalIgnoreCase) && string.Equals(c.MiddleName, Model.MiddleName, StringComparison.OrdinalIgnoreCase) && c.DateOfBirth == Model.DateOfBirth));
+    var similarChild = (ViewData["SimilarChildren"] as ICollection<RestChild.Domain.Child> ?? new List<RestChild.Domain.Child>()).FirstOrDefault(c => c.KeySame == Model.KeySame && c.Id != Model.Id);
+    var childrenInRequests = (ViewData["ChildrenInRequests"] as ICollection<RestChild.Domain.Child> ?? new List<RestChild.Domain.Child>()).FirstOrDefault(c => c.DocumentSeria == Model.DocumentSeria && c.DocumentNumber == Model.DocumentNumber && c.Id != Model.Id);
+    var type = (TypeOfLimitListEnum)(ViewBag.TypeLimit ?? TypeOfLimitListEnum.Profile);
+}
+<tr class="@(sameChild != null || childrenInRequests != null ? "has-error" : (similarChild != null ? "has-warning" : string.Empty))">
+	<td class="number-title"></td>
+	<td class="fio-title">
+		@string.Format("{0} {1} {2}", Model.LastName, Model.FirstName, Model.MiddleName)
+		<div class="typeOfRestriction-div @Html.Raw(Model.TypeOfRestriction != null ? "" : "hidden")" style="font-style: italic; font-size: small">@(Model.TypeOfRestriction != null ? Model.TypeOfRestriction.Name : "")</div>
+ 		@if (sameChild != null)
+		{
+			var organization = sameChild.NullSafe(c => c.ChildList.LimitOnOrganization.Organization);
+			<br/>
+			<i><small>Дубль. @Html.Raw(organization != null ? string.Format("{0} тел.: {1}", organization.NullSafe(o => o.Name).FormatEx(), organization.NullSafe(o => o.Phone).FormatEx("нет данных")) : string.Empty)</small></i>
+		}
+		else if (childrenInRequests != null)
+		{
+			var requestNumber = childrenInRequests.NullSafe(c => c.Request.RequestNumber);
+			<br />
+			<i><small>Заявление на то же время @requestNumber</small></i>
+		}
+		else if (similarChild != null)
+		{
+			var organization = similarChild.NullSafe(c => c.ChildList.LimitOnOrganization.Organization);
+			<br />
+			<i><small>Возможно совпадение. @Html.Raw(organization != null ? string.Format("{0} тел.: {1}", organization.NullSafe(o => o.Name).FormatEx(), organization.NullSafe(o => o.Phone).FormatEx("нет данных")) : string.Empty)</small></i>
+		}
+	</td>
+	<td class="male-title">@(Model.Male ? "Мужской" : "Женский")</td>
+	<td class="datebirth-title">@Model.DateOfBirth.FormatEx()</td>
+	<td class="document-title">@string.Format("{0}, {1} {2}", Model.DocumentType.NullSafe(d => d.Name), Model.DocumentSeria, Model.DocumentNumber)</td>
+	@if (type != TypeOfLimitListEnum.Orphan)
+	{
+		<td class="text-center text-success">@Html.Raw(Model.NullSafe(m => m.Payed) ? "<i class='glyphicon glyphicon-ok'></i>" : string.Empty)</td>
+	}
+	<td>
+		@if (Model.ChildList == null || Model.ChildList.StateId == StateMachineStateEnum.Limit.List.Formation || Security.HasRight(AccessRightEnum.Limit.List.EditInAllStates))
+		{
+			<button class="btn btn-xs edit-btn" type="button" title="Редактировать"><i class="glyphicon glyphicon-pencil"></i></button>
+			<button class="btn btn-xs remove-btn" type="button" title="Удалить"><i class="glyphicon glyphicon-remove"></i></button>
+		}
+
+		<input type="hidden" value="@Model.Id" name="Id" class="child-id" />
+		@Html.HiddenFor(m => m.IsLast)
+		@Html.HiddenFor(m => m.EntityId)
+		@Html.HiddenFor(m => m.IsLast)
+		@Html.HiddenFor(m => m.TourVolumeId)
+		@Html.HiddenFor(m => m.Payed)
+		@Html.HiddenFor(m => m.Snils)
+		@Html.HiddenFor(m => m.Key)
+		@Html.HiddenFor(m => m.KeySame)
+		@Html.HiddenFor(m => m.EkisId)
+		@Html.HiddenFor(m => m.EkisNeedSend)
+		@Html.HiddenFor(m => m.LastName, new { @class = "lastName-h" })
+		@Html.HiddenFor(m => m.MiddleName, new { @class = "middleName-h" })
+		@Html.HiddenFor(m => m.FirstName, new { @class = "firstName-h" })
+		@Html.HiddenFor(m => m.HaveMiddleName, new { @class = "middleName-present-h" })
+		@Html.HiddenFor(m => m.Male, new { @class = "male-h" })
+		@Html.HiddenFor(m => m.DateOfBirth, new { @class = "datebirth-h" })
+		@Html.HiddenFor(m => m.DocumentTypeId, new { @class = "document-type-h" })
+		@Html.HiddenFor(m => m.TypeOfRestrictionId, new { @class = "typeOfRestrictionId-h" })
+		@Html.HiddenFor(m => m.DocumentSeria, new { @class = "document-seria-h" })
+		@Html.HiddenFor(m => m.DocumentNumber, new { @class = "document-number-h" })
+		@Html.HiddenFor(m => m.DocumentDateOfIssue, new { @class = "document-date-issue-h" })
+		@Html.HiddenFor(m => m.DocumentSubjectIssue, new { @class = "document-subject-issue-h" })
+		@Html.HiddenFor(m => m.ContactLastName, new { @class = "attendant-lastName-h" })
+		@Html.HiddenFor(m => m.ContactMiddleName, new { @class = "attendant-middleName-h" })
+		@Html.HiddenFor(m => m.ContactFirstName, new { @class = "attendant-firstName-h" })
+		@Html.HiddenFor(m => m.ContactHaveMiddleName, new { @class = "attendant-middleName-present-h" })
+		@Html.HiddenFor(m => m.ContactPhone, new { @class = "attendant-phone-h" })
+		@Html.HiddenFor(m => m.SchoolNotPresent, new { @class = "school-not-present-h" })
+		@Html.HiddenFor(m => m.SchoolId, new { @class = "school-select2-h" })
+		@Html.HiddenFor(m => m.AddressId)
+		@Html.HiddenFor(m => m.Address.Appartment, new { @class = "appartment-h" })
+		@Html.HiddenFor(m => m.Address.Corpus, new { @class = "corpus-h" })
+		@Html.HiddenFor(m => m.Address.House, new { @class = "house-h" })
+		@Html.HiddenFor(m => m.Address.Name, new { @class = "bti-address-name-h" })
+      @Html.HiddenFor(m => m.Address.FiasId, new { @class = "street-autocomplete-AR-h" })
+		@Html.HiddenFor(m => m.Address.Region, new { @class = "region-h" })
+      @Html.HiddenFor(m => m.Address.District, new { @class = "district-h" })
+		@Html.HiddenFor(m => m.Address.BtiAddressId, new { @class = "bti-address-h" })
+		@Html.HiddenFor(m => m.Address.BtiAddress.BtiStreet.Name, new { @class = "street-autocomplete-name-h" })
+		@Html.HiddenFor(m => m.Address.BtiAddress.BtiStreet.Id, new { @class = "street-autocomplete-h" })
+      @Html.HiddenFor(m => m.Address.BtiDistrict.Name, new { @class = "region-bti-h" })
+      @Html.HiddenFor(m => m.Address.BtiRegion.Name, new { @class = "district-bti-h" })
+		@Html.HiddenFor(m => m.Address.Street, new { @class = "street-h" })
+		@Html.HiddenFor(m => m.Address.Stroenie, new { @class = "stroenie-h" })
+		@Html.HiddenFor(m => m.Address.Vladenie, new { @class = "vladenie-h" })
+		@Html.HiddenFor(m => m.Address.BtiRegionId, new { @class = "bti-region-id-h" })
+		@Html.HiddenFor(m => m.Address.BtiDistrictId, new { @class = "bti-district-id-h" })
+		@Html.HiddenFor(m => m.PlaceOfBirth, new { @class = "placebirth-h" })
+		<input type="hidden" class="StreetNotFoundCheckbox-h" id="StreetNotFoundCheckbox" value="@((Model.Address == null || Model.Address.BtiAddressId.HasValue || Model.Address.Id == 0 || !string.IsNullOrWhiteSpace(Model.Address.FiasId)) ? "False" : "True")" />
+		<input type="hidden" class="school-select2-name-h" value="@(Model.NullSafe(m => m.School.Name) ?? ("Выберите образовательное учреждение"))" />
+
+		@if (type != TypeOfLimitListEnum.Orphan && Model.NullSafe(m => m.ChildList.LimitOnOrganization.StateId) == StateMachineStateEnum.Limit.Organization.Confirmed)
+		{
+			if (Model.ChildList != null && Model.ChildList.Tour != null && Model.ChildList != null && (Model.ChildList.StateId == StateMachineStateEnum.Limit.List.Formed || Model.ChildList.StateId == StateMachineStateEnum.Limit.List.IncludedInTour)
+				&& Model.ChildList.NullSafe(d => d.LimitOnOrganization.Tour.StateId) == StateMachineStateEnum.Tour.Formed)
+			{
+				<a class="btn btn-xs glyphicon glyphicon-file" title="Квитанция" href="@Url.Action("GetPayment", "Pdf", new {id = Model.Id})"></a>
+			}
+			if (Model.ChildList != null && Model.ChildList.Tour != null && Model.ChildList != null && (Model.ChildList.StateId == StateMachineStateEnum.Limit.List.Formed || Model.ChildList.StateId == StateMachineStateEnum.Limit.List.IncludedInTour || Model.ChildList.StateId == StateMachineStateEnum.Limit.List.IncludedPayment)
+				&& Model.ChildList.NullSafe(d => d.LimitOnOrganization.Tour.StateId) == StateMachineStateEnum.Tour.Formed)
+			{
+				<a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.PaymentFileUrl) ? "hidden" : string.Empty)" href="/UploadPayment.ashx?f=@Url.Encode(Model.PaymentFileUrl)&t=@Url.Encode(Model.PaymentFileTitle)">@Html.Raw(Model.PaymentFileTitle.FormatEx())</a>
+				@Html.HiddenFor(r => r.PaymentFileTitle, new { @class = "PaymentFileTitle" })
+				@Html.HiddenFor(r => r.PaymentFileUrl, new { @class = "PaymentFileUrl" })
+
+				if (Model.ChildList != null && Model.ChildList.Tour != null && Model.ChildList != null
+					&& (Model.ChildList.StateId == StateMachineStateEnum.Limit.List.Formed || Model.ChildList.StateId == StateMachineStateEnum.Limit.List.IncludedInTour)
+					&& Model.ChildList.NullSafe(d => d.LimitOnOrganization.Tour.StateId) == StateMachineStateEnum.Tour.Formed)
+				{
+					<span class="btn btn-xs glyphicon glyphicon-paperclip fileinput-button fileinput-child-button @(!string.IsNullOrEmpty(Model.PaymentFileUrl) ? "hidden" : string.Empty)">
+						<input type="file" name="files[]" multiple>
+					</span>
+					<a title="Удалить" class="remove-child-file-btn remove-child-file-btn btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.PaymentFileUrl) ? "hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
+				}
+			}
+		}
+	</td>
+</tr>

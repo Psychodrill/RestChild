@@ -1,0 +1,262 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.BoutModel
+@{
+	Layout = null;
+	var canChangeNeedTicket = Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicket);
+	var canEditPersonal = Security.HasRight(AccessRightEnum.Bout.Edit) && Model.Data.StateId == StateMachineStateEnum.Bout.Editing;
+	var disableNeedTicket = Model.Data.StateId != StateMachineStateEnum.Bout.Formed && Model.Data.StateId != StateMachineStateEnum.Bout.Editing;
+	var disableAll = Model.Data.StateId == StateMachineStateEnum.Bout.Closed;
+}
+
+<div class="col-md-12">
+	<div class="col-md-4">
+		<h4>
+			<span>Администраторы смены</span>
+			@if (canEditPersonal)
+			{
+				<button type="button" class="btn btn-primary btn-add-administrator-dialog"><i class="glyphicon glyphicon-plus"></i></button>
+			}
+		</h4>
+	</div>
+	<table id="AdministratorsTourTable" class="col-md-12 table table-striped table-hover @(Model.Data.AdministratorTours != null && Model.Data.AdministratorTours.Any() ? string.Empty : "hidden")">
+		<thead>
+			<tr>
+				<th>ФИО</th>
+				<th width="15%">Не нужен билет к месту отдыха</th>
+				<th width="15%">Не нужен обрантый билет</th>
+				<th width="5%"></th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (Model.Data.AdministratorTours != null)
+			{
+				var administratorNum = 0;
+
+				foreach (var administrator in Model.Data.AdministratorTours)
+				{
+					LinkToPeople forwardTransport;
+					LinkToPeople backwardTransport;
+
+					Model.AdministratorTransportForward.TryGetValue(administrator.Id, out forwardTransport);
+					Model.AdministratorTransportBackward.TryGetValue(administrator.Id, out backwardTransport);
+
+					<tr>
+						<td class="camper-name">@administrator.LastName @administrator.FirstName @administrator.MiddleName</td>
+						@if (canChangeNeedTicket)
+						{
+							<td class="text-center">@(forwardTransport != null ? Html.CheckBox("AdministratorNeedTicketForward" + administratorNum, !forwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = forwardTransport.Id }).DisableIf(()=> disableNeedTicket) : new MvcHtmlString("Нет информации по транспорту"))</td>
+							<td class="text-center">@(backwardTransport != null ? Html.CheckBox("AdministratorNeedTicketBackward" + administratorNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(() => disableAll) : new MvcHtmlString("Нет информации по транспорту"))</td>
+						}
+						else
+						{
+							<td class="text-center">@(forwardTransport != null ? (!forwardTransport.NeedTicket).FormatEx() : "Нет информации по транспорту")</td>
+							<td class="text-center">@(backwardTransport != null ? (!backwardTransport.NeedTicket).FormatEx() : "Нет информации по транспорту")</td>
+						}
+
+						<td width="5%">
+							@if (canEditPersonal)
+							{
+								<a class="glyphicon glyphicon-remove remove-administrator" href="javascript: void(0);" data-id="@administrator.Id"></a>
+							}
+							@Html.Hidden("Data.AdministratorTours[" + administratorNum + "].Id", administrator.Id)
+							@Html.Hidden("Data.AdministratorTours[" + administratorNum + "].FirstName", administrator.FirstName)
+							@Html.Hidden("Data.AdministratorTours[" + administratorNum + "].LastName", administrator.LastName)
+							@Html.Hidden("Data.AdministratorTours[" + administratorNum + "].MiddleName", administrator.MiddleName)
+						</td>
+					</tr>
+							administratorNum++;
+				}
+			}
+
+		</tbody>
+	</table>
+</div>
+@if (Model.NullSafe(m => m.Data.Hotels.HotelTypeId) != (long)HotelTypeEnum.Hotel)
+{
+	<div class="col-md-12">
+		<div class="col-md-4 ">
+			<h4>
+				<span>
+					Старшие вожатые
+				</span>
+				@if (canEditPersonal)
+				{
+					<button type="button" class="btn btn-primary btn-add-senior-counselor-dialog"><i class="glyphicon glyphicon-plus"></i></button>
+				}
+			</h4>
+
+
+		</div>
+		<table id="SeniorCounselorsTable" class="col-md-12 table table-striped table-hover @(Model.Data.SeniorCounselors != null && Model.Data.SeniorCounselors.Any() ? string.Empty : "hidden")">
+			<thead>
+			<tr>
+				<th>ФИО</th>
+				<th width="15%">Не нужен билет к месту отдыха</th>
+				<th width="15%">Не нужен обрантый билет</th>
+				<th width="5%"></th>
+			</tr>
+			</thead>
+			<tbody>
+			@if (Model.Data.SeniorCounselors != null)
+			{
+				var seniorCounselorNum = 0;
+				foreach (var counselor in Model.Data.SeniorCounselors)
+				{
+					LinkToPeople forwardTransport;
+					LinkToPeople backwardTransport;
+
+					Model.CounselorTransportForward.TryGetValue(counselor.Id, out forwardTransport);
+					Model.CounselorTransportBackward.TryGetValue(counselor.Id, out backwardTransport);
+
+					<tr>
+						<td class="camper-name">@counselor.LastName @counselor.FirstName @counselor.MiddleName</td>
+						@if (canChangeNeedTicket)
+						{
+							<td class="text-center">@(forwardTransport != null ? Html.CheckBox("SeniorCounselorNeedTicketForward" + seniorCounselorNum, !forwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = forwardTransport.Id }).DisableIf(() => disableNeedTicket) : new MvcHtmlString("Нет информации по транспорту"))</td>
+							<td class="text-center">@(backwardTransport != null ? Html.CheckBox("SeniorCounselorNeedTicketBackward" + seniorCounselorNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(() => disableAll) : new MvcHtmlString("Нет информации по транспорту"))</td>
+
+						}
+						else
+						{
+							<td class="text-center">@(forwardTransport != null ? (!forwardTransport.NeedTicket).FormatEx() : "Нет информации по транспорту")</td>
+							<td class="text-center">@(backwardTransport != null ? (!backwardTransport.NeedTicket).FormatEx() : "Нет информации по транспорту")</td>
+						}
+						<td>
+							@if (canEditPersonal)
+							{
+								<a class="glyphicon glyphicon-remove remove-senior-counselor" href="javascript: void(0);" data-id="@counselor.Id"></a>
+							}
+							@Html.Hidden("Data.SeniorCounselors[" + seniorCounselorNum + "].Id", counselor.Id)
+							@Html.Hidden("Data.SeniorCounselors[" + seniorCounselorNum + "].FirstName", counselor.FirstName)
+							@Html.Hidden("Data.SeniorCounselors[" + seniorCounselorNum + "].LastName", counselor.LastName)
+							@Html.Hidden("Data.SeniorCounselors[" + seniorCounselorNum + "].MiddleName", counselor.MiddleName)
+						</td>
+					</tr>
+					seniorCounselorNum++;
+				}
+			}
+			</tbody>
+		</table>
+	</div>
+	<div class="col-md-12">
+		<div class="col-md-4 ">
+			<h4>
+				<span>Подменные вожатые</span>
+				@if (canEditPersonal)
+				{
+					<button type="button" class="btn btn-primary btn-add-swing-counselor-dialog"><i class="glyphicon glyphicon-plus"></i></button>
+				}
+			</h4>
+
+		</div>
+		<table id="SwingCounselorsTable" class="col-md-12 table table-striped table-hover @(Model.Data.SwingCounselors != null && Model.Data.SwingCounselors.Any() ? string.Empty : "hidden")">
+			<thead>
+				<tr>
+					<th>ФИО</th>
+					<th width="15%">Не нужен билет к месту отдыха</th>
+					<th width="15%">Не нужен обрантый билет</th>
+					<th width="5%"></th>
+				</tr>
+			</thead>
+			<tbody>
+			@if (Model.Data.SwingCounselors != null)
+			{
+				var swingCounselorNum = 0;
+				foreach (var counselor in Model.Data.SwingCounselors)
+				{
+					LinkToPeople forwardTransport;
+					LinkToPeople backwardTransport;
+
+					Model.CounselorTransportForward.TryGetValue(counselor.Id, out forwardTransport);
+					Model.CounselorTransportBackward.TryGetValue(counselor.Id, out backwardTransport);
+					<tr>
+						<td class="camper-name">@counselor.LastName @counselor.FirstName @counselor.MiddleName</td>
+						@if (canChangeNeedTicket)
+						{
+							<td class="text-center">@(forwardTransport != null ? Html.CheckBox("SwingCounselorNeedTicketForward" + swingCounselorNum, !forwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = forwardTransport.Id }).DisableIf(() => disableNeedTicket) : new MvcHtmlString("Нет информации по транспорту"))</td>
+							<td class="text-center">@(backwardTransport != null ? Html.CheckBox("SwingCounselorNeedTicketBackward" + swingCounselorNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(() => disableAll) : new MvcHtmlString("Нет информации по транспорту"))</td>
+
+						}
+						else
+						{
+							<td class="text-center">@(forwardTransport != null ? (!forwardTransport.NeedTicket).FormatEx() : "Нет информации по транспорту")</td>
+							<td class="text-center">@(backwardTransport != null ? (!backwardTransport.NeedTicket).FormatEx() : "Нет информации по транспорту")</td>
+						}
+						<td width="5%">
+							@if (canEditPersonal)
+							{
+								<a class="glyphicon glyphicon-remove remove-swing-counselor" href="javascript: void(0);" data-id="@counselor.Id"></a>
+							}
+
+							@Html.Hidden("Data.SwingCounselors[" + swingCounselorNum + "].Id", counselor.Id)
+							@Html.Hidden("Data.SwingCounselors[" + swingCounselorNum + "].FirstName", counselor.FirstName)
+							@Html.Hidden("Data.SwingCounselors[" + swingCounselorNum + "].LastName", counselor.LastName)
+							@Html.Hidden("Data.SwingCounselors[" + swingCounselorNum + "].MiddleName", counselor.MiddleName)
+						</td>
+					</tr>
+							swingCounselorNum++;
+				}
+			}
+			</tbody>
+		</table>
+	</div>
+}
+
+@if (Model.Data.Applicants.Any(a => a.ChildListId.HasValue))
+{
+	<div class="col-md-12">
+		<div class="text-center col-md-12">
+			<h4 class="col-md-10">Тренеры/педагоги</h4>
+		</div>
+		<table class="col-md-12 table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>ФИО</th>
+					<th width="15%">Не нужен билет к месту отдыха</th>
+					<th width="15%">Не нужен обрантый билет</th>
+					<th width="5%"></th>
+				</tr>
+			</thead>
+			<tbody>
+			@if (Model.Data.AdministratorTours != null)
+			{
+				var applicantNum = 0;
+				foreach (var applicant in Model.Data.Applicants.Where(a => a.ChildListId.HasValue))
+				{
+					LinkToPeople forwardTransport;
+					LinkToPeople backwardTransport;
+
+					Model.AttendantTransportForward.TryGetValue(applicant.Id, out forwardTransport);
+					Model.AttendantTransportBackward.TryGetValue(applicant.Id, out backwardTransport);
+
+					<tr>
+						<td class="camper-name">@applicant.LastName @applicant.FirstName @applicant.MiddleName</td>@if (canChangeNeedTicket)
+						{
+							<td class="text-center">@(forwardTransport != null ? Html.CheckBox("ApplicantNeedTicketForward" + applicantNum, !forwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = forwardTransport.Id }).DisableIf(() => disableNeedTicket) : new MvcHtmlString("Нет информации по транспорту"))</td>
+							<td class="text-center">@(backwardTransport != null ? Html.CheckBox("ApplicantNeedTicketBackward" + applicantNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(() => disableAll) : new MvcHtmlString("Нет информации по транспорту"))</td>
+
+						}
+						else
+						{
+						<td class="text-center">@(forwardTransport != null ? (!forwardTransport.NeedTicket).FormatEx() : "Нет информации по транспорту")</td>
+						<td class="text-center">@(backwardTransport != null ? (!backwardTransport.NeedTicket).FormatEx() : "Нет информации по транспорту")</td>
+						}
+						<td width="5%">
+							@Html.Hidden("Data.Applicants[" + applicantNum + "].Id", applicant.Id)
+							@Html.Hidden("Data.Applicants[" + applicantNum + "].FirstName", applicant.FirstName)
+							@Html.Hidden("Data.Applicants[" + applicantNum + "].LastName", applicant.LastName)
+							@Html.Hidden("Data.Applicants[" + applicantNum + "].MiddleName", applicant.MiddleName)
+						</td>
+					</tr>
+						applicantNum++;
+				}
+			}
+
+			</tbody>
+		</table>
+	</div>
+}

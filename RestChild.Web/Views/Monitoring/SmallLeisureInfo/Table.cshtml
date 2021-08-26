@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
+<head>
+    <meta charset="utf-8" />
+
+    @Styles.Render("~/Content/Vocabulary/SmallLeisureInfoTable.css")
+    @Styles.Render("~/Content/css-general")
+    <title>Сведения о малых формах досуга (занятости) детей @(Model.ShortName)</title>
+</head>
+@using RestChild.Comon
+@model RestChild.Web.Models.Monitoring.SmallLeisureInfoTableViewModel
+@{
+    Layout = null;
+}
+<body>
+    <h4 class="text-center">Сведения о малых формах досуга (занятости) детей @Model.ShortName</h4>
+    <br>
+
+    <div class="container">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="col-2 text-center verticalOrientBottom" colspan="2" rowspan="2"><b>Перечень малых форм досуга (занятости) детей</b></th>
+                    <th class="col-2 text-center" colspan="3"><b>Наименование показателей</b></th>
+                </tr>
+                <tr>
+                    <td class="col-2 text-center verticalOrientMiddle">Количество проведенных малых форм досуга (занятости) детей</td>
+                    <td class="col-2 text-center verticalOrientMiddle">Численность детей, охваченных малыми формами досуга (занятости)</td>
+                    <td class="col-2 text-center verticalOrientMiddle">Объем финансовых средств, затраченных на организацию малых форм досуга (занятости) (тыс. руб.)</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var mslid in Model.MonitoringSmallLeisureInfoDatas.GroupBy(ss => ss.SmallLeisureType).OrderBy(s=>s.Key.Id))
+                {
+                    var subtypes = mslid.Count(ss => ss.SmallLeisureSubtypeId.HasValue);
+                    if (subtypes < 1)
+                    {
+                        <tr>
+                            <td class="col-2 text-center verticalOrientMiddle" colspan="2">@mslid.Key.Name</td>
+                            @if (mslid.Key.IsTextData)
+                            {
+                                <td class="col-2 text-center">@mslid.First().NoteOne</td>
+                                <td class="col-2 text-center">@mslid.First().NoteTwo</td>
+                                <td class="col-2 text-center">@mslid.First().NoteThree</td>
+
+                            }
+                            else
+                            {
+                                <td class="col-2 text-center">@mslid.First().ChildrenCountPost</td>
+                                <td class="col-2 text-center">@mslid.First().ChildernCountCovered</td>
+                                <td class="col-2 text-center">@mslid.First().MoneyOutcome.FormatEx("### ### ### ### ### ### ##0.000")</td>
+                            }
+                        </tr>
+                    }
+                    else
+                    {
+                        bool firstLine = true;
+                        foreach (var msl in mslid.OrderBy(v=>v.SmallLeisureSubtypeId).ToList())
+                        {
+                            if (firstLine)
+                            {
+                                <tr>
+                                    <td class="col-2 text-center verticalOrientMiddle" rowspan="@subtypes">@mslid.Key.Name</td>
+                                    <td class="col-2 text-center">@msl.SmallLeisureSubtype.Name</td>
+                                    <td class="col-2 text-center">@msl.ChildrenCountPost</td>
+                                    <td class="col-2 text-center">@msl.ChildernCountCovered</td>
+                                    <td class="col-2 text-center">@msl.MoneyOutcome.FormatEx("### ### ### ### ### ### ##0.000")</td>
+                                </tr>
+                                { firstLine = false; }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td class="col-2 text-center">@msl.SmallLeisureSubtype.Name</td>
+                                    <td class="col-2 text-center">@msl.ChildrenCountPost</td>
+                                    <td class="col-2 text-center">@msl.ChildernCountCovered</td>
+                                    <td class="col-2 text-center">@msl.MoneyOutcome.FormatEx("### ### ### ### ### ### ##0.000")</td>
+                                </tr>
+                            }
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

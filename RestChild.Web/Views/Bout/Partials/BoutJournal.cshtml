@@ -1,0 +1,63 @@
+﻿@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.BoutModel
+@{
+	var canAddIncident = Security.HasRight(AccessRightEnum.Bout.AdministratorTour) || Security.HasRight(AccessRightEnum.Bout.Counselor);
+	var canAddReport = Security.HasRight(AccessRightEnum.Bout.AdministratorTour) || Security.HasRight(AccessRightEnum.Bout.Counselor);
+}
+
+<div id="BoutJournal" class="tab-pane @(Model.ActiveTab == "BoutJournal" ? "active" : string.Empty)">
+	<div style="margin-top: 10px; margin-bottom: 10px">
+		<a class="btn btn-primary" href="@Url.Action("BoutJournal", "Bout")?boutId=@Model.Data.Id&boutJournalType=@((int)BoutJournalTypeEnum.Event)"><i class="glyphicon glyphicon-plus"></i> Добавить событие</a>
+
+		@{
+			if (canAddReport)
+			{
+				<a class="btn btn-primary" href="@Url.Action("BoutJournal", "Bout")?boutId=@Model.Data.Id&boutJournalType=@((int)BoutJournalTypeEnum.Report)"><i class="glyphicon glyphicon-plus"></i> Добавить отчёт</a>
+			}
+
+			if (canAddIncident)
+			{
+				<a class="btn btn-primary" href="@Url.Action("BoutJournal", "Bout")?boutId=@Model.Data.Id&boutJournalType=@((int)BoutJournalTypeEnum.Incident)"><i class="glyphicon glyphicon-plus"></i> Добавить происшествие</a>
+			}
+		}
+
+	</div>
+	<div style="margin-bottom: 10px">
+		<label class="control-label">
+			<input type="checkbox" id="forSiteCheckbox" class="boutJournal-cbx" />
+			Только отображаемые на сайте
+		</label>
+	</div>
+	<div>
+		<label class="control-label">
+			<input type="checkbox" id="forEvent" checked="checked" class="boutJournal-cbx" />
+			События
+		</label>
+		<label class="control-label">
+			<input type="checkbox" id="forReport" checked="checked" class="boutJournal-cbx" />
+			Отчеты
+		</label>
+		<label class="control-label">
+			<input type="checkbox" id="forIncident" checked="checked" class="boutJournal-cbx" />
+			Происшествия
+		</label>
+	</div>
+	<table id="boutJournalList" class="table table-bordered hidden">
+		<thead>
+			<tr>
+				<th>Дата</th>
+				<th>Категория</th>
+				<th>Событие / Происшествие</th>
+				<th>Отряд</th>
+				<th>Автор записи</th>
+				<th>Отображается на сайте</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+	<div id="boutJournalEmpty">
+		<i>Нет записей в дневнике смены</i>
+	</div>
+</div>

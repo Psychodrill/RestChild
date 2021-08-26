@@ -1,0 +1,272 @@
+﻿@using RestChild.Domain
+@using RestChild.Comon
+@using RestChild.Domain
+@using RestChild.Web.Extensions
+@model  RestChild.Web.Models.Orphans.OrganisatorCollaboratorModel
+@{
+    ViewBag.Title = "Сотрудник учреждения социальной защиты";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var colloboratorTypes = new SelectList(((List<OrganizationCollaboratorPostType>)ViewBag.ColloboratorTypes ?? new List<OrganizationCollaboratorPostType>(0)).Select(o => new { Id = (long?)o.Id, o.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name");
+    var wellnesOrganisatioColloboratorTypes = new SelectList(((List<TypeOfLinkPeople>)ViewBag.WellnesOrganisatioColloboratorTypes ?? new List<TypeOfLinkPeople>(0)).Select(o => new { Id = (long?)o.Id, o.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name");
+    var orphanageAdresses = new SelectList(((List<OrphanageAddress>)ViewBag.OrphanageAdresses ?? new List<OrphanageAddress>(0)).Select(o => new { Id = (long?)o.Id, o.Address.Name }), "Id", "Name");
+    var documentTypes = new SelectList(((List<DocumentType>)ViewBag.DocumentTypes ?? new List<DocumentType>(0)).Select(o => new { Id = (long?)o.Id, o.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name");
+    var countries = new SelectList(((List<Country>)ViewBag.Countries ?? new List<Country>(0)).Select(o => new { Id = (long?)o.Id, o.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name");
+}
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/HistoryModal.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale("ru");
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/Vocabulary/Orphanage.Collaborator.Edit.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Сотрудник учреждения социальной защиты</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("OrphanageCollaboratorSave", "Orphan", FormMethod.Post, new { enctype = "multipart/form-data", id = "OrphanageCollaboratorForm", autocomplete = "off" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Data.LastUpdateTick)
+            @Html.HiddenFor(m => m.Data.Id)
+
+            @Html.HiddenFor(m => m.Data.Applicant.Id)
+            @Html.HiddenFor(m => m.Data.ApplicantId)
+
+            @Html.HiddenFor(m => m.Data.Applicant.Address.Id)
+            @Html.HiddenFor(m => m.Data.Applicant.AddressId)
+
+            @Html.HiddenFor(m => m.Data.OrganisatonId)
+            @Html.HiddenFor(m => m.Data.Organisaton.Id)
+
+            @Html.HiddenFor(m => m.Data.OrganisatonAddress.Id)
+
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <div class="row form-group">
+                        <div class="col-md-8">
+                            <p class="panel-operation-button">
+                                <button type="submit" class="btn btn-default btn-primary" role="button">
+                                    Сохранить
+                                </button>
+                                @if (Model.Data.HistoryLinkId.HasValue)
+                                {
+                                    <a data-history-id="@Model.Data.HistoryLinkId" class="btn btn-default btn-hystory-link" href="#">История</a>
+                                }
+                            </p>
+                            @if (Model.Data.Filled)
+                            {
+                                <h5 class="text-success">Все необходимые данные заполнены.</h5>
+                            }
+                            else
+                            {
+                                <h5 class="text-danger">Не заполнены необходимые данные в карточке. Работник не может быть добавлен в списки.</h5>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @Html.ValidationSummary(false)
+                </div>
+            }
+
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Фамилия <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(r => r.Data.Applicant.LastName, new { @class = "form-control", tabindex = "1", autocomplete = "off" })
+                    </div>
+                    <label class="col-sm-2 control-label">Тип работника  <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.DropDownListFor(r => r.Data.PositionId, colloboratorTypes, new { @class = "form-control", tabindex = "8", autocomplete = "off" })
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Имя <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(r => r.Data.Applicant.FirstName, new { @class = "form-control", tabindex = "2", autocomplete = "off" })
+                    </div>
+                    <label class="col-sm-2 control-label">Дата рождения <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        <div class='input-group date datepicker-anytime'>
+                            @Html.TextBoxFor(r => r.Data.Applicant.DateOfBirth, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.Data.Applicant.DateOfBirth).FormatEx(string.Empty, string.Empty) })
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Отчество <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(r => r.Data.Applicant.MiddleName, new { @class = "form-control Middle-Name", tabindex = "3", autocomplete = "off" }).ReadOnlyIf(() => Model.NoMiddleName)
+                    </div>
+                    <div class="col-md-4 col-md-offset-2" style="height: 34px; line-height: 34px;">
+                        @Html.CheckBoxFor(m => m.NoMiddleName, new { tabindex = "10", autocomplete = "off", @class = "No-Middle-Name", style = "vertical-align: text-bottom;" })
+                        <span>Нет отчества</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Телефон <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(r => r.Data.Applicant.Phone, new { @class = "form-control input-mask-phone", tabindex = "4", autocomplete = "off" })
+                    </div>
+                    <label class="col-sm-2 control-label">Пол <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.DropDownListFor(m => m.Data.Applicant.Male, new SelectList(new List<object>
+                        {
+                            new {Id = (bool?) null, Name = "-- Все -- "},
+                            new {Id = (bool?) false, Name = "Женский"},
+                            new {Id = (bool?) true, Name = "Мужской"}
+                        }, "Id", "Name"), new {@class = "form-control", tabindex = "11"})
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Телефон (моб)</label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(r => r.Data.AditionalPhone, new { @class = "form-control input-mask-phone", tabindex = "4", autocomplete = "off" })
+                   </div>
+                    <label class="col-sm-2 control-label">E-mail</label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(r => r.Data.Applicant.Email, new { @class = "form-control input-mask-email", tabindex = "4", autocomplete = "off" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">СНИЛС <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(r => r.Data.Applicant.Snils, new { @class = "form-control snils", tabindex = "5", autocomplete = "off" })
+                    </div>
+                    <label class="col-sm-2 control-label">Место рождения <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(r => r.Data.Applicant.PlaceOfBirth, new { @class = "form-control Middle-Name", tabindex = "12", autocomplete = "off" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Гражданство <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.DropDownListFor(r => r.Data.Applicant.CountryId, countries, new { @class = "form-control", tabindex = "15", autocomplete = "off" })
+                        </div>
+                </div>
+            </fieldset>
+            <h3><hr /></h3>
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Должность в учреждении социальной защиты <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(r => r.Data.OrganisationPosition, new { @class = "form-control", tabindex = "13", autocomplete = "off" })
+                    </div>
+                    <label class="col-sm-2 control-label">Должность в оздоровительной организации <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.DropDownListFor(r => r.Data.WellnessOrganisationPositionId, wellnesOrganisatioColloboratorTypes, new { @class = "form-control", tabindex = "15", autocomplete = "off" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Учреждение соц. защиты</label>
+                    <div class="col-md-4">
+                        <a href="@Url.Action("OrphanageEdit", new {organizationId = Model.Data.OrganisatonId})" target="_blank">@Model.Data.Organisaton.Name</a>
+                        @Html.HiddenFor(r => r.Data.Organisaton.Name, new {@class = "form-control", tabindex = "14", autocomplete = "off"})
+                    </div>
+                    <label class="col-sm-2 control-label">Адрес учреждения соц. защиты <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.DropDownListFor(r => r.Data.OrganisatonAddressId, orphanageAdresses, new { @class = "form-control", tabindex = "16", autocomplete = "off" })
+                    </div>
+                </div>
+            </fieldset>
+            <h3><hr /></h3>
+            <fieldset id="dialogPerson" class="form-horizontal">
+                <div class="row form-group">
+                    <label class="col-md-2 control-label">Тип документа удостоверяющего личность <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.DropDownListFor(r => r.Data.Applicant.DocumentTypeId, documentTypes, new { @class = "form-control sendDialog", autocomplete = "off" })
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-md-2 control-label">Серия и номер <span class="requared">*</span></label>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(r => r.Data.Applicant.DocumentSeria, new { @class = "form-control required document-seria" })
+                    </div>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(r => r.Data.Applicant.DocumentNumber, new { @class = "form-control required document-number" })
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-md-2 control-label">Когда выдан документ <span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        <div class='input-group date datepicker-anytime'>
+                            @Html.TextBoxFor(r => r.Data.Applicant.DocumentDateOfIssue, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.Data.Applicant.DocumentDateOfIssue).FormatEx(string.Empty, string.Empty) })
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label class="col-md-2 control-label">Кем выдан документ<span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.TextBoxFor(r => r.Data.Applicant.DocumentSubjectIssue, new { @class = "form-control  required" })
+                    </div>
+                </div>
+            </fieldset>
+            <h3><hr /></h3>
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    @Html.HiddenFor(model => model.Data.Applicant.Address.Id, new { @class = "AddressId forClear" })
+                    @Html.HiddenFor(model => model.Data.Applicant.Address.Name, new { @class = "OrphanageAddressName forClear" })
+                    <label class="col-md-2 control-label text-right">Адрес <span class="requared">*</span></label>
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.Data.Applicant.Address.FiasId, new
+                        {
+                            @class = "form-control street-autocompleteAR forClear",
+                            maxlength = 1000,
+                            autocomplete = "off",
+                            data_default_id = Model.Data.Applicant.Address.FiasId,
+                            data_default_text = string.IsNullOrWhiteSpace(Model.Data.Applicant.Address.FiasId) ? string.Empty : Model.Data.Applicant.Address.Name,
+                            data_default_district = Model.Data.Applicant.Address.District,
+                            data_default_region = Model.Data.Applicant.Address.Region
+                        })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Квартира <span class="requared">*</span></label>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(m => m.Data.Applicant.Address.Appartment, new { @class = "form-control", tabindex = "18", autocomplete = "off" })
+                    </div>
+                    <label class="col-sm-1 control-label">Округ</label>
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(m => m.Data.Applicant.Address.Region, new { @class = "form-control", tabindex = "19", autocomplete = "off" }).ReadOnlyIf(() => true)
+                    </div>
+                    <label class="col-sm-1 control-label">Район</label>
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(m => m.Data.Applicant.Address.District, new { @class = "form-control", tabindex = "20", autocomplete = "off" }).ReadOnlyIf(() => true)
+                    </div>
+                </div>
+            </fieldset>
+        }
+    </div>
+</div>

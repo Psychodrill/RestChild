@@ -1,0 +1,333 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Common
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.BoutModel
+
+@{
+	ViewBag.Title = "Заезд";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	var canTransportTo = Security.HasRight(AccessRightEnum.BoutManage) && (Model.Data.StateId == StateMachineStateEnum.Bout.Editing || Model.Data.StateId == StateMachineStateEnum.Bout.Formed);
+	var canTransportFrom = Security.HasRight(AccessRightEnum.BoutManage) && (Model.Data.StateId == StateMachineStateEnum.Bout.Editing || Model.Data.StateId == StateMachineStateEnum.Bout.Formed || Model.Data.StateId == StateMachineStateEnum.Bout.Confirmed);
+	var canEditResult = Security.HasRight(AccessRightEnum.BoutManage) && Model.Data.StateId == StateMachineStateEnum.Bout.Confirmed;
+}
+
+<div class="row">
+	<div class="col-md-12">
+		<h2>Заезд</h2>
+	</div>
+</div>
+<a href="@Url.Action("Search", "Bout")">Вернуться</a>
+
+<div class="row">&nbsp;</div>
+<div class="row">
+	<div class="col-md-12">
+		@using (Html.BeginForm("Save", "Bout", FormMethod.Post, new { enctype = "multipart/form-data", @id = "boutForm", autocomplete = "off" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.Data.Id)
+			@Html.HiddenFor(m => m.Data.YearOfRestId)
+			@Html.HiddenFor(m => m.Data.StateId)
+			@Html.HiddenFor(m => m.StateMachineActionString)
+			@Html.HiddenFor(m => m.ActiveTab)
+			@Html.HiddenFor(m => m.Data.HotelsId)
+			@Html.HiddenFor(m => m.Data.GroupedTimeOfRestId)
+			@Html.HiddenFor(m => m.Data.DateIncome)
+			@Html.HiddenFor(m => m.Data.DateOutcome)
+			@Html.HiddenFor(m => m.Data.IncludedInTransport)
+			@Html.HiddenFor(m => m.Data.SubjectOfRestId)
+			@Html.HiddenFor(m => m.Data.HistoryLinkId)
+			@Html.HiddenFor(m => m.Data.LastUpdateTick, new {@id="lut"})
+
+			<div class="form-group row">
+				<div class="col-md-12">
+					@Html.Partial("Assets/_StatePanel", Model.State)
+				</div>
+			</div>
+
+			if (!ViewData.ModelState.IsValid)
+			{
+				<div class="alert alert-danger" role="alert">
+					@Html.ValidationSummary(false)
+				</div>
+			}
+			<div class="row">
+				<div class="col-md-12">
+					<div role="tabpanel" id="MainTabs">
+						<!-- Nav tabs -->
+						<ul class="nav nav-tabs" role="tablist">
+							<li role="presentation" class="@(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)">
+								<a href="#CommonInfo" aria-controls="CommonInfo" role="tab" data-toggle="tab">Общая информация</a>
+							</li>
+
+							@if (Model.Data.Id != 0)
+							{
+								<li role="presentation" class="@(Model.ActiveTab == "Personal" ? "active" : string.Empty)">
+									<a href="#Personal" aria-controls="Personal" role="tab" data-toggle="tab">Персонал</a>
+								</li>
+								<li role="presentation" class="@(Model.ActiveTab == "Parties" ? "active" : string.Empty) @(Model.NullSafe(m => m.Data.Hotels.HotelTypeId) == (long)HotelTypeEnum.Hotel ? "hidden" : string.Empty)">
+									<a href="#Parties" aria-controls="Description" role="tab" data-toggle="tab">Отряды</a>
+								</li>
+								<li role="presentation" class="@(Model.ActiveTab == "AttendantsForParties" ? "active" : string.Empty) @(Model.NullSafe(m => m.Data.Hotels.HotelTypeId) == (long)HotelTypeEnum.Hotel || Model.Data.Applicants == null || !Model.Data.Applicants.Any() ? "hidden" : string.Empty)">
+									<a href="#AttendantsForParties" aria-controls="Description" role="tab" data-toggle="tab">Реестр сопровождающих</a>
+								</li>
+								<li role="presentation" class="@(Model.ActiveTab == "Requests" ? "active" : string.Empty) @(Model.NullSafe(m => m.Data.Hotels.HotelTypeId) == (long)HotelTypeEnum.Camp ? "hidden" : string.Empty)">
+									<a href="#Requests" aria-controls="Description" role="tab" data-toggle="tab">Реестр отдыхающих</a>
+								</li>
+								<li role="presentation" class="@(Model.ActiveTab == "Transport" ? "active" : string.Empty)">
+									<a href="#Transport" aria-controls="Description" role="tab" data-toggle="tab">Памятки</a>
+								</li>
+								if (Model.Data.StateId == StateMachineStateEnum.Bout.Confirmed || Model.Data.StateId == StateMachineStateEnum.Bout.Closed)
+								{
+									<li role="presentation" class="@(Model.ActiveTab == "Result" ? "active" : string.Empty)">
+										<a href="#Result" aria-controls="Description" role="tab" data-toggle="tab">Результаты заезда</a>
+									</li>
+
+								}
+								if (Model.Data.StateId == StateMachineStateEnum.Bout.Confirmed || Model.Data.StateId == StateMachineStateEnum.Bout.Closed || Model.Data.StateId == StateMachineStateEnum.Bout.Formed)
+								{
+									<li role="presentation" class="@(Model.ActiveTab == "BoutJournal" ? "active" : string.Empty)">
+										<a href="#BoutJournal" aria-controls="Description" role="tab" data-toggle="tab">События/Происшествия</a>
+									</li>
+								}
+							}
+						</ul>
+						<!-- Tab panes -->
+						<div class="tab-content">
+							@Html.Partial("Partials/CommonInfo")
+							@if (Model.Data.Id != 0)
+							{
+								@Html.Partial("Partials/Personal")
+								@Html.Partial("Partials/Parties")
+								@Html.Partial("Partials/AttendantsForParties")
+								@Html.Partial("Partials/Requests")
+								@Html.Partial("Partials/Transport")
+								@Html.Partial("Partials/BoutJournal")
+								@Html.Partial("Partials/Result")
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+		}
+	</div>
+</div>
+
+<div class="modal fade" id="CounselorsModal">
+	<div class="modal-dialog big-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title counselors-modal-title"></h4>
+			</div>
+			<div class="modal-body modal-body-autosize modal-lg" id="CounselorsDialogBody">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+@section styles{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	<link href="~/Content/Vocabulary/VocabularyEdit.css" rel="stylesheet" />
+	@Styles.Render("~/Content/css/font-awesome.min.css")
+	@Styles.Render("~/Content/summernote.css")
+	@Styles.Render("~/Content/jQuery.FileUpload/css/jquery.fileupload.css")
+	<style type="text/css">
+		.datetime {
+			width: 200px !important;
+		}
+	</style>
+}
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/jquery.validate.min.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale("ru");
+	</script>
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/Vocabulary/BoutEdit.js")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+	@Html.Partial("Assets/HistoryLinkTemplate")
+	@Scripts.Render("~/Scripts/PartyForm.js")
+	@Scripts.Render("~/Scripts/assets/NotNeedTicketSelect.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote.min.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote-ru-RU.js")
+	@Scripts.Render("~/Scripts/assets/MemoFile.js")
+
+	<script type="text/dot-template" id="journalRowTemplate">
+		<tr>
+			<td>{{=it.dateEvent}}</td>
+			<td>
+				{{=it.boutJournalTypeName}}
+				{{? it.incident }}
+				<br />(<small>{{=it.incident}}</small>)
+				{{?}}
+			</td>
+			<td>
+				{{=it.title ? it.title : '-' }}
+			</td>
+			<td>{{=it.partyNumber}}</td>
+			<td>{{=it.author}}</td>
+			<td style="width:35px">
+				{{? it.boutJournalType === @((long)BoutJournalTypeEnum.Event) }}
+				<input type="checkbox" {{=it.forSite?'checked="checked"':""}} {{='onclick="changeJournalEvent(this, ' + it.id + ')"'}} />
+				{{??}}
+				<small style="color:#888">Не отображается</small>
+				{{?}}
+			</td>
+			<td style="width:35px">
+				<a class="btn btn-xs glyphicon glyphicon-edit" title="Редактировать" href="@Url.Action("BoutJournal")?id={{=it.id}}"></a>
+			</td>
+		</tr>
+	</script>
+
+	<script type="text/javascript">
+
+		$(function () {
+			$('.boutJournal-cbx').change(function () { loadJournal(@Model.Data.Id); });
+			loadJournal(@Model.Data.Id);
+			var dataFrom = ($('#@Html.IdFor(m => m.TransportInfoFrom.Memo)').val());
+			var dataTo = ($('#@Html.IdFor(m => m.TransportInfoTo.Memo)').val());
+			var comment = ($('#@Html.IdFor(m => m.Comment)').val());
+			@if (canTransportFrom)
+			{
+				<text>
+			$('#memoFrom').summernote({
+				lang: 'ru-RU',
+				toolbar: [
+					['style', ['style']],
+					['font', ['bold', 'italic', 'underline', 'clear']],
+					['fontname', ['fontname']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['height', ['height']],
+					['table', ['table']],
+					['insert', ['link', 'hr']]
+				],
+				maxHeight: 300,
+				height: 300
+			});
+			$('#memoFrom').code(dataFrom);
+			</text>
+			}
+			else
+			{
+				<text>
+			$('#memoFrom').html(dataFrom);
+			</text>
+			}
+			@if (canTransportTo)
+			{
+				<text>
+			$('#memoTo').summernote({
+				lang: 'ru-RU',
+				toolbar: [
+					['style', ['style']],
+					['font', ['bold', 'italic', 'underline', 'clear']],
+					['fontname', ['fontname']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['height', ['height']],
+					['table', ['table']],
+					['insert', ['link', 'hr']]
+				],
+				maxHeight: 300,
+				height: 300
+			});
+			$('#memoTo').code(dataTo);
+			</text>
+			}
+			else
+			{
+				<text>
+			$('#memoTo').html(dataTo);
+			</text>
+			}
+
+			@if (canEditResult)
+			{
+				<text>
+			$('#comment').summernote({
+				lang: 'ru-RU',
+				toolbar: [
+					['style', ['style']],
+					['font', ['bold', 'italic', 'underline', 'clear']],
+					['fontname', ['fontname']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['height', ['height']],
+					['table', ['table']],
+					['insert', ['link', 'hr']]
+				],
+				maxHeight: 300,
+				height: 300
+			});
+			$('#comment').code(comment);
+			</text>
+			}
+			else
+			{
+				<text>
+			$('#comment').html(comment);
+			</text>
+			}
+
+
+			$('.datetime').inputmask("d.m.y h:s", {
+				placeholder: "дд.мм.гггг чч:мм",
+				clearIncomplete: true
+			});
+			$('.datetime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY HH:mm' });
+		});
+
+		function confirmStateButtonBout(formSelector, actionSelector, actionCode, buttonName, description, commentSelector) {
+			var error = '';
+			if (!$('.requared-date-from').val()) {
+				error = error + 'Дата отправления в место отдыха обязательна для заполнения<br/>';
+			}
+
+			if (!$('.requared-date-to').val()) {
+				error = error + 'Дата отправления из места отдыха обязательна для заполнения<br/>';
+			}
+
+			if (error) {
+				ShowAlert(error, "alert-danger", "glyphicon-remove", true);
+				return;
+			}
+
+			@if (canTransportFrom) {
+			<text>
+			$('#@Html.IdFor(m => m.TransportInfoFrom.Memo)').val(($('#memoFrom').code()));
+			</text>
+			}
+			@if (canTransportTo) {
+			<text>
+			$('#@Html.IdFor(m => m.TransportInfoTo.Memo)').val(($('#memoTo').code()));
+			</text>
+			}
+			@if (canEditResult) {
+			<text>
+			$('#@Html.IdFor(m => m.Comment )').val(($('#comment').code()));
+			</text>
+			}
+
+			return confirmStateButton(formSelector, actionSelector, actionCode, buttonName, description, commentSelector);
+		}
+
+	</script>
+
+}

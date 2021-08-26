@@ -1,0 +1,180 @@
+﻿@using RestChild.Comon
+@model RestChild.Web.Models.CounselorTestModels.TestingModel
+@{
+	ViewBag.Title = "Тестирование";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model == null || Model.Data == null || (!Model.MayTesting && !Model.Data.IsComplited))
+{
+	<div class="container body-content">
+		<h3>Тестирование еще не началось</h3>
+		<div class="hidden">
+			@((Model == null).ToString())
+			@((Model == null || Model.Data == null).ToString())
+			@((Model == null || Model.Data == null || (!Model.MayTesting && !Model.Data.IsComplited)).ToString())
+		</div>
+	</div>
+}
+else if (Model.NeedOtherTest)
+{
+	<div class="container body-content">
+		<h3>Перед прохождением финального теста нужно пройти тесты по темам</h3>
+	</div>
+	<ul>
+		@foreach (var s in Model.Testings)
+		{
+			<li><a href="@Html.Raw(s.Item1)">@(s.Item2)</a></li>
+		}
+	</ul>
+}
+else {
+	<h2>Тестирование вожатых</h2>
+	<fieldset class="form-horizontal">
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Обучаемый:</label>
+			<div class="col-sm-10">
+				<p class="form-control-static">
+					@((Model.Data != null && Model.Data.TrainingCounselorsResult != null && Model.Data.TrainingCounselorsResult.AdministratorTour != null ? Model.Data.TrainingCounselorsResult.AdministratorTour.GetFio() : null) ?? (Model.Data != null && Model.Data.TrainingCounselorsResult != null && Model.Data.TrainingCounselorsResult.Counselors != null ? Model.Data.TrainingCounselorsResult.Counselors.GetFio() : null))
+				</p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Тест:</label>
+			<div class="col-sm-10">
+				<p class="form-control-static">
+					@(Model.Data != null && Model.Data.GroupTest != null && Model.Data.GroupTest.CounselorTest != null ? string.Format("{0} ({1:dd.MM.yyy} - {2:dd.MM.yyy})", Model.Data.GroupTest.CounselorTest.Name, Model.Data.GroupTest.DateStart, Model.Data.GroupTest.DateEnd) : "-")
+				</p>
+			</div>
+		</div>
+		@if (Model.Data.IsComplited)
+		{
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Дата тестирования:</label>
+				<div class="col-sm-10">
+					<p class="form-control-static">
+						@Model.Data.DateTesting.FormatEx()
+					</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Ошибок (должно быть не более):</label>
+				<div class="col-sm-10">
+					<p class="form-control-static">
+						@Model.Data.Rating.FormatEx("0", "0") (@(Model.Data.GroupTest != null && Model.Data.GroupTest.CounselorTest != null ? Model.Data.GroupTest.CounselorTest.CountErrorInTest : 0)) @*из @(Model.Data.GroupTest != null && Model.Data.GroupTest.CounselorTest != null && Model.Data.GroupTest.CounselorTest.Questions != null ? Model.Data.GroupTest.CounselorTest.Questions.Count : 0)*@
+					</p>
+				</div>
+			</div>
+			if (Model.Data.GroupTest != null && Model.Data.GroupTest.CounselorTest != null && Model.Data.Rating <= Model.Data.GroupTest.CounselorTest.CountErrorInTest)
+			{
+				<p class="well-sm bg-success">Тестирование успешно пройдено</p>
+			}
+			if (Model.Data.GroupTest != null && Model.Data.GroupTest.CounselorTest != null && Model.Data.Rating > Model.Data.GroupTest.CounselorTest.CountErrorInTest)
+			{
+				<p class="bg-danger well-sm">Тестирование не пройдено</p>
+				if (Model.MayRetest)
+				{
+					<form action="@Url.Action("ReTesting")?id=@Html.ValueFor(m => m.Data.Id)&tick=@Html.ValueFor(m => m.Data.LastUpdateTick)&guid=@Html.ValueFor(m => m.Data.TestGuid)" method="POST">
+						<button type="submit" class="btn btn-default">Пройти тестирование еще раз</button>
+					</form>
+				}
+			}
+		}
+	</fieldset>
+	if (Model.MayTesting || Model.MayView)
+	{
+		<div class="row">
+			<div class="col-md-12">
+				@using (Html.BeginForm("SaveTesting", "CounselorTest", FormMethod.Post, new {@id = "form"}))
+				{
+					if (Model.MayTesting)
+					{
+						@Html.HiddenFor(m => m.Data.Id)
+						@Html.HiddenFor(m => m.Data.GroupTestId)
+						@Html.HiddenFor(m => m.Data.LastUpdateTick)
+						@Html.HiddenFor(m => m.Data.TestGuid)
+						@Html.HiddenFor(m => m.Data.Rating)
+						@Html.HiddenFor(m => m.Data.IsComplited)
+						@Html.HiddenFor(m => m.Data.IsLastAttempt)
+						@Html.HiddenFor(m => m.Data.TrainingCounselorsResultId)
+					}
+
+					@Html.AntiForgeryToken()
+					for (var i = 0; i < Model.Answers.Count; i++)
+					{
+						<div class="row question">
+							@if (Model.MayTesting)
+							{
+								@Html.HiddenFor(m => m.Answers[i].Data.Id)
+								@Html.HiddenFor(m => m.Answers[i].Data.CounselorTestId)
+								@Html.HiddenFor(m => m.Answers[i].Data.LastUpdateTick)
+								@Html.HiddenFor(m => m.Answers[i].Data.VariantId, new {@class = "variant-id"})
+								@Html.HiddenFor(m => m.Answers[i].Data.QuestionId)
+								@Html.HiddenFor(m => m.Answers[i].Data.TrainingCounselorId)
+							}
+							<h4>@(i + 1). @Html.Raw(Model.Answers[i].Data.Question.Question.FormatEx())</h4>
+							<ul style="list-style-type: none;">
+								@foreach (var v in Model.Answers[i].Data.Question.Variants)
+								{
+									<li>
+										<div class="radio @((!Model.MayTesting) && v.IsTrue ? "v-true" : "") @((!Model.MayTesting) && (v.Id == Model.Answers[i].Data.VariantId) ? "v-checked" : "")">
+											<label>
+												<input type="radio" name="q@(i)" value="@v.Id" @Html.Raw((Model.Data != null && Model.Data.IsComplited) ? string.Format("disabled=disabled {0}", v.Id == Model.Answers[i].Data.VariantId ? "checked='checked'" : "") : "onchange=\"changeGroup(this)\"")/>@v.Text
+											</label>
+										</div>
+									</li>
+								}
+							</ul>
+						</div>
+					}
+					if (Model.MayTesting)
+					{
+						<button class="btn btn-lg btn-primary btn-default" type="button" id="finishButton">Готово</button>
+					}
+				}
+			</div>
+		</div>
+	}
+}
+
+@section scripts
+{
+	@if (Model.MayTesting)
+	{
+		<script type="text/javascript" language="javascript">
+			function changeGroup(self) {
+				var variant = $($(self).closest('.question').find('.variant-id'));
+				variant.val($(self).val());
+			}
+
+			$(function() {
+				$('#finishButton').click(function() {
+					if ($('input.variant-id[value=""]').length > 0) {
+						ShowAlert('Не на все вопросы указаны ответы', "alert-danger", "glyphicon-ok", true);
+						return;
+					}
+
+					$('#form').submit();
+				});
+			});
+		</script>
+	}
+}
+@section styles
+{
+	<style type="text/css">
+		.v-true label{
+			background-color: #eee;
+		}
+
+		.v-checked label{
+			background-color: #dc143c;
+			color: #fff;
+		}
+
+		.v-checked.v-true label{
+			background-color: #32cd32;
+			color: #fff;
+		}
+	</style>
+}

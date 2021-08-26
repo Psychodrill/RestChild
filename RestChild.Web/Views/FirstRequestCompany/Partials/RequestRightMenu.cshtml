@@ -1,0 +1,160 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.Controllers
+@using RestChild.Web.Models
+@model RestChild.Web.Models.RequestViewModel
+@{
+    var typeOfRest = Model.Data.TypeOfRest ?? new TypeOfRest();
+    var needParentInvalid = Model.Child.Any(c => c.Data.BenefitTypeId == (long) BenefitTypeEnum.ParentsInvalid || (c.Data.BenefitType != null && c.Data.BenefitType.SameBenefitId == (long) BenefitTypeEnum.ParentsInvalid));
+}
+<div class="col-md-3" id="scrollspy">
+    <ul class="nav nav-stacked nav-pills" data-spy="affix" data-offset-top="30">
+        @{
+            Func<RequestViewBlockEnum, string> invalidClass = (RequestViewBlockEnum t) =>
+            {
+                bool found;
+                if (Model.FormBlocksValidness.TryGetValue(t, out found))
+                {
+                    if (found)
+                    {
+                        return "approved";
+                    }
+
+                    return "field-validation-error";
+                }
+
+                return string.Empty;
+            };
+
+            Func<RequestViewBlockEnum, IHtmlString> invalidGlyphIcon = (RequestViewBlockEnum t) =>
+            {
+                bool found;
+                if (Model.FormBlocksValidness.TryGetValue(t, out found))
+                {
+                    if (found) return Html.Raw("<i class=\"glyphicon glyphicon-ok\"></i>");
+                    else return Html.Raw("<i class=\"glyphicon glyphicon-remove\"></i>");
+                }
+                else
+                {
+                    return Html.Raw(string.Empty);
+                }
+            };
+        }
+        <li class="active">
+            <a href="#GeneralInfo" class="@invalidClass(RequestViewBlockEnum.GeneralBlock)">Общие сведения @invalidGlyphIcon(RequestViewBlockEnum.GeneralBlock)</a>
+        </li>
+        <li>
+            <a id="TypeAndTimeLinkA" href="#TypeAndTime" class="@invalidClass(RequestViewBlockEnum.TypeAndTimeBlock)">@(typeOfRest.Id == (long) TypeOfRestEnum.Compensation || typeOfRest.Id == (long) TypeOfRestEnum.CompensationYouthRest || typeOfRest.Id == (long) TypeOfRestEnum.MoneyOn3To7 || typeOfRest.Id == (long) TypeOfRestEnum.MoneyOn7To15 ? "Цель обращения" : "Цель обращения и время отдыха") @invalidGlyphIcon(RequestViewBlockEnum.TypeAndTimeBlock)</a>
+        </li>
+        <li id="PlaceRestLink">
+            @if (typeOfRest.NeedPlace)
+            {
+                <a href="#PlaceRest" class="@invalidClass(RequestViewBlockEnum.PlacesBlock)">Место отдыха @invalidGlyphIcon(RequestViewBlockEnum.PlacesBlock)</a>
+            }
+        </li>
+        <li id="PlacesLink">
+            @if (typeOfRest.NeedPlacment || (!Model.HasBooking && typeOfRest.Id != (long) TypeOfRestEnum.Compensation && typeOfRest.Id != (long) TypeOfRestEnum.CompensationYouthRest && typeOfRest.Id != (long) TypeOfRestEnum.MoneyOn3To7 && typeOfRest.Id != (long) TypeOfRestEnum.MoneyOn7To15 && !typeOfRest.NotChildren))
+            {
+                <a href="#Places" class="@invalidClass(RequestViewBlockEnum.PlacementBlock)">Размещение @invalidGlyphIcon(RequestViewBlockEnum.PlacementBlock)</a>
+            }
+        </li>
+        <li>
+            <a href="#Applicant" class="@invalidClass(RequestViewBlockEnum.ApplicantBlock)">Сведения о заявителе @invalidGlyphIcon(RequestViewBlockEnum.ApplicantBlock)</a>
+        </li>
+        <li id="AgentLink">
+            @if ((Model.Data.AgentApplicant ?? false))
+            {
+                <a href="#Agent" class="@invalidClass(RequestViewBlockEnum.AgentBlock)">Сведения о представителе заявителя @invalidGlyphIcon(RequestViewBlockEnum.AgentBlock)</a>
+            }
+        </li>
+        <li id="AttendantLinks">
+            @if (typeOfRest.NeedAttendant && typeOfRest.Id != (long) TypeOfRestEnum.CompensationYouthRest)
+            {
+                <a href="#AttendantsReference" class="@invalidClass(RequestViewBlockEnum.AttendantBlock)">Сведения о сопровождающих @invalidGlyphIcon(RequestViewBlockEnum.AttendantBlock)</a>
+                <ul class="nav nav-stacked nav-pills" style="margin-left: 40px" id="AttendantLink">
+
+                    @foreach (var attendant in Model.Attendant)
+                    {
+                        <li>
+                            <a href="#Attendant" id="AttendantRef" class="@Html.Raw(!attendant.IsValid.HasValue ? string.Empty : (!attendant.IsValid ?? false ? "field-validation-error" : "approved"))">@attendant.Data.LastName.FormatEx() @attendant.Data.FirstName.FormatEx(string.Empty) @attendant.Data.MiddleName.FormatEx(string.Empty)@Html.Raw(!attendant.IsValid.HasValue ? string.Empty : (!attendant.IsValid ?? false ? "<i class='glyphicon glyphicon-remove'></i>" : "<i class='glyphicon glyphicon-ok'></i>"))</a>
+                        </li>
+                    }
+                </ul>
+            }
+        </li>
+        <li id="InformationVoucherLink">
+            @if (typeOfRest.Id == (long) TypeOfRestEnum.Compensation || typeOfRest.Id == (long) TypeOfRestEnum.CompensationYouthRest)
+            {
+                <a href="#InformationVoucher" class="@invalidClass(RequestViewBlockEnum.InformationVoucher)">Путевки @invalidGlyphIcon(RequestViewBlockEnum.InformationVoucher)</a>
+            }
+        </li>
+        <li id="ChildLinks">
+            @if (!typeOfRest.NotChildren)
+            {
+                <a href="#ChildsReference" class="@invalidClass(RequestViewBlockEnum.ChildsBlock)">Сведения о детях @invalidGlyphIcon(RequestViewBlockEnum.ChildsBlock)</a>
+                <ul class="nav nav-stacked nav-pills" style="margin-left: 40px" id="ChildLink">
+                    @foreach (var child in Model.Child)
+                    {
+                        <li>
+                            <a href="#Child" id="ChildRef" class="@Html.Raw(!child.IsValid.HasValue ? string.Empty : (!child.IsValid ?? false ? "field-validation-error" : "approved"))">@child.Data.LastName.FormatEx() @child.Data.FirstName.FormatEx(string.Empty) @child.Data.MiddleName.FormatEx(string.Empty) @Html.Raw(!child.IsValid.HasValue ? string.Empty : (!child.IsValid ?? false ? "<i class='glyphicon glyphicon-remove'></i>" : "<i class='glyphicon glyphicon-ok'></i>"))</a>
+                        </li>
+                    }
+                </ul>
+            }
+        </li>
+        <li class="@(needParentInvalid ? "" : "hidden")" id="parentIvalidLi">
+            <a href="#parentIvalid" class="@invalidClass(RequestViewBlockEnum.AttendantBlock)">Сведения о родителе-инвалиде @invalidGlyphIcon(RequestViewBlockEnum.AttendantBlock)</a>
+        </li>
+        <li id="BankLink">
+            @if (typeOfRest.Id == (long) TypeOfRestEnum.Compensation || typeOfRest.Id == (long) TypeOfRestEnum.CompensationYouthRest || ((typeOfRest.Id == (long) TypeOfRestEnum.MoneyOn3To7 || typeOfRest.Id == (long) TypeOfRestEnum.MoneyOn7To15 || (Model.Data.RequestOnMoney && Model.Data.IsFirstCompany)) && !string.IsNullOrWhiteSpace(Model.Data.BankName)))
+            {
+                <a href="#Bank" class="@invalidClass(RequestViewBlockEnum.Bank)">Банковские реквизиты @invalidGlyphIcon(RequestViewBlockEnum.Bank)</a>
+            }
+        </li>
+        @if (Model.Data.AddonRequests != null && Model.Data.AddonRequests.Any(a=>!a.IsDeleted))
+        {
+            <li>
+                <a href="#ChildrenRequests">Сведения о созданных заявлениях</a>
+            </li>
+        }
+        @if (Model.Data.ParentRequest != null)
+        {
+            <li>
+                <a href="#ParentRequest">Сведения о заявлении на основе которого выдано текущее</a>
+            </li>
+        }
+        @if (Model.Data.Certificates != null && Model.Data.Certificates.Any(ss => ss.StateMachineStateId != RestChild.Comon.Enumeration.StateMachineStateEnum.Deleted))
+        {
+            <li>
+                <a href="#RequestCertificates" class="@invalidClass(RequestViewBlockEnum.Certificate)">Сведения о погашенном сертификате @invalidGlyphIcon(RequestViewBlockEnum.Certificate)</a>
+            </li>
+        }
+        <li>
+            <a href="#FileReference" class="@invalidClass(RequestViewBlockEnum.FileBlock)">Документы @invalidGlyphIcon(RequestViewBlockEnum.FileBlock)</a>
+        </li>
+    </ul>
+</div>
+<div id="hiddenNav" class="hidden">
+    <li id="AttendantLinks">
+        @if (!typeOfRest.NeedAttendant && typeOfRest.Id != (long) TypeOfRestEnum.CompensationYouthRest)
+        {
+            <a href="#AttendantsReference">Сведения о сопровождающих</a>
+            <ul class="nav nav-stacked nav-pills" style="margin-left: 40px" id="AttendantLink"></ul>
+        }
+    </li>
+    <li id="ChildLinksHidden">
+        @if (typeOfRest.NotChildren)
+        {
+            <a href="#ChildsReference" class="@invalidClass(RequestViewBlockEnum.ChildsBlock)">Сведения о детях @invalidGlyphIcon(RequestViewBlockEnum.ChildsBlock)</a>
+            <ul class="nav nav-stacked nav-pills" style="margin-left: 40px" id="ChildLink">
+                @foreach (var child in Model.Child)
+                {
+                    <li>
+                        <a href="#Child" id="ChildRef" class="@Html.Raw(!child.IsValid.HasValue ? string.Empty : (!child.IsValid ?? false ? " field-validation-error" : "approved"))">@child.Data.LastName.FormatEx() @child.Data.FirstName.FormatEx(string.Empty) @child.Data.MiddleName.FormatEx(string.Empty) @Html.Raw(!child.IsValid.HasValue ? string.Empty : (!child.IsValid ?? false ? "<i class='glyphicon glyphicon-remove'></i>" : "<i class='glyphicon glyphicon-ok'></i>"))</a>
+                    </li>
+                }
+            </ul>
+        }
+    </li>
+</div>

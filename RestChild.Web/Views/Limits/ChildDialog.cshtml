@@ -1,0 +1,172 @@
+﻿@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Models
+@model IList<DocumentType>
+	@{
+		var type = (TypeOfLimitListEnum) (ViewBag.TypeLimit ?? TypeOfLimitListEnum.Profile);
+		var family = ((long?)ViewBag.TypeOfRest ?? (long)TypeOfRestEnum.SpecializedСamp) == (long)TypeOfRestEnum.SpecializedСampFamily;
+		var typeOfRestrictions = ViewBag.TypeOfRestrictions as IList<TypeOfRestriction> ?? new List<TypeOfRestriction>();
+	}
+<div class="modal fade" id="dialogChild">
+	<div class="modal-dialog big-dialog" style="width: 1003px">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>
+				<h4 class="modal-title">
+					@Html.Raw(family?"Отдыхающий": "Ребёнок")
+				</h4>
+			</div>
+			<div class="modal-body modal-body-autosize">
+				<fieldset class="form-horizontal">
+					<input type="hidden" class="child-id" />
+					<div class="row">
+						<div class="col-md-offset-9 col-md-2">
+							<label class="checkbox-inline">
+								<input type="checkbox" class="middleName-present"/>
+								Нет отчества
+							</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-1 control-label text-right">Фамилия<span class="requared">*</span>:</label>
+						<div class="col-md-3">
+							<input type="text" class="lastName form-control" maxlength="1000"/>
+						</div>
+						<label class="col-md-1 control-label text-right">Имя<span class="requared">*</span>:</label>
+						<div class="col-md-3">
+							<input type="text" class="firstName form-control" maxlength="1000"/>
+						</div>
+						<label class="col-md-1 control-label text-right">Отчество<span class="requared">*</span>:</label>
+						<div class="col-md-3">
+							<input type="text" class="middleName form-control" maxlength="1000"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-1 control-label text-right">Дата рождения<span class="requared">*</span>:</label>
+						<div class="col-md-3">
+							<input type="text" class="datebirth form-control datepicker required input-mask-date" maxlength="1000"/>
+						</div>
+						<label class="col-md-1 control-label text-right">Пол<span class="requared">*</span>:</label>
+						<div class="col-md-3" style="line-height: 33px">
+							<label>
+								<input type="radio" name="male" class="male" value="True"/>
+								Мужской
+							</label>
+							<label>
+								<input type="radio" name="male" class="male" value="False"/>
+								Женский
+							</label>
+						</div>
+						<label class="col-md-1 control-label text-right">Место рождения:</label>
+						<div class="col-md-3">
+							<input type="text" class="placebirth form-control required" maxlength="1000" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Вид ограничения:</label>
+						<div class="col-md-9">
+							@Html.DropDownList("typeOfRestrictionId", SelectListHelper.Create(typeOfRestrictions, e=>new SelectListItem{Value = e.Id.ToString(), Text = e.Name}), new { @class = "form-control select2 typeOfRestrictionId" })
+						</div>
+					</div>
+					<h5>Документ удостоверяющий личность</h5>
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Тип<span class="requared">*</span>:</label>
+						<div class="col-md-3">
+							@Html.DropDownList("documentTypeChild", new SelectList(Model, "Id", "Name"), new { @class = "form-control select2 document-type" })
+						</div>
+						<label class="col-md-2 control-label text-right">Серия, номер<span class="requared">*</span>:</label>
+						<div class="col-md-2">
+							<input type="text" class="document-seria form-control" maxlength="1000"/>
+						</div>
+						<div class="col-md-2">
+							<input type="text" class="document-number form-control" maxlength="1000"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Дата выдачи<span class="requared">*</span>:</label>
+						<div class="col-md-3">
+							<input type="text" class="document-date-issue form-control datepicker required input-mask-date" maxlength="1000"/>
+						</div>
+						<label class="col-md-2 control-label text-right">Кем выдан<span class="requared">*</span>:</label>
+						<div class="col-md-4">
+							<input type="text" class="document-subject-issue form-control" maxlength="1000"/>
+						</div>
+					</div>
+					<h5>Адрес регистрации<span class="requared">*</span></h5>
+					@Html.Partial("Assets/AddressControlFIASView", new AddressViewModel(new Address()))
+					<h5>Образовательное учреждение</h5>
+					<div class="form-group">
+						<div class="col-md-offset-3 col-md-9">
+							<input type="text" class="form-control school-select2 select2"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-offset-3 col-md-9">
+							<label class="checkbox-inline">
+								<input type="checkbox" class="school-not-present"/>
+								Учреждения нет в списке
+							</label>
+						</div>
+					</div>
+					@if (type == TypeOfLimitListEnum.Profile)
+					{
+						<h5>Сведения о родителе (законном представителе) ребенка</h5>
+						<div class="row">
+							<div class="col-md-offset-9 col-md-2">
+								<label class="checkbox-inline">
+									<input type="checkbox" class="attendant-middleName-present"/>
+									Нет отчества
+								</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-1 control-label text-right">Фамилия<span class="requared">*</span>:</label>
+							<div class="col-md-3">
+								<input type="text" class="attendant-lastName form-control" maxlength="1000"/>
+							</div>
+							<label class="col-md-1 control-label text-right">Имя<span class="requared">*</span>:</label>
+							<div class="col-md-3">
+								<input type="text" class="attendant-firstName form-control" maxlength="1000"/>
+							</div>
+							<label class="col-md-1 control-label text-right">Отчество<span class="requared">*</span>:</label>
+							<div class="col-md-3">
+								<input type="text" class="attendant-middleName form-control" maxlength="1000"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-1 control-label text-right">Телефон<span class="requared">*</span>:</label>
+							<div class="col-md-3">
+								<input type="text" class="attendant-phone input-mask-phone form-control" maxlength="1000"/>
+							</div>
+						</div>
+					}
+				</fieldset>
+				<div class="alert alert-danger col-md-12  dialog-validation-alert hidden">
+					Заполнены не все поля или заполнены некорректно
+					<ul>
+						<li class="dialog-validation-alert-child-age hidden">
+							@if (family)
+							{
+								<span>
+									Возраст отдыхающих должен быть от 2 до 23 лет
+								</span>
+							}
+							else
+							{
+								<span>
+									Возраст ребенка не может быть меньше 7-ми лет и больше 17-ти
+								</span>
+							}
+						</li>
+						<li class="dialog-validation-alert-doc-date hidden">Дата выдачи документа должна быть больше даты рождения ребенка</li>
+					</ul>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary save-button">Сохранить</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>

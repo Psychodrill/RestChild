@@ -1,0 +1,153 @@
+﻿@using RestChild.Comon
+@model RestChild.Comon.ToExcel.BaseExcelTable
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<style type="text/css">
+		* {
+			font-size: small;
+		}
+
+		body {
+			font-family: Arial;
+		}
+
+		table.tblrpt {
+			border-collapse: collapse;
+			background-color: #fff;
+		}
+
+			table.tblrpt td, table.tblrpt th {
+				border: 1px solid #AAA !important;
+				padding: 3px;
+				min-width: 170px;
+			}
+
+			table.tblrpt thead tr th {
+				font-weight: bold;
+				text-align: center;
+				padding: 8px !important;
+			}
+
+		td.tblrptnum {
+			text-align: right;
+		}
+
+		.mute {
+			color: #AAA;
+		}
+
+		.td-ha-center {
+			text-align: center;
+		}
+
+		.td-ha-right {
+			text-align: right;
+		}
+
+		.bold-text {
+			font-weight: bold;
+		}
+	</style>
+	<link media="screen" type="text/css" href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" />
+	<style type="text/css" media="screen">
+		.main-table {
+			position: relative;
+			left: 0px;
+		}
+
+		#scrollDiv {
+			overflow-y: scroll;
+			overflow-x: scroll;
+			position: absolute;
+		}
+
+		#tblHead th {
+			background-color: #fff;
+		}
+
+		#tblStatic th {
+			background-color: #fff;
+		}
+
+		#tblFc th, #tblFc td {
+			background-color: #fff;
+		}
+
+		#tblHead {
+			position: absolute;
+			top: 0;
+			overflow: hidden;
+		}
+
+		#tblStatic {
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+
+		#tblFc {
+			position: absolute;
+			overflow: hidden;
+			left: 0;
+		}
+
+		#mainDiv {
+			position: relative;
+			overflow: hidden;
+		}
+
+		.hidden {
+			display: none;
+		}
+
+		.sortable-column {
+			cursor: pointer;
+			text-decoration: underline;
+		}
+	</style>
+	<style type="text/css" media="print">
+		#tblHead {
+			display: none;
+		}
+
+		#tblStatic {
+			display: none;
+		}
+
+		#tblFc {
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<div style="margin: 10px">
+		<p class="mute">
+			Сформировано: @String.Format("{0:dd.MM.yyyy HH:mm}", DateTime.Now)
+		</p>
+		@if (Model.Parameters != null)
+		{
+		<h4>@Model.TableName</h4>
+		<table style="margin-left: 30px;">
+			<tbody>
+				@foreach (var item in Model.Parameters)
+				{
+				<tr>
+					<td style="text-align: right;padding:2px;">@item.Item1</td>
+					<td style="text-align: left; font-weight: bold;padding:2px;">@Html.Raw(item.Item2.FormatEx())</td>
+				</tr>
+				}
+			</tbody>
+		</table>
+		}
+	</div>
+	@RenderBody()
+	<script src="@Url.Content("~/Scripts/jquery-2.1.1.min.js")"></script>
+	<script src="@Url.Content("~/Scripts/standartReport.js")"></script>
+	@RenderSection("scripts", false)
+</body>
+</html>

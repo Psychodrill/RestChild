@@ -1,0 +1,75 @@
+﻿@using System.Globalization
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.RequestViewModel
+@{
+    var typeOfRest = Model.Data.TypeOfRest ?? new TypeOfRest();
+}
+
+<fieldset class="bs-callout bs-callout-info request-block @(typeOfRest.Id == (long) TypeOfRestEnum.Compensation || typeOfRest.Id == (long) TypeOfRestEnum.CompensationYouthRest || (Model.Data.RequestOnMoney && Model.Data.IsFirstCompany && !string.IsNullOrWhiteSpace(Model.Data.BankName)) ? string.Empty : "hidden")" id="Bank">
+    <h3 class="anchor bs-callout-info">
+        Банковские реквизиты
+    </h3>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Наименование банка</label>
+        <div class="col-md-9 line-height35 wordbreak">
+            @Html.TextBoxFor(r => r.Data.BankName, new {@class = "form-control required", placeholder = "", autocomplete = "off", maxlength = "1000"})
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">ИНН банка</label>
+        <div class="col-md-9 line-height35 wordbreak">
+            @Html.TextBoxFor(r => r.Data.BankInn, new {@class = "form-control", placeholder = "", autocomplete = "off", maxlength = "10"})
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">КПП банка</label>
+        <div class="col-md-9 line-height35 wordbreak">
+            @Html.TextBoxFor(r => r.Data.BankKpp, new {@class = "form-control", placeholder = "", autocomplete = "off", maxlength = "9"})
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">БИК</label>
+        <div class="col-md-9 line-height35 wordbreak">
+            @Html.TextBoxFor(r => r.Data.BankBik, new {@class = "form-control", placeholder = "", autocomplete = "off", maxlength = "9"})
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Расчетный счет</label>
+        <div class="col-md-9 line-height35 wordbreak">
+            @Html.TextBoxFor(r => r.Data.BankAccount, new {@class = "form-control required", placeholder = "", autocomplete = "off", maxlength = "1000"})
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Корреспондентский счёт</label>
+        <div class="col-md-9 line-height35 wordbreak">
+            @Html.TextBoxFor(r => r.Data.BankCorr, new {@class = "form-control required", placeholder = "", autocomplete = "off", maxlength = "1000"})
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Номер карты</label>
+        <div class="col-md-9 line-height35 wordbreak">
+            @Html.TextBoxFor(r => r.Data.BankCardNumber, new {@class = "form-control", placeholder = "", autocomplete = "off", maxlength = "1000"})
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Фамилия получателя</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r.Data.BankLastName, new {@class = "form-control ", maxlength = "100"})
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Имя получателя</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r.Data.BankFirstName, new {@class = "form-control", maxlength = "100"})
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Отчество получателя</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r.Data.BankMiddleName, new {@class = "form-control", maxlength = "100"})
+        </div>
+    </div>
+</fieldset>

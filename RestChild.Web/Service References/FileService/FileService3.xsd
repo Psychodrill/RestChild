@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:tns="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.FileService" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.FileService" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://esep.itopcase.ru/Esep-Services/FileService.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" />
+  <xs:import schemaLocation="http://esep.itopcase.ru/Esep-Services/FileService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="UploadFileRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q1="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q1:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="File" nillable="true" type="tns:File" />
+          <xs:element minOccurs="0" name="StorageType" type="tns:StorageType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="UploadFileRequest" nillable="true" type="tns:UploadFileRequest" />
+  <xs:complexType name="File">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Body" nillable="true" type="xs:base64Binary" />
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" minOccurs="0" name="Info" nillable="true" type="q2:FileInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="File" nillable="true" type="tns:File" />
+  <xs:simpleType name="StorageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Temporary">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="Permanent">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="StorageType" nillable="true" type="tns:StorageType" />
+  <xs:complexType name="UploadFileResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q3="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q3:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="UploadFileResponse" nillable="true" type="tns:UploadFileResponse" />
+  <xs:complexType name="UploadFileExRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q4="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q4:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="File" nillable="true" type="tns:File" />
+          <xs:element minOccurs="0" name="StorageType" type="tns:StorageType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="UploadFileExRequest" nillable="true" type="tns:UploadFileExRequest" />
+  <xs:complexType name="UploadFileExResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q5="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q5:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="UploadFileExResponse" nillable="true" type="tns:UploadFileExResponse" />
+  <xs:complexType name="UploadV6PackageRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q6="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q6:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="File" nillable="true" type="tns:File" />
+          <xs:element name="StorageType" type="tns:StorageType" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="UploadV6PackageRequest" nillable="true" type="tns:UploadV6PackageRequest" />
+  <xs:complexType name="UploadV6PackageResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q7="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q7:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="SignUrl" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="UploadV6PackageResponse" nillable="true" type="tns:UploadV6PackageResponse" />
+  <xs:complexType name="DownloadFileRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q8="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q8:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DownloadFileRequest" nillable="true" type="tns:DownloadFileRequest" />
+  <xs:complexType name="DownloadFileResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q9="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q9:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="File" nillable="true" type="tns:File" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DownloadFileResponse" nillable="true" type="tns:DownloadFileResponse" />
+  <xs:complexType name="DownloadFileExRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q10="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q10:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DownloadFileExRequest" nillable="true" type="tns:DownloadFileExRequest" />
+  <xs:complexType name="DownloadFileExResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q11="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q11:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="File" nillable="true" type="tns:FileEx" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DownloadFileExResponse" nillable="true" type="tns:DownloadFileExResponse" />
+  <xs:complexType name="FileEx">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Body" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="DetachedSignatures" nillable="true" type="tns:ArrayOfDetachedSignature" />
+      <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" minOccurs="0" name="Info" nillable="true" type="q12:FileInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FileEx" nillable="true" type="tns:FileEx" />
+  <xs:complexType name="ArrayOfDetachedSignature">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DetachedSignature" nillable="true" type="tns:DetachedSignature" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDetachedSignature" nillable="true" type="tns:ArrayOfDetachedSignature" />
+  <xs:complexType name="DetachedSignature">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Body" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="MimeType" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DetachedSignature" nillable="true" type="tns:DetachedSignature" />
+  <xs:complexType name="GetCountImagesRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q13="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q13:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileInfoId" type="ser:guid" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetCountImagesRequest" nillable="true" type="tns:GetCountImagesRequest" />
+  <xs:complexType name="GetCountImagesResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q14="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q14:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="CountImages" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetCountImagesResponse" nillable="true" type="tns:GetCountImagesResponse" />
+  <xs:complexType name="GetBase64StringImageRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q15="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q15:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileInfoId" type="ser:guid" />
+          <xs:element minOccurs="0" name="NumberImage" type="xs:int" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetBase64StringImageRequest" nillable="true" type="tns:GetBase64StringImageRequest" />
+  <xs:complexType name="GetBase64StringImageResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q16="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q16:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ImageBase64" nillable="true" type="tns:ImageBase64" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetBase64StringImageResponse" nillable="true" type="tns:GetBase64StringImageResponse" />
+  <xs:complexType name="ImageBase64">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Base64" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ExistNextImage" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ImageBase64" nillable="true" type="tns:ImageBase64" />
+  <xs:complexType name="GetFileDescriptionRequest">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q17="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q17:RequestBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="FileAccessCode" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetFileDescriptionRequest" nillable="true" type="tns:GetFileDescriptionRequest" />
+  <xs:complexType name="GetFileDescriptionResponse">
+    <xs:complexContent mixed="false">
+      <xs:extension xmlns:q18="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.Common" base="q18:ResponseBase">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Name" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="GetFileDescriptionResponse" nillable="true" type="tns:GetFileDescriptionResponse" />
+</xs:schema>

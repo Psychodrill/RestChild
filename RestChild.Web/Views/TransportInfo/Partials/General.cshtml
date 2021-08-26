@@ -1,0 +1,82 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.TransportInfoModel
+
+<fieldset class="form-horizontal">
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Заезд</label>
+		<div class="col-md-9 line-height35">
+			@if (Security.HasRight(AccessRightEnum.BoutManage) && Model.Data.BoutId.HasValue)
+			{
+				<a href="@Url.Action("Update", "Bout", new {@id=Model.Data.BoutId })">@Html.Raw(Model.NullSafe(m => m.Data.Bout.ToString()).FormatEx())</a>
+			}
+			else
+			{
+				<text>@Html.Raw(Model.NullSafe(m => m.Data.Bout.ToString()).FormatEx())</text>
+			}
+			<b>
+				@if (Model.Data.Bout != null && Model.Data.Bout.TransportInfoToId == Model.Data.Id)
+				{
+					<text>(в место отдыха)</text>
+				}
+				@if (Model.Data.Bout != null && Model.Data.Bout.TransportInfoFromId == Model.Data.Id)
+				{
+					<text>(из места отдыха)</text>
+				}
+			</b>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Город отправления</label>
+		<div class="col-md-9 line-height35">
+			@Html.Raw(Model.NullSafe(m => m.Data.Departure.Name).FormatEx())
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Город прибытия</label>
+		<div class="col-md-9 line-height35">
+			@Html.Raw(Model.NullSafe(m => m.Data.Arrival.Name).FormatEx())
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="col-md-3 control-label text-right">Дата отправления</label>
+		<div class="col-md-9 col-lg-2">
+			<div class="input-group date datepicker-anytime">
+				@Html.TextBoxFor(m => m.Data.DateOfDeparture, new {@class = "form-control datetime", @Value = Model.NullSafe(m => m.Data.DateOfDeparture).FormatEx("dd.MM.yyyy HH:mm", "")}).DisableIf(() => !Model.IsEditable)
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+			</div>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="col-md-3 control-label text-right">Дата прибытия</label>
+		<div class="col-md-9 col-lg-2">
+			<div class="input-group date datepicker-anytime">
+				@Html.TextBoxFor(m => m.Data.DateArrival, new {@class = "form-control datetime", @Value = Model.NullSafe(m => m.Data.DateArrival).FormatEx("dd.MM.yyyy HH:mm", "")}).DisableIf(() => !Model.IsEditable)
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+			</div>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="col-md-3 control-label text-right">Дата сбора</label>
+		<div class="col-md-9 col-lg-2">
+			<div class="input-group date datepicker-anytime">
+				@Html.TextBoxFor(m => m.Data.DateCollection, new {@class = "form-control datetime", @Value = Model.NullSafe(m => m.Data.DateCollection).FormatEx("dd.MM.yyyy HH:mm", "")}).DisableIf(() => !Model.IsEditable)
+				<span class="input-group-addon">
+					<span class="glyphicon glyphicon-calendar"></span>
+				</span>
+			</div>
+		</div>
+	</div>
+	<div class="form-group row">
+		<label class="col-md-3 control-label text-right">Место сбора</label>
+		<div class="col-md-9">
+			@Html.TextBoxFor(m => m.Data.Venue, new {@class = "form-control"}).DisableIf(() => !Model.IsEditable)
+		</div>
+	</div>
+</fieldset>

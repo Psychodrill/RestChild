@@ -1,0 +1,128 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@model RestChild.Web.Models.PlaceOfRestListModel
+@{
+	ViewBag.Title = "Справочник направлений отдыха";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "Search";
+	ViewBag.InsertAction = "Insert";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "RestPlaces";
+	ViewBag.Caption = "Справочник направлений отдыха";
+	ViewBag.InsertButtonCaption = "Добавить";
+	ViewBag.SearchPanelCaption = "Поиск";
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Название направления</label>
+		<div class="col-md-9">
+			@Html.TextBoxFor(m=>m.Name, new { @class = "form-control" })
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Группа</label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(m => m.GroupId, new SelectList(Model.Groups, "Id", "Name").InsertAt(new SelectListItem() { Value = "0", Text = "-- Не выбрано --" }, 0), new { @class = "form-control select2", autocomplete = "off", @id="groupId" })
+		</div>
+	</div>
+
+	<div class="form-group">
+	<div class="checkbox col-md-3 col-md-offset-3">
+		<label>
+			@Html.CheckBoxFor(m => m.ActiveOnly, new { @id= "activeOnly" })
+			<label for="activeOnly">
+				Только действующие
+			</label>
+		</label>
+	</div>
+	<div class="checkbox col-md-3 col-md-offset-3">
+		<label>
+			@Html.CheckBoxFor(m => m.NotForSelect, new { @id = "notForSelect" })
+			<label for="notForSelect">
+				Групповой элемент
+			</label>
+		</label>
+	</div>
+</div>
+
+}
+
+@section searchResult
+{
+	@if (Model.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="text-center">№</th>
+					<th class="text-center">Название направления</th>
+					<th class="text-center">Страна</th>
+					<th class="text-center">Группа</th>
+					<th class="text-center">Описание</th>
+				</tr>
+			</thead>
+			<tbody>
+				@{int rowNumber = Model.FirstItemOnPage;}
+				@foreach (var place in Model)
+				{
+					var propertys = "<li>" + (place.IsActive ? "Действующее направление" : "Архивное направление") + "</li>";
+					if (place.IsForegin)
+					{
+						propertys += "<li>Необходим загранпаспорт</li>";
+					}
+					if (place.ZoneOfSea)
+					{
+						propertys += "<li>Место у моря</li>";
+					}
+					if (place.ForMpgu)
+					{
+						propertys += "<li>Отображать на МПГУ</li>";
+					}
+					if (place.NotForSelect)
+					{
+						propertys += "<li>Групповой элемент</li>";
+					}
+					<tr>
+						<td class="text-center">@(rowNumber++)</td>
+						<td>@Html.ActionLink((string.IsNullOrWhiteSpace(place.Name)?"#" + place.Id:place.Name), "Update", new { id = place.Id }, new { @class = "", target = "_blank" })</td>
+						<td>@place.NullSafe(p => p.Country.Name).FormatEx()</td>
+						<td>@place.NullSafe(p => p.Group.Name).FormatEx()</td>
+						<td><ul>@Html.Raw(propertys)</ul></td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model, (page) => { Model.NewPageNumber = page; return Url.Action("Search", Model); }, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+
+@section styles{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+	
+@section scripts
+{
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript">
+		$(function() {
+			$('select.select2').select2();
+		});
+	</script>
+}

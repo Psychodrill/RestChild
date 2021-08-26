@@ -1,0 +1,9 @@
+﻿@using RestChild.Web.Models.Orphans
+@model RestChild.Web.Models.Orphans.OrphanageGroupModel
+
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "Pupils" ? "active" : string.Empty)" id="Pupils">
+    @using (Ajax.BeginForm("OrphanageGroupPupilSearch", null, new AjaxOptions {HttpMethod = "POST", UpdateTargetId = "PupilsList", InsertionMode = InsertionMode.Replace}, new {id = "PupilsList"}))
+    {
+        @Html.Partial("Partials/GroupPupilList", new OrphanagePupilsFilterModel(Model.Data))
+    }
+</div>

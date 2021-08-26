@@ -1,0 +1,97 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.PartyFilter
+
+@{
+	Layout = null;
+	Model.UngroupedChilds = Model.UngroupedChilds ?? new List<Child>();
+	var disableAll = Model.Bout != null && Model.Bout.StateId == StateMachineStateEnum.Bout.Closed;
+
+}
+
+@Html.HiddenFor(m => m.OrderBy)
+
+@Html.Partial("Filter", Model)
+
+
+<div class="panel">
+	@if (Model.UngroupedChilds != null && Model.UngroupedChilds.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>@Html.CheckBox("CheckAll", new { @class = "check-all-childs" }).DisableIf(() => Model.NullSafe(m => m.BoutState.Id) != StateMachineStateEnum.Bout.Editing)</th>
+					<th><a onclick="javascript: void (0);" class="child-order-ungrouped" data-sort-type="Name">ФИО ребенка</a></th>
+					<th><a onclick="javascript: void (0);" class="child-order-ungrouped" data-sort-type="Gender">Пол</a></th>
+					<th><a onclick=" javascript: void (0); " class="child-order-ungrouped" data-sort-type="Age">Возраст</a></th>
+					<th><a onclick=" javascript: void (0); " class="child-order-ungrouped" data-sort-type="DateIncome">Дата заезда</a></th>
+					<th><a onclick="javascript: void (0);" class="child-order-ungrouped" data-sort-type="DateOutcome">Дата выезда</a></th>
+					<th>Прибыл</th>
+					<th width="20%">Причина отказа от обратного билета</th>
+				</tr>
+			</thead>
+			<tbody>
+			@{
+				var childNum = 1;
+			}
+			@foreach (var child in Model.UngroupedChilds)
+			{
+				var childInParty = child.PartyId.HasValue;
+				var tour = child.NullSafe(c => c.Request.Tour) ?? child.NullSafe(c => c.ChildList.Tour);
+				var toTransport = child.LinkToPeoples.FirstOrDefault(l => l.TransportId == Model.Bout.TransportInfoToId);
+				var fromTransport = child.LinkToPeoples.FirstOrDefault(l => l.TransportId == Model.Bout.TransportInfoFromId);
+				var canChangeNotCome = true;
+
+				<tr class="@(childInParty ? "child-in-party" : string.Empty) @(fromTransport != null ? Extensions.NotNeedTicketColor(fromTransport.NotNeedTicketReasonId) : string.Empty)">
+					<td width="5%">@Html.CheckBox("CheckChild_" + child.Id, false, new { id = "CheckChild_" + child.Id, data_id = child.Id, @class = "child-checkbox" }).DisableIf(() => childInParty)</td>
+					<td width="15%">@(childNum). <span class="camper-name">@child.LastName @child.FirstName @child.MiddleName</span></td>
+					<td width="15%">@(child.Male ? "Мужской" : "Женский")</td>
+					<td width="15%">@child.GetAgeInYears(tour.DateIncome)</td>
+					<td width="15%">@((tour != null ? (DateTime?)tour.DateIncome : null).FormatEx())</td>
+					<td width="15%">@((tour != null ? (DateTime?) tour.DateOutcome : null).FormatEx())</td>
+					<td>
+						@if (toTransport != null && fromTransport != null)
+						{
+							<input type="checkbox" @Html.Raw(!toTransport.NotComeInPlaceOfRest ? "checked='checked'" : string.Empty) class="notComeInPlaceOfRest" data-child-id="@child.Id" data-link-id="@toTransport.Id" data-from-link-id="@fromTransport.Id" @Html.Raw(!canChangeNotCome || disableAll ? "disabled='disabled'" : "") />}
+						else
+						{
+							<text>
+								Нет информации по транспорту
+							</text>
+						}
+					</td>
+					<td>
+						@if (fromTransport != null)
+						{
+							if (Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicketReason))
+							{
+								@Html.DropDownList("NotNeedTicket", SelectListHelper.Create(Model.NotNeedTicketReasons.Where(r => r.Id != (long)NotNeedTicketReasonEnum.NotCome || canChangeNotCome || fromTransport.NotNeedTicketReasonId == r.Id), t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = fromTransport.NotNeedTicketReasonId == t.Id }), new { @class = "form-control not-need-ticket-select not-need-ticket-child ", data_id = fromTransport.Id }).DisableIf(() => (fromTransport.NotNeedTicketReasonId == (long)NotNeedTicketReasonEnum.NotCome || !canChangeNotCome) || (toTransport != null && toTransport.NotComeInPlaceOfRest) || disableAll)
+							}
+							else
+							{
+								<text>@fromTransport.NullSafe(l => l.NotNeedTicketReason.Name).FormatEx("Не выбрано")</text>
+							}
+						}
+						else
+						{
+							<text>
+								Нет информации по транспорту
+							</text>
+						}
+					</td>
+
+				</tr>
+				childNum++;
+			}
+
+			</tbody>
+		</table>
+	}
+	else
+	{
+		@:Дети не найдены
+	}
+</div>

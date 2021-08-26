@@ -1,0 +1,538 @@
+﻿@using DocumentFormat.OpenXml.Wordprocessing
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using Styles = System.Web.Optimization.Styles
+@model RestChild.Web.Models.AddonServicesModel
+@{
+	ViewBag.Title = "Реестр услуг";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Услуга</h2>
+<a href="@Url.Action("Search", "AddonService")">Вернуться</a>
+<div class="row">&nbsp;</div>
+@using (Html.BeginForm("Save", "AddonService", FormMethod.Post, new { enctype = "multipart/form-data", id = "addonServiceForm" }))
+{
+	@Html.AntiForgeryToken()
+	@Html.HiddenFor(m => m.Data.Id)
+	@Html.HiddenFor(m => m.Data.StateId)
+	@Html.HiddenFor(m => m.Data.HistoryLinkId)
+	@Html.HiddenFor(m => m.Data.TourTransportId)
+	@Html.HiddenFor(m => m.StateMachineActionString)
+	@Html.HiddenFor(m => m.Data.IsActive)
+	@Html.HiddenFor(m => m.ActiveTab)
+	@Html.HiddenFor(m => m.Data.LastUpdateTick)
+	<div class="form-group row">
+		<div class="col-md-12">
+			@Html.Partial("Assets/_StatePanel", Model.State)
+		</div>
+	</div>
+	if (!ViewData.ModelState.IsValid)
+	{
+		<div class="alert alert-danger" role="alert">
+			@Html.ValidationSummary(false)
+		</div>
+	}
+	<div class="row">
+		<div class="col-md-12">
+			<div role="tabpanel" id="MainTabs">
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="@(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)">
+						<a href="#CommonInfo" aria-controls="CommonInfo" role="tab" data-toggle="tab">Общая информация</a>
+					</li>
+					<li role="presentation" class="@(Model.ActiveTab == "Files" ? "active" : string.Empty)">
+						<a href="#Files" aria-controls="Files" role="tab" data-toggle="tab">Фотографии</a>
+					</li>
+				</ul>
+
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)" id="CommonInfo">
+						<h3>Общая информация</h3>
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-label text-right">Название<span class="requared">*</span></label>
+							<div class="col-md-10">
+								@Html.TextBoxFor(m => m.Data.Name, new { @class = "form-control", autocomplete = "Off", maxlength = 1000 }).DisableIf(() => !Model.IsEditable)
+								@Html.ValidationMessageFor(m => m.Data.Name, "Заполните поле")
+							</div>
+						</div>
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-label text-right">Вид услуги<span class="requared">*</span></label>
+							<div class="col-md-10">
+								@Html.DropDownListFor(m => m.Data.TypeOfServiceId, Model.TypeOfServices, new { @class = "form-control select2 typeOfServiceId" }).DisableIf(() => !Model.IsEditable)
+								<span class="field-validation-error">@Model.TypeOfServiceEm.FormatEx(string.Empty)</span>
+							</div>
+						</div>
+
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-label text-right">Вид цены</label>
+							<div class="col-md-10">
+								@Html.DropDownListFor(m => m.Data.TypePriceCalculationId, new SelectList(Model.TypePriceCalculations, "Id", "Name"), new { @class = "form-control select2" }).DisableIf(() => !Model.IsEditable)
+							</div>
+						</div>
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-label text-right">
+								Срок услуги
+								<i class="glyphicon glyphicon-info-sign" style="cursor: pointer" data-toggle="tooltip" data-placement="top" title="Срок актуальности услуги по договору с поставщиком (На какие даты её можно заказывать)"></i>
+								с
+							</label>
+							<div class="col-md-2">
+								<div class='input-group date'>
+									@Html.TextBoxFor(m => m.Data.DateFrom, new { @id="dateFrom",  @class = "form-control", maxlength = 10, autocomplete = "Off", Value = Model.Data.DateFrom != default(DateTime) ? Model.Data.DateFrom.FormatEx(string.Empty, string.Empty) : string.Empty }).DisableIf(() => !Model.IsEditable)
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+								<span class="field-validation-error"></span>
+							</div>
+							<label class="col-md-1 control-label text-right">по</label>
+							<div class="col-md-2">
+								<div class='input-group date'>
+									@Html.TextBoxFor(m => m.Data.DateTo, new { @id = "dateTo", @class = "form-control", maxlength = 10, autocomplete = "Off", Value = Model.Data.DateTo != default(DateTime) ? Model.Data.DateTo.FormatEx(string.Empty, string.Empty) : string.Empty }).DisableIf(() => !Model.IsEditable)
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-md-12 transport-div @(Model.Data.TypeOfService != null && Model.Data.TypeOfService.NeedTransport ? "" : "hidden")">
+							@Html.HiddenFor(m => m.Data.TourTransport.TourId)
+							<label class="col-md-2 control-label text-right">Отправление из</label>
+							<div class="col-md-3">
+								@Html.DropDownListFor(m => m.Data.TourTransport.CityOfDepartureId, new SelectList(Model.Citys.Select(r => new { Id = (long?)r.Id, Name = r.Name }), "Id", "Name", Model.Data.TourTransport != null ? Model.Data.TourTransport.CityOfDepartureId : -1), new { @class = "form-control select2" }).DisableIf(() => !Model.IsEditable)
+							</div>
+							<label class="col-md-1 control-label text-right">место</label>
+							<div class="col-md-3">
+								@Html.TextBoxFor(m => m.Data.TourTransport.PlaceOfDeparture, new { @class = "form-control", autocomplete = "Off", maxlength = 1000 }).DisableIf(() => !Model.IsEditable)
+							</div>
+						</div>
+						<div class="form-group col-md-12 transport-div @(Model.Data.TypeOfService != null && Model.Data.TypeOfService.NeedTransport ? "" : "hidden")">
+							<label class="col-md-2 control-label text-right">Прибытие в</label>
+							<div class="col-md-3">
+								@Html.DropDownListFor(m => m.Data.TourTransport.CityOfArrivalId, new SelectList(Model.Citys.Select(r => new { Id = (long?)r.Id, Name = r.Name }), "Id", "Name", Model.Data.TourTransport != null ? Model.Data.TourTransport.CityOfArrivalId : -1), new { @class = "form-control select2" }).DisableIf(() => !Model.IsEditable)
+							</div>
+							<label class="col-md-1 control-label text-right">место</label>
+							<div class="col-md-3">
+								@Html.TextBoxFor(m => m.Data.TourTransport.PlaceOfArrival, new { @class = "form-control", autocomplete = "Off", maxlength = 1000 }).DisableIf(() => !Model.IsEditable)
+							</div>
+						</div>
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-label text-right">Место отдыха</label>
+							<div class="col-md-10">
+								<div class="row col-md-12 @(!Model.Hotels.Any() ? "hidden" : "")" id="hotelsDiv">
+									<table class="table" id="hotelsTable">
+										<tbody>
+											@for (var i = 0; Model.Hotels.Count > i; i++)
+											{
+												<tr>
+													<td>
+														@Html.HiddenFor(m => m.Hotels[i].Id)
+														@Model.Hotels[i].Name
+													</td>
+													<td>
+														@Html.ActionLink("Перейти к месту отдыха", "Update", "Hotels", new { @id = Model.Hotels[i].Id, @class = "hotel-link" }, new { target = "_blank" })
+													</td>
+													<td style="width: 40px">
+														@if (Model.IsEditable)
+														{
+															<a class="remove-hotel-btn" type="button" title="Удалить" href="javascript:void(0)"><i class="glyphicon glyphicon-remove"></i></a>
+														}
+													</td>
+												</tr>
+											}
+										</tbody>
+									</table>
+								</div>
+								@if (Model.IsEditable)
+								{
+									<div class="row">
+										<div class="col-md-11">
+											<input type="hidden" id="_HotelsId" class="form-control main-hotelId" value="" />
+										</div>
+										<div class="col-md-1">
+											<button type="button" class="btn btn-default" title="Добавить" id="hotelAdd"><i class="glyphicon glyphicon-plus"></i></button>
+										</div>
+									</div>
+								}
+							</div>
+						</div>
+						<div class="form-group col-md-12">
+							<label class="col-md-2 control-label text-right">Партнер</label>
+							<div class="col-md-10">
+								@Html.HiddenFor(m => m.Data.PartnerId, new { @class = "form-control" }).DisableIf(() => !Model.IsEditable)
+								@if (!Model.IsEditable)
+								{
+									@Html.HiddenFor(m => m.Data.PartnerId)
+								}
+								<input type="hidden" id="_PartnerId" class="form-control required" value="@Model.Data.PartnerId" />
+								<input type="hidden" id="_PartnerName" class="form-control required" value="@Model.Data.NullSafe(m => m.Partner.Name)" />
+							</div>
+						</div>
+						<div class="form-group col-md-12 @(Model.Data.TypeOfService != null && Model.Data.TypeOfService.NeedDescription ? "" : "hidden")" id="divNeedDescription">
+							<label class="col-md-2 control-label text-right">Описание</label>
+							<div class="col-md-10 text-editor">
+								@Html.HiddenFor(m => m.Description, new { @class = "text-editor-hdn" })
+								<div class="text-editor-div" id="description" @Html.Raw(Model.IsEditable ? string.Empty : "readonly=\"readonly\"")>
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-md-12 @(Model.Data.TypeOfService != null && Model.Data.TypeOfService.NeedAnnouncement ? "" : "hidden")" id="divNeedAnnouncement">
+							<label class="col-md-2 control-label text-right">Анонс мероприятия</label>
+							<div class="col-md-10 text-editor">
+								@Html.HiddenFor(m => m.AnnouncementEvent, new {@class= "text-editor-hdn" })
+								<div class="text-editor-div" id="announcementEvent" @Html.Raw(Model.IsEditable ? string.Empty : "readonly=\"readonly\"")>
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-md-12 @(Model.Data.TypeOfService != null && Model.Data.TypeOfService.NeedConditions ? "" : "hidden")" id="divNeedConditions">
+							<label class="col-md-2 control-label text-right">Условия для сопровождающих</label>
+							<div class="col-md-10 text-editor">
+								@Html.HiddenFor(m => m.ConditionsForAccompanying, new { @class = "text-editor-hdn" })
+								<div class="text-editor-div" id="conditionsForAccompanying" @Html.Raw(Model.IsEditable ? string.Empty : "readonly=\"readonly\"")>
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-md-12 @(Model.Data.TypeOfService != null && Model.Data.TypeOfService.NeedDurationHour ? "" : "hidden")" id="divNeedDurationHour">
+							<label class="col-md-2 control-label text-right">Продолжительность (час)</label>
+							<div class="col-md-10">
+								@Html.TextBoxFor(m => m.Data.DurationHour, new { @class = "form-control integer", autocomplete = "Off", maxlength = 7 }).DisableIf(() => !Model.IsEditable)
+							</div>
+						</div>
+						<div class="form-group col-md-12 @(Model.Data.TypeOfService != null && Model.Data.TypeOfService.NeedSize ? "" : "hidden")" id="divNeedSize">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="checkbox">
+									<label class="control-label">
+										@Html.CheckBoxFor(m => m.Data.IsGroup, new { @id = "cbxIsGroup" }).DisableIf(() => !Model.IsEditable)
+										Групповая
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-md-12 @(Model.Data.TypeOfService != null && Model.Data.TypeOfService.NeedSize && Model.Data.IsGroup ? "" : "hidden")" id="divNeedSize2">
+							<label class="col-md-2 control-label text-right">Размер группы c</label>
+							<div class="col-md-4">
+								@Html.TextBoxFor(m => m.Data.SizeMin, new { @class = "form-control integer size", autocomplete = "Off", maxlength = 7 }).DisableIf(() => !Model.IsEditable)
+							</div>
+							<label class="col-md-1 control-label text-right">по</label>
+							<div class="col-md-4">
+								@Html.TextBoxFor(m => m.Data.SizeMax, new { @class = "form-control integer size", autocomplete = "Off", maxlength = 7 }).DisableIf(() => !Model.IsEditable)
+							</div>
+						</div>
+						<div class="form-group col-md-12">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="checkbox">
+									<label class="control-label">
+										@Html.CheckBoxFor(m => m.Data.NeedApprove).DisableIf(() => !Model.IsEditable)
+										Требуется подтверждение
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-md-12">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="checkbox">
+									<label class="control-label">
+										@Html.CheckBoxFor(m => m.Data.Hidden).DisableIf(() => !Model.IsEditable)
+										Скрытая услуга
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group col-md-12">
+							<div class="col-md-10 col-md-offset-2">
+								<div class="checkbox">
+									<label class="control-label">
+										@Html.CheckBoxFor(m => m.Data.NotForSite).DisableIf(() => !Model.IsEditable)
+										Не для сайта
+									</label>
+								</div>
+							</div>
+						</div>
+						<h4>
+							Стоимость
+							@if (Model.IsEditable)
+							{
+								<a type="button" class="btn btn-primary  btn-xs" href="javascript:void(0);" title="Добавить" id="addprice"><i class="glyphicon glyphicon-plus"></i></a>
+							}
+						</h4>
+						<table class="table table-striped prices" id="prices" style="background-color: transparent">
+							<tbody>
+								@for (var j = 0; j < Model.Prices.Count; j++)
+								{
+									<tr class="prices-row">
+										<td>
+											@Html.HiddenFor(m => m.Prices[j].Id)
+											@Html.HiddenFor(m => m.Prices[j].AddonServicesId)
+											@Html.HiddenFor(m => m.Prices[j].LastUpdateTick)
+											<fieldset class="form-horizontal">
+												<div class="row form-group">
+													<label class="col-md-2 control-label text-right">Возраст с</label>
+													<div class="col-md-3">
+														@Html.TextBoxFor(m => m.Prices[j].AgeFrom, new { @class = "form-control integer", maxlength = 3, autocomplete = "Off", Value = Model.Prices[j].AgeFrom.FormatEx(string.Empty) }).DisableIf(() => !Model.IsEditable)
+													</div>
+													<label class="col-md-offset-1 col-md-2 control-label text-right">по</label>
+													<div class="col-md-3">
+														@Html.TextBoxFor(m => m.Prices[j].AgeTo, new { @class = "form-control integer", maxlength = 3, autocomplete = "Off", Value = Model.Prices[j].AgeTo.FormatEx(string.Empty) }).DisableIf(() => !Model.IsEditable)
+													</div>
+												</div>
+												<div class="form-group row">
+													<label class="col-md-2 control-label text-right">Действие цены с</label>
+													<div class="col-md-2">
+														<div class='input-group date'>
+															@Html.TextBoxFor(m => m.Prices[j].DateFrom, new { @class = "form-control date-from", autocomplete = "Off", Value = Model.Prices[j].DateFrom != default(DateTime) ? Model.Prices[j].DateFrom.FormatEx(string.Empty, string.Empty) : string.Empty }).DisableIf(() => !Model.IsEditable)
+															<span class="input-group-addon">
+																<span class="glyphicon glyphicon-calendar"></span>
+															</span>
+														</div>
+														<span class="field-validation-error"></span>
+												</div>
+													<label class="col-md-2 col-md-offset-2 control-label text-right">по</label>
+													<div class="col-md-2">
+														<div class='input-group date'>
+															@Html.TextBoxFor(m => m.Prices[j].DateTo, new { @class = "form-control date-to", autocomplete = "Off", Value = Model.Prices[j].DateTo != default(DateTime) ? Model.Prices[j].DateTo.FormatEx(string.Empty, string.Empty) : string.Empty }).DisableIf(() => !Model.IsEditable)
+															<span class="input-group-addon">
+																<span class="glyphicon glyphicon-calendar"></span>
+															</span>
+														</div>
+													</div>
+												</div>
+												<div class="form-group row">
+													<label class="col-md-2 control-label text-right">Стоимость (руб)</label>
+													<div class="col-md-3">
+														@Html.TextBoxFor(m => m.Prices[j].Price, new { @class = "form-control decimal", maxlength = 12, autocomplete = "Off", Value = Model.Prices[j].Price.FormatEx(string.Empty) }).DisableIf(() => !Model.IsEditable)
+													</div>
+													<label class="col-md-offset-1 col-md-2 control-label text-right">Себестоимость</label>
+													<div class="col-md-3">
+														@Html.TextBoxFor(m => m.Prices[j].PriceInternal, new { @class = "form-control decimal", maxlength = 12, autocomplete = "Off", Value = Model.Prices[j].PriceInternal.FormatEx(string.Empty) }).DisableIf(() => !Model.IsEditable)
+													</div>
+												</div>
+											</fieldset>
+										</td>
+										<td style="width: 40px">
+											@if (Model.IsEditable)
+											{
+												<a class="remove-price-btn" type="button" title="Удалить" href="javascript:void(0)"><i class="glyphicon glyphicon-remove"></i></a>
+											}
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+					<div id="Files" role="tabpanel" class="tab-pane @(Model.ActiveTab == "Files" ? "active" : string.Empty)">
+						<h3>Фотографии</h3>
+						@if (Model.IsEditable)
+						{
+							<div class="form-group">
+								<button type="button" class="btn btn-primary" id="Data_addFileBtn">Добавить</button>
+							</div>
+						}
+						<div class="form-group">
+							<div class="photo-set" id="Data_photoSet">
+								@if (Model.Data.Photos != null)
+								{
+									foreach (var file in Model.Data.Photos)
+									{
+										<div class="photo">
+											<div class="photo-inner" style="width: 150px; height: 150px">
+												<img style="max-width: 150px; max-height: 150px" src="@("/DownloadHotelFile.ashx/" + file.FileTitle)" />
+												@if (Model.IsEditable)
+												{
+													<div class="text-right photo-text">
+														<a class="remove-photo " href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+													</div>
+												}
+											</div>
+											<div class="text-center photo-text">
+												@file.FileName.FormatEx()
+											</div>
+										</div>
+										<div class="photo-hidden hidden">
+											<input type="hidden" name="Id" value="@file.Id" class="hidden" />
+											<input type="hidden" name="FileName" value="@file.FileName" class="hidden" />
+											<input type="hidden" name="FileTitle" value="@file.FileTitle" class="hidden" />
+										</div>
+									}
+								}
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+}
+
+<form id="Data_addFileModalForm">
+	<div class="modal fade" id="Data_addFileModal" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">Добавление файла</h4>
+				</div>
+				<div class="modal-body form-horizontal modal-body-margin">
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Наименование файла</label>
+						<div class="col-md-9">
+							<input type="text" id="Data_addFileModalName" class="form-control required" data-val-required="Поле обязательно для заполнения" />
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-4">
+							<span class="btn btn-default btn-file" id="Data_addFileModalUpload">
+								<span>Загрузить файл</span>
+								<input type="file" id="Data_addFileModalFile">
+							</span>
+						</div>
+						<div class="col-md-8">
+							<img id="Data_addFileModalImg" style="max-width: 150px; max-height: 150px" />
+						</div>
+					</div>
+					@Html.Hidden("Data_uploadedFileName")
+				</div>
+				<div class="modal-footer">
+					<img id="Data_addFileModalLoading" class="hidden" src="~/Content/images/spinner.gif" />
+					<button type="button" class="btn btn-primary" id="Data_addFileModalSave">Сохранить</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+</form>
+
+@section styles{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	@Styles.Render("~/Content/css/font-awesome.min.css")
+	@Styles.Render("~/Content/summernote.css")
+	<link href="~/Content/Vocabulary/VocabularyEdit.css" rel="stylesheet" />
+	<script type="text/html" id="Data_photoTemplate">
+		<div class="photo">
+			<div class="photo-inner" style="width: 150px; height:150px">
+				<img style="max-width: 150px; max-height: 150px" src="/DownloadHotelFile.ashx/{{=it.FileTitle}}" />
+				<div class="text-right photo-text">
+					<a class="remove-photo" href="javascript:void(0);"><i class="glyphicon glyphicon-remove"></i></a>
+				</div>
+			</div>
+			<div class="text-center photo-text">
+				{{=it.FileName}}
+			</div>
+		</div>
+		<div class="photo-hidden hidden">
+			<input type="hidden" name="Id" value="{{=it.Id}}" class="hidden" />
+			<input type="hidden" name="FileName" value="{{=it.FileName}}" class="hidden" />
+			<input type="hidden" name="FileTitle" value="{{=it.FileTitle}}" class="hidden" />
+		</div>
+	</script>
+}
+
+@section Scripts {
+	@Scripts.Render("~/bundles/global")
+	@Scripts.Render("~/bundles/jqueryval")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+		var isServiceEditable = @(Model.IsEditable.ToString().ToLower());
+		$(function () {
+			$('[data-toggle="tooltip"]').tooltip();
+		});
+	</script>
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/Vocabulary/AddonServiceEdit.js")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote.min.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote-ru-RU.js")
+	@Html.Partial("Assets/HistoryLinkTemplate")
+	<script id="hotelRow" type="dot/template">
+		<tr>
+			<td>
+				<input name="Hotels[0].Id" type="hidden" value="">
+				<span class="hotel-title">
+				</span>
+			</td>
+			<td>
+				<a href="/Hotels/Update/" class="hotel-link" target="_blank">Перейти к месту отдыха</a>
+			</td>
+			<td style="width: 40px">
+				<a class="remove-hotel-btn" type="button" title="Удалить" href="javascript:void(0)"><i class="glyphicon glyphicon-remove"></i></a>
+			</td>
+		</tr>
+	</script>
+
+	<script id="tagRow" type="dot/template">
+		<span class="label label-info" style="font-size: 14px; margin-right: 4px">
+			<input name="Tags[0].Id" type="hidden" value="">
+			<span class="tag-title"></span>
+			@if (Model.IsEditable)
+			{
+				<a class="remove-tag-btn" type="button" title="Удалить" href="javascript:void(0)"><i class="glyphicon glyphicon-remove"></i></a>
+			}
+		</span>
+	</script>
+	<script type="dot/template" id="servicePriceRowTemplate">
+		<tr class="prices-row">
+			<td>
+				<input data-val="true" data-val-number="The field Id must be a number." data-val-required="&quot;Уникальный идентификатор&quot; должно быть заполнено" name="Prices[0].Id" type="hidden" value="0">
+				<input data-val="true" data-val-number="The field AddonServicesId must be a number." name="Prices[0].AddonServicesId" type="hidden" value="">
+				<input data-val="true" data-val-number="The field LastUpdateTick must be a number." data-val-required="The LastUpdateTick field is required." name="Prices[0].LastUpdateTick" type="hidden" value="0">
+				<fieldset class="form-horizontal">
+					<div class="row form-group">
+						<label class="col-md-2 control-label text-right">Возраст с</label>
+						<div class="col-md-3">
+							<input value="" autocomplete="off" class="form-control integer" data-val="true" data-val-number="The field AgeFrom must be a number." maxlength="3" name="Prices[0].AgeFrom" type="text">
+						</div>
+						<label class="col-md-offset-1 col-md-2 control-label text-right">по</label>
+						<div class="col-md-3">
+							<input value="" autocomplete="off" class="form-control integer" data-val="true" data-val-number="The field AgeTo must be a number." maxlength="3" name="Prices[0].AgeTo" type="text">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-2 control-label text-right">Действие цены с</label>
+						<div class="col-md-2">
+							<div class="input-group date">
+								<input value="" autocomplete="off" class="form-control date-from" data-val="true" data-val-date="The field DateFrom must be a date." id="Prices_1__DateFrom" name="Prices[1].DateFrom" type="text">
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+							<span class="field-validation-error"></span>
+						</div>
+						<label class="col-md-2 col-md-offset-2 control-label text-right">по</label>
+						<div class="col-md-2">
+							<div class="input-group date">
+								<input value="" autocomplete="off" class="form-control date-to" data-val="true" data-val-date="The field DateTo must be a date." id="Prices_1__DateTo" name="Prices[1].DateTo" type="text">
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-2 control-label text-right">Стоимость (руб)</label>
+						<div class="col-md-3">
+							<input value="" autocomplete="off" class="form-control decimal" data-val="true" data-val-number="The field Price must be a number." data-val-required="&quot;Цена&quot; должно быть заполнено" id="Services_0__Prices_0__Price" maxlength="12" name="Prices[0].Price" type="text">
+						</div>
+						<label class="col-md-offset-1 col-md-2 control-label text-right">Себестоимость</label>
+						<div class="col-md-3">
+							<input value="" autocomplete="off" class="form-control decimal" data-val="true" data-val-number="The field PriceInternal must be a number." data-val-required="&quot;Себестоимость&quot; должно быть заполнено" id="Services_0__Prices_0__PriceInternal" maxlength="12" name="Prices[0].PriceInternal" type="text">
+						</div>
+					</div>
+				</fieldset>
+			</td>
+			<td style="width: 40px">
+				<a class="remove-price-btn" type="button" title="Удалить" href="javascript:void(0)"><i class="glyphicon glyphicon-remove"></i></a>
+			</td>
+		</tr>
+	</script>
+}

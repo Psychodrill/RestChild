@@ -1,0 +1,73 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Common
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.BoutModel
+@{
+	var canChangeNotCome = Model.Data.StateId != StateMachineStateEnum.Bout.Confirmed;
+}
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "AttendantsForParties" ? "active" : string.Empty)" id="AttendantsForParties">
+	<h3>Реестр сопровождающих</h3>
+	<table class="table table">
+		<thead>
+			<tr>
+				<th></th>
+				<th>ФИО</th>
+				@*<th width="10%">Не явился в оздоровительное учреждение</th>*@
+				<th>Причина отказа от обратного билета</th>
+				<th>Пол</th>
+				<th>Дата рождения</th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (Model.Data.Applicants != null && Model.Data.Applicants.Any())
+			{
+				var camperNum = 1;
+				foreach (var attendant in Model.Data.Applicants)
+				{
+					var link = attendant.LinkToPeoples.FirstOrDefault(l => l.Transport != null && l.Transport.ArrivalId == (long)CityEnum.Moscow);
+					<tr class="@(link != null ? Extensions.NotNeedTicketColor(link.NotNeedTicketReasonId) : string.Empty)">
+						<td class="text-center">@camperNum</td>
+						<td class="camper-name">@attendant.LastName @attendant.FirstName @attendant.MiddleName</td>
+						@*@if (canChangeNotComeInPlaceOfRest)
+							{
+								<td class="text-center"><input type="checkbox" class="applicant-not-come-in-place-of-rest-checkbox" data-applicant-id="@attendant.Id" @(attendant.NotComeInPlaceOfRest ? "checked=\"checked\"" : string.Empty) /></td>
+							}
+							else
+							{
+								<td class="text-center"><input type="checkbox" disabled="disabled" @(attendant.NotComeInPlaceOfRest ? "checked=\"checked\"" : string.Empty) /></td>
+							}*@
+
+						<td>
+							@if (link != null)
+							{
+								if (Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicketReason) && Model.NotNeedTicketReasons.Where(r => r.Id != (long)NotNeedTicketReasonEnum.NotCome || canChangeNotCome).Any(n => !link.NotNeedTicketReasonId.HasValue || n.Id == link.NotNeedTicketReasonId))
+								{
+									@Html.DropDownList("NotNeedTicket", SelectListHelper.Create(Model.NotNeedTicketReasons.Where(r => r.Id != (long)NotNeedTicketReasonEnum.NotCome || canChangeNotCome), t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name, Selected = link.NotNeedTicketReasonId == t.Id }), new { @class = "form-control not-need-ticket-select not-need-ticket-attendant", data_id = link.Id }).DisableIf(() => link.NotNeedTicketReasonId == (long)NotNeedTicketReasonEnum.NotCome && !canChangeNotCome)
+								}
+								else
+								{
+									<text>@link.NullSafe(l => l.NotNeedTicketReason.Name).FormatEx("Не выбрано")</text>
+								}
+
+							}
+							else
+							{
+								<text>
+									Не найден обратный транспорт
+								</text>
+							}
+						</td>
+						<td>@attendant.Male.FormatEx("-", "Мужской", "Женский")</td>
+						<td>@attendant.DateOfBirth.FormatEx()</td>
+					</tr>
+					camperNum++;
+				}
+			}
+		</tbody>
+	</table>
+
+
+</div>

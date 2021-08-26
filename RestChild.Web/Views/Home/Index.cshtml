@@ -1,0 +1,293 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@model RestChild.Web.Models.AnalyticsViewModel
+
+<div class="row">
+	@Html.Partial("ReportPartial", Model)
+</div>
+
+
+@section Scripts {
+	<script type="text/javascript" language="javascript" src="~/Scripts/highcharts/highcharts.js"></script>
+	<script type="text/javascript" language="javascript" src="~/Scripts/highcharts/highcharts-3d.js"></script>
+	<script type="text/javascript" language="javascript">
+		function formatPrice(n) {
+			var decimal = 0;
+			var separator = ' ';
+			var decpoint = ',';
+			var formatString = '#';
+
+			var r = parseFloat(n);
+
+			var exp10 = Math.pow(10, decimal);
+			r = Math.round(r * exp10) / exp10;
+
+			var rr = Number(r).toFixed(decimal).toString().split('.');
+
+			var b = rr[0].replace(/(\d{1,3}(?=(\d{3})+(?:\.\d|\b)))/g, "\$1" + separator);
+
+			var res = (rr[1] ? b + decpoint + rr[1] : b);
+			return formatString.replace('#', res);
+		}
+
+
+		//$(function () {
+		//	return;
+		//	var data = [];
+
+		//	data.push({ name: 'декабрь 2015 - январь 2016', data: [0, 0, 456, 43, 65, 768, 98, 23, 57, 87] });
+		//	data.push({ name: 'август (IV смена)', data: [726, 1007, 1340, 622, 1382, 1343, 1587, 1383, 1500, 1459] });
+		//	data.push({ name: 'июль-август (III смена)', data: [611, 2398, 2208, 291, 417, 2454, 898, 2829, 4236, 3089] });
+		//	data.push({ name: 'июнь-июль (II смена)', data: [2526, 3603, 3569, 2197, 679, 2354, 2133, 2569, 3488, 3237] });
+		//	data.push({ name: 'июнь (I смена)', data: [1713, 1133, 539, 658, 1733, 217, 565, 146, 975, 324] });
+
+
+		//	$('#chart1').highcharts({
+		//		chart: {
+		//			type: 'bar'
+		//		},
+		//		credits: { enabled: false },
+		//		title: {
+		//			text: 'Предварительный реестр (<span style="color: #dc143c">67 735 отдыхающих</span>)',
+		//			x: -20 //center
+		//		},
+		//		subtitle: {
+		//			text: '',
+		//			x: -20
+		//		},
+		//		xAxis: {
+		//			categories: [
+		//				'Черн. и Азовское побережья Крыма', 'Черн. и Азовское побережья<br/>Краснодар. края, Ростовская обл.', 'Черн. побережье Абхазии', 'Средняя полоса России', 'Московская обл.', 'Приволжская зона',
+		//				'Северная туристская зона', 'Белоруссия', 'Кавказ и Ставропольский край', 'Приуральская зона'
+		//			],
+		//			labels: {
+		//				style: {
+		//					fontSize: '8px',
+		//					fontFamily: 'Verdana, sans-serif'
+
+		//				}
+		//			}
+		//		},
+		//		yAxis: {
+		//			title: {
+		//				text: 'Количество отдыхающих'
+		//			},
+		//			plotLines: [
+		//				{
+		//					value: 0,
+		//					width: 1,
+		//					color: '#808080'
+		//				}
+		//			],
+		//			min: 0,
+		//			allowDecimals: false
+		//		},
+		//		tooltip: {
+		//			formatter: function () {
+		//				console.log(this);
+		//				var s = this.key + '<br/>';
+		//				s += this.series.name + ' ';
+		//				s += ' <b>' + formatPrice(this.y) + '</b> отдыхающих.';
+		//				s = '<span style="max-width:200px;">' + s + '</span>';
+		//				return s;
+		//			}
+		//		},
+		//		plotOptions: {
+		//			series: {
+		//				stacking: 'normal'
+		//			}
+		//		},
+		//		legend: {
+		//			reversed: true
+		//		},
+		//		series: data
+		//	});
+
+
+		//	data = [
+		//		{
+		//			name: 'Финансирование',
+		//			data: [172856, 252371, 251472, 118141, 132556, 221216, 163711, 215450, 317936, 254076]
+		//		}
+		//	];
+
+		//	$('#chart2').highcharts({
+		//		chart: {
+		//			type: 'bar'
+		//		},
+		//		credits: { enabled: false },
+		//		title: {
+		//			text: 'Финансирование (<span style="color: #dc143c">2,09 млрд. руб</span>)',
+		//			x: -20 //center
+		//		},
+		//		subtitle: {
+		//			text: '',
+		//			x: -20
+		//		},
+		//		xAxis: {
+		//			categories: [
+		//				'Черн. и Азовское побережья Крыма', 'Черн. и Азовское побережья<br/>Краснодар. края, Ростовская обл.', 'Черн. побережье Абхазии', 'Средняя полоса России', 'Московская обл.', 'Приволжская зона',
+		//				'Северная туристская зона', 'Белоруссия', 'Кавказ и Ставропольский край', 'Приуральская зона'
+		//			],
+		//			labels: {
+		//				rotation: 0,
+		//				style: {
+		//					fontSize: '9px',
+		//					fontFamily: 'Verdana, sans-serif'
+		//				}
+		//			}
+		//		},
+		//		yAxis: {
+		//			title: {
+		//				text: 'Тыс. руб.'
+		//			},
+		//			plotLines: [
+		//				{
+		//					value: 0,
+		//					width: 1,
+		//					color: '#808080'
+		//				}
+		//			],
+		//			min: 0,
+		//			allowDecimals: false
+		//		},
+		//		tooltip: {
+		//			formatter: function () {
+		//				var s = this.key;
+		//				s += ' <b>' + formatPrice(this.y) + '</b> тыс. руб.';
+		//				s = '<span style="max-width:200px;">' + s + '</span>';
+		//				return s;
+		//			}
+		//		},
+		//		plotOptions: {
+		//			series: {
+		//				stacking: 'normal'
+		//			}
+		//		},
+		//		legend: {
+		//			enabled: false
+		//		},
+		//		series: data
+		//	});
+
+		//	data = [{ name: 'Количество заявлений', data: [['Ожидание проверки<br/>в базовом регистре', 624], ['Отказано', 532], ['Включено в<br/>предварительный реестр', 23214], ['Ожидание заявителя<br/>для подтверждения сведений', 1243]] }];
+
+		//	$('#chart3').highcharts({
+		//		chart: {
+		//			type: 'pie'
+		//		},
+		//		credits: { enabled: false },
+		//		plotOptions: {
+		//			pie: {
+		//				allowPointSelect: true,
+		//				cursor: 'pointer',
+		//				depth: 35,
+		//				dataLabels: {
+		//					enabled: true,
+		//					format: '{point.name}'
+		//				}
+		//			}
+		//		},
+
+		//		title: {
+		//			text: 'Обработка заявлений (<span style="color: #dc143c">25 613 заявлений</span>)',
+		//			x: -20 //center
+		//		},
+		//		subtitle: {
+		//			text: '',
+		//			x: -20
+		//		},
+		//		xAxis: {
+		//			type: 'category'
+		//		},
+		//		yAxis: {
+		//			title: {
+		//				text: 'Количество заявлений'
+		//			},
+		//			allowDecimals: false
+		//		},
+		//		tooltip: {
+		//			formatter: function () {
+		//				console.log(this);
+		//				var s = this.key;
+		//				s += ' <b>' + formatPrice(this.y) + '</b> заявлений';
+		//				return s;
+		//			}
+		//		},
+		//		legend: {
+		//			enabled: false
+		//		},
+		//		series: data
+		//	});
+
+		//	data = [
+		//		{
+		//			name: 'Доходы',
+		//			data: [
+		//				['Черн. и Азовское побережья Крыма', 51857], ['Черн. и Азовское побережья<br/>Краснодар. края,  Ростовская обл.', 75711],
+		//				['Черн. побережье Абхазии', 75442],
+		//				['Средняя полоса России', 35442],
+		//				['Московская обл.', 39767],
+		//				['Приволжская зона', 66365],
+		//				['Северная туристская зона', 49113],
+		//				['Белоруссия', 64635],
+		//				['Кавказ и Ставропольский край', 95381],
+		//				['Приуральская зона', 76223]
+		//			]
+		//		}
+		//	];
+
+		//	$('#chart4').highcharts({
+		//		chart: {
+		//			type: 'pie'
+		//		},
+		//		credits: { enabled: false },
+		//		title: {
+		//			text: 'Доходы (<span style="color: #dc143c">629,93 млн. руб.</span>)',
+		//			x: -20 //center
+		//		},
+		//		xAxis: {
+
+		//		},
+		//		yAxis: {
+		//			title: {
+		//				text: 'Тыс. руб.'
+		//			},
+		//			plotLines: [
+		//				{
+		//					value: 0,
+		//					width: 1,
+		//					color: '#808080'
+		//				}
+		//			],
+		//			min: 0,
+		//			allowDecimals: false
+		//		},
+		//		tooltip: {
+		//			formatter: function () {
+		//				console.log(this);
+		//				var s = this.key;
+		//				s += ' <b>' + formatPrice(this.y) + '</b> тыс. руб.';
+		//				return s;
+		//			}
+		//		},
+		//		plotOptions: {
+		//			pie: {
+		//				allowPointSelect: true,
+		//				cursor: 'pointer',
+		//				dataLabels: {
+		//					formatter: function (val) {
+		//						return formatPrice(this.y) + ' тыс. руб.';
+		//					}
+		//				},
+		//				showInLegend: true
+		//			}
+		//		},
+		//		legend: {
+		//			enabled: true
+		//		},
+		//		series: data
+		//	});
+		//});
+	</script>
+}

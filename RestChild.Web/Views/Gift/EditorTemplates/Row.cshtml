@@ -1,0 +1,26 @@
+﻿@using RestChild.Web.Extensions
+@model RestChild.Mobile.Domain.GiftParameter
+@{
+    var canEdit = ((ViewBag.CanEdit as bool?) ?? false) || Model.Id == 0;
+}
+<div class="form-group">
+    <div class="col-xs-6">
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.GiftId)
+        @Html.HiddenFor(m => m.Name, new {@class = "gp-name"})
+        <span class="gp-name-text">
+        @Model.Name
+        </span>
+    </div>
+    <label class="control-label col-xs-2">Количество</label>
+    <div class="col-xs-3">
+        @Html.TextBoxFor(r => r.Count, new {@class = "form-control integer", maxlength = "6", autocomplete = "off"}).DisableIf(() => !canEdit)
+    </div>
+    <div class="col-xs-1">
+        @if (canEdit && (Model.Reserved == null || !Model.Reserved.Any()))
+        {
+            <i class="glyphicon glyphicon-remove gp-remove" title="Удалить"></i>
+        }
+    </div>
+</div>
+

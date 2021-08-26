@@ -1,0 +1,82 @@
+﻿@using RestChild.Domain
+@using Newtonsoft.Json
+
+@model RestChild.Web.Models.Orphans.OrphanageGroupModel
+@{
+    ViewBag.Title = "Группа (потребность) учреждения социальной защиты";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/HistoryModal.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+
+    <script src="~/Scripts/globalize/globalize.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale("ru");
+        var typeOfRestrictionSubs = @(JsonConvert.SerializeObject(ViewBag.TypeOfRestrictionSubs));
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Scripts.Render("~/Scripts/StateScript.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
+
+    @Scripts.Render("~/Scripts/Vocabulary/Orphanage.Group.Edit.js")
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Группа (потребность) учреждения социальной защиты</h2>
+    </div>
+</div>
+
+@Html.Partial("Assets/_StatePanel", Model.State)
+
+@if (!(Model.IsValid ?? true))
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="summary-block">@Html.Raw(Model.ErrorMessage)</div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div role="tabpanel" id="MainTabs">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="@(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)">
+                    <a href="#CommonInfo" aria-controls="CommonInfo" role="tab" data-toggle="tab">Общая информация</a>
+                </li>
+
+                @if (Model.Data.Id > 0 && (Model.Data.StateId == RestChild.Comon.Enumeration.StateMachineStateEnum.PupilGroup.Agreed || (Model.Data.Pupils != null && Model.Data.Pupils.Count > 0)))
+                {
+                    <li role="presentation" class="@(Model.ActiveTab == "Pupils" ? "active" : string.Empty)">
+                        <a href="#Pupils" aria-controls="Pupils" role="tab" data-toggle="tab">Воспитанники</a>
+                    </li>
+                }
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                @Html.Partial("Partials/GroupCommonInfo")
+                @if (Model.Data.Id > 0 && (Model.Data.StateId == RestChild.Comon.Enumeration.StateMachineStateEnum.PupilGroup.Agreed || (Model.Data.Pupils != null && Model.Data.Pupils.Count > 0)))
+                {
+                    @Html.Partial("Partials/GroupPupils")
+                }
+            </div>
+        </div>
+    </div>
+</div>

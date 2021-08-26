@@ -1,0 +1,106 @@
+﻿@using iTextSharp.text
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@using RestChild.Web.Models
+@model RestChild.Web.Models.RequestViewModel
+
+@{
+    var fts = new List<long>
+    {
+        (long)RequestFileTypeEnum.NotificationRefuse,
+        (long)RequestFileTypeEnum.Notifications,
+        (long)RequestFileTypeEnum.CertificateOnRest,
+        (long)RequestFileTypeEnum.CertificateOnPayment
+    };
+}
+
+<h3 id="FileReference" class="anchor bs-callout-info">Документы</h3>
+<fieldset id="Files">
+    @foreach (var ftg in Model.FileTypes.Select(ss => (int) ss.FileTypeGrouping).Select(ss => ss == 0 ? (int) RequestFileTypeGrouping.Other : ss).Distinct().OrderBy(ss => ss).ToList())
+    {
+        if (ftg == (int) RequestFileTypeGrouping.Applicant)
+        {
+            <h4 class="bs-callout-info">Заявитель</h4>
+        }
+        else if (ftg == (int) RequestFileTypeGrouping.Child)
+        {
+            <h4 class="bs-callout-info">Дети</h4>
+        }
+        else if (ftg == (int) RequestFileTypeGrouping.Attendant)
+        {
+            <h4 class="bs-callout-info">Сопровождающий</h4>
+        }
+        else
+        {
+            <h4 class="bs-callout-info">Общее</h4>
+        }
+
+        for (var fileTypeIndex = 0; fileTypeIndex < Model.FileTypes.Count; fileTypeIndex++)
+        {
+            var fileGroup = (int) Model.FileTypes[fileTypeIndex].FileTypeGrouping;
+            fileGroup = fileGroup == 0 ? (int) RequestFileTypeGrouping.Other : fileGroup;
+            if (ftg != fileGroup)
+            {
+                continue;
+            }
+            <div class="bs-callout bs-callout-info request-block">
+                <h5 class="bs-callout-info">@Html.Raw(Model.FileTypes[fileTypeIndex].Name)</h5>
+                @Html.HiddenFor(m => m.FileTypes[fileTypeIndex].Id)
+                <input type="hidden" class="index-hidden" value="@fileTypeIndex"/>
+                <table class="table">
+                    <tbody>
+                    @for (var fileIndex = 0; fileIndex < Model.FileTypes[fileTypeIndex].Files.Count; fileIndex++)
+                    {
+                        <tr>
+                            <td>
+                                <a target="_blank" class="href-file" href="@Url.Content("~/")Upload.ashx?f=@Url.Encode(Model.FileTypes[fileTypeIndex].Files[fileIndex].Data.FileName)&t=@Url.Encode(Model.FileTypes[fileTypeIndex].Files[fileIndex].Data.FileTitle)@(Model.FileTypes[fileTypeIndex].Files[fileIndex].Data.RemoteSave ? "&r=1" : "")">@Html.Raw(Model.FileTypes[fileTypeIndex].Files[fileIndex].Data.FileTitle.FormatEx())</a>
+                                @if (fts.Contains(Model.FileTypes[fileTypeIndex].Id))
+                                {
+                                    <div><i><small style="color: #666;">@(new DateTime(Model.FileTypes[fileTypeIndex].Files[fileIndex].Data.LastUpdateTick).FormatEx("dd.MM.yyyy, HH:mm"))</small></i></div>
+                                }
+                            </td>
+                            <td style="width: 50px">
+                                @if (Model.FileTypes[fileTypeIndex].Id != (long) RequestFileTypeEnum.CertificateOnPayment && !Model.FileTypes[fileTypeIndex].DisableAddFiles && Model.FileTypes[fileTypeIndex].Id != (long) RequestFileTypeEnum.CertificateOnRest)
+                                {
+                                    <span class="glyphicon glyphicon-remove-circle text-danger request-file-remove" aria-hidden="true" title="Удалить" style="cursor: pointer"></span>
+                                }
+                                @Html.HiddenFor(r => r.FileTypes[fileTypeIndex].Files[fileIndex].Data.RemoteSave)
+                                @Html.HiddenFor(r => r.FileTypes[fileTypeIndex].Files[fileIndex].Data.FileTitle)
+                                @Html.HiddenFor(r => r.FileTypes[fileTypeIndex].Files[fileIndex].Data.FileName)
+                                @Html.HiddenFor(r => r.FileTypes[fileTypeIndex].Files[fileIndex].Data.Id)
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+                @if (Model.FileTypes[fileTypeIndex].Id != (long) RequestFileTypeEnum.CertificateOnPayment
+                     && Model.FileTypes[fileTypeIndex].Id != (long) RequestFileTypeEnum.CertificateOnRest
+                     && !Model.FileTypes[fileTypeIndex].DisableAddFiles
+                     && !Model.Data.IsDeleted && Model.Data.IsLast
+                     && Model.IsEditable && (Model.Data.StatusId == (long) StatusEnum.WaitApplicant || Model.Data.StatusId == (long) StatusEnum.Draft || Security.HasRight(AccessRightEnum.EditAfterRegistration)))
+                {
+                    <div class="row form-group file-upload-div">
+                        <div class="col-md-12">
+                            <div class="panel-file well well-sm">
+                                <span class="file-span">
+                                    <em>Выберите файл для загрузки</em>
+                                </span>
+                            </div>
+                            <span class="btn fileinput-button">
+                                <i class="glyphicon glyphicon-paperclip"></i>
+                                <input type="file" name="files[]">
+                            </span>
+                        </div>
+                    </div>
+                    <div class="file-uploading-div hidden">
+                        <img src="~/Content/images/spinner.gif"/> Загрузка файла...
+                    </div>
+                }
+            </div>
+        }
+    }
+
+
+
+</fieldset>

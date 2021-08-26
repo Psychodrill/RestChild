@@ -1,0 +1,80 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@model RestChild.Extensions.Filter.CommonPagedList<RestChild.Domain.YearOfRest>
+@{
+	ViewBag.Title = "Справочник заявочных кампаний";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "Search";
+	ViewBag.InsertAction = "Insert";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "RequestCurrentPeriod";
+	ViewBag.ActiveChecker = false;
+	ViewBag.ActiveCheckerCaption = "";
+	ViewBag.Caption = "Справочник заявочных кампаний";
+	ViewBag.InsertButtonCaption = "Добавить заявочную кампанию";
+	ViewBag.SearchPanelCaption = "Поиск заявочных кампаний";
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Название заявочной кампании</label>
+		<div class="col-md-9">
+			@Html.TextBox("name", (string)ViewBag.name, new { @class = "form-control" })
+		</div>
+	</div>
+
+}
+
+@section searchResult{
+	@if (Model.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="text-center">№</th>
+					<th class="text-center">Год</th>
+					<th class="text-center">Завершена</th>
+					<th class="text-center">Дата открытия первого этапа</th>
+					<th class="text-center">Дата закрытия первого этапа</th>
+					<th class="text-center">Дата открытия второго этапа</th>
+					<th class="text-center">Дата закрытия второго этапа</th>
+				</tr>
+			</thead>
+			<tbody>
+				@{int rowNumber = Model.FirstItemOnPage;}
+				@foreach (var period in Model)
+				{
+					var isClosedClass = period.IsClosed ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger";
+					var firstStage = period.DateFirstStage.HasValue ? period.DateFirstStage.FormatEx(string.Empty, string.Empty) : "не установлена";
+					var firstStageClosed = period.DateFirstStageClose.HasValue ? period.DateFirstStageClose.FormatEx(string.Empty, string.Empty) : "не установлена";
+					var secondStage = period.DateSecondStage.HasValue ? period.DateSecondStage.FormatEx(string.Empty, string.Empty) : "не установлена";
+					var secondStageClose = period.DateSecondStageClose.HasValue ? period.DateSecondStageClose.FormatEx(string.Empty, string.Empty) : "не установлена";
+
+					<tr>
+						<td class="text-center">@(rowNumber++)</td>
+						<td>@Html.ActionLink(period.Year.ToString(), "Update", new { id = period.Id }, new { @class = "", target = "_blank" })</td>
+						<td class="text-center"><span class="@isClosedClass"></span></td>
+						<td class="text-center">@firstStage</td>
+						<td class="text-center">@firstStageClosed</td>
+						<td class="text-center">@secondStage</td>
+						<td class="text-center">@secondStageClose</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model, page => Url.Action("Search", new { pageNumber = page, name = (string)ViewBag.name }), new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}

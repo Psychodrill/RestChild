@@ -1,0 +1,91 @@
+﻿@using RestChild.Comon
+@model RestChild.Web.Models.Orphans.OrphanagePupilsFilterModel
+
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(ss => ss.OrphanageId)
+@Html.HiddenFor(ss => ss.GroupId)
+@Html.HiddenFor(ss => ss.IsInGroup)
+
+<div class="form-horizontal">
+    <div class="row">
+        <fieldset class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-2 control-label text-right">ФИО воспитанника</label>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label text-right">Возраст от</label>
+                <div class="col-md-2">
+                    @Html.TextBoxFor(m => m.AgeFrom, new { @class = "form-control" })
+                </div>
+                <label class="col-md-1 control-label text-right">до</label>
+                <div class="col-md-2">
+                    @Html.TextBoxFor(m => m.AgeTo, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label text-right">Пол</label>
+                <div class="col-md-2">
+                    @Html.DropDownListFor(m => m.IsMale, new SelectList(new List<object>
+                    {
+                        new {Id = (bool?) null, Name = "-- Все -- "},
+                        new {Id = (bool?) false, Name = "Женский"},
+                        new {Id = (bool?) true, Name = "Мужской"}
+                    }, "Id", "Name"), new {@class = "form-control"})
+                </div>
+                <div class="col-md-3 col-md-offset-1">
+                    @Html.CheckBoxFor(m => m.IsNotInGroup, new { autocomplete = "off", style = "vertical-align: text-bottom;" })
+                    <span>Не включен в другие группы</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-default btn-primary"><i class="glyphicon glyphicon-search"></i> Поиск </button>
+                    <button type="button" class="btn btn-default btn-primary clear-form"> Очистить фильтр </button>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+@if (Model.Result != null && Model.Result.Any())
+{
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th class="text-center" width="5%">№</th>
+                <th class="text-center">ФИО воспитанника</th>
+                <th class="text-center">Дата рождения</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ var rowNumber = 1; }
+            @foreach (var pupil in Model.Result.ToList())
+            {
+                <tr>
+                    @Html.Hidden("PupilId", pupil.Id, new { @class = "pupilId" })
+                    <td class="text-center">@(rowNumber++)</td>
+                    <td class="text-center">@pupil.Name</td>
+                    <td class="text-center">@pupil.DateOfBirth.FormatEx(string.Empty, string.Empty)</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-success btn-primary PupilId_@pupil.Id pupil-add">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-12">
+            <p>Поиск не дал результатов</p>
+        </div>
+    </div>
+}

@@ -1,0 +1,65 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="RestChild.Booking.Logic" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="IndexServer" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="ServersList" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;http://127.0.0.1:7770/InternalBooking&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="HotelFileUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost:3164/UploadHotelFile.ashx?f={0}&amp;t={1}</Value>
+    </Setting>
+    <Setting Name="StorageCounselorTaskPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\CounselorTask\</Value>
+    </Setting>
+    <Setting Name="SystemUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost:3164/</Value>
+    </Setting>
+    <Setting Name="StorageBoutJournal" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\RestChild\BoutJournal\</Value>
+    </Setting>
+    <Setting Name="LuceneIndexPath" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">C:\Projects\RestChild\LuceneIndex\App_Data</Value>
+    </Setting>
+    <Setting Name="RestManIndexServiceConnectionString" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">net.tcp://127.0.0.1:7779/</Value>
+    </Setting>
+    <Setting Name="EsNotImport" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;Account&lt;/string&gt;
+  &lt;string&gt;FileOrLink&lt;/string&gt;
+  &lt;string&gt;HistoryLink&lt;/string&gt;
+  &lt;string&gt;LinkToPeople&lt;/string&gt;
+  &lt;string&gt;History&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="SecretKey" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">4bn*ivw%92kk3ZvLmu#kY|ruE#vB?Pc#CpGCDqjBHQ*20?X{bP55WI~</Value>
+    </Setting>
+    <Setting Name="SearchOnlyBasePlace" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SearchOnlyBaseTime" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="BenefitNotForPayment" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" /&gt;</Value>
+    </Setting>
+    <Setting Name="InvalidSubRestriction" Type="System.Collections.Specialized.StringCollection" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;string&gt;1&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="NotParticipateInSecondStage" Type="System.Int64" Scope="Application">
+      <Value Profile="(Default)">201911</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

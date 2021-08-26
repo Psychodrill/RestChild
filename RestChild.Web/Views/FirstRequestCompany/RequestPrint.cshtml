@@ -1,0 +1,568 @@
+﻿@using RestChild.Comon
+@model RestChild.Web.Models.RequestViewModel
+@{
+	Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<title>Форма заявления</title>
+	@Styles.Render("~/Content/css-general")
+	<style type="text/css">
+		h3, h4 {
+			border-bottom: 1px solid #e5e5e5;
+		}
+
+		.inline-sign-block {
+			display: inline-block;
+			border-top: black 1px solid;
+			margin-top: 30px;
+			text-align: center;
+			font-size: 11px;
+			width: 100px;
+		}
+		.width400 {
+			width: 300px;
+		}
+	</style>
+</head>
+<body>
+	<div class="row">
+		<div class="col-md-offset-1 col-md-10 col-sm-offset-1 col-sm-10 col-lg-offset-1 col-lg-10">
+			<fieldset>
+				<h3 id="GeneralInfo">Общие сведения о заявлении</h3>
+				<div class="row form-group">
+					<label class="col-md-3 control-label">Номер заявления</label>
+					<div class="col-md-9">
+						@Model.Data.RequestNumber.FormatEx()
+					</div>
+				</div>
+				<div class="row form-group">
+					<label class="col-md-3 control-label">Дата заявления</label>
+					<div class="col-md-9">
+						@Model.Data.DateRequest.FormatEx()
+					</div>
+				</div>
+				<div class="row form-group">
+					<label class="col-md-3 control-label">Источник заявления</label>
+					<div class="col-md-9">
+						@Model.Data.Source.NullSafe(v => v.Name).FormatEx()
+					</div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<h3 id="TypeAndTime">Вид и время отдыха</h3>
+				<div class="row form-group">
+					<label class="col-md-3 control-label">Цель обращения</label>
+					<div class="col-md-9">
+						@Model.Data.TypeOfRest.NullSafe(v => v.Name).FormatEx()
+					</div>
+				</div>
+				<div class="row form-group">
+					<label class="col-md-3 control-label">Время отдыха</label>
+					<div class="col-md-9">
+						@Model.Data.TimeOfRest.NullSafe(v => v.Name).FormatEx()
+					</div>
+				</div>
+				<div class="row form-group">
+					<label class="col-md-3 control-label">Тематика смены</label>
+					<div class="col-md-9">
+						@Model.Data.SubjectOfRest.NullSafe(v => v.Name).FormatEx()
+					</div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<h3 id="PlaceRest">Регион отдыха</h3>
+                <div class="row form-group">
+                    <label class="col-md-3 control-label">Приоритетный</label>
+                    <div class="col-md-9">
+                        @Model.Data.PlaceOfRest.NullSafe(v => v.Name).FormatEx()
+                    </div>
+                </div>
+                @foreach (var p in Model.Data.PlacesOfRest)
+                {
+                    <div class="row form-group">
+                        <label class="col-md-3 control-label">Дополнительный</label>
+                        <div class="col-md-9">
+                            @p.NullSafe(v => v.PlaceOfRest.Name).FormatEx()
+                        </div>
+                    </div>
+                }
+			</fieldset>
+			<fieldset>
+				<h3 id="Places">Размещение</h3>
+				<div class="row form-group">
+					<label class="col-md-3 control-label">Основных мест</label>
+					<div class="col-md-9">
+						@Model.Data.MainPlaces.FormatEx()
+					</div>
+				</div>
+				<div class="row form-group">
+					<label class="col-md-3 control-label">Дополнительных мест</label>
+					<div class="col-md-9">
+						@Model.Data.AdditionalPlaces.FormatEx()
+					</div>
+				</div>
+			</fieldset>
+			@if (Model.Data.Applicant != null)
+			{
+				<fieldset>
+					<h3 id="Applicant">Сведения о заявителе</h3>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Фамилия</label>
+						<div class="col-md-9">
+							@Model.Data.Applicant.LastName.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Имя</label>
+						<div class="col-md-9">
+							@Model.Data.Applicant.FirstName.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Отчество</label>
+						<div class="col-md-9">
+							@Model.Data.Applicant.MiddleName.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Телефон</label>
+						<div class="col-md-9">
+							@Model.Data.Applicant.Phone.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Email</label>
+						<div class="col-md-9">
+							@Model.Data.Applicant.Email.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Статус по отношению к ребёнку</label>
+						<div class="col-md-9">
+							@Model.Data.Applicant.ApplicantType.NullSafe(v => v.Name).FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Тип документа удостоверяющего личность</label>
+						<div class="col-md-9">
+							@Model.Data.Applicant.DocumentType.NullSafe(v => v.Name).FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Серия и номер</label>
+						<div class="col-md-9">
+							@Model.Data.Applicant.DocumentSeria.FormatEx()
+							@Model.Data.Applicant.DocumentNumber.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Когда выдан документ</label>
+						<div class="col-md-9">
+							@Model.Data.Applicant.DocumentDateOfIssue.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Кем выдан документ</label>
+						<div class="col-md-9">
+							@Model.Data.Applicant.DocumentSubjectIssue.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group hidden">
+						<label class="col-md-3 control-label">СНИЛС</label>
+						<div class="col-md-9">
+							@Model.Data.Applicant.Snils.FormatEx()
+						</div>
+					</div>
+					@if (Model.Data.Agent != null)
+					{
+						<div class="row form-group">
+							<div class="col-md-offset-3 col-md-9">
+								Заявление подается представителем заявителя
+							</div>
+						</div>
+					}
+				</fieldset>
+			}
+
+
+			@if (Model.Data.Agent != null)
+			{
+				<fieldset>
+					<h3 id="Agent">Сведения о представителе заявителя</h3>
+					@Html.HiddenFor(r => r.Data.Agent.Id)
+
+
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Фамилия</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.LastName.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Имя</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.FirstName.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Отчество</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.MiddleName.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Телефон</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.Phone.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Email</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.Email.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Тип документа удостоверяющего личность</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.DocumentType.NullSafe(v => v.Name).FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Серия и номер</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.DocumentSeria.FormatEx()
+							@Model.Data.Agent.DocumentNumber.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Когда выдан документ</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.DocumentDateOfIssue.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Кем выдан документ</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.DocumentSubjectIssue.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group hidden">
+						<label class="col-md-3 control-label">СНИЛС</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.Snils.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Дата выдачи доверенности</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.ProxyDateOfIssure.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Дата окончания срока действия доверенности</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.ProxyEndDate.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">ФИО нотариуса</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.NotaryName.FormatEx()
+						</div>
+					</div>
+					<div class="row form-group">
+						<label class="col-md-3 control-label">Номер доверенности</label>
+						<div class="col-md-9">
+							@Model.Data.Agent.ProxyNumber.FormatEx()
+						</div>
+					</div>
+				</fieldset>
+			}
+			@if (Model.Data.Attendant != null && Model.Data.Attendant.Any())
+			{
+				<h3 id="AttendantsReference">Сведения о сопровождающих</h3>
+				<fieldset id="Attendants">
+					@foreach (var attendant in Model.Data.Attendant)
+					{
+						<div>
+							<div class="row form-group">
+								<label class="col-md-3 control-label">Фамилия</label>
+								<div class="col-md-9">
+									@attendant.LastName.FormatEx()
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-3 control-label">Имя</label>
+								<div class="col-md-9">
+									@attendant.FirstName.FormatEx()
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-3 control-label">Отчество</label>
+								<div class="col-md-9">
+									@attendant.MiddleName.FormatEx()
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-3 control-label">Тип документа удостоверяющего личность</label>
+								<div class="col-md-9">
+									@attendant.DocumentType.NullSafe(v => v.Name).FormatEx()
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-3 control-label">Серия и номер</label>
+								<div class="col-md-9">
+									@attendant.DocumentSeria.FormatEx()
+									@attendant.DocumentNumber.FormatEx()
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-3 control-label">Когда выдан документ</label>
+								<div class="col-md-9">
+									@attendant.DocumentDateOfIssue.FormatEx()
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="col-md-3 control-label">Кем выдан документ</label>
+								<div class="col-md-9">
+									@attendant.DocumentSubjectIssue.FormatEx()
+								</div>
+							</div>
+						</div>
+					}
+				</fieldset>
+			}
+			<h3 id="ChildsReference">Сведения о детях</h3>
+			<fieldset id="Childs">
+				@foreach (var child in Model.Data.Child)
+				{
+					<div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Фамилия</label>
+							<div class="col-md-9">
+								@child.LastName.FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Имя</label>
+							<div class="col-md-9">
+								@child.FirstName.FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Отчество</label>
+							<div class="col-md-9">
+								@child.MiddleName.FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Пол</label>
+							<div class="col-md-9">
+								@(child.Male ? "Мужской" : "Женский")
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Дата рождения</label>
+							<div class="col-md-9">
+								@child.DateOfBirth.FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Тип документа удостоверяющего личность</label>
+							<div class="col-md-9">
+								@child.DocumentType.NullSafe(d => d.Name).FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 col-xs-12 col-sm-12 control-label">Серия и номер</label>
+							<div class="col-md-3 col-xs-4 col-sm-4">
+								@child.DocumentSeria.FormatEx()
+							</div>
+							<div class="col-xs-8 col-md-6 col-sm-8">
+								@child.DocumentNumber.FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Когда выдан документ</label>
+							<div class="col-md-9">
+								@child.DocumentDateOfIssue.FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Кем выдан документ</label>
+							<div class="col-md-9">
+								@child.DocumentSubjectIssue.FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-md-12">
+								<h4>Сведения о категории ребёнка, которому путевка предоставляется бесплатно</h4>
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Категория</label>
+							<div class="col-md-9">
+								@child.BenefitType.NullSafe(b => b.Name).FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Вид ограничения</label>
+							<div class="col-md-9">
+								@child.TypeOfRestriction.NullSafe(b => b.Name).FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Дата возникновения льготы</label>
+							<div class="col-md-9">
+								@child.BenefitDate.FormatEx()
+							</div>
+						</div>
+						@if (child.BenefitNeverEnd)
+						{
+							<div class="row form-group">
+								<div class="col-md-offset-3 col-md-9">
+									Бессрочная
+								</div>
+							</div>
+						}
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Дата окончания льготы</label>
+							<div class="col-md-9">
+								@child.BenefitEndDate.FormatEx()
+							</div>
+						</div>
+						@if (!string.IsNullOrWhiteSpace(child.BenefitApproveComment))
+						{
+							<div class="row form-group">
+								<div class="col-md-12">
+									<div class="@(child.BenefitApprove ? "bg-success" : "bg-danger") panel-approve">@child.BenefitApproveComment.FormatEx()</div>
+								</div>
+							</div>
+						}
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Статус проверки льготы</label>
+							<div class="col-md-9 line-height35">
+								@child.BenefitApproveType.NullSafe(b => b.Name).FormatEx()
+							</div>
+						</div>
+
+						<div class="row form-group">
+							<div class="col-md-12">
+								<h4>Документ, подтверждающий, что ребёнок находится в трудной жизненной ситуации</h4>
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Кем выдан документ</label>
+							<div class="col-md-9">
+								@child.BenefitSubjectIssue.FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Дата документа</label>
+							<div class="col-md-9">
+								@child.BenefitDateOfIssure.FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Номер документа</label>
+							<div class="col-md-9">
+								@child.BenefitNumber.FormatEx()
+							</div>
+						</div>
+						@if (child.RegisteredInMoscow)
+						{
+							<div class="row form-group">
+								<div class="col-md-offset-3 col-md-9">
+									Ребёнок зарегистрирован по месту жительства в Москве
+								</div>
+							</div>
+						}
+						<div class="row form-group">
+							<div class="col-md-12">
+								<h4>Образовательное учреждение</h4>
+							</div>
+						</div>
+						@if (!child.SchoolNotPresent)
+						{
+							<div class="row form-group">
+								<div class="col-md-offset-3 col-md-9">
+									@child.School.NullSafe(s => s.Name).FormatEx()
+								</div>
+							</div>
+						}
+						else
+						{
+							<div class="row form-group">
+								<div class="col-md-offset-3 col-md-9">
+									Учреждения нет в списке
+								</div>
+							</div>
+						}
+						<div class="row form-group">
+							<div class="col-md-12">
+								<h4>Документ, удостоверяющий личность ребёнка за рубежом</h4>
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Тип документа, удостоверяющего личность ребёнка за рубежом</label>
+							<div class="col-md-9">
+								@child.ForeginType.NullSafe(b => b.Name).FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 col-xs-12 col-sm-12 control-label">Серия и номер</label>
+							<div class="col-md-3 col-xs-4 col-sm-4">
+								@child.ForeginSeria.FormatEx()
+							</div>
+							<div class="col-xs-8 col-md-6 col-sm-8">
+								@child.ForeginNumber.FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Дата выдачи</label>
+							<div class="col-md-9">
+								@child.ForeginDateOfIssue.FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Срок действия</label>
+							<div class="col-md-9">
+								@child.ForeginDateEnd.FormatEx()
+							</div>
+						</div>
+						<div class="row form-group">
+							<label class="col-md-3 control-label">Кем выдан</label>
+							<div class="col-md-9">
+								@child.ForeginSubjectIssue.FormatEx()
+							</div>
+						</div>
+
+						<div class="row form-group">
+							<div class="col-md-12">
+								<h4>Адрес регистрации</h4>
+							</div>
+						</div>
+
+						<!-- -------AddressControlView--------- -->
+						<div class="row form-group">
+							<div class="col-md-12">
+								@child.Address.NullSafe(a => a.Name ?? a.BtiAddress.NullSafe(ba => ba.FullAddress)).FormatEx()
+							</div>
+						</div>
+					</div>
+				}
+			</fieldset>
+			<div class="row">
+				<div class="inline-sign-block width400">ФИО Заявителя</div>
+				<div class="inline-sign-block">Дата</div>
+				<div class="inline-sign-block">Подпись</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

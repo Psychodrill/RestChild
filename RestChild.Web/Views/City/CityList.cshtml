@@ -1,0 +1,106 @@
+﻿@using System.Collections
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Extensions.Filter.CityFilterModel
+@{
+	ViewBag.Title = "Реестр городов";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "Search";
+	ViewBag.InsertAction = "Insert";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "City";
+	ViewBag.Caption = "Реестр городов";
+	ViewBag.InsertButtonCaption = "Добавить город";
+	ViewBag.SearchPanelCaption = "Поиск городов";
+	ViewBag.NeedInsertButton = Security.HasRight(AccessRightEnum.CityManage);
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Название</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+		</div>
+		<div class="col-md-4 col-md-offset-2 checkbox">
+			<label>@Html.CheckBox("IsActive", Model.IsActive ?? false) Только активные</label>
+		</div>
+	</div>
+}
+
+@section searchResult
+{
+	@if (Model.Result != null && Model.Result.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="text-center" width="5%">№</th>
+					<th>Название</th>
+					<th>Есть аэропорт</th>
+					<th>Есть ж/д вокзал</th>
+					<th>Активный</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@{int rowNumber = Model.Result.FirstItemOnPage;}
+				@foreach (var city in Model.Result)
+				{
+					<tr>
+						<td class="text-center">@(rowNumber++)</td>
+						<td>@city.Name.FormatEx()</td>
+						<td><span class="@city.HaveAero.ToGlyphicon()"></span></td>
+						<td><span class="@city.HaveRailway.ToGlyphicon()"></span></td>
+						<td><span class="@city.IsActive.ToGlyphicon()"></span></td>
+						<td class="text-center">@Html.ActionLink(" ", "Update", new { id = city.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model.Result, page =>
+						{
+							Model.Result = null;
+							Model.PageNumber = page;
+							return Url.Action("Search", Model);
+						}, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+}
+
+@section scripts
+{
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+
+	@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+	@Scripts.Render("~/Scripts/Vocabulary/ContractList.js")
+}

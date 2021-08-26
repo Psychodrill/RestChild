@@ -1,0 +1,23 @@
+﻿@model RestChild.Web.Models.Orphans.OrphanagePupilsFilterModel
+
+<div class="modal fade">
+    <div class="modal-dialog big-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Воспитанники учреждения</h4>
+            </div>
+            <div class="modal-body modal-body-autosize" style="max-height: 600px">
+                @using (Ajax.BeginForm(Model.ActionName, "Orphan", null, new AjaxOptions {HttpMethod = "POST", UpdateTargetId = "PupilsToAdd", OnComplete = "UdpForm()", InsertionMode = InsertionMode.Replace}, new { @id = "PupilsToAdd" }))
+                {
+                    @Html.Partial("Partials/GroupPupilsToAddForm", Model)
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>

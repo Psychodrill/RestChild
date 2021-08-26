@@ -1,0 +1,50 @@
+﻿@using RestChild.Web.Extensions
+@using RestChild.Comon
+@using RestChild.Web.Models.Monitoring
+
+@model  SmallLeisureInfoGBUModel
+@{
+    var isEditable = (ViewData["isEditable"] as bool?) ?? true;
+}
+@Scripts.Render("~/bundles/jquery")
+
+<div class="slid">
+    @Html.HiddenFor(m => m.Data.Id)
+    @Html.HiddenFor(m => m.Data.GBUId)
+    <fieldset class="form-horizontal">
+        <div class="form-group row">
+            @Html.HiddenFor(m => m.Data.GBUId, new { @class = "slid-gbu" })
+
+            @if (Model.Data.LastUploadData.HasValue)
+            {
+                <div class="col-sm-4">
+                    @Html.ActionLink(Model.Data.GBU.ShortName, "SmallLeisureInfoBuildTable", new { monitoringSmallLeisureInfoGBUId = Model.Data.Id }, new { @target = "_blank" })
+                </div>
+            }
+            else
+            {
+                <div class="col-sm-4">
+                    <label class="col-sm-4">@Model.Data.GBU.ShortName</label>
+                </div>
+            }
+
+            <div class="col-md-2 text-center">
+                @if (Model.Data.LastUploadData.HasValue)
+                {
+                    @Model.Data.LastUploadData.FormatEx()
+                }
+                else
+                {
+                    @:----
+                }
+            </div>
+
+            @if (isEditable)
+            {
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-primary remove-slid" role="button">Удалить организацию</button>
+                </div>
+            }
+        </div>
+    </fieldset>
+</div>

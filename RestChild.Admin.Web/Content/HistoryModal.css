@@ -1,0 +1,8 @@
+﻿#HistoryModal > .modal-dialog {
+	width: 90%;
+}
+
+#HistoryModalTable {
+	overflow-x: auto;
+	max-height: 600px;
+}

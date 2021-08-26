@@ -1,0 +1,540 @@
+﻿@using DocumentFormat.OpenXml.Wordprocessing
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Extensions
+@using RestChild.DAL.Migrations
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@using RestChild.Web.Models
+@using Styles = System.Web.Optimization.Styles
+@model RestChild.Web.Models.CounselorTaskEditModel
+@{
+	ViewBag.Title = "Взаимодействие с сотрудниками";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Взаимодействие с сотрудниками(@(Model.Data.NotNecessary ? "сообщение" : "задача"))</h2>
+
+<a href="@Url.Action("List", "CounselorTask")">Вернуться</a>
+<div class="row">&nbsp;</div>
+
+@Html.Partial("Assets/_StatePanel", Model.State)
+
+<div class="row">
+	<div class="col-md-12">
+		@using (Html.BeginForm("Save", "CounselorTask", FormMethod.Post, new { @id = "form" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.Data.Id)
+			@Html.HiddenFor(m => m.Data.NotNecessary)
+			@Html.HiddenFor(m => m.Data.ParentId)
+			@Html.HiddenFor(m => m.Data.StateId)
+			@Html.HiddenFor(m => m.StateMachineActionString)
+			@Html.HiddenFor(m => m.Data.HistoryLinkId)
+			if (!ViewData.ModelState.IsValid)
+			{
+				<div class="alert alert-danger" role="alert">
+					@Html.ValidationSummary(false)
+				</div>
+			}
+			<fieldset class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Тема</label>
+					<div class="col-md-9 line-height35">
+						@if (!Model.IsEditableTask)
+						{
+							@Html.Raw(Model.NullSafe(m => m.Data.Subject).FormatEx())
+							@Html.HiddenFor(m => m.Data.Subject)
+						}
+						else
+						{
+							@Html.TextBoxFor(m => m.Data.Subject, new { @class = "form-control", maxlength = 1000 })
+						}
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Содержание</label>
+					<div class="col-md-9 line-height35">
+						<div id="body" @Html.Raw(Model.IsEditableTask ? string.Empty : "readonly=\"readonly\"") class="well-sm well">
+						</div>
+						@Html.HiddenFor(m => m.Body)
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Дата</label>
+					<div class="col-md-3 line-height35">
+						@if (!Model.IsEditableTask)
+						{
+							@Html.Raw(Model.NullSafe(m => m.Data.DateCreate).FormatEx())
+							@Html.HiddenFor(m => m.Data.DateCreate)
+						}
+						else
+						{
+							<div class='input-group date datepicker-anytime'>
+								@Html.TextBoxFor(r => r.Data.DateCreate, new { @class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Data.DateCreate).FormatEx(string.Empty, string.Empty) })
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						}
+					</div>
+				</div>
+				@if (!Model.Data.NotNecessary)
+				{
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Срок исполнения(план)</label>
+						<div class="col-md-3 line-height35">
+							@if (!Model.IsEditableTask)
+							{
+								@Html.Raw(Model.NullSafe(m => m.Data.DatePlanFinish).FormatEx())
+								@Html.HiddenFor(m => m.Data.DatePlanFinish)
+							}
+							else
+							{
+								<div class='input-group date datepicker-anytime'>
+									@Html.TextBoxFor(r => r.Data.DatePlanFinish, new { @class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Data.DatePlanFinish).FormatEx(string.Empty, string.Empty) })
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							}
+						</div>
+					</div>
+				}
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Автор</label>
+					<div class="col-md-9 line-height35">
+						@Html.Raw(Model.NullSafe(m => m.Data.Author.GetInfo()))
+						@Html.HiddenFor(m => m.Data.AuthorId)
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 control-label text-right">Исполнитель</label>
+					<div class="col-md-9 line-height35">
+						@Html.Raw(Model.NullSafe(m => m.Data.Executor.GetInfo()))
+						@Html.HiddenFor(m => m.Data.ExecutorId)
+					</div>
+				</div>
+				@if (!Model.Data.NotNecessary)
+				{
+
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Заезд</label>
+						<div class="col-md-9 line-height35">
+							@Html.Raw(string.Format("{0} - <b>{2}</b><br/><small><i>{1}</i></small>", Model.Data.NullSafe(t => t.Bout.Hotels.Name).FormatEx(), Model.Data.NullSafe(t => t.Bout.Hotels.Address).FormatEx(), Model.Data.Bout != null && Model.Data.Bout.GroupedTimeOfRest != null ? Model.Data.Bout.GroupedTimeOfRest.Name : string.Format("{0} - {1}", Model.Data.NullSafe(t => t.Bout.DateIncome).FormatEx(), Model.Data.NullSafe(t => t.Bout.DateOutcome).FormatEx())))
+							@Html.HiddenFor(m => m.Data.BoutId)
+						</div>
+					</div>
+				}
+				@if (Model.IsEditableTask || Model.TaskFiles.Any())
+				{
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Файлы</label>
+						<div class="col-md-9">
+							<table class="table table-striped" id="filesTable" tablename="TaskFiles">
+								<tbody>
+									@for (var i = 0; i < Model.TaskFiles.Count; i++)
+									{
+										<tr>
+											<td>
+												<a target="_blank" class="href-file" href="@Url.Content("~/")UploadTaskFile.ashx?f=@Url.Encode(Model.TaskFiles[i].FileName)&t=@Url.Encode(Model.TaskFiles[i].FileTitle)">@Model.TaskFiles[i].FileTitle</a>
+											</td>
+											<td style="width: 50px">
+												@if (Model.IsEditableTask)
+												{
+													<span class="glyphicon glyphicon-remove-circle text-danger request-file-remove" aria-hidden="true" title="Удалить" style="cursor: pointer"></span>
+												}
+												@Html.HiddenFor(m => m.TaskFiles[i].Id)
+												@Html.HiddenFor(m => m.TaskFiles[i].CounselorTaskId)
+												@Html.HiddenFor(m => m.TaskFiles[i].DataCreate)
+												@Html.HiddenFor(m => m.TaskFiles[i].FileName)
+												@Html.HiddenFor(m => m.TaskFiles[i].FileTitle)
+											</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+							@if (Model.IsEditableTask)
+							{
+								<div class="row form-group file-upload-div">
+									<div class="col-md-12">
+										<div class="panel-file well well-sm">
+											<span class="file-span">
+												<em>Выберите файл для загрузки</em>
+											</span>
+										</div>
+										<span class="btn fileinput-button">
+											<i class="glyphicon glyphicon-paperclip"></i>
+											<input type="file" name="files[]" multiple>
+										</span>
+									</div>
+								</div>
+								<div class="file-uploading-div hidden">
+									<img src="~/Content/images/spinner.gif" /> Загрузка файла...
+								</div>
+							}
+						</div>
+					</div>
+				}
+				@if (!Model.Data.NotNecessary)
+				{
+
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Срок исполнения(факт)</label>
+						<div class="col-md-3 line-height35">
+							@if (!Model.IsEditable)
+							{
+								@Html.Raw(Model.NullSafe(m => m.Data.DateFactFinish).FormatEx())
+								@Html.HiddenFor(m => m.Data.DateFactFinish)
+							}
+							else
+							{
+								<div class='input-group date datepicker-anytime'>
+									@Html.TextBoxFor(r => r.Data.DateFactFinish, new { @class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Data.DatePlanFinish).FormatEx(string.Empty, string.Empty) })
+									<span class="input-group-addon">
+										<span class="glyphicon glyphicon-calendar"></span>
+									</span>
+								</div>
+							}
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-3 control-label text-right">
+							<label class="input-label">Отчет о выполнении</label>
+						</div>
+						<div class="col-md-9">
+							<div id="report" @Html.Raw(Model.IsEditable ? string.Empty : "readonly=\"readonly\"") class="well-sm well">
+							</div>
+							@Html.HiddenFor(m => m.Report)
+						</div>
+					</div>
+					if (Model.IsEditable || Model.ReportFiles.Any())
+					{
+						<div class="form-group">
+							<div class="col-md-3 control-label text-right">
+								<label class="input-label">Файлы отчета</label>
+							</div>
+							<div class="col-md-9">
+								<table class="table table-striped" id="filesReportTable" tablename="ReportFiles">
+									<tbody>
+										@for (var i = 0; i < Model.Data.ReportFiles.Count; i++)
+										{
+											<tr>
+												<td>
+													<a target="_blank" class="href-file" href="@Url.Content("~/")UploadTaskFile.ashx?f=@Url.Encode(Model.ReportFiles[i].FileName)&t=@Url.Encode(Model.ReportFiles[i].FileTitle)">@Model.ReportFiles[i].FileTitle</a>
+												</td>
+												<td style="width: 50px">
+													@if (Model.IsEditable)
+													{
+														<span class="glyphicon glyphicon-remove-circle text-danger request-file-remove" aria-hidden="true" title="Удалить" style="cursor: pointer"></span>
+													}
+													@Html.HiddenFor(m => m.ReportFiles[i].Id)
+													@Html.HiddenFor(m => m.ReportFiles[i].CounselorTaskId)
+													@Html.HiddenFor(m => m.ReportFiles[i].DataCreate)
+													@Html.HiddenFor(m => m.ReportFiles[i].FileName)
+													@Html.HiddenFor(m => m.ReportFiles[i].FileTitle)
+												</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+								@if (Model.IsEditable)
+								{
+									<div class="row form-group file-upload-div">
+										<div class="col-md-12">
+											<div class="panel-file well well-sm">
+												<span class="file-span">
+													<em>Выберите файл для загрузки</em>
+												</span>
+											</div>
+											<span class="btn fileinput-button">
+												<i class="glyphicon glyphicon-paperclip"></i>
+												<input type="file" name="files[]" multiple>
+											</span>
+										</div>
+									</div>
+									<div class="file-uploading-div hidden">
+										<img src="~/Content/images/spinner.gif" /> Загрузка файла...
+									</div>
+								}
+							</div>
+						</div>
+					}
+					if ((Model.ChildTasks != null && Model.ChildTasks.Any(t=>!t.NotNecessary)) || (Model.Data.Executor != null && Model.Data.Executor.CounselorTaskExecutorTypeId != (long)TaskExecutorTypeEnum.Counselor && Model.Data.Executor.CounselorTaskExecutorTypeId != (long)TaskExecutorTypeEnum.SwingCounselor))
+					{
+						<div class="col-md-12">
+							<h4>Соисполнители</h4>
+							@if (Model.State.State.Id == StateMachineStateEnum.CounselorTask.Delivered)
+							{
+								<a class="btn btn-default" href="@Url.Action("Create", new {@parentTaskId = Model.Data.Id})">Добавить подзадачу</a>
+							}
+							<table class="table table-striped table-hover">
+								<thead>
+									<tr>
+										<th class="text-center" width="5%">№</th>
+										<th>Тема</th>
+										<th>Дата постановки</th>
+										<th>Срок исполнения</th>
+										<th>Заезд</th>
+										<th>Автор</th>
+										<th>Исполнитель</th>
+										<th>Статус</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									@if (Model.ChildTasks.Any(t => !t.NotNecessary))
+									{
+										int rowNumber = 1;
+										foreach (var task in Model.ChildTasks.Where(t=>!t.NotNecessary).ToList())
+										{
+											<tr>
+												<td class="text-center">@(rowNumber++)</td>
+												<td>@Html.Raw(task.Subject.FormatEx())</td>
+												<td>@Html.Raw(task.DateCreate.FormatEx())</td>
+												<td>@Html.Raw(task.DatePlanFinish.FormatEx())/@Html.Raw(task.DateFactFinish.FormatEx())</td>
+												<td>@Html.Raw(string.Format("{0} - <b>{2}</b><br/> <i><small>{1}</small></i>", task.NullSafe(t => t.Bout.Hotels.Name).FormatEx(), task.NullSafe(t => t.Bout.Hotels.Address).FormatEx(), task.Bout != null && task.Bout.GroupedTimeOfRest != null ? task.Bout.GroupedTimeOfRest.Name : string.Format("{0} - {1}", task.NullSafe(t => t.Bout.DateIncome).FormatEx(), task.NullSafe(t => t.Bout.DateOutcome).FormatEx())))</td>
+												<td>@Html.Raw(task.NullSafe(t => t.Author.GetInfo()))</td>
+												<td>@Html.Raw(task.NullSafe(t => t.Executor.GetInfo()))</td>
+												<td>@Html.Raw(task.NullSafe(t => t.State.Name).FormatEx())</td>
+												<td class="text-center">@Html.ActionLink(" ", "Edit", new { id = task.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+											</tr>
+										}
+									}
+									else
+									{
+										<tr>
+											<td colspan="9"><i>Нет ни одной подзадачи</i></td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					}
+				}
+				else
+				{
+					if (Model.Data.Parent != null && Model.Data.Parent.Author != null && Model.Data.Parent.Executor != null)
+					{
+						<h4>Предыдущие сообщения и задачи</h4>
+						<table class="table table-stripped">
+							<thead>
+								<tr>
+									<th class="text-center" width="5%">№</th>
+									<th>Дата</th>
+									<th>Тема</th>
+									<th>Сообщение</th>
+									<th>Тип</th>
+									<th>Автор</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								@{
+						var parent = Model.Data.Parent;
+						if (parent.Author == null || parent.Executor == null)
+						{
+							parent = null;
+						}
+						var rowNumber = 1;
+						while (parent != null)
+						{
+							<text>
+								<tr>
+									<td class="text-center">@(rowNumber++)</td>
+									<td>@Html.Raw(parent.DateCreate.FormatEx())</td>
+									<td>@Html.Raw(parent.Subject.FormatEx())</td>
+									<td>@Html.Raw(parent.Body)</td>
+									<td>@Html.Raw(!parent.NotNecessary ? "Задача" : "Сообщение")</td>
+									<td>@Html.Raw(parent.NullSafe(t => t.Author.GetInfo()))</td>
+									<td class="text-center">@Html.ActionLink(" ", "Edit", new { id = parent.Id }, new { @class = " glyphicon glyphicon-pencil" })</td>
+								</tr>
+							</text>
+							if (parent.Parent != null && parent.NotNecessary && parent.Parent.Author != null && parent.Parent.Executor != null)
+							{
+								parent = parent.Parent;
+							}
+							else
+							{
+								parent = null;
+							}
+						}
+								}
+							</tbody>
+
+						</table>
+					}
+				}
+				@if (Model.ChildTasks != null && Model.ChildTasks.Any(t=>t.NotNecessary))
+				{
+				<h4>Ответы на сообщение/задачу</h4>
+				<table class="table table-stripped">
+					<thead>
+						<tr>
+							<th class="text-center" width="5%">№</th>
+							<th>Дата</th>
+							<th>Тема</th>
+							<th>Сообщение</th>
+							<th>Тип</th>
+							<th>Автор</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@{
+				var rn = 1;
+				foreach (var parent in Model.ChildTasks.Where(t=>t.NotNecessary).ToList())
+				{
+					<text>
+						<tr>
+							<td class="text-center">@(rn++)</td>
+							<td>@Html.Raw(parent.DateCreate.FormatEx())</td>
+							<td>@Html.Raw(parent.Subject.FormatEx())</td>
+							<td>@Html.Raw(parent.Body)</td>
+							<td>@Html.Raw(!parent.NotNecessary ? "Задача" : "Сообщение")</td>
+							<td>@Html.Raw(parent.NullSafe(t => t.Author.GetInfo()))</td>
+							<td class="text-center">@Html.ActionLink(" ", "Edit", new { id = parent.Id }, new { @class = " glyphicon glyphicon-pencil" })</td>
+						</tr>
+					</text>
+				}
+						}
+					</tbody>
+
+				</table>
+				}
+			</fieldset>
+		}
+	</div>
+</div>
+
+@section scripts
+{
+	@Scripts.Render("~/Scripts/jquery.validate.min.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale("ru");
+		$(function () {
+			var report = ($('#@Html.IdFor(m => m.Report)').val());
+			@if (Model.IsEditable)
+			{
+				<text>
+			$('#report').summernote({
+				lang: 'ru-RU',
+				toolbar: [
+					['style', ['style']],
+					['font', ['bold', 'italic', 'underline', 'clear']],
+					['fontname', ['fontname']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['height', ['height']],
+					['table', ['table']],
+					['insert', ['link', 'hr']]
+				],
+				maxHeight: 300,
+				height: 300
+			});
+			$('#report').code(report);
+			</text>
+			}
+			else
+			{
+				<text>
+			$('#report').html(report);
+			</text>
+			}
+			var body = ($('#@Html.IdFor(m => m.Body)').val());
+			@if (Model.IsEditableTask)
+			{
+				<text>
+			$('#body').summernote({
+				lang: 'ru-RU',
+				toolbar: [
+					['style', ['style']],
+					['font', ['bold', 'italic', 'underline', 'clear']],
+					['fontname', ['fontname']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['height', ['height']],
+					['table', ['table']],
+					['insert', ['link', 'hr']]
+				],
+				maxHeight: 300,
+				height: 300
+			});
+			$('#body').code(body);
+			</text>
+			}
+			else
+			{
+				<text>
+			$('#body').html(body);
+			</text>
+			}
+		});
+
+		function confirmStateButtonTask(formSelector, actionSelector, actionCode, buttonName, description, commentSelector) {
+
+			var dtp = $('#@Html.IdFor(m => m.Data.DateCreate)').data("DateTimePicker");
+			var dlp = $('#@Html.IdFor(m => m.Data.DatePlanFinish)').data('DateTimePicker');
+			if (dtp && dlp && dtp.date().isAfter(dlp.date())) {
+				ShowAlert('Срок исполнения не может быть раньше чем дата постановки задачи', "alert-danger", "glyphicon-ok", true);
+				return;
+			}
+
+			@if (Model.IsEditable){
+				<text>
+			$('#@Html.IdFor(m => m.Report)').val(($('#report').code()));
+			</text>
+			}
+			@if (Model.IsEditableTask){
+				<text>
+			$('#@Html.IdFor(m => m.Body)').val(($('#body').code()));
+			</text>
+			}
+
+			return confirmStateButton(formSelector, actionSelector, actionCode, buttonName, description, commentSelector);
+		}
+	</script>
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+	@Html.Partial("Assets/HistoryLinkTemplate")
+	@Scripts.Render("~/Scripts/StateScript.js")
+
+	@Scripts.Render("~/Scripts/Summernote/summernote.min.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote-ru-RU.js")
+	@Scripts.Render("~/Scripts/Vocabulary/CounselorTaskEdit.js")
+	<script type="dot/template" id="fileRowTemplate">
+		<tr>
+			<td>
+				<a target="_blank" class="href-file" href="/UploadTaskFile.ashx?f={{=encodeURIComponent(it.fileName)}}&t={{=encodeURIComponent(it.fileTitle)}}">{{=it.fileTitle}}</a>
+			</td>
+			<td style="width: 50px">
+				<span class="glyphicon glyphicon-remove-circle text-danger request-file-remove" aria-hidden="true" title="Удалить" style="cursor: pointer"></span>
+				<input type="hidden" name="{{=it.tableName}}[0].FileName" class="FileName" value="{{=it.fileName}}" />
+				<input type="hidden" name="{{=it.tableName}}[0].FileTitle" class="FileTitle" value="{{=it.fileTitle}}" />
+			</td>
+		</tr>
+	</script>
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	@Styles.Render("~/Content/css/font-awesome.min.css")
+	@Styles.Render("~/Content/summernote.css")
+	@Styles.Render("~/Content/jQuery.FileUpload/css/jquery.fileupload.css")
+}
+
+
+
+
+
+
+

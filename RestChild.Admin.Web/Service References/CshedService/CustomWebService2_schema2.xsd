@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://cloud.mos.ru/customWebService2/" xmlns:ns1="http://jaxb.dev.java.net/array" targetNamespace="http://cloud.mos.ru/customWebService2/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="CustomWebService2_schema1.xsd" namespace="http://jaxb.dev.java.net/array" />
+  <xs:element name="Annotation" nillable="true" type="xs:base64Binary" />
+  <xs:element name="AnnotationId" nillable="true" type="xs:string" />
+  <xs:element name="AnnotationIds" nillable="true" type="ns1:stringArray" />
+  <xs:element name="CopyDocument" nillable="true" type="tns:CopyDocumentRequest" />
+  <xs:element name="CreateAnnotation" nillable="true" type="tns:CreateAnnotationRequest" />
+  <xs:element name="CreateDocument" nillable="true" type="tns:CreateDocumentRequest" />
+  <xs:element name="CreateFolder" nillable="true" type="tns:CreateFolderRequest" />
+  <xs:element name="CustomID" nillable="true" type="xs:string" />
+  <xs:element name="CustomIDs" nillable="true" type="ns1:stringArray" />
+  <xs:element name="CustomId" nillable="true" type="xs:string" />
+  <xs:element name="DeleteAnnotation" nillable="true" type="tns:RetrieveAnnotationRequest" />
+  <xs:element name="DeleteAnnotationResult" type="xs:boolean" />
+  <xs:element name="DeleteDocumentVersion" nillable="true" type="tns:DeleteDocumentVersionRequest" />
+  <xs:element name="DeleteDocumentVersionResponse" nillable="true" type="xs:string" />
+  <xs:element name="DeleteDocuments" nillable="true" type="tns:DeleteDocumentsRequest" />
+  <xs:element name="DocumentData" nillable="true" type="xs:base64Binary" />
+  <xs:element name="DocumentsInFolder" nillable="true" type="ns1:stringArray" />
+  <xs:element name="ErrorMessageException" type="tns:ErrorMessageException" />
+  <xs:element name="FileNetId" nillable="true" type="xs:string" />
+  <xs:element name="FolderDocument" nillable="true" type="tns:FolderDocumentRequest" />
+  <xs:element name="FolderDocumentResponse" nillable="true" type="xs:string" />
+  <xs:element name="FolderPath" nillable="true" type="xs:string" />
+  <xs:element name="FoldersInFolder" nillable="true" type="ns1:stringArray" />
+  <xs:element name="FoldersOfDocument" nillable="true" type="ns1:stringArray" />
+  <xs:element name="GetCustomId" nillable="true" type="tns:GetDocumentRequest" />
+  <xs:element name="GetDocument" nillable="true" type="tns:GetDocumentRequest" />
+  <xs:element name="GetDocumentData" nillable="true" type="tns:GetDocumentRequest" />
+  <xs:element name="GetDocumentPermissions" nillable="true" type="tns:GetDocumentPermissionsRequest" />
+  <xs:element name="GetDocumentProperties" nillable="true" type="tns:GetDocumentRequest" />
+  <xs:element name="GetDocumentPropertiesResponse" nillable="true" type="tns:GetDocumentPropertiesResponse" />
+  <xs:element name="GetDocumentResponse" nillable="true" type="tns:GetDocumentResponse" />
+  <xs:element name="GetDocumentsInFolder" nillable="true" type="tns:GetFilesInFolderRequest" />
+  <xs:element name="GetFileNetId" nillable="true" type="tns:GetDocumentRequest" />
+  <xs:element name="GetFolderPermissions" nillable="true" type="tns:GetFolderPermissionsRequest" />
+  <xs:element name="GetFoldersInFolder" nillable="true" type="tns:GetFilesInFolderRequest" />
+  <xs:element name="GetFoldersOfDocument" nillable="true" type="tns:GetFoldersOfDocumentRequest" />
+  <xs:element name="GetParentFolder" nillable="true" type="tns:GetParentFolderRequest" />
+  <xs:element name="GetSignedDocumentData" nillable="true" type="tns:GetDocumentRequest" />
+  <xs:element name="NumOfDeleted" nillable="true" type="xs:int" />
+  <xs:element name="ParentFolder" nillable="true" type="xs:string" />
+  <xs:element name="PermissionsOfDocument" nillable="true" type="tns:GetPermissionsResponse" />
+  <xs:element name="PermissionsOfFolder" nillable="true" type="tns:GetPermissionsResponse" />
+  <xs:element name="RetrieveAnnotation" nillable="true" type="tns:RetrieveAnnotationRequest" />
+  <xs:element name="RetrieveAnnotations" nillable="true" type="tns:GetDocumentRequest" />
+  <xs:element name="RetrieveDocAndAnnotations" nillable="true" type="tns:GetDocumentRequest" />
+  <xs:element name="RetrieveDocAndAnnotationsResponse" nillable="true" type="tns:RetrieveDocAndAnnotationsResponse" />
+  <xs:element name="SearchDocuments" nillable="true" type="tns:SearchDocumentsRequest" />
+  <xs:element name="SetDocumentPermissions" nillable="true" type="tns:SetDocumentPermissionsRequest" />
+  <xs:element name="SetDocumentPermissionsResponse" nillable="true" type="xs:string" />
+  <xs:element name="SetFolderPermissions" nillable="true" type="tns:SetFolderPermissionsRequest" />
+  <xs:element name="SetFolderPermissionsResponse" nillable="true" type="xs:string" />
+  <xs:element name="SignedDocumentData" nillable="true" type="xs:base64Binary" />
+  <xs:element name="UpdateDocumentProperties" nillable="true" type="tns:UpdatePropertiesRequest" />
+  <xs:element name="UpdateDocumentPropertiesResponse" nillable="true" type="xs:string" />
+  <xs:element name="UpdateDocumentVersion" nillable="true" type="tns:UpdateDocumentRequest" />
+  <xs:element name="UpdatedId" nillable="true" type="xs:string" />
+  <xs:element name="ValidateDocument" nillable="true" type="tns:GetDocumentRequest" />
+  <xs:element name="ValidateDocumentStatuses" nillable="true" type="tns:booleanArray" />
+  <xs:element name="ValidateDocumentWithInfo" nillable="true" type="tns:GetDocumentRequest" />
+  <xs:element name="ValidateDocumentWithInfoResponse" nillable="true" type="tns:ValidateDocumentWithInfoResponse" />
+  <xs:element name="moveDocument" nillable="true" type="tns:GetDocumentRequest" />
+  <xs:element name="movedCustomId" nillable="true" type="xs:string" />
+  <xs:complexType name="UpdatePropertiesRequest">
+    <xs:sequence>
+      <xs:element name="DocumentId" type="xs:string" />
+      <xs:element minOccurs="0" name="properties">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="Property" type="tns:Property" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Property">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string" />
+      <xs:element name="Value" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ErrorMessageException">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="message" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetDocumentRequest">
+    <xs:sequence>
+      <xs:element name="DocumentId" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ValidateDocumentWithInfoResponse">
+    <xs:sequence>
+      <xs:element name="DocumentId" type="xs:string" />
+      <xs:element minOccurs="0" name="validateInfo">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="ValidateInfo" type="tns:ValidateDocumentInfo" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ValidateDocumentInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="properties">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="Property" type="tns:Property" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SetFolderPermissionsRequest">
+    <xs:sequence>
+      <xs:element name="Path" type="xs:string" />
+      <xs:element minOccurs="0" name="permissions">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="Permission" type="tns:Permission" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Permission">
+    <xs:sequence>
+      <xs:element name="GranteeName" type="xs:string" />
+      <xs:element maxOccurs="unbounded" name="AccessRights" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="UpdateDocumentRequest">
+    <xs:sequence>
+      <xs:element name="DocumentId" type="xs:string" />
+      <xs:element xmlns:ns2="http://www.w3.org/2005/05/xmlmime" ns2:expectedContentTypes="application/octet-stream" name="Document" type="xs:base64Binary" />
+      <xs:element name="SSOID" type="xs:string" />
+      <xs:element minOccurs="0" name="properties">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="Property" type="tns:Property" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DeleteDocumentsRequest">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" name="Documents" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetDocumentPropertiesResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="properties">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="Property" type="tns:Property" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SearchDocumentsRequest">
+    <xs:sequence>
+      <xs:element name="searchQuery" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetFoldersOfDocumentRequest">
+    <xs:sequence>
+      <xs:element name="DocumentId" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetDocumentPermissionsRequest">
+    <xs:sequence>
+      <xs:element name="DocumentId" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetPermissionsResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="permissions">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="Permission" type="tns:Permission" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetParentFolderRequest">
+    <xs:sequence>
+      <xs:element name="Path" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetFolderPermissionsRequest">
+    <xs:sequence>
+      <xs:element name="Path" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="RetrieveDocAndAnnotationsResponse">
+    <xs:sequence>
+      <xs:element xmlns:ns3="http://www.w3.org/2005/05/xmlmime" ns3:expectedContentTypes="application/octet-stream" name="Document" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="annotations">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element xmlns:ns4="http://www.w3.org/2005/05/xmlmime" ns4:expectedContentTypes="application/octet-stream" maxOccurs="unbounded" name="Annotation" type="xs:base64Binary" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DeleteDocumentVersionRequest">
+    <xs:sequence>
+      <xs:element name="DocumentId" type="xs:string" />
+      <xs:element name="Version" type="tns:Version" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Version">
+    <xs:sequence>
+      <xs:element name="Major" type="xs:int" />
+      <xs:element name="Minor" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetFilesInFolderRequest">
+    <xs:sequence>
+      <xs:element name="Path" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="FolderDocumentRequest">
+    <xs:sequence>
+      <xs:element name="DocumentId" type="xs:string" />
+      <xs:element name="Path" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetDocumentResponse">
+    <xs:sequence>
+      <xs:element xmlns:ns5="http://www.w3.org/2005/05/xmlmime" ns5:expectedContentTypes="application/octet-stream" name="Document" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="properties">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="Property" type="tns:Property" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="RetrieveAnnotationRequest">
+    <xs:sequence>
+      <xs:element name="DocumentId" type="xs:string" />
+      <xs:element name="AnnotationId" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CreateFolderRequest">
+    <xs:sequence>
+      <xs:element name="Path" type="xs:string" />
+      <xs:element minOccurs="0" name="Server" type="xs:string" />
+      <xs:element minOccurs="0" name="ServerStore" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SetDocumentPermissionsRequest">
+    <xs:sequence>
+      <xs:element name="DocumentId" type="xs:string" />
+      <xs:element minOccurs="0" name="permissions">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="Permission" type="tns:Permission" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CreateDocumentRequest">
+    <xs:sequence>
+      <xs:element xmlns:ns6="http://www.w3.org/2005/05/xmlmime" ns6:expectedContentTypes="application/octet-stream" name="Document" type="xs:base64Binary" />
+      <xs:element name="SSOID" type="xs:string" />
+      <xs:element name="DocumentClass" type="xs:string" />
+      <xs:element minOccurs="0" name="FromSystemCode" type="xs:string" />
+      <xs:element minOccurs="0" name="URN" type="xs:string" />
+      <xs:element minOccurs="0" name="properties">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded" name="Property" type="tns:Property" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Server" type="xs:string" />
+      <xs:element minOccurs="0" name="ServerStore" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="booleanArray">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="item" nillable="true" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CreateAnnotationRequest">
+    <xs:sequence>
+      <xs:element name="DocumentId" type="xs:string" />
+      <xs:element xmlns:ns7="http://www.w3.org/2005/05/xmlmime" ns7:expectedContentTypes="application/octet-stream" name="Document" type="xs:base64Binary" />
+      <xs:element name="Description" type="xs:string" />
+      <xs:element name="MimeType" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CopyDocumentRequest">
+    <xs:sequence>
+      <xs:element name="documentId" type="xs:string" />
+      <xs:element name="targetURL" type="xs:string" />
+      <xs:element minOccurs="0" name="targetOS" type="xs:string" />
+      <xs:element minOccurs="0" name="targetUsername" type="xs:string" />
+      <xs:element minOccurs="0" name="targetPassword" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

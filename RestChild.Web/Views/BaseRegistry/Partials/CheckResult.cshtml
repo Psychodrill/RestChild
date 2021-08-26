@@ -1,0 +1,37 @@
+﻿@using RestChild.Comon
+@model RestChild.Comon.Dto.BaseRegistryCheckResult
+
+@if (Model != null)
+{
+	var additionalString = "";
+    if (Model.BenefitCheckRequest != null)
+    {
+        var items = new List<string>();
+        var name = string.Format("{0} {1} {2}", Model.BenefitCheckRequest.LastName, Model.BenefitCheckRequest.FirstName, Model.BenefitCheckRequest.MiddleName).Trim();
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            items.Add(string.Format("<b>{0}</b>", name));
+        }
+
+        if (Model.BenefitCheckRequest.DateOfBirth.HasValue)
+        {
+            items.Add(string.Format("дата рождения: <b>{0}</b>", Model.BenefitCheckRequest.DateOfBirth.FormatEx()));
+        }
+        if (!string.IsNullOrWhiteSpace(Model.BenefitCheckRequest.DocumentSeria) || !string.IsNullOrWhiteSpace(Model.BenefitCheckRequest.DocumentNumber))
+        {
+            items.Add(string.Format("документ: <b>{0} {1}</b>", Model.BenefitCheckRequest.DocumentSeria, Model.BenefitCheckRequest.DocumentNumber));
+        }
+
+        additionalString = string.Join(", ", items);
+    }
+
+	<div class="row form-group">
+		<div class="col-md-12">
+			<div class="@((!Model.ResultAbsent ? "" : "bg-warning")) panel-approve">
+                @Html.Partial("BaseRegistryBenefitResultData", Model, new ViewDataDictionary{{"additionalString", additionalString}})
+			</div>
+		</div>
+	</div>
+}
+
+

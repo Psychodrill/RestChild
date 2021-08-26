@@ -1,0 +1,37 @@
+﻿@using Newtonsoft.Json
+@using RestChild.Web.Extensions
+@using RestChild.Comon
+@using RestChild.Domain
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Extensions
+@using RestChild.Web.Controllers
+
+
+@model RestChild.Domain.PupilDose
+@{
+    var drugTypes = new SelectList(((List<TypeOfDrug>)ViewBag.DrugTypes ?? new List<TypeOfDrug>(0)).Select(o => new { Id = (long?)o.Id, o.Name }), "Id", "Name");
+
+    var isEditable = Model.Id > 0;
+}
+
+
+<div class="form-group">
+    @Html.HiddenFor(r => r.Id)
+    <div class="col-md-2">
+        @Html.DropDownListFor(r => r.Drug.DrugTypeId, drugTypes, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => isEditable)
+    </div>
+    <div class="col-md-3">
+        @Html.TextBoxFor(r => r.Drug.Name, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => isEditable)
+    </div>
+    <div class="col-md-3">
+        @Html.TextBoxFor(r => r.Dose, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => isEditable)
+    </div>
+    <div class="col-md-3">
+        @Html.TextBoxFor(r => r.Drug.Storage, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => isEditable)
+    </div>
+    <div class="col-md-1">
+        <button type="button" class="btn btn-danger btn-primary remove-drug" role="button">
+            <i class="glyphicon glyphicon-trash"></i>
+        </button>
+    </div>
+</div>

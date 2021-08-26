@@ -1,0 +1,18 @@
+﻿.alert-panel {
+	position: fixed;
+	right: 1%;
+	top: 10%;
+	width: 20%;
+	z-index: 100000;
+}
+
+.alert-item-fade {
+	opacity: 0;
+    transition: opacity .25s ease-in-out;
+    -moz-transition: opacity .25s ease-in-out;
+    -webkit-transition: opacity .25s ease-in-out;
+}
+
+.alert-item-fade-in {
+	opacity: 1;
+}

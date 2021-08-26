@@ -1,0 +1,101 @@
+﻿@using RestChild.Domain
+@model RestChild.Web.Models.AnalyticsViewModel
+
+
+@if (Model.ReportSheet != null && Model.ReportSheet.Any())
+{
+	var reportSheets = Model.ReportSheet.OrderBy(r => r.SortOrder).ToList();
+	<br />
+	<div role="tabpanel">
+
+		<ul class="nav nav-tabs" role="tablist">
+			@{ var reportNum = 1;}
+			@foreach (var report in reportSheets)
+			{
+			<li role="presentation" class="@(reportNum == 1 ? "active" : string.Empty)"><a href="#Report@(reportNum)" aria-controls="home" role="tab" data-toggle="tab">@Html.Raw(report.ReportName)</a></li>
+				reportNum++;
+			}
+		</ul>
+
+		<div class="tab-content">
+			@{ reportNum = 1; }
+			@foreach (var reportSheet in reportSheets)
+			{
+				<div role="tabpanel" class="tab-pane @(reportNum == 1 ? "active" : string.Empty)" id="Report@(reportNum)">
+					@if (reportSheet.ReportTables != null && reportSheet.ReportTables.Any())
+					{
+						var tables = reportSheet.ReportTables.OrderBy(t => t.SortOrder).ToList();
+						foreach (var table in tables)
+						{
+							if (!Model.ShowHiddenTables && table.SortOrder < 0)
+							{
+								continue;
+							}
+
+							if (!string.IsNullOrEmpty(table.Name))
+							{
+							<h4>@Html.Raw(table.Name)</h4>
+							}
+
+							<table class="@table.CssClass">
+								<thead>
+									@if (table.ReportTableHeads != null && table.ReportTableHeads.Any() && !table.ReportTableHeads.Any(h=>h.RowIndex.HasValue))
+									{
+										var heads = table.ReportTableHeads.OrderBy(h => h.SortOrder).ToList();
+										<tr>
+											@foreach (var head in heads)
+											{
+											<th class="@head.CssClass" style="@head.Style">@Html.Raw(head.Name)</th>
+											}
+										</tr>
+									} else if (table.ReportTableHeads != null && table.ReportTableHeads.Any() && table.ReportTableHeads.Any(h => h.RowIndex.HasValue))
+									{
+										var rowIndexes = table.ReportTableHeads.Where(h => h.RowIndex.HasValue).Select(h => h.RowIndex ?? 0).OrderBy(i => i).Distinct().OrderBy(i => i).ToList();
+										foreach (var index in rowIndexes)
+										{
+											var heads = table.ReportTableHeads.Where(h=>h.RowIndex == index).OrderBy(h => h.SortOrder).ToList();
+											<tr>
+												@foreach (var head in heads)
+												{
+													<th class="@head.CssClass" style="@head.Style" rowspan="@(head.RowSpan??1)" colspan="@(head.ColSpan??1)">@Html.Raw(head.Name)</th>
+												}
+											</tr>
+										}
+									}
+								</thead>
+								<tbody>
+									@if (table.Rows != null && table.Rows.Any())
+									{
+										var rows = table.Rows.OrderBy(t => t.SortOrder).ToList();
+										foreach (var row in rows)
+										{
+											<tr class="@row.CssClass" style="@row.Style">
+												@if (row.RowData != null && row.RowData.Any())
+												{
+													var items = row.RowData.OrderBy(i => i.SortOrder).ToList();
+													foreach (var item in items)
+													{
+														if (!string.IsNullOrEmpty(item.Url))
+														{
+														<td class="@item.CssClass" style="@item.Style" onclick='javascript: window.open("@item.Url");'>@Html.Raw(item.Value)</td>
+														}
+														else
+														{
+														<td class="@item.CssClass" style="@item.Style">@Html.Raw(item.Value)</td>
+														}
+													}
+												}
+											</tr>
+										}
+									}
+								</tbody>
+							</table>
+						}
+					}
+				</div>
+					reportNum++;
+			}
+		</div>
+
+	</div>
+}

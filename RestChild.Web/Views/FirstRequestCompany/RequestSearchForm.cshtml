@@ -1,0 +1,353 @@
+﻿@using System.Collections
+@using RestChild.Comon
+
+
+@using RestChild.Extensions.Filter
+
+@using RestChild.Domain
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.App_Code
+@model RestChild.Extensions.Filter.RequestSearchFilterModel
+
+@Html.HiddenFor(m => m.PageNumber)
+@Html.HiddenFor(m => m.PageSize)
+
+@{
+    var typesOfTransfer = (ViewBag.Transfers as IEnumerable<TypeOfTransfer>) ?? new List<TypeOfTransfer>();
+
+    var benefitApproveSearch = new SelectList(new ArrayList()
+{
+new { Id = (bool?) null, Text = "-- Не выбрано --" },
+new { Id = true, Text = "Подтверждено" },
+new { Id = false, Text = "Не подтверждено" }
+}, "Id", "Text");
+
+    var transfer = new SelectList(
+        typesOfTransfer.Select(ss => new { ss.Id, @Name = ss.Name.Replace("Самостоятельно", "Отказываюсь от бесплатного проезда в составе организованной группы отдыхающих. Проезд в организацию отдыха и оздоровления будет осуществлен самостоятельно за счет собственных средств, не позднее 3 дней с начала периода отдыха и оздоровления (ознакомлен, что компенсация затраченных средств не предусмотрена)") }),
+            "Id",
+            "Name");
+}
+
+<div class="form-group">
+    <label class="col-md-2 control-label text-right">Номер заявления</label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.RequestNumber, new { @class = "form-control", autocomplete = "off" })
+    </div>
+    <label class="col-md-2 control-label text-right">Год кампании:</label>
+    <div class="col-md-2">
+        @Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.ListOfYears, "Id", "Name"), new { @class = "form-control select2 year-of-rest", autocomplete = "off" })
+    </div>
+    <div class="col-md-2">
+        @Html.CheckBoxFor(m => m.MoreThenSelectedYear)
+        <label class="control-label" for="@Html.IdFor(m=>m.MoreThenSelectedYear)">и последующие годы</label>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-md-2 control-label text-right">ФИО заявителя</label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.ApplicantFio, new { @class = "form-control", autocomplete = "off" })
+    </div>
+    <label class="col-md-2 control-label text-right">ФИО ребёнка</label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.ChildFio, new { @class = "form-control", autocomplete = "off" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-md-2 control-label text-right">Цель обращения</label>
+    <div class="col-md-4">
+        @Html.HiddenFor(r => r.TypeOfRestId, new { @class = "form-control type-of-rest select2", autocomplete = "off" })
+    </div>
+    <label class="col-md-2 control-label text-right">Время отдыха</label>
+    <div class="col-md-4">
+        @Html.DropDownListFor(r => r.TimeOfRestId, new SelectList(ViewBag.TimesOfRest, "Id", "Name"), new { @class = "form-control time-of-rest select2", autocomplete = "off" })
+        <img src="@Url.Content("~/Content/images/spinner.gif")" width="20" class="loading form-control-feedback invisible" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-md-2 control-label text-right">Регион отдыха</label>
+    <div class="col-md-4">
+        @Html.DropDownListFor(r => r.PlaceOfRestId, new SelectList(ViewBag.PlacesOfRest, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+    </div>
+    <label class="col-md-2 control-label text-right">Место отдыха</label>
+    <div class="col-md-4">
+        @Html.TextBoxFor(m => m.HotelsId, new { @class = "form-control" })
+        @Html.Hidden("_HotelsId", Model.HotelsId, new { id = "_HotelsId" })
+        @Html.Hidden("_HotelsName", Model.NullSafe(m => m.Hotels.Name), new { id = "_HotelsName" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-md-2 control-label text-right">Округ</label>
+    <div class="col-md-4">
+        @Html.DropDownListFor(r => r.DistrictId, new SelectList(ViewBag.Districts, "Id", "Name"), new { @class = "form-control select2 district", autocomplete = "off" })
+    </div>
+    <label class="col-md-2 control-label text-right">Район</label>
+    <div class="col-md-4">
+        @Html.DropDownListFor(r => r.RegionId, new SelectList(ViewBag.Regions, "Id", "Name"), new { @class = "form-control select2 region", autocomplete = "off" })
+        <img src="@Url.Content("~/Content/images/spinner.gif")" width="20" class="loading form-control-feedback invisible" />
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-md-2 control-label text-right">Источник заявления</label>
+    <div class="col-md-4">
+        @Html.DropDownListFor(r => r.SourceId, new SelectList(ViewBag.Sources, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+    </div>
+    <label class="col-md-2 control-label text-right">Оператор</label>
+    <div class="col-md-4">
+        @Html.HiddenFor(r => r.CreateUserId, new { @class = "form-control create-user-id", autocomplete = "off", data_id = Model.CreateUserId, data_text = Model.NullSafe(m => m.CreateUser.Name).FormatEx("-- Не выбрано --") })
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-md-2 control-label text-right">Межведомственный запрос</label>
+    <div class="col-md-4">
+        @Html.DropDownListFor(r => r.InteragencyBenefitApprove, benefitApproveSearch, new { @class = "form-control select2", autocomplete = "off" })
+    </div>
+</div>
+@if ((ViewBag.NeedBRPCC ?? false) || (ViewBag.NeedPC ?? false))
+{
+    <div class="form-group">
+        @if (ViewBag.NeedBRPCC ?? false)
+        {
+            <label class="col-md-2 control-label text-right">Подтверждение в базовом регистре льготной категории</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.BaseRegistryPreferentialCategoryCheck, benefitApproveSearch, new {@class = "form-control select2", autocomplete = "off"})
+            </div>
+        }
+        @if (ViewBag.NeedPC ?? false)
+        {
+            <label class="col-md-2 control-label text-right">Подтверждение в базовом регистре паспорта</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.BaseRegistryPassportCheck, benefitApproveSearch, new {@class = "form-control select2", autocomplete = "off"})
+            </div>
+        }
+    </div>
+}
+@if ((ViewBag.NeedBRRC ?? false) || (ViewBag.NeedBRSC ?? false))
+{
+    <div class="form-group">
+        @if (ViewBag.NeedBRRC ?? false)
+        {
+            <label class="col-md-2 control-label text-right">Подтверждение в базовом регистре родства</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.BaseRegistryRelationshipCheck, benefitApproveSearch, new { @class = "form-control select2", autocomplete = "off" })
+            </div>
+        }
+        @if (ViewBag.NeedBRSC ?? false)
+        {
+            <label class="col-md-2 control-label text-right">Подтверждение в базовом регистре СНИЛС</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.BaseRegistrySNILSCheck, benefitApproveSearch, new { @class = "form-control select2", autocomplete = "off" })
+            </div>
+        }
+    </div>
+}
+
+
+<div class="form-group">
+    <label class="col-md-2 control-label text-right">Льготная категория</label>
+    <div class="col-md-4">
+        @Html.DropDownListFor(r => r.BenefitTypeId, new SelectList(ViewBag.BenefitType, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+    </div>
+    @if (ViewBag.NeedCheckSnils ?? false)
+    {
+        <label class="col-md-2 control-label text-right">СНИЛС (поиск по всем лицам указанным в заявлении)</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(r => r.SNILS, new { @class = "form-control select2 snils", autocomplete = "off" })
+        </div>
+    }
+</div>
+@if ((ViewBag.NeedTTI ?? false) || (ViewBag.NeedTFI ?? false))
+{
+    <div class="form-group">
+        @if (ViewBag.NeedTTI ?? false)
+        {
+            <label class="col-md-2 control-label text-right">Способ доставки в организацию отдыха и оздоровления</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.TransferToId, transfer, new { @class = "form-control select2", autocomplete = "off" })
+            </div>
+        }
+        @if (ViewBag.NeedTFI ?? false)
+        {
+            <label class="col-md-2 control-label text-right">Способ доставки из организации отдыха и оздоровления</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.TransferFromId, transfer, new { @class = "form-control select2", autocomplete = "off" })
+            </div>
+        }
+    </div>
+}
+<div class="form-group">
+    <label class="col-md-2 control-label text-right">Возраст отдыхающего</label>
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label text-right input-label">С</label>
+            @Html.TextBoxFor(r => r.AgeStart, new { @class = "form-control input-mask-age col-sm", autocomplete = "off", })
+        </div>
+        <div class="form-group">
+            <label class="control-label text-right input-label">По</label>
+            @Html.TextBoxFor(r => r.AgeEnd, new { @class = "form-control input-mask-age", autocomplete = "off" })
+        </div>
+    </div>
+</div>
+@if (ViewBag.NeedStatus)
+{
+    var statusOfRest = ViewBag.StatusOfRest as ICollection<Status>;
+    var statusList = new ArrayList()
+{
+new { Id = (int)AggregatedStatusEnum.All, Text = "Все" },
+new { Id = (int)AggregatedStatusEnum.InProgress, Text = "В обработке" },
+new { Id = (int)AggregatedStatusEnum.Complete, Text = "Обработка завершена" },
+};
+    if (statusOfRest != null)
+    {
+        statusList.AddRange(statusOfRest.Select(s => new { Id = s.Id, Text = s.Name }).ToList());
+    }
+
+    var aggergatedStatus = new SelectList(statusList, "Id", "Text");
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Cтатус заявления</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(r => r.AggregatedStatusOfRequest, aggergatedStatus, new { @class = "form-control select2", autocomplete = "off" })
+        </div>
+        <label class="col-md-2 control-label text-right">Номер путевки</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(r => r.CertificateNumber, new { @class = "form-control", autocomplete = "off" })
+        </div>
+    </div>
+}
+
+<div class="form-group">
+    <label class="col-md-2 control-label text-right">Вид принятого решения</label>
+    <div class="col-md-4">
+        @Html.DropDownListFor(r => r.TypeOfDecision, new List<SelectListItem>() { new SelectListItem { Value = "0", Text = "Все" }, new SelectListItem { Value = "1", Text = "Путевка" }, new SelectListItem { Value = "2", Text = "Субсидия" } }, new { @class = "form-control select2", autocomplete = "off" })
+    </div>
+    @if (ViewBag.NeedStatus)
+    {
+        <div class="col-md-4 col-md-offset-2">
+            @Html.CheckBoxFor(m => m.CertificateRepaid) Сертификат погашен
+        </div>
+    }
+</div>
+
+@if (ViewBag.NeedStatus)
+{
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Причина отказа</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(r => r.DeclineReasonId, new SelectList(ViewBag.DeclineReasons, "Id", "Name"), new {@class = "form-control select2", autocomplete = "off"})
+        </div>
+        <label class="col-md-2 control-label text-right">Комментарий сотрудника</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(r => r.WithKC, new List<SelectListItem>() {new SelectListItem {Value = "", Text = "Все"}, new SelectListItem {Value = "true", Text = "Присутствует"}, new SelectListItem {Value = "false", Text = "Отсутствует"}}, new {@class = "form-control select2", autocomplete = "off"})
+        </div>
+    </div>
+}
+
+@if (ViewBag.NeedTypeOfRestriction)
+{
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Категория Здоровья</label>
+        <div class='col-md-4'>
+            @Html.DropDownListFor(r => r.TypeOfRestrictionId, new SelectList(ViewBag.TypeOfRestriction, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+        </div>
+    </div>
+}
+
+@if (ViewBag.NeedDepartmentSearchAndFilter)
+{
+    <div class="form-group">
+        <label class="col-md-2 control-label">Организация</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(t => t.OrganizationId, new { @class = "form-control", autocomplete = "off", Id = "OrganizationId" })
+            @Html.HiddenFor(t => t.OrganizationName, new { @class = "form-control", autocomplete = "off", Id = "OrganizationName" })
+            @Html.Hidden("_OrganizationId", Model.OrganizationId, new { Id = "_OrganizationId" })
+            @Html.Hidden("_OrganizationName", Model.OrganizationName, new { Id = "_OrganizationName" })
+        </div>
+        <label class="col-md-2 control-label">Ведомство</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(t => t.VedomstvoId, new { @class = "form-control", autocomplete = "off", Id = "VedomstvoId" })
+            @Html.HiddenFor(t => t.VedomstvoName, new { @class = "form-control", autocomplete = "off", Id = "VedomstvoName" })
+            @Html.Hidden("_VedomstvoId", Model.VedomstvoId, new { Id = "_VedomstvoId" })
+            @Html.Hidden("_VedomstvoName", Model.VedomstvoName, new { Id = "_VedomstvoName" })
+        </div>
+    </div>
+}
+
+
+@if (ViewBag.NeedSpecializedCampFilter)
+{
+    var paymentStatusList = new[]
+    {
+new {Id = (long)-1, Name = "Все"},
+new {Id = (long)0, Name = "Не оплачено"},
+new {Id = (long)1, Name = "Оплачено"},
+};
+
+<div class="form-group">
+    <label class="col-md-2 control-label">Категория</label>
+    <div class="col-md-4">
+        @Html.DropDownListForEnum(r => r.RestCategory, "-- Не выбрано --", new { @class = "form-control select2", autocomplete = "off" })
+    </div>
+    <label class="col-md-2 control-label">Статус оплаты</label>
+    <div class="col-md-4">
+        @Html.DropDownListFor(r => r.PaymentStatus, new SelectList(paymentStatusList, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+    </div>
+</div>
+}
+
+<div class="form-group">
+    <label class="col-md-2 control-label text-right">Период подачи заявления</label>
+    <div class="form-inline">
+        <div class="form-group">
+            <label class="control-label text-right input-label">С</label>
+            <div class='input-group date datepicker-anytime'>
+                @Html.TextBoxFor(r => r.StartRequestDate, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.StartRequestDate).FormatEx(string.Empty, string.Empty) })
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label text-right input-label">По</label>
+            <div class='input-group date datepicker-anytime'>
+                @Html.TextBoxFor(r => r.EndRequestDate, new { @class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.EndRequestDate).FormatEx(string.Empty, string.Empty) })
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+@if (ViewBag.NeedStatus)
+{
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Период изменения последнего статуса</label>
+        <div class="form-inline">
+            <div class="form-group">
+                <label class="control-label text-right input-label">С</label>
+                <div class='input-group date datepicker-anytime'>
+                    @Html.TextBoxFor(r => r.StartChangeStatusDate, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.StartChangeStatusDate).FormatEx(string.Empty, string.Empty) })
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label text-right input-label">По</label>
+                <div class='input-group date datepicker-anytime'>
+                    @Html.TextBoxFor(r => r.EndChangeStatustDate, new { @class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.EndChangeStatustDate).FormatEx(string.Empty, string.Empty) })
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/dot-template" id="timeOfRestTemplate">
+    {{~it.data :value:index}}
+    <option value="{{=value.id}}" {{=it.selected==value.id?'selected':''}}>{{=value.name}}</option>
+    {{~}}
+</script>
+<script type="text/javascript">
+	var typeOfRest = @Html.Raw(Json.Encode(ViewBag.TypesOfRest));
+</script>

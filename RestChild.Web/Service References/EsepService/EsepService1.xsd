@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging.GetOperationInfo" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Granit.Esep.Ppnp.WebServices.Contracts.EsepService.Messaging.GetOperationInfo" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://esep.itopcase.ru/Esep-Services/EsepService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="ArrayOfOperationFileInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="OperationFileInfo" nillable="true" type="tns:OperationFileInfo" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfOperationFileInfo" nillable="true" type="tns:ArrayOfOperationFileInfo" />
+  <xs:complexType name="OperationFileInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AccessCode" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Processed" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="OperationFileInfo" nillable="true" type="tns:OperationFileInfo" />
+  <xs:simpleType name="OperationType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CreateUIToSign">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">1</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="CreateUIToShowSignatures">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">2</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+      <xs:enumeration value="CreateUIToShowDocuments">
+        <xs:annotation>
+          <xs:appinfo>
+            <EnumerationValue xmlns="http://schemas.microsoft.com/2003/10/Serialization/">3</EnumerationValue>
+          </xs:appinfo>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="OperationType" nillable="true" type="tns:OperationType" />
+</xs:schema>

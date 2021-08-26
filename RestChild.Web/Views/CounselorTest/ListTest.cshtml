@@ -1,0 +1,34 @@
+﻿@using RestChild.Comon
+@model List<RestChild.Domain.TrainingCounselorsTest>
+@{
+    Layout = null;
+}
+
+<table class="table">
+	<thead>
+	<tr>
+		<th>Тестирования</th>
+		<th>Количество попыток</th>
+		<th>Дата тестирования</th>
+		<th>Количество ошибок</th>
+	</tr>
+	</thead>
+	<tbody>
+		@foreach (var a in Model)
+		{
+			var countAttempt = a.TrainingCounselorsResult.Tests.Count(t => t.GroupTestId == a.GroupTestId);
+			<tr class="@Html.Raw(a.IsComplited ? (a.Rating <= a.GroupTest.CounselorTest.CountErrorInTest ? "bg-success": "bg-danger") : "")">
+				<td>
+					<a href="@Url.Content("~/")CounselorTest/Testing?guid=@a.TestGuid" target="blank">@string.Format("{0} ({1} - {2})", a.GroupTest.CounselorTest.Name, a.GroupTest.DateStart.FormatEx(), a.GroupTest.DateEnd.FormatEx())</a>
+				</td>
+				<td>@countAttempt</td>
+				<td>
+					@a.DateTesting.FormatEx()
+				</td>
+				<td>
+					@a.Rating.FormatEx("0", "0") / @a.GroupTest.CounselorTest.CountErrorInTest.FormatEx()
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>

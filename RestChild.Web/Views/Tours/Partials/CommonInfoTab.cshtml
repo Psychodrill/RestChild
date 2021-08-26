@@ -1,0 +1,175 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.TourModel
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)" id="CommonInfo">
+    <div>
+        <fieldset class="form-horizontal">
+            <h3>
+                Общая информация
+            </h3>
+            <div class="form-group col-md-12">
+                <label class="col-md-3 control-label text-right">Цель обращения<span class="requared">*</span></label>
+                <div class="col-md-3">
+                    @Html.DropDownListFor(m => m.Data.TypeOfRestId, new SelectList(Model.TypesOfRest.Select(r => new {Id = (long?) r.Id, r.Name}).InsertAt(new {Id = (long?) null, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control"}).DisableIf(() => !Model.IsEditable || (Model.Data.TypeOfRestId.HasValue && Model.Data.TypeOfRestId != 0 && Model.Data.Id != 0))
+                    @if (Model.Data.TypeOfRestId.HasValue && Model.Data.TypeOfRestId != 0 && Model.Data.Id != 0)
+                    {
+                        @Html.HiddenFor(m => m.Data.TypeOfRestId)
+                    }
+                </div>
+                <label class="col-md-3 control-label text-right">Год кампании<span class="requared">*</span></label>
+                <div class="col-md-3">
+                    @Html.DropDownListFor(m => m.Data.YearOfRestId, new SelectList(Model.YearsOfRest.Select(r => new {Id = (long?) r.Id, r.Name}).InsertAt(new {Id = (long?) null, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control"}).DisableIf(() => !Model.IsEditable || (Model.Data.YearOfRestId.HasValue && Model.Data.YearOfRestId != 0 && Model.Data.Id != 0))
+                    @if (Model.Data.YearOfRestId.HasValue && Model.Data.YearOfRestId != 0 && Model.Data.Id != 0)
+                    {
+                        @Html.HiddenFor(m => m.Data.YearOfRestId)
+                    }
+                </div>
+            </div>
+            <div class="form-group col-md-12 @Html.Raw(Model.Data.TypeOfRest == null || !Model.Data.TypeOfRest.FirstRequestCompanySelect ? "hidden" : "")">
+                <label class="col-md-9 col-md-offset-3">@Html.CheckBoxFor(m => m.Data.ForMultipleStageCompany, new {@id = "forMultipleStageCompany"}).DisableIf(() => !Model.IsEditable) Многоэтапная кампания</label>
+            </div>
+            <div class="col-md-12 form-group @(Model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsInvalidOrphanComplex || Model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor || Model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParents ? string.Empty : "hidden")">
+                <label class="col-md-3 control-label">Группа ограничения<span class="requared">*</span></label>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(r => r.RestrictionGroupId, new SelectList(Model.GroupRestrictions, "Id", "Name", Model.RestrictionGroupId), new {@class = "form-control select2"}).DisableIf(() => !Model.IsEditable)
+                </div>
+            </div>
+            <div class="form-group col-md-12 @(Model.Data.TypeOfRestId != (long) TypeOfRestEnum.SpecializedСamp && Model.Data.TypeOfRestId != (long) TypeOfRestEnum.SpecializedСampFamily ? "hidden" : string.Empty)" id="limitOnVedomstvoId">
+                <label class="col-md-3 control-label text-right">ОИВ<span class="requared">*</span></label>
+                <div class="col-md-9 ">
+                    @Html.TextBoxFor(m => m.Data.LimitOnVedomstvoId, new {@class = "form-control required"}).DisableIf(() => !Model.IsEditable)
+                    @if (!Model.IsEditable)
+                    {
+                        @Html.HiddenFor(m => m.Data.LimitOnVedomstvoId)
+                    }
+                    <input type="hidden" id="_LimitOnVedomstvoId" class="form-control required" value="@Model.Data.LimitOnVedomstvoId"/>
+                    <input type="hidden" id="_LimitOnVedomstvoName" class="form-control required" value="@Model.Data.NullSafe(m => m.LimitOnVedomstvo.Organization.Name) (@Model.Data.NullSafe(m => m.LimitOnVedomstvo.TypeOfLimitList.Name))"/>
+                    <input type="hidden" id="_VedomstvoId" class="form-control required" value="@Model.Data.NullSafe(m => m.LimitOnVedomstvo.OrganizationId)"/>
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                <label class="col-md-3 control-label text-right">Наименование места отдыха<span class="requared">*</span></label>
+                <div class="col-md-5">
+                    @Html.TextBoxFor(m => m.Data.HotelsId, new {@class = "form-control required main-hotelId"}).DisableIf(() => !Model.IsEditable).ReadonlyIf(() => Model.Data.HotelsId.HasValue && Model.Data.HotelsId != 0 && Model.Data.Id != 0)
+                    @Html.ValidationMessageFor(m => m.Data.HotelsId, "Заполните поле")
+                    <input type="hidden" id="_HotelsId" class="form-control required" value="@Model.Data.HotelsId"/>
+                    <input type="hidden" id="_HotelsName" class="form-control required" value="@Model.Data.NullSafe(m => m.Hotels.Name)"/>
+                </div>
+                <div class="col-md-4  line-height35">
+                    @Html.ActionLink("Перейти к месту отдыха", "Update", "Hotels", new {Id = Model.Data.HotelsId}, new {Id = "showHotel", target = "_blank", @class = !Model.Data.HotelsId.HasValue ? "hidden" : string.Empty})
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                <label class="col-md-3 control-label text-right">Время отдыха<span class="requared">*</span></label>
+                <div class="col-md-9 ">
+                    @Html.TextBoxFor(m => m.Data.TimeOfRestId, new {@class = "form-control required"}).DisableIf(() => !Model.IsEditable || ((Model.Data.TimeOfRestId.HasValue && Model.Data.TimeOfRestId != 0 && Model.Data.Id != 0)))
+                    @Html.ValidationMessageFor(m => m.Data.TimeOfRestId, "Заполните поле")
+                    @if (Model.Data.TimeOfRestId.HasValue && Model.Data.TimeOfRestId != 0 && Model.Data.Id != 0)
+                    {
+                        @Html.HiddenFor(m => m.Data.TimeOfRestId)
+                    }
+                    <input type="hidden" id="_TimeOfRestId" class="form-control required" value="@Model.Data.TimeOfRestId"/>
+                    <input type="hidden" id="_TimeOfRestName" class="form-control required" value="@Model.Data.NullSafe(m => m.TimeOfRest.Name)"/>
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                <label class="col-md-3 control-label text-right">Дата начала<span class="requared">*</span></label>
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.Data.DateIncome, new {@class = "form-control date", autocomplete = "Off", Value = Model.Data.DateIncome != default(DateTime) ? Model.Data.DateIncome.FormatEx(string.Empty, string.Empty) : string.Empty}).DisableIf(() => !Model.IsEditable)
+                    @Html.ValidationMessageFor(m => m.Data.DateIncome, "Заполните поле")
+                </div>
+                <label class="col-md-3 control-label text-right">Дата окончания<span class="requared">*</span></label>
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.Data.DateOutcome, new {@class = "form-control date", autocomplete = "Off", Value = Model.Data.DateOutcome != default(DateTime) ? Model.Data.DateOutcome.FormatEx(string.Empty, string.Empty) : string.Empty}).DisableIf(() => !Model.IsEditable)
+                    @Html.ValidationMessageFor(m => m.Data.DateOutcome, "Заполните поле")
+                </div>
+            </div>
+            <div class="form-group col-md-12 @(Model.Data.TypeOfRest == null || !Model.Data.TypeOfRest.NeedBookingDate ? "hidden" : string.Empty)" id="BookingDates">
+                <label class="col-md-3 control-label text-right">Дата начала записи<span class="requared">*</span></label>
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.Data.StartBooking, new {@class = "form-control datetime", autocomplete = "Off", Value = Model.Data.DateIncome != default(DateTime) ? Model.Data.StartBooking.FormatEx(string.Empty, string.Empty) : string.Empty}).DisableIf(() => !Model.IsEditable)
+                    @Html.ValidationMessageFor(m => m.Data.StartBooking, "Заполните поле")
+                </div>
+                <label class="col-md-3 control-label text-right">Дата окончания записи<span class="requared">*</span></label>
+                <div class="col-md-3">
+                    @Html.TextBoxFor(m => m.Data.EndBooking, new {@class = "form-control datetime", autocomplete = "Off", Value = Model.Data.DateOutcome != default(DateTime) ? Model.Data.EndBooking.FormatEx(string.Empty, string.Empty) : string.Empty}).DisableIf(() => !Model.IsEditable)
+                    @Html.ValidationMessageFor(m => m.Data.EndBooking, "Заполните поле")
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                <label class="col-md-3 control-label text-right">Контракт</label>
+                <div class="col-md-9 ">
+                    @Html.TextBoxFor(m => m.Data.ContractId, new {@class = "form-control required"}).DisableIf(() => !Model.IsEditable)
+                    @if (!Model.IsEditable)
+                    {
+                        @Html.HiddenFor(m => m.Data.ContractId)
+                    }
+                    <input type="hidden" id="_ContractId" class="form-control required" value="@Model.Data.ContractId"/>
+                    <input type="hidden" id="_ContractName" class="form-control required" value="@Model.Data.NullSafe(m => m.Contract.SignNumber) @(Model.Data.Contract != null && Model.Data.Contract.Supplier != null ? String.Format(" ({0})", string.IsNullOrWhiteSpace(Model.Data.Contract.Supplier.ShortName) ? Model.Data.Contract.Supplier.Name : Model.Data.Contract.Supplier.ShortName) : string.Empty)"/>
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                <label class="col-md-3 control-label text-right">Номера корпусов</label>
+                <div class="col-md-9 ">
+                    @Html.TextBoxFor(m => m.Data.CorpusNumber, new {@class = "form-control required"}).ReadonlyIf(() => !Model.IsEditable)
+                </div>
+            </div>
+            @Html.HiddenFor(m => m.Data.ForList)
+        </fieldset>
+        <div class="panel-group" role="tablist" id="accordion">
+
+            <!--Программы-->
+            <div class="panel panel-default @(Model.Data.TypeOfRest == null || !Model.Data.TypeOfRest.NeedSubject ? "hidden" : string.Empty) subject-of-rest">
+                <div class="panel-heading" role="tab" id="programPanel">
+                    <h4 class="panel-title">Программы</h4>
+                </div>
+                <div id="programPanelCollapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <fieldset class="form-horizontal">
+                            <div class="form-group col-md-12">
+                                <label class="col-md-3 control-label text-right">Тематика смены<span class="requared">*</span></label>
+                                <div class="col-md-9">
+                                    @Html.DropDownListFor(m => m.Data.SubjectOfRestId, new SelectList(Model.SubjectsOfRest.Select(r => new {Id = (long?) r.Id, Name = r.Name}).InsertAt(new {Id = (long?) null, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control"}).DisableIf(() => !Model.IsEditable)
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label class="col-md-3 control-label text-right">Дополнительная информация</label>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(m => m.Data.Descr, new {@class = "form-control", autocomplete = "Off"}).DisableIf(() => !Model.IsEditable)
+                                    @Html.ValidationMessageFor(m => m.Data.Descr, "Заполните поле")
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default @(Model.Data.TypeOfRestId != (long) TypeOfRestEnum.SpecializedСamp || (Model.Data.LimitOnVedomstvo != null && Model.Data.LimitOnVedomstvo.TypeOfLimitListId == (long) TypeOfLimitListEnum.Orphan) ? "hidden" : string.Empty) specialized-camp">
+                <div class="panel-heading" role="tab" id="programPanel">
+                    <h4 class="panel-title">Стоимость</h4>
+                </div>
+                <div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <fieldset class="form-horizontal">
+                            <div class="col-md-12">
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-6 control-label text-right">Стоимость для ребенка, руб</label>
+                                    <div class="col-md-4">
+                                        @Html.TextBoxFor(m => m.Data.TourPrice, new {@class = "form-control"}).DisableIf(() => !Model.IsEditable)
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="col-md-8 control-label text-right">Стоимость для тренера или педагога, руб</label>
+                                    <div class="col-md-4">
+                                        @Html.TextBoxFor(m => m.Data.TourPriceAttendant, new {@class = "form-control"}).DisableIf(() => !Model.IsEditable)
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

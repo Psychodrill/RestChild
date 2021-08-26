@@ -1,0 +1,64 @@
+﻿@using RestChild.Comon
+@model RestChild.Web.Models.Orphans.OrphanageCollaboratorsFilterModel
+
+
+@Html.AntiForgeryToken()
+@Html.HiddenFor(ss => ss.OrphanageId)
+
+<div class="form-horizontal">
+    <div class="row">
+        <fieldset class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-2 control-label text-right">ФИО сотрудника</label>
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-default btn-primary"><i class="glyphicon glyphicon-search"></i> Поиск </button>
+                    <button type="button" class="btn btn-default btn-primary clear-form"> Очистить фильтр </button>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+@if (Model.Collaborators != null && Model.Collaborators.Any())
+{
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th class="text-center" width="5%">№</th>
+                <th class="text-center">ФИО сотрудника</th>
+                <th class="text-center">Должность</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ var rowNumber = 1; }
+            @foreach (var c in Model.Collaborators.ToList())
+            {
+                <tr>
+                    @Html.Hidden("collaboratorId", c.Id, new { @class = "collaboratorId" })
+                    <td class="text-center">@(rowNumber++)</td>
+                    <td class="text-center">@c.Name</td>
+                    <td class="text-center">@c.Position</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-success btn-primary CollaboratorId_@c.Id collaborator-add">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-12">
+            <p>Поиск не дал результатов</p>
+        </div>
+    </div>
+}

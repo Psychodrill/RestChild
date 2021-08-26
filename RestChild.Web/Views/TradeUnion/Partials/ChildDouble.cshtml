@@ -1,0 +1,32 @@
+﻿@using RestChild.Comon
+@model RestChild.Web.Models.TradeUnion.TradeUnionModel
+
+@if (Model.DoubleChildren != null && Model.DoubleChildren.Any())
+{
+    <text>
+        <div class="bg-warning panel-approve">
+            Найдены дети включенные в другие списки на этот год
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>ФИО</th>
+                        <th>Документ</th>
+                        <th>Лагерь</th>
+                        <th>Смена</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var child in Model.DoubleChildren)
+                    {
+                        <tr>
+                            <td>@child.LastName.FormatEx() @child.FirstName.FormatEx(string.Empty) @child.MiddleName.FormatEx(string.Empty)</td>
+                            <td>@child.NullSafe(d => d.DocumentType.Name).FormatEx(), @child.DocumentSeria.FormatEx() @child.DocumentNumber.FormatEx()</td>
+                            <td>@Html.ActionLink(child.TradeUnionCamper.Select(ss => ss.TradeUnion.Camp.Name).FirstOrDefault(), "Edit", "TradeUnion", new { id = child.TradeUnionCamper.Select(ss => ss.TradeUnion.Id).FirstOrDefault() }, null)</td>
+                            <td>@child.TradeUnionCamper.Select(ss => ss.TradeUnion.GroupedTimeOfRest.Name).FirstOrDefault()</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </text>
+}

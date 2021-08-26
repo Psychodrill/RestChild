@@ -1,0 +1,173 @@
+﻿@model RestChild.Web.Models.GiftReserved.ListModel
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Mobile.DAL.Enum
+@using RestChild.Web.Models.GiftReserved
+@{
+    ViewBag.Title = "Реестр выдачи подарков";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.SearchAction = "List";
+    ViewBag.Controller = "GiftReserved";
+    ViewBag.Caption = "Реестр выдачи подарков";
+    ViewBag.SearchPanelCaption = "Поиск выдачи подарков";
+    ViewBag.NeedInsertButton = false;
+    var states = new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = @"-- Не выбрано --"}};
+    states.AddRange(Model.Statuses.Select(v => new SelectListItem {Value = v.Id.ToString(), Text = v.Name}));
+}
+
+@section searchForm
+{
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">ФИО ребенка</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.Child, new {@class = "form-control", maxlength = 100, autocomplete = "off"})
+        </div>
+        <label class="col-md-2 control-label text-right">Цена подарка от</label>
+        <div class="col-md-4 form-inline">
+            <div class='input-group' style="width: 35%">
+                @Html.TextBoxFor(r => r.PriceFrom, new {@class = "form-control money", autocomplete = "off"})
+            </div>
+            <label class="text-right input-label">до</label>
+            <div class='input-group' style="width: 35%">
+                @Html.TextBoxFor(r => r.PriceTo, new {@class = "form-control money", autocomplete = "off"})
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Название подарка</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.Name, new {@class = "form-control", maxlength = 100, autocomplete = "off"})
+        </div>
+        <label class="col-md-2 control-label text-right">Параметр подарка</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.Parameter, new {@class = "form-control", maxlength = 100, autocomplete = "off"})
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Статус</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(m => m.StatusId, states, new {@class = "form-control select2", autocomplete = "off"})
+        </div>
+    </div>
+}
+
+@section additionalFilters
+{
+    <a class="btn btn-default" href="@Url.Action("ExcelList", "GiftReserved", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
+}
+
+@section searchResult
+{
+    @if (Model.Result != null && Model.Result.Any())
+    {
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th class="text-center" style="width: 5%">№</th>
+                <th>ФИО ребенка</th>
+                <th>Дата рождения</th>
+                <th>Лагерь/смена</th>
+                <th>Название подарка</th>
+                <th>Описание подарка</th>
+                <th>Цена</th>
+                <th>Параметр</th>
+                <th>Кол-во</th>
+                <th>Статус</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @{ var rowNumber = Model.Result.FirstItemOnPage; }
+            @foreach (var giftReserved in Model.Result)
+            {
+                var camper = giftReserved.Owner.Campers.OrderByDescending(c => c.LastUpdateTick).FirstOrDefault();
+                var fio = camper != null ? camper.Name : giftReserved.Owner.Name;
+                var bout = camper != null && camper.Bout != null ? camper.Bout.Name : "-";
+                var db = camper != null ? camper.DateOfBirth.FormatEx() : giftReserved.Owner.DateOfBirth.FormatEx();
+                <tr>
+                    <td class="text-center">@(rowNumber++)</td>
+                    <td class="text-left">
+                        @(fio)
+                    </td>
+                    <td class="text-center">
+                        @db
+                    </td>
+                    <td class="text-center">
+                        @bout
+                    </td>
+                    <td class="text-left">
+                        @(giftReserved.Gift.Gift.Name)
+                    </td>
+                    <td class="text-left">
+                        @(giftReserved.Gift.Gift.Description)
+                    </td>
+                    <td class="text-right">
+                        @giftReserved.Price.FormatEx()
+                    </td>
+                    <td class="text-left">
+                        @(giftReserved.Gift.Name)
+                    </td>
+                    <td class="text-center">
+                        @(giftReserved.Count)
+                    </td>
+                    <td class="text-right">
+                        @(giftReserved.State != null ? giftReserved.State.Name : "-")
+                    </td>
+                    <td>
+                        @if (giftReserved.StateId == StateEnum.GiftReserved.Reserved)
+                        {
+                            <button type="button" class="btn btn-xs btn-primary agree" dataid="@giftReserved.Id">Выдать</button>
+                            <button type="button" class="btn btn-xs btn-danger refused" dataid="@giftReserved.Id">Отменить</button>
+                        }
+                        else if (giftReserved.StateId == StateEnum.GiftReserved.Issued)
+                        {
+                            <button type="button" class="btn btn-xs btn-danger refused" dataid="@giftReserved.Id">Отменить</button>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.PagedListPager(Model.Result, page =>
+                {
+                    var item = new ListModel
+                    {
+                        PageNumber = page,
+                        Name = Model.Name,
+                        PriceFrom = Model.PriceFrom,
+                        PriceTo = Model.PriceTo,
+                        Child = Model.Child,
+                        Parameter = Model.Parameter,
+                        StatusId = Model.StatusId
+                    };
+                    return Url.Action("List", item);
+                }, new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/GiftReserved/List.js")
+}
+
+

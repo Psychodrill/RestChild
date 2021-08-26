@@ -1,0 +1,545 @@
+﻿@using System.Collections
+@using System.Linq
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.CounselorsModel
+
+@Html.HiddenFor(m => m.PhotoUrl, new {@id = "PhotoUrl"})
+
+<fieldset class="form-horizontal">
+	<h3>
+		Общая информация
+	</h3>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Фамилия<span class="requared">*</span></label>
+		<div class="col-md-9">
+			@Html.TextBoxFor(model => model.Data.LastName, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.LastName, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Имя<span class="requared">*</span></label>
+		<div class="col-md-9">
+			@Html.TextBoxFor(model => model.Data.FirstName, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.FirstName, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-3 col-md-offset-3">
+			<div class="checkbox">
+				<label>
+					@Html.CheckBoxFor(model => model.Data.HaveMiddleName).DisableIf(() => !Model.IsEditable)
+					Нет отчества
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Отчество</label>
+		<div class="col-md-9">
+			@Html.TextBoxFor(model => model.Data.MiddleName, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable || Model.NullSafe(m => m.Data.HaveMiddleName))
+			@Html.ValidationMessageFor(model => model.Data.MiddleName, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Пол<span class="requared">*</span></label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(model => model.IsMale, new SelectList(new ArrayList() { new { Id = string.Empty, Name = "-- Не выбрано --" }, new { Id = "True", Name = "Мужской" }, new { Id = "False", Name = "Женский" } }, "Id", "Name"), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.IsMale, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Телефон</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(model => model.Data.Phone, new { @class = "form-control input-mask-phone", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.Phone, "Заполните поле")
+		</div>
+		<label class="col-md-1 control-label text-right">E-mail</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(model => model.Data.Email, new { @class = "form-control input-mask-email", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.Email, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-9 col-md-offset-3">
+			<img id="imgPreview" src="@Model.PhotoShowUrl" width="256" height="330" />
+		</div>
+	</div>
+	@if (Model.IsEditable)
+	{
+		<div class="form-group">
+			<div class="col-md-9 col-md-offset-3">
+				<span class="btn btn-primary btn-file">
+					<span class="glyphicon glyphicon-folder-open"></span><span> Открыть изображение</span><input type='file' id="photo" name="photo" accept="image/jpeg,image/png" />
+				</span>
+			</div>
+		</div>
+	}
+
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Дата рождения<span class="requared">*</span></label>
+		<div class="col-md-9">
+			@Html.TextBoxFor(model => model.Data.DateOfBirth, new { @class = "form-control date", autocomplete = "off", Value = Model.NullSafe(m => m.Data.DateOfBirth).FormatEx(string.Empty, string.Empty) }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.DateOfBirth, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Документ, подтверждающий личность<span class="requared">*</span></label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(model => model.Data.DocumentTypeId, new SelectList(Model.DocumentTypes.Select(t => new { Id = (long?)t.Id, Name = t.Name }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.DocumentTypeId, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Серия документа<span class="requared">*</span></label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(model => model.Data.DocumentSeria, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.DocumentSeria, "Заполните поле")
+		</div>
+		<label class="col-md-1 control-label text-right">Номер документа<span class="requared">*</span></label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(model => model.Data.DocumentNumber, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.DocumentNumber, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Дата выдачи документа<span class="requared">*</span></label>
+		<div class="col-md-9">
+			@Html.TextBoxFor(model => model.Data.DocumentDateOfIssue, new { @class = "form-control date", autocomplete = "off", Value = Model.NullSafe(m => m.Data.DocumentDateOfIssue).FormatEx(string.Empty, string.Empty) }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.DocumentDateOfIssue, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Кем выдан документ<span class="requared">*</span></label>
+		<div class="col-md-9">
+			@Html.TextBoxFor(model => model.Data.DocumentSubjectIssue, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.DocumentSubjectIssue, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Место рождения<span class="requared">*</span></label>
+		<div class="col-md-9">
+			@Html.TextBoxFor(model => model.Data.PlaceOfBirth, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.DateOfBirth, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Адрес регистрации</label>
+		<div class="col-md-9">
+			@Html.TextBoxFor(model => model.Data.RegistrationAddress, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.RegistrationAddress, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Регион фактического проживания</label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(model => model.Data.StateDistrictId, new SelectList(Model.StateDistricts.Select(t => new { Id = (long?)t.Id, Name = t.Name }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.StateDistrictId, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Заграничный паспорт</label>
+		<div class="col-md-3">
+			@Html.CheckBox("Data.ForeignPassport", Model.Data.ForeignPassport ?? false).DisableIf(() => !Model.IsEditable)
+		</div>
+	</div>
+	<div class="foreign-passport @(Model.Data.ForeignPassport ?? false ? string.Empty : "hidden")">
+		<h4>
+			<span>Загрничные паспорта</span>
+			@if (Model.IsEditable)
+			{
+				<button type="button" class="btn btn-primary" id="AddForeignPassport"><span class="glyphicon glyphicon-plus"></span>Добавить</button>
+			}
+
+		</h4>
+		<div class="panel-body">
+			<table id="foreign-passport-table" class="table table-striped table-hover @(Model.Data.ForeginPassports == null || !Model.Data.ForeginPassports.Any() ? "hidden" : string.Empty)">
+				<thead>
+					<tr>
+						<th width="15%">Фамилия (латиницей)</th>
+						<th width="15%">Имя (латиницей)</th>
+						<th>Номер</th>
+						<th width="15%">Дата выдачи</th>
+						<th width="15%">Срок действия</th>
+						<th width="15%">Кем выдан</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					@if (Model.Data.ForeginPassports != null)
+			{
+				var foreignPassportNum = 0;
+				foreach (var passport in Model.Data.ForeginPassports)
+				{
+							<tr>
+								<td>@Html.TextBox("Data.ForeginPassports[" + foreignPassportNum + "].LastName", passport.LastName, new { @class = "form-control" })</td>
+								<td>@Html.TextBox("Data.ForeginPassports[" + foreignPassportNum + "].FirstName", passport.FirstName, new { @class = "form-control" })</td>
+								<td>@Html.TextBox("Data.ForeginPassports[" + foreignPassportNum + "].PassportNumber", passport.PassportNumber, new { @class = "form-control" })</td>
+								<td>
+									<div class='input-group date'>
+										@Html.TextBox("Data.ForeginPassports[" + foreignPassportNum + "].PassportIssueDate", passport.PassportIssueDate, new { @class = "form-control input-mask-date-anytime", @Value = passport.PassportIssueDate.FormatEx("", "") })
+										<span class="input-group-addon">
+											<span class="glyphicon glyphicon-calendar"></span>
+										</span>
+									</div>
+								</td>
+								<td>
+									<div class='input-group datepicker-anytime'>
+										@Html.TextBox("Data.ForeginPassports[" + foreignPassportNum + "].PassportValidityEndDate", passport.PassportValidityEndDate, new { @class = "form-control input-mask-date-anytime", @Value = passport.PassportValidityEndDate.FormatEx("", "") })
+										<span class="input-group-addon">
+											<span class="glyphicon glyphicon-calendar"></span>
+										</span>
+									</div>
+								</td>
+								<td>@Html.TextBox("Data.ForeginPassports[" + foreignPassportNum + "].PassportIssue", passport.PassportIssue, new { @class = "form-control" })</td>
+								<td>
+									@Html.Hidden("Data.ForeginPassports[" + foreignPassportNum + "].Id", passport.Id)
+									<a href="javascript:void(0);">
+										<span class="glyphicon glyphicon-remove remove-foreign-passport"></span>
+									</a>
+								</td>
+							</tr>
+
+					foreignPassportNum++;
+				}
+			}
+
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Семейное положение</label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(model => model.Data.MatrialStatusId, new SelectList(Model.MatrialStatuses.Select(t => new { Id = (long?)t.Id, Name = t.Name }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.MatrialStatusId, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Отношение к воинской обязанности</label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(model => model.Data.MilitaryDutyId, new SelectList(Model.MilitaryDuties.Select(t => new { Id = (long?)t.Id, Name = t.Name }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off", id = "MilitaryDutySelect" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.MilitaryDutyId, "Заполните поле")
+		</div>
+	</div>
+	<div id="MilitaryDuty" class="@(Model.Data.MilitaryDutyId == (long) MilitaryDutyEnum.Reservist ? string.Empty : "hidden")">
+		<div class="form-group">
+			<label class="col-md-3 control-label text-right">Категория запаса</label>
+			<div class="col-md-9">
+				@Html.TextBoxFor(model => model.Data.MIlitaryCategory, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+				@Html.ValidationMessageFor(model => model.Data.MIlitaryCategory, "Заполните поле")
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label text-right">Воинское звание</label>
+			<div class="col-md-9">
+				@Html.TextBoxFor(model => model.Data.MilitaryRank, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+				@Html.ValidationMessageFor(model => model.Data.MilitaryRank, "Заполните поле")
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label text-right">Состав (профиль)</label>
+			<div class="col-md-9">
+				@Html.TextBoxFor(model => model.Data.MilitartStaff, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+				@Html.ValidationMessageFor(model => model.Data.MilitartStaff, "Заполните поле")
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label text-right">Полние кодовое обозначение ВУС</label>
+			<div class="col-md-9">
+				@Html.TextBoxFor(model => model.Data.VusCodeName, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+				@Html.ValidationMessageFor(model => model.Data.VusCodeName, "Заполните поле")
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label text-right">Категория годности к военной службе</label>
+			<div class="col-md-9">
+				@Html.TextBoxFor(model => model.Data.MIlitaryCategory, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+				@Html.ValidationMessageFor(model => model.Data.MIlitaryCategory, "Заполните поле")
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Размер одежды</label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(model => model.Data.ClothingSizeId, new SelectList(Model.Sizes.Select(t => new { Id = (long?)t.Id, Name = t.Name }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Образование</label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(model => model.Data.TypeOfEducationId, new SelectList(Model.TypeOfEducations.Select(t => new { Id = (long?)t.Id, t.Name }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off", id = "EducationSelect" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.TypeOfEducationId, "Заполните поле")
+		</div>
+	</div>
+
+	<div id="Education" class="@(Model.Data.TypeOfEducationId == (long) TypeOfEducationEnum.High ? string.Empty : "hidden")">
+		<h4>
+			<span>Высшее образование</span>
+			@if (Model.IsEditable)
+			{
+				<button id="AddHighSchoolGraduation" type="button" class="btn btn-primary "><span class="glyphicon glyphicon-plus"></span>Добавить</button>
+			}
+
+		</h4>
+		<table id="HighSchoolGraduationTable" class="table table-striped table-hover @(Model.Data.HighSchoolGraduations == null || !Model.Data.HighSchoolGraduations.Any() ? "hidden" : string.Empty)">
+			<thead>
+				<tr>
+					<th>Название учебного заведения</th>
+					<th>Факультет</th>
+					<th>Специальность</th>
+					<th width="10%">Курс</th>
+					<th width="10%">Год окончания</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (Model.Data.HighSchoolGraduations != null)
+				{
+					var graduationNum = 0;
+					foreach (var graduation in Model.Data.HighSchoolGraduations)
+					{
+						<tr>
+							<td>@Html.TextBox("Data.HighSchoolGraduations[" + graduationNum + "].EducationInstitutionName", graduation.EducationInstitutionName, new { @class = "form-control" }).DisableIf(() => !Model.IsEditable)</td>
+							<td>@Html.TextBox("Data.HighSchoolGraduations[" + graduationNum + "].Department", graduation.Department, new { @class = "form-control" }).DisableIf(() => !Model.IsEditable)</td>
+							<td>@Html.TextBox("Data.HighSchoolGraduations[" + graduationNum + "].Speciality", graduation.Speciality, new { @class = "form-control" }).DisableIf(() => !Model.IsEditable)</td>
+							<td>@Html.TextBox("Data.HighSchoolGraduations[" + graduationNum + "].Course", graduation.Course, new { @class = "form-control integer" }).DisableIf(() => !Model.IsEditable)</td>
+							<td>@Html.TextBox("Data.HighSchoolGraduations[" + graduationNum + "].GraduationYear", graduation.GraduationYear, new { @class = "form-control year-inputmask" }).DisableIf(() => !Model.IsEditable)</td>
+							<td>
+								@Html.Hidden("Data.HighSchoolGraduations[" + graduationNum + "].Id", graduation.Id)
+								@if (Model.IsEditable)
+								{
+									<a href="javascript:void(0);">
+										<span class="glyphicon glyphicon-remove remove-highschool-graduation"></span>
+									</a>
+								}
+							</td>
+						</tr>
+
+						graduationNum++;
+					}
+				}
+			</tbody>
+		</table>
+
+	</div>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Представитель профильной организации</label>
+		<div class="col-md-9">
+			@Html.CheckBox("Data.RepresentativesOrganizations", Model.Data.RepresentativesOrganizations).DisableIf(() => !Model.IsEditable)
+		</div>
+	</div>
+<div class="form-group">
+	<label class="col-md-3 control-label">Педотряд</label>
+	<div class="col-md-9">
+		@Html.TextBoxFor(t => t.Data.PedPartyId, new { @class = "form-control", autocomplete = "off", Id = "PedPartyId", data_name = Model.Data.PedParty != null ? Model.Data.PedParty.Name : null}).DisableIf(() => !Model.IsEditable)
+	</div>
+</div>
+
+<h4>
+		<span>Дополнительные вожатские курсы</span>
+		@if (Model.IsEditable)
+		{
+			<button id="AddCounselorCourse" type="button" class="btn btn-primary "><span class="glyphicon glyphicon-plus"></span>Добавить</button>
+		}
+
+	</h4>
+	<table id="CounselorCourseTable" class="table table-striped table-hover @(Model.Data.CounselorCources == null || !Model.Data.CounselorCources.Any() ? "hidden" : string.Empty)">
+		<thead>
+			<tr>
+				<th width="15%">Год окончания</th>
+				<th>Название</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (Model.Data.CounselorCources != null)
+			{
+				var courseNum = 0;
+				foreach (var course in Model.Data.CounselorCources)
+				{
+					<tr>
+						<td>@Html.TextBox("Data.CounselorCources[" + courseNum + "].Year", course.Year, new { @class = "form-control year-inputmask" }).DisableIf(() => !Model.IsEditable)</td>
+						<td>@Html.TextBox("Data.CounselorCources[" + courseNum + "].Name", course.Name, new { @class = "form-control" }).DisableIf(() => !Model.IsEditable)</td>
+						<td>
+							@Html.Hidden("Data.CounselorCources[" + courseNum + "].Id", course.Id)
+							@if (Model.IsEditable)
+							{
+								<a href="javascript:void(0);">
+									<span class="glyphicon glyphicon-remove remove-counselor-cource"></span>
+								</a>
+							}
+						</td>
+					</tr>
+
+					courseNum++;
+				}
+			}
+		</tbody>
+	</table>
+
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Солнечный парус</label>
+		<div class="col-md-9">
+			@Html.CheckBoxFor(m => m.Data.GoldenSail).DisableIf(() => !Model.IsEditable)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Цвет галстука</label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(model => model.Data.TieColorId, new SelectList(Model.TieColors.Select(t => new { Id = (long?)t.Id, Name = t.Name }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.TieColorId, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Количество неучтенных отработанных смен</label>
+		<div class="col-md-9">
+			@Html.TextBoxFor(model => model.Data.UnaccountedForWaste, new { @class = "form-control integer", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.UnaccountedForWaste, "Заполните поле")
+		</div>
+	</div>
+
+	<h4>Отзывы</h4>
+	@if (Model.IsEditable)
+	{
+		<div class="form-group">
+			<label class="col-md-3 control-label text-right">Автор</label>
+			<div class="col-md-3">
+				@Html.TextBox("CommentAuthor", string.Empty, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			</div>
+			<label class="col-md-1 control-label text-right">Содержание</label>
+			<div class="col-md-4">
+				@Html.TextArea("Comment", string.Empty, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			</div>
+			@if (Model.IsEditable)
+			{
+				<div class="col-md-1 control-label">
+					<button id="AddCounselorComment" type="button" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span>Добавить</button>
+				</div>
+			}
+		</div>
+	}
+
+
+	<div id="CounselorCommentsPanel" class="panel panel-default comment-panel @(Model.Data.Comments == null || !Model.Data.Comments.Any() ? "hidden" : string.Empty)">
+		<div id="CounselorComments" class="panel-body">
+			@if (Model.Data.Comments != null)
+			{
+				foreach (var comment in Model.Data.Comments)
+				{
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<label>@comment.Author</label>
+						</div>
+						<div class="panel-body">
+							@comment.Comment
+						</div>
+					</div>
+				}
+			}
+		</div>
+	</div>
+
+
+	<div id="CounselorCommentsHidden">
+
+	</div>
+
+	<h4>
+		<span>Опыт работы</span>
+		@if (Model.IsEditable)
+		{
+			<button id="AddCounselorPractice" type="button" class="btn btn-primary "><span class="glyphicon glyphicon-plus"></span>Добавить</button>
+		}
+
+	</h4>
+	<table id="CounselorPracticeTable" class="table table-striped table-hover @(Model.Data.CounselorPractices == null || !Model.Data.CounselorPractices.Any() ? "hidden" : string.Empty)">
+		<thead>
+			<tr>
+				<th>Название лагеря</th>
+				<th width="10%">Год работы</th>
+				<th>Смена</th>
+				<th>Отряд</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@if (Model.Data.CounselorPractices != null)
+			{
+				var practiceNum = 0;
+				foreach (var practice in Model.Data.CounselorPractices)
+				{
+					<tr>
+						<td>@Html.TextBox("Data.CounselorPractices[" + practiceNum + "].Camp", practice.Camp, new { @class = "form-control" }).DisableIf(() => !Model.IsEditable)</td>
+						<td>@Html.TextBox("Data.CounselorPractices[" + practiceNum + "].Year", practice.Year, new { @class = "form-control year-inputmask" }).DisableIf(() => !Model.IsEditable)</td>
+						<td>@Html.TextBox("Data.CounselorPractices[" + practiceNum + "].Tour", practice.Tour, new { @class = "form-control" }).DisableIf(() => !Model.IsEditable)</td>
+						<td>@Html.TextBox("Data.CounselorPractices[" + practiceNum + "].Party", practice.Party, new { @class = "form-control" }).DisableIf(() => !Model.IsEditable)</td>
+						<td>
+							@Html.Hidden("Data.CounselorPractices[" + practiceNum + "].Id", practice.Id)
+							@if (Model.IsEditable)
+							{
+								<a href="javascript:void(0);">
+									<span class="glyphicon glyphicon-remove remove-counselor-practice"></span>
+								</a>
+							}
+						</td>
+					</tr>
+
+					practiceNum++;
+				}
+			}
+		</tbody>
+	</table>
+
+		<h4>Профили в социльных сетях</h4>
+	<div class="form-group">
+		<label class="col-md-3 text-right">
+			<img src="~/Content/images/social_networks/facebook_logo.png" width="40" height="40" />
+		</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(model => model.Data.LinkFacebook, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.LinkFacebook, "Заполните поле")
+		</div>
+		<label class="col-md-1 text-right">
+			<img src="~/Content/images/social_networks/linkedin_logo.png" width="40" height="40" />
+		</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(model => model.Data.LinkLinkedIn, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.LinkLinkedIn, "Заполните поле")
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-3 text-right">
+			<img src="~/Content/images/social_networks/vk_logo.png" width="40" height="40" />
+		</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(model => model.Data.LinkVk, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.LinkVk, "Заполните поле")
+		</div>
+		<label class="col-md-1 text-right">
+			<img src="~/Content/images/social_networks/odnoklassniki_logo.png" width="40" height="40" />
+		</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(model => model.Data.LinkOk, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+			@Html.ValidationMessageFor(model => model.Data.LinkOk, "Заполните поле")
+		</div>
+	</div>
+	<h4>Рейтинг вожатого</h4>
+	<div class="form-group">
+		<label class="col-md-3 text-right">Рейтинг</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(model => model.Data.Rating, new { @class = "form-control integer", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-5">
+			<h4>Расчет рейтинга:</h4>
+			@Html.Raw(Model.RaitingCalc)
+		</div>
+	</div>
+</fieldset>

@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:tns="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" name="Service" targetNamespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/">
+	<wsdl:types>
+		<xsd:schema targetNamespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/Imports">
+			<xsd:import schemaLocation="ServiceV6_1_5.xsd" namespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/"/>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="GetRequestListInMessage"/>
+	<wsdl:message name="GetRequestListOutMessage"/>
+	<wsdl:message name="GetRequestsInMessage"/>
+	<wsdl:message name="GetRequestsOutMessage"/>
+	<wsdl:message name="CoordinateMessage">
+		<wsdl:part name="parameters" element="tns:CoordinateMessage"/>
+	</wsdl:message>
+	<wsdl:message name="CoordinateMessage_Headers">
+		<wsdl:part name="ServiceHeader" element="tns:ServiceHeader"/>
+	</wsdl:message>
+	<wsdl:message name="SendRequestsMessage">
+		<wsdl:part name="parameters" element="tns:SendRequestsMessage"/>
+	</wsdl:message>
+	<wsdl:message name="SendRequestsMessage_Headers">
+		<wsdl:part name="ServiceHeader" element="tns:ServiceHeader"/>
+	</wsdl:message>
+	<wsdl:message name="CoordinateTaskMessage">
+		<wsdl:part name="parameters" element="tns:CoordinateTaskMessage"/>
+	</wsdl:message>
+	<wsdl:message name="CoordinateTaskMessage_Headers">
+		<wsdl:part name="ServiceHeader" element="tns:ServiceHeader"/>
+	</wsdl:message>
+	<wsdl:message name="SendTasksMessage">
+		<wsdl:part name="parameters" element="tns:SendTasksMessage"/>
+	</wsdl:message>
+	<wsdl:message name="SendTasksMessage_Headers">
+		<wsdl:part name="ServiceHeader" element="tns:ServiceHeader"/>
+	</wsdl:message>
+	<wsdl:message name="CoordinateSendTaskStatusesMessage">
+		<wsdl:part name="parameters" element="tns:CoordinateSendTaskStatusesMessage"/>
+	</wsdl:message>
+	<wsdl:message name="CoordinateSendTaskStatusesMessage_Headers">
+		<wsdl:part name="ServiceHeader" element="tns:ServiceHeader"/>
+	</wsdl:message>
+	<wsdl:message name="SendTaskStatusesMessages">
+		<wsdl:part name="parameters" element="tns:SendTaskStatusesMessages"/>
+	</wsdl:message>
+	<wsdl:message name="SendTaskStatusesMessages_Headers">
+		<wsdl:part name="ServiceHeader" element="tns:ServiceHeader"/>
+	</wsdl:message>
+	<wsdl:message name="CoordinateStatusMessage">
+		<wsdl:part name="parameters" element="tns:CoordinateStatusMessage"/>
+	</wsdl:message>
+	<wsdl:message name="CoordinateStatusMessage_Headers">
+		<wsdl:part name="ServiceHeader" element="tns:ServiceHeader"/>
+	</wsdl:message>
+	<wsdl:message name="SetFilesAndStatusesMessage">
+		<wsdl:part name="parameters" element="tns:SetFilesAndStatusesMessage"/>
+	</wsdl:message>
+	<wsdl:message name="SetFilesAndStatusesMessage_Headers">
+		<wsdl:part name="ServiceHeader" element="tns:ServiceHeader"/>
+	</wsdl:message>
+	<wsdl:message name="ErrorMessage">
+		<wsdl:part name="parameters" element="tns:ErrorMessage"/>
+	</wsdl:message>
+	<wsdl:message name="ErrorMessage_Headers">
+		<wsdl:part name="ServiceHeader" element="tns:ServiceHeader"/>
+	</wsdl:message>
+	<wsdl:message name="RequestDocumentsMessage">
+		<wsdl:part name="GetRequestDocumentsMessage" element="tns:GetRequestDocumentsMessage"/>
+	</wsdl:message>
+	<wsdl:message name="RequestDocumentsMessage_Headers">
+		<wsdl:part name="ServiceHeader" element="tns:ServiceHeader"/>
+	</wsdl:message>
+	<wsdl:portType name="IService">
+		<wsdl:operation name="GetRequestList">
+			<wsdl:documentation>Запрос списка обращений. Получает список обращений за период.</wsdl:documentation>
+			<wsdl:input name="GetRequestListInMessage" message="tns:GetRequestListInMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/GetRequestList"/>
+			<wsdl:output name="GetRequestListOutMessage" message="tns:GetRequestListOutMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/GetRequestListResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="GetRequests">
+			<wsdl:documentation>Запрос подробной информации об обращениях. Получает подробную информацию по запрашиваемым обращениям</wsdl:documentation>
+			<wsdl:input name="GetRequestsInMessage" message="tns:GetRequestsInMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/GetRequests"/>
+			<wsdl:output name="GetRequestsOutMessage" message="tns:GetRequestsOutMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/GetRequestsResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="SendRequest">
+			<wsdl:documentation>Запрос с передачей данных об обращении заявителя. Отправка данных по обращению заявителя, включая данные и электронные образы документов, полученных от заявителя или от других органов власти.</wsdl:documentation>
+			<wsdl:input name="CoordinateMessage" message="tns:CoordinateMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SendRequest"/>
+		</wsdl:operation>
+		<wsdl:operation name="SendRequests">
+			<wsdl:documentation>Запрос с передачей данных об обращениях. Отправка данных по обращениям, включая данные и электронные образы документов, полученных от заявителя или от других органов власти</wsdl:documentation>
+			<wsdl:input name="SendRequestsMessage" message="tns:SendRequestsMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SendRequests"/>
+		</wsdl:operation>
+		<wsdl:operation name="SendTask">
+			<wsdl:documentation>Запрос на получение документов и сведений. Отправка запроса на получение документов и сведений, необходимых при оказании государственной услуги в рамках межведомственного взаимодействия</wsdl:documentation>
+			<wsdl:input name="CoordinateTaskMessage" message="tns:CoordinateTaskMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SendTask"/>
+		</wsdl:operation>
+		<wsdl:operation name="SendTasks">
+			<wsdl:documentation>Запрос на получение документов и сведений. Отправка запроса на получение документов и сведений, необходимых при оказании государственных услуг в рамках межведомственного взаимодействия</wsdl:documentation>
+			<wsdl:input name="SendTasksMessage" message="tns:SendTasksMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SendTasks"/>
+		</wsdl:operation>
+		<wsdl:operation name="SendTaskStatus">
+			<wsdl:documentation>Запрос с передачей данных о текущем состоянии исполнения запроса на получение документов и сведений. Отправка данных о текущем состоянии исполнения запроса на получение документов и сведений</wsdl:documentation>
+			<wsdl:input name="CoordinateSendTaskStatusesMessage" message="tns:CoordinateSendTaskStatusesMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SendTaskStatus"/>
+		</wsdl:operation>
+		<wsdl:operation name="SendTaskStatuses">
+			<wsdl:documentation>Запрос с передачей данных о текущем состоянии исполнения запросов на получение документов и сведений. Отправка данных о текущем состоянии исполнения запросов на получение документов и сведений</wsdl:documentation>
+			<wsdl:input name="SendTaskStatusesMessages" message="tns:SendTaskStatusesMessages" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SendTaskStatuses"/>
+		</wsdl:operation>
+		<wsdl:operation name="SetFilesAndStatus">
+			<wsdl:documentation>Запрос с передачей данных о текущем состоянии исполнения обращения. Отправка данных о текущем состоянии исполнения обращения, включая электронные образы документов, сформированных в ходе оказания государственной услуги</wsdl:documentation>
+			<wsdl:input name="CoordinateStatusMessage" message="tns:CoordinateStatusMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SetFilesAndStatus"/>
+		</wsdl:operation>
+		<wsdl:operation name="SetFilesAndStatuses">
+			<wsdl:documentation>Запрос с передачей данных об изменениях состояния исполнения обращений. Отправка данных об изменениях состояния исполнения обращений, включая электронные образы документов, сформированных в ходе оказания государственных услуг</wsdl:documentation>
+			<wsdl:input name="SetFilesAndStatusesMessage" message="tns:SetFilesAndStatusesMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SetFilesAndStatuses"/>
+		</wsdl:operation>
+		<wsdl:operation name="Acknowledgement">
+			<wsdl:documentation>Запрос о подтверждении факта обработки данных. Информирует отправителя о факте обработки любого из описанных запросов</wsdl:documentation>
+			<wsdl:input name="ErrorMessage" message="tns:ErrorMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/Acknowledgement"/>
+		</wsdl:operation>
+		<wsdl:operation name="RequestDocuments">
+			<wsdl:documentation>Отправка запроса необходимых документов</wsdl:documentation>
+			<wsdl:input name="RequestDocumentsMessage" message="tns:RequestDocumentsMessage" wsaw:Action="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/RequestDocuments"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="CustomBinding_IService" type="tns:IService">
+		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsp:PolicyReference URI="#CustomBinding_IService_policy"/>
+		<wsdl:operation name="GetRequestList">
+			<soap:operation soapAction="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/GetRequestList" style="document"/>
+			<wsdl:input name="GetRequestListInMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_GetRequestList_Input_policy"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="GetRequestListOutMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_GetRequestList_output_policy"/>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="GetRequests">
+			<soap:operation soapAction="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/GetRequests" style="document"/>
+			<wsdl:input name="GetRequestsInMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_GetRequests_Input_policy"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="GetRequestsOutMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_GetRequests_output_policy"/>
+				<soap:body use="literal"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="SendRequest">
+			<soap:operation soapAction="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SendRequest" style="document"/>
+			<wsdl:input name="CoordinateMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_SendRequest_Input_policy"/>
+				<soap:header message="tns:CoordinateMessage_Headers" part="ServiceHeader" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="SendRequests">
+			<soap:operation soapAction="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SendRequests" style="document"/>
+			<wsdl:input name="SendRequestsMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_SendRequests_Input_policy"/>
+				<soap:header message="tns:SendRequestsMessage_Headers" part="ServiceHeader" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="SendTask">
+			<soap:operation soapAction="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SendTask" style="document"/>
+			<wsdl:input name="CoordinateTaskMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_SendTask_Input_policy"/>
+				<soap:header message="tns:CoordinateTaskMessage_Headers" part="ServiceHeader" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="SendTasks">
+			<soap:operation soapAction="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SendTasks" style="document"/>
+			<wsdl:input name="SendTasksMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_SendTasks_Input_policy"/>
+				<soap:header message="tns:SendTasksMessage_Headers" part="ServiceHeader" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="SendTaskStatus">
+			<soap:operation soapAction="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SendTaskStatus" style="document"/>
+			<wsdl:input name="CoordinateSendTaskStatusesMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_SendTaskStatus_Input_policy"/>
+				<soap:header message="tns:CoordinateSendTaskStatusesMessage_Headers" part="ServiceHeader" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="SendTaskStatuses">
+			<soap:operation soapAction="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SendTaskStatuses" style="document"/>
+			<wsdl:input name="SendTaskStatusesMessages">
+				<wsp:PolicyReference URI="#CustomBinding_IService_SendTaskStatuses_Input_policy"/>
+				<soap:header message="tns:SendTaskStatusesMessages_Headers" part="ServiceHeader" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="SetFilesAndStatus">
+			<soap:operation soapAction="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SetFilesAndStatus" style="document"/>
+			<wsdl:input name="CoordinateStatusMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_SetFilesAndStatus_Input_policy"/>
+				<soap:header message="tns:CoordinateStatusMessage_Headers" part="ServiceHeader" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="SetFilesAndStatuses">
+			<soap:operation soapAction="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/SetFilesAndStatuses" style="document"/>
+			<wsdl:input name="SetFilesAndStatusesMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_SetFilesAndStatuses_Input_policy"/>
+				<soap:header message="tns:SetFilesAndStatusesMessage_Headers" part="ServiceHeader" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="Acknowledgement">
+			<soap:operation soapAction="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/Acknowledgement" style="document"/>
+			<wsdl:input name="ErrorMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_Acknowledgement_Input_policy"/>
+				<soap:header message="tns:ErrorMessage_Headers" part="ServiceHeader" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+		<wsdl:operation name="RequestDocuments">
+			<soap:operation soapAction="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/RequestDocuments" style="document"/>
+			<wsdl:input name="RequestDocumentsMessage">
+				<wsp:PolicyReference URI="#CustomBinding_IService_RequestDocuments_Input_policy"/>
+				<soap:header message="tns:RequestDocumentsMessage_Headers" part="ServiceHeader" use="literal"/>
+				<soap:body use="literal"/>
+			</wsdl:input>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="Service">
+		<wsdl:port name="CustomBinding_IService" binding="tns:CustomBinding_IService">
+			<soap:address location="{URL}"/>
+		</wsdl:port>
+	</wsdl:service>
+	<wsp:Policy wsu:Id="CustomBinding_IService_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:AsymmetricBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:InitiatorToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+									<wsp:Policy>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:InitiatorToken>
+						<sp:RecipientToken>
+							<wsp:Policy>
+								<sp:X509Token sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/Never">
+									<wsp:Policy>
+										<sp:WssX509V3Token10/>
+									</wsp:Policy>
+								</sp:X509Token>
+							</wsp:Policy>
+						</sp:RecipientToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<BasicGostObsolete xmlns="urn:ietf:params:xml:ns:cpxmlsec"/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Lax/>
+							</wsp:Policy>
+						</sp:Layout>
+						<sp:OnlySignEntireHeadersAndBody/>
+					</wsp:Policy>
+				</sp:AsymmetricBinding>
+				<sp:Wss10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:MustSupportRefKeyIdentifier/>
+						<sp:MustSupportRefIssuerSerial/>
+					</wsp:Policy>
+				</sp:Wss10>
+				<sp:Trust10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:MustSupportIssuedTokens/>
+						<sp:RequireClientEntropy/>
+						<sp:RequireServerEntropy/>
+					</wsp:Policy>
+				</sp:Trust10>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_GetRequestList_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_GetRequestList_output_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_GetRequests_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_GetRequests_output_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_SendRequest_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+					<sp:Header Name="ServiceHeader" Namespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/"/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_SendRequests_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+					<sp:Header Name="ServiceHeader" Namespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/"/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_SendTask_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+					<sp:Header Name="ServiceHeader" Namespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/"/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_SendTasks_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+					<sp:Header Name="ServiceHeader" Namespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/"/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_SendTaskStatus_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+					<sp:Header Name="ServiceHeader" Namespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/"/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_SendTaskStatuses_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+					<sp:Header Name="ServiceHeader" Namespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/"/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_SetFilesAndStatus_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+					<sp:Header Name="ServiceHeader" Namespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/"/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_SetFilesAndStatuses_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+					<sp:Header Name="ServiceHeader" Namespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/"/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_Acknowledgement_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+					<sp:Header Name="ServiceHeader" Namespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/"/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+	<wsp:Policy wsu:Id="CustomBinding_IService_RequestDocuments_Input_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<sp:Body/>
+					<sp:Header Name="ServiceHeader" Namespace="http://asguf.mos.ru/rkis_gu/coordinate/v6_1/"/>
+				</sp:SignedParts>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
+</wsdl:definitions>

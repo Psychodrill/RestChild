@@ -1,0 +1,47 @@
+﻿@using RestChild.Comon
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.BoutModel
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)" id="CommonInfo">
+	<fieldset class="form-horizontal">
+		<h3>
+			Общая информация
+		</h3>
+		<div class="form-group">
+			<label class="col-md-3 control-label text-right">Место отдыха</label>
+			<div class="col-md-6">
+				@Html.TextBoxFor(model => model.Data.Hotels.Name, new {@class = "form-control", autocomplete = "off"}).DisableIf(() => true)
+			</div>
+			<div class="col-md-3  line-height35">
+				@Html.ActionLink("Перейти к месту отдыха", "Update", "Hotels", new { Id = Model.Data.HotelsId }, new { Id = "showHotel", target = "_blank", @class = !Model.Data.HotelsId.HasValue ? "hidden" : string.Empty })
+			</div>
+
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label text-right">Ближайший город (транспортный узел)</label>
+			<div class="col-md-9">
+				@Html.TextBoxFor(model => model.Data.Hotels.City.Name, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => true)
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label text-right">Смена</label>
+			<div class="col-md-9">
+				@if (Model.Data.GroupedTimeOfRest != null)
+				{
+					@Html.TextBox("TimeOfRest", Model.Data.GroupedTimeOfRest.Name + string.Format(" ({0} - {1})", Model.Data.DateIncome.FormatEx(), Model.Data.DateOutcome.FormatEx()), new {@class = "form-control", autocomplete = "off"}).DisableIf(() => true)
+				}
+				else
+				{
+					@Html.TextBox("TimeOfRest", string.Format("{0} - {1}", Model.Data.DateIncome.FormatEx(), Model.Data.DateOutcome.FormatEx()), new {@class = "form-control", autocomplete = "off"}).DisableIf(() => true)
+				}
+
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label text-right">Год кампании</label>
+			<div class="col-md-9">
+				@Html.TextBoxFor(model => model.Data.YearOfRest.Year, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => true)
+			</div>
+		</div>
+	</fieldset>
+</div>
+

@@ -1,0 +1,67 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.RequestViewModel
+<fieldset class="bs-callout bs-callout-info request-block @(Model.Data.TypeOfRest.NullSafe(x => x.NeedPlace) ? string.Empty : "hidden")">
+	<h3 id="PlaceRest" class="anchor bs-callout-info">Место отдыха</h3>
+	@if (Model.HasBooking || (Model.Data.ParentRequestId.HasValue && Model.Data.TypeOfRest != null && Model.Data.TypeOfRest.Commercial))
+	{
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Регион</label>
+			<div class="col-md-9 line-height35">
+				@Model.NullSafe(m => m.Data.Tour.Hotels.PlaceOfRest.Name).FormatEx()
+				@Html.HiddenFor(m => m.Data.TourId)
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Организация отдыха и оздоровления</label>
+			<div class="col-md-9 line-height35">
+				@if (Security.HasRight(AccessRightEnum.Hotel.View) && Model.NullSafe(m => m.Data.Tour.Hotels.Id) > 0)
+				{
+					<div><a href="@Url.Action("Update", "Hotels", new {@id=Model.NullSafe(m => m.Data.Tour.Hotels.Id)})" target="_blank">@Html.Raw(Model.NullSafe(m => m.Data.Tour.Hotels.Name).FormatEx())</a></div>
+				}
+				else
+				{
+					<div>@Html.Raw(Model.NullSafe(m => m.Data.Tour.Hotels.Name).FormatEx())</div>
+				}
+				<div style="margin-top: -15px">
+					<i><small>@Html.Raw(Model.NullSafe(m => m.Data.Tour.Hotels.Address).FormatEx())</small></i>
+				</div>
+			</div>
+		</div>
+		if (Model.Data != null && Model.Data.Tour != null && Model.Data.Tour.SubjectOfRest != null)
+		{
+			<div class="row form-group">
+				<label class="col-md-3 control-label">Тематика смены</label>
+				<div class="col-md-9 line-height35">
+					<div>@Html.Raw(Model.NullSafe(m => m.Data.Tour.SubjectOfRest.Name).FormatEx())</div>
+				</div>
+			</div>
+		}
+	}
+	else
+	{
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Приоритетное<span class="requared">*</span></label>
+			<div class="col-md-9">
+				@Html.HiddenFor(r => r.Data.PlaceOfRestId, new { @class = "placeOfRestId form-control", placeName = Model.Data.PlaceOfRest != null ? Model.Data.PlaceOfRest.Name : string.Empty, placeholder="Укажите направление отдыха" })
+				<span class="field-validation-error">@Model.PlaceOfRestEm.FormatEx(string.Empty)</span>
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Дополнительное<span class="requared">*</span></label>
+			<div class="col-md-9">
+				@Html.HiddenFor(r => r.PlaceOfRestAddon1Id, new { @class = "placeOfRestId form-control", placeName = Model.PlaceOfRestAddon1 != null ? Model.PlaceOfRestAddon1.Name : string.Empty, placeholder="Укажите направление отдыха" })
+				@Html.HiddenFor(r => r.PlaceOfRestAddon1LinkId)
+			</div>
+		</div>
+		<div class="row form-group">
+			<div class="col-md-9 col-md-offset-3">
+				@Html.HiddenFor(r => r.PlaceOfRestAddon2Id, new { @class = "placeOfRestId form-control", placeName = Model.PlaceOfRestAddon2 != null ? Model.PlaceOfRestAddon2.Name : string.Empty, placeholder="Укажите направление отдыха" })
+                @Html.HiddenFor(r => r.PlaceOfRestAddon2LinkId)
+				<span class="field-validation-error">@Model.PlaceOfRestAddonEm.FormatEx(string.Empty)</span>
+			</div>
+		</div>
+		}
+</fieldset>

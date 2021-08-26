@@ -1,0 +1,18 @@
+﻿@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@model RestChild.Web.Models.RequestViewModel
+@{
+    var typeOfRest = Model.Data.TypeOfRest ?? new TypeOfRest();
+}
+<div id="InformationVoucher" class="@(typeOfRest.Id == (long) TypeOfRestEnum.Compensation || typeOfRest.Id == (long) TypeOfRestEnum.CompensationYouthRest ? string.Empty : "hidden")">
+    <h3 class="anchor bs-callout-info">Путевки</h3>
+    <div id="InformationVoucherDataRows">
+        @{ Html.RenderPartial("Partials/RequestVoucher", Model); }
+    </div>
+    <div id="InformationVoucherEmptyRow" class="@(!Model.InformationVouchers.Any() ? string.Empty : "hidden")">
+        <i>Нет путёвок</i>
+    </div>
+    <button type="button" class="btn btn-default btn-primary " id="AddVoucher">
+        <i class="glyphicon glyphicon-plus"></i> Добавить путёвку
+    </button>
+</div>

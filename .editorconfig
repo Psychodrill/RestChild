@@ -1,0 +1,37 @@
+root = true
+[*]
+end_of_line = crlf
+charset = utf-8-bom
+insert_final_newline = true
+indent_style = space
+trim_trailing_whitespace = true
+
+; 4-column space indentation
+[*.{cs,js,ts,html,cshtml,aspx}]
+indent_style = space
+indent_size = 4
+tab_width = 4
+csharp_force_chop_compound_do_expression                   = false
+csharp_force_chop_compound_if_expression                   = false
+csharp_force_chop_compound_while_expression                = false
+csharp_new_line_before_else = true
+csharp_braces_for_ifelse = required
+csharp_braces_for_for = required
+csharp_braces_for_foreach = required
+csharp_braces_for_while = required
+csharp_braces_for_dowhile = required
+csharp_braces_for_using = required
+csharp_braces_for_lock = required
+braces_for_ifelse = required
+braces_for_for = required
+braces_for_foreach = required
+braces_for_while = required
+braces_for_dowhile = required
+braces_for_using = required
+braces_for_lock = required
+
+; 2-column tab indentation
+[*.{xml,props,config,css,less}]
+indent_style = space
+indent_size = 4
+tab_width = 4

@@ -1,0 +1,250 @@
+﻿@using System.Web.UI.WebControls
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Filter
+@using RestChild.Domain
+@using RestChild.Web.Controllers
+@model RestChild.Extensions.Filter.RequestFilterModel
+@{
+    ViewBag.Title = "Реестр заявлений";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.SearchAction = "RequestList";
+    ViewBag.InsertAction = "SelectPlace";
+    ViewBag.SaveAction = "Save";
+    ViewBag.Controller = "FirstRequestCompany";
+    ViewBag.Caption = "Реестр заявлений";
+    ViewBag.InsertButtonCaption = "Забронировать";
+    ViewBag.SearchPanelCaption = "Поиск заявлений";
+    ViewBag.NeedStatus = true;
+    ViewBag.NeedInsertButton = false;
+    ViewBag.NeedTypeOfRestriction = false;
+    ViewBag.NeedDepartmentSearchAndFilter = false;
+    ViewBag.NeedSpecializedCampFilter = false;
+
+    ViewBag.NeedBRPCC = true;
+    ViewBag.NeedBRRC = true;
+    ViewBag.NeedBRSC = true;
+    ViewBag.NeedCheckSnils = true;
+    ViewBag.NeedTTI = true;
+    ViewBag.NeedTFI = true;
+    ViewBag.NeedPC = true;
+}
+
+@section searchForm
+{
+    @Html.Partial("RequestSearchForm", Model)
+}
+
+@section additionalInserts
+{
+    <a class="btn btn-primary" href="@Url.Action("RequestEdit", "FirstRequestCompany")" target="_blank">
+        <i class="glyphicon glyphicon-plus"></i> Добавить заявление
+    </a>
+
+    @if (Security.HasRight(AccessRightEnum.RequestManage))
+    {
+        <a class="btn btn-primary" href="@Url.Action("SelectPlace", "FirstRequestCompany" )" target="_blank">
+            <i class="glyphicon glyphicon-plus"></i> Забронировать
+        </a>
+    }
+}
+
+@section additionalFilters
+{
+    <div class="btn-group">
+        <a type="button" class="btn btn-default" href="@Url.Action("ExportPreRequestToExcel", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="caret"></span>
+            <span class="sr-only"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="@Url.Action("ExportPreRequestToExcel", Model)">Отдыхающие</a></li>
+            <li><a href="@Url.Action("CompensationRegistryToExcel", Model)">Получатели компенсации</a></li>
+            <li><a href="@Url.Action("PaymentsRegistryToExcel", Model)">Сертификаты на самостоятельный отдых</a></li>
+        </ul>
+    </div>
+}
+
+@section searchResult
+{
+    @if (Model.Requests != null && Model.Requests.Any())
+    {
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <!--th>№</th-->
+                    <th>Номер заявления</th>
+                    <th>Дата подачи заявления</th>
+                    <th>ФИО заявителя</th>
+                    <th>Сведения о детях</th>
+                    <th>Место отдыха</th>
+                    <th>Цель обращения</th>
+                    <th>Период отдыха</th>
+                    <th>Статус</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Requests.Count; i++)
+                {
+                    int index = i;
+                    Request request = Model.Requests[i];
+
+                    <text>
+                        <tr class="row-clicable" onclick="openRequest('@Url.Action("RequestEdit", new {id=request.Id})');">
+                            <!--td>@(Model.Requests.FirstItemOnPage + index)</td-->
+                            <td>
+                                <div class="wordbreak">
+                                    @request.RequestNumber.FormatEx()
+                                </div>
+                                <div>
+                                    <i><small style="color: #666; white-space: nowrap">@(request.Source != null ? request.Source.Name : string.Empty) @(request.SourceId == (long)SourceEnum.Mpgu ? string.Format("({0})", request.RequestNumberMpgu) : string.Empty)</small></i>
+                                </div>
+                                @if (request.Files.Any(f => f.RequestFileTypeId != (long)RequestFileTypeEnum.CertificateOnPayment
+                                                            && f.RequestFileTypeId != (long)RequestFileTypeEnum.CertificateOnRest
+                                                            && f.RequestFileTypeId != (long)RequestFileTypeEnum.Notifications
+                                                            && f.RequestFileTypeId != (long)RequestFileTypeEnum.NotificationRefuse))
+                                {
+                                    <i class="glyphicon glyphicon-paperclip"></i>
+                                }
+
+                            </td>
+                            <td>@request.DateRequest.FormatEx()</td>
+                            <td>
+                                @request.Applicant.NullSafe(a => a.LastName).FormatEx()
+                                @request.Applicant.NullSafe(a => a.FirstName).FormatEx()
+                                @request.Applicant.NullSafe(a => a.MiddleName).FormatEx()
+                            </td>
+                            <td style="min-width: 215px">
+                                @if (request.Child != null)
+                                {
+                                    foreach (Child child in request.Child)
+                                    {
+                                        <text>
+                                            <div>
+                                                @child.NullSafe(a => a.LastName).FormatEx()
+                                                @child.NullSafe(a => a.FirstName).FormatEx()
+                                                @child.NullSafe(a => a.MiddleName).FormatEx()
+                                            </div>
+                                            <div>
+                                                <small style="color: #666;">
+                                                    @child.NullSafe(a => a.DateOfBirth).FormatEx()
+                                                    -
+                                                    @child.NullSafe(a => a.BenefitType.NullSafe(b => b.Name)).FormatEx()
+                                                </small>
+                                            </div>
+                                        </text>
+                                    }
+                                }
+                            </td>
+                            <td style="min-width: 215px">
+                                @if (request.Tour != null)
+                                {
+                                    @Html.Raw(request.NullSafe(r => r.Tour.Hotels.Name).FormatEx())
+                                    <div>
+                                        <small><i style="color: #666">@Html.Raw(request.NullSafe(r => r.Tour.Hotels.PlaceOfRest.Name).FormatEx())</i></small>
+                                    </div>
+                                }
+                                else if (request.PlaceOfRestId.HasValue)
+                                {
+                                    <div>
+                                        @Html.Raw(request.NullSafe(r => r.PlaceOfRest.Name).FormatEx())
+                                        @if (request.PlacesOfRest != null && request.PlacesOfRest.Any())
+                                        {
+                                            <div>
+                                                <i>Дополнительно:</i>
+                                                @foreach (var a in request.PlacesOfRest ?? new List<RequestPlaceOfRest>())
+                                                {
+                                                    <div>
+                                                        <small><i style="color: #666">@Html.Raw(a.PlaceOfRest.Name.FormatEx())</i></small>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                @Html.Raw(request.TypeOfRest != null && request.TypeOfRest.Parent != null ? string.Format("{0} / {1}", request.TypeOfRest.Parent.Name, request.TypeOfRest.Name) : request.TypeOfRest != null ? request.TypeOfRest.Name : request.NullSafe(r => r.TypeOfRest.Name).FormatEx())
+                            </td>
+                            <td>
+                                <div>
+                                    @Html.Raw(request.Tour != null && request.Tour.TimeOfRest != null ? request.NullSafe(r => r.Tour.TimeOfRest.Name).FormatEx() : request.NullSafe(r => r.TimeOfRest.Name).FormatEx())
+                                </div>
+                                @if (request.Tour != null)
+                                {
+                                    <div>
+                                        <small><i style="color: #666">@string.Format("{0}-{1}", request.Tour.DateIncome.FormatEx(), request.Tour.DateOutcome.FormatEx())</i></small>
+                                    </div>
+                                }
+                                @if (request.TimesOfRest != null && request.TimesOfRest.Any())
+                                {
+                                    <div>
+                                        <i>Дополнительно:</i>
+                                        @foreach (var a in request.TimesOfRest ?? new List<RequestsTimeOfRest>())
+                                        {
+                                            <div>
+                                                <small><i style="color: #666">@Html.Raw(a.TimeOfRest.Name.FormatEx())</i></small>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </td>
+                            <td>
+                                @Html.Raw(request.Status.NullSafe(p => p.Name).FormatEx())
+                            </td>
+                            <td class="text-center"><a onclick="$.noop()" class="glyphicon glyphicon-pencil"></a></td>
+                        </tr>
+
+                    </text>
+                }
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-md-12">
+                <p>Найдено заявлений: @Model.Requests.TotalItemCount</p>
+            </div>
+        </div>
+
+        <div>
+            @Html.PagedListPager(Model.Requests, page =>
+            {
+                RequestFilterModel m = Model;
+                m.PageNumber = page;
+                return Url.Action("RequestList", "FirstRequestCompany", m);
+            })
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/RequestList.css")
+}
+
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/doT.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale('ru');
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/RequestList.js"></script>
+}

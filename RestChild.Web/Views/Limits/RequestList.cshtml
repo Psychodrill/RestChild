@@ -1,0 +1,332 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.Limits.LimitRequestModel
+@{
+	ViewBag.Title = "Заявки на квоты";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3>Заявки на квоты</h3>
+@using (Html.BeginForm("RequestList", "Limits", FormMethod.Post, new { @id = "mainForm" }))
+{
+<div class="row">
+	<div class="col-md-12">
+		<fieldset class="form-horizontal">
+			<div class="form-group">
+				<label class="col-md-offset-8 col-md-2 control-label text-right">Год кампании:</label>
+				<div class="col-md-2">
+					@Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.ListOfYears, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off", @id = "yearOfRestId" })
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="col-md-4 control-label text-right">Наименование:</label>
+						<div class="col-md-8">
+							@Html.TextBoxFor(m => m.Name, new {@class = "form-control", maxlength = 1000})
+						</div>
+					</div>
+				</div>
+				@if (Model.Oivs.Count > 1)
+				{
+					<div class="col-md-6">
+						<div class="form-group">
+							<label class="col-md-4 control-label text-right">Ведомство:</label>
+							<div class="col-md-8">
+								@Html.DropDownListFor(m => m.OivId, new SelectList(Model.Oivs.Select(o => new Organization { Id = o.Id, Name = o.Organization.Name + "(" + o.TypeOfLimitList.NullSafe(t => t.Name).FormatEx() + ")" }).InsertAt(new Organization { Id = 0, Name = "-- Не выбрано --" }), "Id", "Name"), new {@class = "form-control select2", autocomplete = "off", @id = "oivId"})
+							</div>
+						</div>
+					</div>
+				}
+				@if (Model.CanSelectOrganization)
+				{
+					<div class="col-md-6">
+						<div class="form-group">
+							<label class="col-md-4 control-label text-right">Организация:</label>
+							<div class="col-md-8">
+								@Html.HiddenFor(m => m.OrgId, new {@class = "form-control org-id", @orgName = Model.OrgName, @id="orgId"})
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+			<div class="row">
+				<div class="col-md-12 inline-block">
+					<button class="btn btn-primary btn-default" type="submit" role="button">Поиск</button>
+					<button class="btn btn-default" type="button" role="button" id="btnExcelExport"><i class="glyphicon glyphicon-list-alt"></i> Экспорт в Excel</button>
+					@if (Model.CanAddRequest)
+					{
+						<button type="button" role="button" class="btn btn-primary" id="appendDialogButton">Добавить заявку</button>
+					}
+					else
+					{
+						<p class="bg-warning well-sm visible-md-inline visible-xs-inline visible-md-inline visible-lg-inline">Нельзя добавлять заявки на квоты</p>
+					}
+
+				</div>
+			</div>
+		</fieldset>
+	</div>
+</div>
+}
+<div class="row">
+	<div class="col-md-12">
+		<div class="form-group">
+			<h4>Результаты поиска</h4>
+			@if (Model.Requests.Any())
+			{
+				<table class="table" id="result">
+					<thead>
+
+					<tr>
+						<th style="width: 27%" rowspan="2">Организация(Ведомство)</th>
+						<th rowspan="2">Наименование (категория)</th>
+						<th style="width: 27%" rowspan="2">Регион отдыха</th>
+						<th style="width: 27%" rowspan="2">Желаемое время отдыха</th>
+						<th rowspan="2">Кол-во детей</th>
+						<th colspan="2">Кол-во сопровождающих</th>
+						<th rowspan="2">Статус</th>
+						<th rowspan="2" style="width: 200px"></th>
+					</tr>
+					<tr>
+						<th>вожатых</th>
+						<th>сопровождающих</th>
+					</tr>
+					</thead>
+					<tbody>
+					@for (var i = 0; i < Model.Requests.Count; i++)
+					{
+						<tr>
+							<td>
+								@Html.HiddenFor(m => m.Requests[i].Id, new {@class = "request-id"})
+								@Html.Raw(Model.Requests[i].Organization != null ? Model.Requests[i].Organization.Name.FormatEx() : "-")
+								<small>(@Html.Raw(Model.Requests[i].LimitOnVedomstvo != null && Model.Requests[i].LimitOnVedomstvo.Organization != null ? Model.Requests[i].LimitOnVedomstvo.Organization.Name.FormatEx() : "-")<i>@Html.Raw(Model.Requests[i].LimitOnVedomstvo != null && Model.Requests[i].LimitOnVedomstvo.TypeOfLimitList != null ? " - " + Model.Requests[i].LimitOnVedomstvo.TypeOfLimitList.Name.FormatEx() : "")</i>)</small>
+							</td>
+							<td>
+								@Html.Raw(Model.Requests[i].Name.FormatEx())
+								<small>(@Html.Raw(Model.Requests[i].ListOfChildsCategory != null ? Model.Requests[i].ListOfChildsCategory.Name.FormatEx() : "-"))</small>
+							</td>
+							<td>
+								@Html.Raw(Model.Requests[i].PlaceOfRest != null ? Model.Requests[i].PlaceOfRest.Name.FormatEx() : "-")
+							</td>
+							<td>
+								@Html.Raw(Model.Requests[i].GroupedTimeOfRest != null ? Model.Requests[i].GroupedTimeOfRest.Name : "-")
+							</td>
+							<td>
+								@Html.Raw(Model.Requests[i].Volume.FormatEx())
+							</td>
+							<td>
+								@Html.Raw(Model.Requests[i].VolumeCounselor.FormatEx())
+							</td>
+							<td>
+								@Html.Raw(Model.Requests[i].VolumeAttendant.FormatEx())
+							</td>
+							<td>
+								@Html.Raw(Model.Requests[i].State.Name.FormatEx())
+							</td>
+							<td style="width: 200px">
+								<nobr>
+									@if (Model.Requests[i].StateId == StateMachineStateEnum.LimitRequest.Editing && Security.HasRight(AccessRightEnum.Limit.Request.Edit))
+									{
+										<a type="button" role="button" title="Редактировать" class="btn btn-xs edit"><i class="glyphicon glyphicon-edit"></i></a>
+										<a type="button" role="button" title="Удалить" class="btn btn-xs remove"><i class="glyphicon glyphicon-remove"></i></a>
+									}
+									@{
+										if (Model.Actions.ContainsKey(Model.Requests[i].StateId ?? 0))
+										{
+											var actions = Model.Actions[Model.Requests[i].StateId ?? 0];
+											foreach (var action in actions)
+											{
+												<a type="button" role="button" code="@action.ActionCode" description="@action.Description" title="@action.ActionName" needComment="@((action.ActionCode == AccessRightEnum.Limit.Request.Decline).ToString())" class="btn btn-xs actions"><i class="glyphicon @Model.GetClassByCode(action.ActionCode)"></i></a>
+											}
+										}
+									}
+									@if (Model.Requests[i].HistoryLinkId.HasValue)
+									{
+										<a data-history-id="@Model.Requests[i].HistoryLinkId" class="btn btn-xs btn-hystory-link" href="#" title="История">
+											<i class="glyphicon glyphicon-time"></i>
+										</a>
+									}
+
+								</nobr>
+							</td>
+
+						</tr>
+					}
+					</tbody>
+				</table>
+			}
+			else
+			{
+				<p>Поиск не дал результатов</p>
+			}
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="appendDialog">
+	<div class="modal-dialog">
+		<div class="modal-content" style="width: 800px">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>
+				<h4 class="modal-title">Заявка</h4>
+			</div>
+			<div class="modal-body">
+				<fieldset class="form-horizontal">
+					<div id="add-request-div">
+						@if (Model.Oivs.Count > 1)
+						{
+							<div class="form-group">
+								<label class="col-md-4 control-label text-right">Ведомство<span class="requared">*</span>:</label>
+								<div class="col-md-8">
+									@Html.DropDownList(" ", new SelectList(Model.Oivs.Select(o=>new {o.Id, Name = o.Organization.Name + "(" + o.TypeOfLimitList.NullSafe(t=>t.Name).FormatEx() + ")"}), "Id", "Name"), new {@class = "form-control select2", autocomplete = "off", @id = "oivIdSelect"})
+								</div>
+							</div>
+						}
+						else
+						{
+							var oiv = Model.Oivs.FirstOrDefault();
+							@Html.Hidden("oivIdSelect", oiv != null ? (long?) oiv.Id : null, new {@id = "oivIdSelect"})
+							<div class="form-group">
+								<label class="col-md-4 control-label text-right">Ведомство:</label>
+								<div class="col-md-8">
+									@Html.Raw((oiv != null ? oiv.Organization.Name + "(" + oiv.TypeOfLimitList.NullSafe(t => t.Name).FormatEx() + ")" : null).FormatEx())
+								</div>
+							</div>
+						}
+						@if (Model.CanSelectOrganization)
+						{
+							<div class="form-group">
+								<label class="col-md-4 control-label text-right">Организация<span class="requared">*</span>:</label>
+								<div class="col-md-8">
+									@Html.Hidden("orgIdSelect", null, new {@class = "form-control org-id", @id = "orgIdSelect"})
+								</div>
+							</div>
+						}
+						else
+						{
+							<div class="form-group">
+								<label class="col-md-4 control-label text-right">Организация:</label>
+								<div class="col-md-8">
+									@Html.Hidden("orgIdSelect", Model.Organization.Id, new {@class = "form-control", @id = "orgIdSelect"})
+									@Html.Raw((Model.Organization != null ? Model.Organization.Name : null).FormatEx())
+								</div>
+							</div>
+						}
+					</div>
+					<div id="edit-request-div">
+						<div class="form-group">
+							<label class="col-md-4 control-label text-right">Ведомство:</label>
+							<div class="col-md-8 form-control-static" id="oiv-dialog-name">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-md-4 control-label text-right">Организация:</label>
+							<div class="col-md-8 form-control-static" id="org-dialog-name">
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label text-right">Наименование коллектива:</label>
+						<div class="col-md-8">
+							<input type="text" id="nameInput" class="form-control" maxlength="1000"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label text-right">Категория:</label>
+						<div class="col-md-8">
+							@Html.DropDownList(" ", new SelectList(Model.Categorys.InsertAt(new ListOfChildsCategory { Id = 0, Name = "-- Не выбрано --" }, 0), "Id", "Name"), new { @class = "form-control select2", autocomplete = "off", @id = "categoryInput" })
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label text-right">Регион отдыха<span class="requared">*</span>:</label>
+						<div class="col-md-8">
+							<input type="hidden" id="placeOfRestId" class="form-control"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label text-right">Комментарий:</label>
+						<div class="col-md-8">
+							<input type="text" id="comment" class="form-control" maxlength="1000"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label text-right">Желаемое время отдыха<span class="requared">*</span>:</label>
+						<div class="col-md-4">
+							@Html.DropDownList(" ", new SelectList(Model.TimeOfRests.InsertAt(new GroupedTimeOfRest {Id = 0, Name = "-- Не выбрано --"}, 0), "Id", "Name"), new { @class = "form-control select2", autocomplete = "off", @id = "timeOfRestInput" })
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label text-right">Количество детей<span class="requared">*</span>:</label>
+						<div class="col-md-8">
+							<input type="text" id="volume" class="form-control integer" maxlength="8"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label text-right">Сопровождающих вожатых:</label>
+						<div class="col-md-8">
+							<input type="text" id="volumeCounselor" class="form-control integer" maxlength="8" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-4 control-label text-right">Сопровождающих:</label>
+						<div class="col-md-8">
+							<input type="text" id="volumeAttendant" class="form-control integer" maxlength="8" />
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="btnModalUpdate">Сохранить</button>
+				<button type="button" class="btn btn-primary" id="btnModalAdd">Добавить</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
+@Html.Partial("Assets/HistoryLinkTemplate")
+
+@section styles
+{
+	@Styles.Render("~/Content/bootstrap-multiselect.css")
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+}
+
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/moment.js")
+	@Scripts.Render("~/Scripts/moment-with-locales.js")
+	@Scripts.Render("~/bundles/global")
+	@Scripts.Render("~/bundles/jqueryval")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript">
+			moment.locale('ru');
+			Globalize.culture("ru");
+			$(function() {
+				$.datepicker.setDefaults($.datepicker.regional["ru"]);
+				jQuery.validator.methods["date"] = function (value, element) { return true; }
+			});
+	</script>
+	<script type="template-dot" id="stateDialogBody">
+		<div>
+			<div class="form-group">
+				{{=it.name}}
+			</div>
+			{{? it.needComment }}
+			<label class="control-label">Комментарий:</label>
+			<input type="text" class="form-control stateDialogComment" maxlength="500" />
+			{{?}}
+		</div>
+	</script>
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	@Scripts.Render("~/Scripts/Limits/RequestList.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+}

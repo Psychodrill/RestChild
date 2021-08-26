@@ -1,0 +1,92 @@
+﻿@using System.Collections
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Domain
+@model RestChild.Admin.Web.Models.SecuritySettingsModel
+@{
+   ViewBag.Title = "Настройки безопасности";
+   Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+   <div class="col-md-12">
+      <h2>Настройки безопасности</h2>
+   </div>
+</div>
+
+@using (Html.BeginForm("SaveSettings", "SecuritySettings", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+   @Html.AntiForgeryToken()
+   <div class="error">
+      <div class="error-ul-block">
+         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+         {<text>@Html.Raw(Model.ErrorMessage)</text>
+
+      }
+      </div>
+   </div>
+
+   <legend>Общие настройки безопасности</legend>
+   <div class="form-group">
+      @Html.LabelFor(m => m.SessionLifeTime, new { @class = "col-sm-2 control-label" })
+      <div class="col-md-10">
+         @Html.TextBoxFor(m => m.SessionLifeTime, new { @class = "form-control", @min = "1", @type = "number" })
+         @Html.ValidationMessageFor(m => m.SessionLifeTime)
+      </div>
+   </div>
+   <div class="form-group">
+      @Html.LabelFor(m => m.MaxCountUnsuccess, new { @class = "col-sm-2 control-label" })
+      <div class="col-md-10">
+         @Html.TextBoxFor(m => m.MaxCountUnsuccess, new { @class = "form-control", @min = "1", @type = "number" })
+         @Html.ValidationMessageFor(m => m.MaxCountUnsuccess)
+      </div>
+   </div>
+   <div class="form-group">
+      @Html.LabelFor(m => m.AccountBlockSpan, new { @class = "col-sm-2 control-label" })
+      <div class="col-md-10">
+         @Html.TextBoxFor(m => m.AccountBlockSpan, new { @class = "form-control", @min = "1", @type = "number" })
+         @Html.ValidationMessageFor(m => m.AccountBlockSpan)
+      </div>
+   </div>
+   <div class="form-group">
+      @Html.LabelFor(m => m.TimeLogStorage, new { @class = "col-sm-2 control-label" })
+      <div class="col-md-10">
+         @Html.TextBoxFor(m => m.TimeLogStorage, new { @class = "form-control", @min = "1", @type = "number" })
+         @Html.ValidationMessageFor(m => m.TimeLogStorage)
+      </div>
+   </div>
+   <div class="form-group">
+      @Html.LabelFor(m => m.TimeLifeAccount, new { @class = "col-sm-2 control-label" })
+      <div class="col-md-10">
+         @Html.TextBoxFor(m => m.TimeLifeAccount, new { @class = "form-control align-middle", @min = "1", @type = "number" })
+         @Html.ValidationMessageFor(m => m.TimeLifeAccount)
+      </div>
+   </div>
+
+   <legend>Настройки пароля</legend>
+   <div class="form-group">
+      @Html.LabelFor(m => m.MinLenPassword, new { @class = "col-sm-2 control-label" })
+      <div class="col-md-10">
+         @Html.TextBoxFor(m => m.MinLenPassword, new { @class = "form-control", @min = "1", @type = "number" })
+         @Html.ValidationMessageFor(m => m.MinLenPassword)
+      </div>
+   </div>
+   <div class="form-group">
+      @Html.LabelFor(m => m.TimeLifePassword, new { @class = "col-sm-2 control-label" })
+      <div class="col-md-10">
+         @Html.TextBoxFor(m => m.TimeLifePassword, new { @class = "form-control", @min = "1", @type = "number" })
+         @Html.ValidationMessageFor(m => m.TimeLifePassword)
+      </div>
+   </div>
+
+   if (ViewBag.HasEditRight == true)
+   {
+      <div class="form-group">
+         <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-default btn-primary">
+               <i class="glyphicon glyphicon-ok"></i> Сохранить
+            </button>
+         </div>
+      </div>
+   }
+}

@@ -1,0 +1,77 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@model RestChild.Extensions.Filter.DirectoryFlightsFilterModel
+
+@if (Model != null && Model.Result != null && Model.Result.Any())
+{
+	<table class="table table-striped table-hover">
+		<thead>
+		<tr>
+			<th class="text-center" width="5%">№</th>
+			<th>Год кампании</th>
+			<th>Номер рейса</th>
+			<th>Время отбытия</th>
+			<th>Время прибытия</th>
+			<th>Транспортный узел отбытия</th>
+			<th>Транспортный узел прибытия</th>
+			<th>Вид транспорта</th>
+			<th>Место отбытия</th>
+			<th>Место прибытия</th>
+			@if (Model.ContractFiltered){
+				<th>Кол-во отдыхающих</th>
+			}
+			<th>Статус</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+		@{ int rowNumber = Model.Result.FirstItemOnPage; }
+		@foreach (var flights in Model.Result)
+		{
+			<tr>
+				<td class="text-center">@(rowNumber++)</td>
+				<td>@flights.NullSafe(f => f.YearOfRest.Name).FormatEx()</td>
+				<td>@flights.FilightNumber.FormatEx()</td>
+				<td>@flights.TimeOfDeparture.FormatEx("HH:mm")</td>
+				<td>@flights.TimeOfArrival.FormatEx("HH:mm")</td>
+				<td>@flights.CodeDeparture.FormatEx()</td>
+				<td>@flights.CodeArrival.FormatEx()</td>
+				<td>@flights.NullSafe(f => f.TypeOfTransport.Name).FormatEx()</td>
+				<td>@flights.NullSafe(f => f.Departure.Name).FormatEx()</td>
+				<td>@flights.NullSafe(f => f.Arrival.Name).FormatEx()</td>
+				@if (Model.ContractFiltered)
+				{
+					<td>@flights.RestManCount</td>
+				}
+				<td>@flights.NullSafe(f => f.State.Name).FormatEx()</td>
+
+				@if (Security.HasRightForSomeOrganization(AccessRightEnum.DirectoryFlightsManage))
+				{
+					<td class="text-center">@Html.ActionLink(" ", "Update", "DirectoryFlights", new { id = flights.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+				}
+
+			</tr>
+		}
+		</tbody>
+	</table>
+	<div class="row">
+		<div class="col-md-12">
+			@Html.PagedListPager(Model.Result, page =>
+	   {
+		   Model.Result = null;
+		   Model.PageNumber = page;
+		   return Url.Action("Search", "DirectoryFlights", Model);
+	   }, new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+		</div>
+	</div>
+}
+else
+{
+	<div class="row">
+		<div class="col-md-12">
+			<p>Поиск не дал результатов</p>
+		</div>
+	</div>
+}

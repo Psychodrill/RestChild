@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+ <xs:element name="ServiceProperties">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">ДОК: МВД Проверка регистрации</xs:documentation>
+  </xs:annotation>
+  <xs:complexType>
+   <xs:all>
+ <xs:element name="address1_county" minOccurs="0" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Район</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="address1_line1" minOccurs="1" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Улица</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="address1_line2" minOccurs="1" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Дом</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="address1_line3" minOccurs="1" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Квартира</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="address1_line4" minOccurs="0" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Корпус</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="address1_stateorprovince" minOccurs="0" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Регион</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="address1_town" minOccurs="1" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Населенный пункт</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="address2_stateorprovince" minOccurs="1" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Регион регистрации</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="birthdate" minOccurs="1" type="xs:dateTime">
+  <xs:annotation>
+<xs:documentation xml:lang="ru">Дата рождения</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="doctype" minOccurs="1">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Тип документа</xs:documentation>
+  </xs:annotation>
+  <xs:simpleType>
+   <xs:restriction base="xs:int">
+    <xs:enumeration value="1">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Паспорт гражданина РФ</xs:documentation>
+  </xs:annotation>
+    </xs:enumeration>
+    <xs:enumeration value="2">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Свидетельство о рождении</xs:documentation>
+  </xs:annotation>
+    </xs:enumeration>
+   </xs:restriction>
+  </xs:simpleType>
+ </xs:element>
+ <xs:element name="firstname" minOccurs="1" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Имя</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="lastname" minOccurs="1" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Фамилия</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="middlename" minOccurs="0" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Отчество</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="passport" minOccurs="1" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Номер</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="passport_date" minOccurs="1" type="xs:dateTime">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Дата выдачи</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="passport_serie" minOccurs="1" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">Серия</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+ <xs:element name="snils" minOccurs="0" type="xs:string">
+  <xs:annotation>
+   <xs:documentation xml:lang="ru">СНИЛС</xs:documentation>
+  </xs:annotation>
+ </xs:element>
+   </xs:all>
+  </xs:complexType>
+ </xs:element>
+</xs:schema>

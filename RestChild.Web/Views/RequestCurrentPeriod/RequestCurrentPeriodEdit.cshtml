@@ -1,0 +1,284 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.YearOfRestModel
+@{
+	ViewBag.Title = "Справочник заявочных кампаний";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	var canIncludeExclude = Model.Data != null && Model.Data.ListComplited == false;
+}
+
+<div class="row">
+	<div class="col-md-12">
+		<h2>Заявочная кампания</h2>
+		<a href="@Url.Action("Search", "RequestCurrentPeriod")">Назад</a>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">&nbsp;
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		@using (Html.BeginForm("Save", "RequestCurrentPeriod", FormMethod.Post))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(model => model.Data.Id, new {@class= "yearOfRestId" })
+			@Html.HiddenFor(model => model.Data.StateId)
+			@Html.HiddenFor(model => model.Data.SignInfoId)
+			@Html.HiddenFor(model => model.Data.ReceptionOfApplicationsCompleted)
+			@Html.HiddenFor(model => model.Data.ListComplited)
+			@Html.HiddenFor(model => model.Data.TourOpened)
+			@Html.HiddenFor(model => model.Data.LastUpdateTick)
+			@Html.HiddenFor(model => model.Data.Eid)
+
+			<fieldset class="form-horizontal">
+				<div class="form-group">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-default btn-primary">
+                            <i class="glyphicon glyphicon-pencil"></i> Сохранить
+                        </button>
+                        @if (Security.HasRight(AccessRightEnum.Status.FcToRanging) && !Model.Data.ReceptionOfApplicationsCompleted)
+                        {
+                            <button type="button" class="btn btn-default" onclick="sendEvent('@AccessRightEnum.Status.FcToRanging')" id="btn@(AccessRightEnum.Status.FcToRanging)">
+                                Завершить прием заявок на первом этапе
+                            </button>
+                        }
+                        @if (Security.HasRight(AccessRightEnum.Status.FcToIncludedInList) && !Model.Data.ListComplited && Model.Data.ReceptionOfApplicationsCompleted)
+                        {
+                            <button type="button" class="btn btn-default" onclick="sendEvent('@AccessRightEnum.Status.FcToIncludedInList')" id="btn@(AccessRightEnum.Status.FcToIncludedInList)">
+                                Список формирован
+                            </button>
+                        }
+                        @if (Security.HasRight(AccessRightEnum.Status.FcToDecisionMaking) && !Model.Data.TourOpened && Model.Data.ListComplited)
+                        {
+                            <button type="button" class="btn btn-default" onclick="sendEvent('@AccessRightEnum.Status.FcToDecisionMaking')" id="btn@(AccessRightEnum.Status.FcToDecisionMaking)">
+                                Размещения для выбора сформированы
+                            </button>
+                        }
+                        @if (Security.HasRight(AccessRightEnum.Status.FcToDecisionMakingCovid))
+                        {
+                            <button type="button" class="btn btn-default" onclick="L2020DM('@Model.Data.Id')">
+                                Завершить выбор альтернативного варианта
+                            </button>
+                        }
+                        @if (Model.Data.IsClosed)
+                        {
+                            <button type="button" class="btn btn-default" onclick="sendToERL('@Model.Data.Id')">
+                                Отправить сведения в ИС Социум
+                            </button>
+                        }
+                    </div>
+				</div>
+				
+				<div role="tabpanel" id="MainTabs">
+					<!-- Nav tabs -->
+					<ul class="nav nav-tabs" role="tablist">
+						<li role="presentation" class="active">
+							<a href="#CommonInfo" aria-controls="CommonInfo" role="tab" data-toggle="tab">Общая информация</a>
+						</li>
+						@if (Model.Limits != null && Model.Limits.Any())
+						{
+							<li role="presentation">
+								<a href="#LimitsInfo" aria-controls="LimitsInfo" role="tab" data-toggle="tab">Квоты</a>
+							</li>
+						}
+					</ul>
+					<!-- Tab panes -->
+					<div class="tab-content">
+						<div role="tabpanel" class="tab-pane active" id="CommonInfo">
+							<div>
+								<fieldset class="form-horizontal">
+									<div class="form-group">
+										<label class="col-md-3 control-label text-right">Год заявочной кампании</label>
+										<div class="col-md-2">
+											@Html.TextBoxFor(model => model.Data.Year, new { @id = "yearNumber", @class = "form-control year-inputmask", maxlength = 4, autocomplete = "off", @data_toggle = "tooltip", @data_placement = "right", @title = "Указывается год в виде числа" })
+											@Html.HiddenFor(m => m.Data.Name, new { @id = "yearName" })
+											@Html.ValidationMessageFor(model => model.Data.Year, "Заполните поле")
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="checkbox col-md-9 col-md-offset-3">
+											<label>
+												@Html.CheckBoxFor(model => model.Data.IsClosed) Кампания закрыта
+											</label>
+										</div>
+									</div>
+									<div class="row form-group">
+										<label class="col-md-3 control-label">Дата открытия первого этапа</label>
+										<div class="col-md-9">
+											@Html.TextBoxFor(r => r.Data.DateFirstStage, new { @class = "form-control datetimepicker input-mask-date-anytime", @Value = Model.Data.DateFirstStage.FormatEx(string.Empty, string.Empty), autocomplete = "off" })
+										</div>
+									</div>
+									<div class="row form-group">
+										<label class="col-md-3 control-label">Дата закрытия первого этапа</label>
+										<div class="col-md-9">
+											@Html.TextBoxFor(r => r.Data.DateFirstStageClose, new { @class = "form-control datetimepicker input-mask-date-anytime", @Value = Model.Data.DateFirstStageClose.FormatEx(string.Empty, string.Empty), autocomplete = "off" })
+										</div>
+									</div>
+									<div class="row form-group">
+										<label class="col-md-3 control-label">Дата открытия второго этапа</label>
+										<div class="col-md-9">
+											@Html.TextBoxFor(r => r.Data.DateSecondStage, new { @class = "form-control datetimepicker input-mask-date-anytime", @Value = Model.Data.DateSecondStage.FormatEx(string.Empty, string.Empty), autocomplete = "off" })
+										</div>
+									</div>
+									<div class="row form-group">
+										<label class="col-md-3 control-label">Дата закрытия второго этапа</label>
+										<div class="col-md-9">
+											@Html.TextBoxFor(r => r.Data.DateSecondStageClose, new { @class = "form-control datetimepicker input-mask-date-anytime", @Value = Model.Data.DateSecondStageClose.FormatEx(string.Empty, string.Empty), autocomplete = "off" })
+										</div>
+									</div>
+								</fieldset>
+							</div>
+                            <div>
+								<br />
+                                <h3>Усредненная цена за отдых</h3>
+                                <fieldset class="form-horizontal">
+                                    <div class="row form-group">
+                                        <label class="col-md-8 text-center">Цель обращения</label>
+                                        <label class="col-md-4 text-center">Цена за отдых 1 человека, руб.</label>
+                                    </div>
+
+                                    @foreach (var i in Model.AveragePrices.Keys)
+                                    {
+                                        <div class="row form-group">
+                                            @Html.HiddenFor(m => m.AveragePrices[i].Id)
+                                            @Html.HiddenFor(m => m.AveragePrices[i].YearOfRestId)
+                                            @Html.HiddenFor(m => m.AveragePrices[i].TypeOfRestId)
+                                            <label class="col-md-8 control-label">@Model.AveragePrices[i].TypeOfRest.Name</label>
+                                            <div class="col-md-4">
+                                                @Html.TextBoxFor(r => r.AveragePrices[i].Price, new { @class = "form-control price", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    }
+                                </fieldset>
+                            </div>
+						</div>
+						@if (Model.Limits != null && Model.Limits.Any())
+						{
+							<div role="tabpanel" class="tab-pane" id="LimitsInfo">
+								<fieldset class="form-horizontal">									
+									@Html.ActionLink("Excel", "ExcelYearList", new {@id=Model.Data.Id}, new {@class="btn btn-default"})
+									<table class="table">
+										<thead>
+										<tr>
+											<th>№</th>
+											<th>Квота</th>
+											<th>Размер квоты</th>
+											<th>Поступило заявлений всего</th>
+											<th>Отобрано отдыхающих</th>
+										</tr>
+										</thead>
+										<tbody>
+										@foreach(var i in Model.Limits.Keys)
+										{
+											<tr>
+												<td>
+													@Model.Limits[i].Data.Point
+												</td>
+												<td>
+													@if (Model.Limits[i].Data.TypeOfRestId.HasValue)
+													{
+														@Html.ActionLink(Model.Limits[i].Data.Name, "LimitEdit", new {id = Model.Limits[i].Data.Id}, new {@class = "", target = "_blank"})
+													}
+													else
+													{
+														<span class="form-control-static">
+															@Model.Limits[i].Data.Name
+														</span>
+													}
+												</td>
+												<td>
+													@if (Model.Limits[i].Data.TypeOfRestId.HasValue)
+													{
+														if (canIncludeExclude)
+														{
+															@Html.HiddenFor(m => m.Limits[i].Data.Id)
+															@Html.TextBoxFor(m => m.Limits[i].Data.Limit, new {@class = "form-control integer", maxlength = "5", style = "min-width:100px"})
+														}
+														else
+														{
+															<span class="form-control-static">
+																@Model.Limits[i].Data.Limit
+															</span>
+
+														}
+													}
+													else
+													{
+														<span class="form-control-static">
+															@Model.Limits[i].PlanCount
+														</span>
+													}
+												</td>
+												<td>
+													<span class="form-control-static">
+														@Model.Limits[i].FactCount
+													</span>
+												</td>
+												<td>
+													<span class="form-control-static">
+														@Model.Limits[i].FactIncludedCount
+													</span>
+												</td>
+											</tr>
+										}
+										</tbody>
+									</table>
+								</fieldset>
+							</div>
+						}
+					</div>
+				</div>
+			</fieldset>
+		}
+	</div>
+</div>
+
+<div class="modal fade" id="askDateTime">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>
+				<h4 class="modal-title">Время рассылки статусов</h4>
+			</div>
+			<div class="modal-body">
+				<fieldset class="form-horizontal">
+					<div class="form-group">
+						<label class="col-md-6 control-label">Дата/время рассылки статусов:</label>
+						<div class="col-md-4">
+							<div class='input-group datepicker-anytime'>
+								<input type="text" autocomplete="off" class="form-control input-mask-datetime-anytime" id="planSendEventDate" />
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+					</div>					
+				</fieldset>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="ok-button">Отправить</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section styles
+{
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+}
+@section scripts
+{
+	@Scripts.Render("~/Scripts/moment.js")
+	@Scripts.Render("~/Scripts/moment-with-locales.js")
+
+	<script>
+		moment.locale('ru');
+	</script>
+
+	@Scripts.Render("~/Scripts/bootstrap-datetimepicker.js")
+	@Scripts.Render("~/Scripts/inputMaskConfig.js")
+	@Scripts.Render("~/Scripts/YearOfCompany/RequestCurrentPeriodEdit.js")
+}

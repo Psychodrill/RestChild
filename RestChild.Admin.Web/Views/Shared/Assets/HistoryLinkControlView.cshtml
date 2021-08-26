@@ -1,0 +1,18 @@
+﻿@*
+	Подключать вместе с HistoryLinkTemplate.cshtml
+	Для работы нужны:
+		~/Scripts/assets/HistoryLinkControl.ts
+		~/Scripts/dot.js
+		~/Scripts/moment.js
+*@
+
+@model RestChild.Admin.Web.Models.HistoryLinkViewModel
+
+@if (Model != null)
+{
+	<div class="row form-group">
+		<div class="col-md-12">
+			<button type="button" class="btn btn-default btn-hystory-link" data-history-id="@Model.HistoryLinkId">История</button>
+		</div>
+	</div>
+}

@@ -1,0 +1,90 @@
+﻿@using RestChild.Comon
+@using RestChild.Web.Common
+@model RestChild.Web.Models.ViewModelState
+@if (Model.State != null)
+{
+	<div class="row form-group">
+		<div class="col-md-8">
+			<p class="panel-operation-button">
+			@if (Model.NeedSaveButton)
+			{
+				<button type="button" class="btn btn-default btn-primary" role="button" onclick="@(Model.JsFunctionToAction ?? "confirmStateButton")('@Model.FormSelector', '@Model.ActionSelector') ">
+					Сохранить
+				</button>
+			}
+
+			@if (Model.NeedRemoveButton)
+			{
+				<button type="button" class="btn btn-default btn-danger" role="button" onclick="@(Model.JsFunctionToAction ?? "confirmStateButton")('@Model.FormSelector', '@Model.ActionSelector', 'Delete', 'Удалить') ">
+					Удалить
+				</button>
+			}
+
+			@if (Model.PreNoStatusActions != null && Model.PreNoStatusActions.Any())
+			{
+				foreach (var action in Model.PreNoStatusActions)
+				{
+					<a @Html.Raw(action.SomeAddon) class="btn btn-default @action.ButtonClass" @Html.Raw(string.IsNullOrEmpty(action.JsFunction) ? string.Empty : "onclick='" + action.JsFunction + "'") href="@(string.IsNullOrEmpty(action.Action) ? "#" : Url.Action(action.Action, action.Controller, action.ActionParameters))">
+						@if (!string.IsNullOrEmpty(action.IconClass))
+						{<text>
+							 <i class="glyphicon @action.IconClass"></i>
+						 </text>
+						}
+						@action.Name
+					</a>
+				}
+			}
+
+			@if (!Model.NotSaved)
+			{
+				foreach (var action in Model.Actions)
+				{
+					<button type="button" class="btn btn-default btn-info" onclick="@(Model.JsFunctionToAction ?? "confirmStateButton")('@Model.FormSelector', '@Model.ActionSelector', '@(action.ActionCode)', '@(action.ActionName.FormatEx(string.Empty))', '@(action.Description.FormatEx(string.Empty))'@Html.Raw(Model.GetComment(action)))">
+						@action.ActionName
+					</button>
+				}
+			}
+
+			@if (Model.PostNoStatusActions != null && Model.PostNoStatusActions.Any())
+			{
+				foreach (var action in Model.PostNoStatusActions)
+				{
+					<a @Html.Raw(action.SomeAddon) class="btn btn-default @action.ButtonClass" @Html.Raw(string.IsNullOrEmpty(action.JsFunction) ? string.Empty : "onclick='" + action.JsFunction + "'") href="@(string.IsNullOrEmpty(action.Action) ? "#" : Url.Action(action.Action, action.Controller, action.ActionParameters))">
+						@if (!string.IsNullOrEmpty(action.IconClass))
+						{<text>
+							 <i class="glyphicon @action.IconClass"></i>
+						 </text>
+						}
+						@action.Name
+					</a>
+				}
+			}
+			</p>
+		</div>
+		<div class="col-md-4">
+			<div class="well well-sm" style="max-width: 300px; float: right;">
+				Статус: <strong>@Model.State.Name</strong>
+			</div>
+		</div>
+	</div>
+	if (Model.Sign != null)
+	{
+		<div class="form-group">
+			<div class="well well-sm">
+				<span class="text-info">Пользователь: </span><strong>@Html.Raw(Model.Sign.NullSafe(s => s.Account.Name))</strong>, ЭП: @Model.NullSafe(s => s.Sign.SignDate).FormatEx()<br />
+				Файл: <a href="@Url.Action("GetSignInfo", "Sign", new { id = Model.Sign.Id, url = Esep.FullReturnUrl(Request.RawUrl) })" target="_blank">Карточка, подписанная ЭП</a>
+			</div>
+		</div>
+	}
+}
+<script type="template-dot" id="stateDialogBody">
+	<div>
+		<div class="form-group">
+			{{=it.name}}
+		</div>
+		{{? it.needComment }}
+		<label class="control-label">Комментарий:</label>
+		<input type="text" class="form-control stateDialogComment" maxlength="500" />
+		{{?}}
+	</div>
+</script>

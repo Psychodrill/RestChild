@@ -1,0 +1,12 @@
+﻿.form-inline .form-group{
+    margin-left: 15px;
+    margin-right: 0;
+}
+
+.form-horizontal label.input-label {
+	margin-bottom: 5px;
+}
+
+.form-inline .request-period-start, .form-inline .request-period-end {
+	width: 110px;
+}

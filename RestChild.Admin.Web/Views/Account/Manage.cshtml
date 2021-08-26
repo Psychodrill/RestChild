@@ -1,0 +1,417 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Admin.Web.Controllers
+@model RestChild.Admin.Web.Models.AccountManageViewModel
+@{
+	ViewBag.Title = "Изменение данных пользователя";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="row">
+	<div class="col-md-12">
+		<h2>Изменение данных пользователя</h2>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		Вы можете скорректировать информацию о пользователе, а так же сменить пароль.
+	</div>
+</div>
+@using (Html.BeginForm("SaveAccount", "Account", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+	@Html.HiddenFor(m => m.Data.DateCreate)
+	@Html.HiddenFor(m => m.Data.DateUpdate)
+	@Html.HiddenFor(m => m.Data.Id)
+	<legend>Общие сведения о пользователе</legend>
+	<div class="error">
+		<div class="error-ul-block">
+			@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+			{<text>@Html.Raw(Model.ErrorMessage)</text>
+
+			}
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Логин<span class="requared">*</span></label>
+		<div class="col-md-10">
+			@Html.TextBoxFor(m => m.Data.Login, new { @class = "form-control", autocomplete = "off", maxlength = 1000, @data_toggle = "tooltip", @data_placement = "right", @title = "Имя пользоватлея используемое при входе в систему" })
+			@Html.ValidationMessageFor(m => m.Data.Login)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">ФИО<span class="requared">*</span></label>
+		<div class="col-md-10">
+			@Html.TextBoxFor(m => m.Data.Name, new { @class = "form-control", autocomplete = "off", maxlength = 1000, @data_toggle = "tooltip", @data_placement = "right", @title = "Фамилия, имя, отчество пользователя системы" })
+			@Html.ValidationMessageFor(m => m.Data.Name)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Должность</label>
+		<div class="col-md-10">
+			@Html.TextBoxFor(m => m.Data.Position, new { @class = "form-control", autocomplete = "off", maxlength = 1000 })
+			@Html.ValidationMessageFor(m => m.Data.Position)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">E-Mail</label>
+		<div class="col-md-10">
+			@Html.TextBoxFor(m => m.Data.Email, new { @class = "form-control", autocomplete = "off", maxlength = 1000 })
+			@Html.ValidationMessageFor(m => m.Data.Email)
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">Телефон</label>
+		<div class="col-md-10">
+			@Html.TextBoxFor(m => m.Data.Phone, new { @class = "form-control" })
+			@Html.ValidationMessageFor(m => m.Data.Phone)
+		</div>
+	</div>
+	if (Security.HasRight(AccessRightEnum.AccountManage))
+	{
+		<legend>Управление правами пользователя:</legend>
+		<div style="max-height: 300px; overflow-y: auto;">
+			<table class="table" id="tblRights">
+				<tbody>
+					@for (var rightIndex = 0; rightIndex < Model.Rights.Count; rightIndex++)
+					{
+						<tr>
+							<td style="width: 50px">
+								@if (!Model.Rights[rightIndex].AccessRight.ForOrganization)
+								{
+									<input type="checkbox" @(Model.Rights[rightIndex].AccountId.HasValue ? "checked" : "") class="accessRightCheckbox"/>
+								}
+								@Html.HiddenFor(m => m.Rights[rightIndex].AccessRightId, new {@class = "AccessRightId"})
+								@Html.HiddenFor(m => m.Rights[rightIndex].AccountId, new {@class = "AccountId"})
+								@Html.HiddenFor(m => m.Rights[rightIndex].OrganizationId, new {@class = "OrganizationId"})
+								@Html.HiddenFor(m => m.Rights[rightIndex].Id, new {@class = "Id"})
+							</td>
+							<td class="AccessRightName">@Model.Rights[rightIndex].AccessRight.Name</td>
+							<td>
+								@if (Model.Rights[rightIndex].AccessRight.ForOrganization)
+								{
+									@(Model.Rights[rightIndex].Organization.NullSafe(o => o.Name) ?? "Для любой организации")
+								}
+								else
+								{
+									<text>Не применяется к организации</text>
+								}
+							</td>
+							<td>
+								@if (Model.Rights[rightIndex].AccessRight.ForOrganization)
+								{
+									<button class="btn btn-danger" type="button" title="Удалить" onclick=" removeRight(this); "><i class="glyphicon glyphicon-remove"></i></button>
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+		if (Model.AccessRights.Any())
+		{
+			<table class="table" id="rightAdd">
+				<tbody>
+					<tr>
+						<td style="width: 50px"></td>
+						<td style="width: 50%">@Html.DropDownList("RightId", new SelectList(Model.AccessRights.OrderBy(a=>a.Name), "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })</td>
+						<td>
+							@Html.Hidden("OrgRight", null, new { @class = "form-control street-autocomplete" })
+							<input type="hidden" class="OrganizationId" />
+							<input type="hidden" class="OrganizationName" />
+						</td>
+						<td style="width: 50px">
+							<button class="btn btn-default" role="button" title="Добавить" type="button" id="btnAddRight"><i class="glyphicon glyphicon-plus"></i></button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		}
+		if (Model.Role.Any() || Model.AccessRoles.Any())
+		{
+			<legend>Управление ролями пользователя:</legend>
+			<div style="max-height: 300px; overflow-y: auto;">
+
+				<table class="table" id="tblRoles">
+					<thead>
+						<tr>
+							<th style="width: 50%">Роль</th>
+							<th>Организация</th>
+							<th style="width: 50px"></th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (var roleIndex = 0; roleIndex < Model.Role.Count; roleIndex++)
+						{
+							<tr>
+								<td class="RoleName" style="width: 50%">@Model.Role[roleIndex].Role.Name</td>
+								<td>@(Model.Role[roleIndex].Organization.NullSafe(o => o.Name) ?? "Для любой организации")</td>
+								<td style="width: 50px">
+									@Html.HiddenFor(m => m.Role[roleIndex].RoleId, new { @class = "RoleId" })
+									@Html.HiddenFor(m => m.Role[roleIndex].AccountId, new { @class = "AccountId" })
+									@Html.HiddenFor(m => m.Role[roleIndex].OrganizationId, new { @class = "OrganizationId" })
+									@Html.HiddenFor(m => m.Role[roleIndex].Id, new { @class = "Id" })
+									<button class="btn btn-danger" type="button" title="Удалить" onclick="removeRole(this);"><i class="glyphicon glyphicon-remove"></i></button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+			if (Model.AccessRoles.Any())
+			{
+				<table class="table" id="roleAdd">
+					<tbody>
+						<tr>
+							<td style="width: 50%">@Html.DropDownList("RoleId", new SelectList(Model.AccessRoles, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })</td>
+							<td>
+								@Html.Hidden("OrgRole", null, new { @class = "form-control street-autocomplete" })
+								<input type="hidden" class="OrganizationId" />
+								<input type="hidden" class="OrganizationName" />
+							</td>
+							<td style="width: 50px">
+								<button class="btn btn-default" role="button" title="Добавить" type="button" id="btnAddRole"><i class="glyphicon glyphicon-plus"></i></button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			}
+		}
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<div class="checkbox">
+					<label>
+						@Html.CheckBoxFor(m => m.Data.IsActive)
+						Активен
+					</label>
+				</div>
+			</div>
+		</div>
+   }
+
+   if (Model.Data.Id == 0)
+   {
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Пароль</label>
+			<div class="col-md-10">
+				@Html.PasswordFor(m => m.Data.Password, new { @class = "form-control", placeholder = "Введите новый пароль" })
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Подтверждение пароля</label>
+			<div class="col-md-10">
+				@Html.PasswordFor(m => m.Data.Salt, new { @class = "form-control", placeholder = "Подтвердите пароль" })
+				<span style="color: red; display: none" class="passwordNotEqual">Подтверждение не совпадает с паролем</span>
+			</div>
+		</div>
+	}
+
+      <div class="form-group">
+         <div class="col-md-offset-2 col-md-2">
+            <button type="submit" class="btn btn-default btn-primary @(Model.Data.Id == 0 ? "password-check" : string.Empty)">
+               <i class="glyphicon glyphicon-ok"></i> Сохранить
+            </button>
+         </div>
+         @if (Model.Data != null && Model.Data.Id > 0)
+         {
+            <div class="col-md-3">
+               <a class="btn btn-default btn-light" href="@Url.Action("ForceChangePasswordSet", "Account", new { accountId = Model.Data.Id })"> Сбросить пароль пользователя</a>
+            </div>
+            if (!Model.Data.IsDeleted)
+            {
+               <div class="col-md-3">
+                  <a class="btn btn-default btn-danger" href="@Url.Action("DeleteUser", "Account", new { accountId = Model.Data.Id })"> Удалить пользователя</a>
+               </div>
+            }
+         }
+      </div>
+}
+@if (Model.Data.Id > 0)
+{
+	using (Html.BeginForm("ChangePassword", "Account", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+	{
+		<input type="hidden" name="id" value="@Html.ValueFor(m=>m.Data.Id)"/>
+		<legend>Изменение пароля</legend>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Пароль</label>
+			<div class="col-md-10">
+				@Html.Password("password", string.Empty, new { @class = "form-control", placeholder = "Введите новый пароль" })
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">Подтверждение пароля</label>
+			<div class="col-md-10">
+				@Html.Password("passwordConfirm", string.Empty, new { @class = "form-control", placeholder = "Подтвердите пароль" })
+				<span style="color: red; display: none" class="passwordNotEqual">Подтверждение не совпадает с паролем</span>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-md-offset-2 col-md-10">
+				<button type="submit" class="btn btn-default btn-primary password-check">
+					<i class="glyphicon glyphicon-ok"></i> Сохранить пароль
+				</button>
+			</div>
+		</div>
+	}
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/bootstrap-multiselect.css")
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+
+@section Scripts {
+	@Scripts.Render("~/bundles/global")
+	@Scripts.Render("~/bundles/jqueryval")
+	@Scripts.Render("~/Scripts/bootstrap-multiselect.js")
+	@Scripts.Render("~/Scripts/assets/multipleSelect.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+
+	<script type="text/javascript" language="javascript">
+
+		function changeIndexInNames(parent, name) {
+			var childs = parent.children();
+			var regExp = new RegExp("(.*\[[0-9]+\])", "g");
+			for (var i = 0; i < childs.length; i++) {
+				$(childs[i]).find('*').each(function () {
+					if ($(this).attr('name')) {
+						$(this).attr('name', $(this).attr('name').replace(regExp, name + '[' + i + ']'));
+					}
+				});
+			}
+		}
+
+		function removeRole(self) {
+			$(self).parent().parent().remove();
+			changeIndexInNames($('#tblRoles').find('tbody'), 'Role');
+		}
+
+		function removeRight(self) {
+			$(self).parent().parent().remove();
+			changeIndexInNames($('#tblRights').find('tbody'), 'Rights');
+		}
+
+		$(function () {
+			$('input[data-toggle="tooltip"]').tooltip();
+
+			if ($($('input[type="password"]')[0]).val() === '') {
+				$('.password-check').prop("disabled", true);;
+			}
+
+			$('input[type="password"]').keyup(function () {
+				if ($($('input[type="password"]')[0]).val() !== $($('input[type="password"]')[1]).val()) {
+					$('.passwordNotEqual').show();
+					$('.password-check').prop("disabled", true);;
+				} else {
+					$('.passwordNotEqual').hide();
+					$('.password-check').prop("disabled", false);
+				}
+			});
+
+			$('.accessRightCheckbox').change(function () {
+				$(this).parent().find('.AccountId').val($(this).is(':checked') ? '0' : '');
+			});
+
+			$('select.select2').select2();
+
+			$('#OrgRole, #OrgRight').select2({
+					minimumInputLength: 1,
+					allowClear: true,
+					language: "ru",
+					ajax: {
+                        url: rootPath + '/api/Organization/Get',
+						dataType: 'json',
+						quietMillis: 250,
+						data: function(term, page) {
+							return {
+								query: term,
+							};
+						},
+						results: function(data, page) {
+							var res = [];
+							for (var i = 0; i < data.length; i++) {
+								if (data[i].id) {
+									res.push({ id: data[i].id, text: data[i].name });
+								}
+							}
+
+							return {
+								results: res
+							};
+						},
+						cache: true
+					}
+				})
+				.on('change', function (e) {
+					$(this).parent().find('.OrganizationId').val(e.added.id);
+					$(this).parent().find('.OrganizationName').val(e.added.text);
+				});
+			$('#btnAddRole').click(function () {
+				var row = $($('#roleRow').html());
+				if ($('#roleAdd .OrganizationId').val()) {
+					row.find('.OrganizationId').val($('#roleAdd .OrganizationId').val());
+					row.find('.OrganizationName').html($('#roleAdd .OrganizationName').val());
+				} else {
+					row.find('.OrganizationName').html('Для любой организации');
+				}
+				row.find('.RoleName').html($('#RoleId option:selected').text());
+				row.find('.RoleId').val($('#RoleId').val());
+				$('#tblRoles').append(row);
+				changeIndexInNames($('#tblRoles').find('tbody'), 'Role');
+				$('#roleAdd .OrganizationId').val('');
+				$('#roleAdd .OrganizationName').val('');
+				$('#OrgRole').select2('data', null);
+			});
+
+			$('#btnAddRight').click(function () {
+				var row = $($('#rightRow').html());
+				if ($('#rightAdd .OrganizationId').val()) {
+					row.find('.OrganizationId').val($('#rightAdd .OrganizationId').val());
+					row.find('.OrganizationName').html($('#rightAdd .OrganizationName').val());
+				} else {
+					row.find('.OrganizationName').html('Для любой организации');
+				}
+				row.find('.AccessRightName').html($('#RightId option:selected').text());
+				row.find('.AccessRightId').val($('#RightId').val());
+				$('#tblRights').append(row);
+				changeIndexInNames($('#tblRights').find('tbody'), 'Rights');
+				$('#rightAdd .OrganizationId').val('');
+				$('#rightAdd .OrganizationName').val('');
+				$('#OrgRight').select2('data', null);
+			});
+		});
+	</script>
+	<script id="roleRow" type="text/template">
+		<tr>
+			<td class="RoleName" style="width:50%"></td>
+			<td><span class="OrganizationName"></span></td>
+			<td>
+				<input type="hidden" name="Role[0].RoleId" class="RoleId" />
+				<input type="hidden" name="Role[0].AccountId" class="AccountId" />
+				<input type="hidden" name="Role[0].OrganizationId" class="OrganizationId" />
+				<input type="hidden" name="Role[0].Id" class="Id" />
+				<button class="btn btn-danger" type="button" title="Удалить" onclick="removeRole(this);"><i class="glyphicon glyphicon-remove"></i></button>
+			</td>
+		</tr>
+	</script>
+	<script id="rightRow" type="text/template">
+		<tr>
+			<td></td>
+			<td class="AccessRightName" style="width:50%"></td>
+			<td><span class="OrganizationName"></span></td>
+			<td>
+				<input type="hidden" name="Rights[0].AccessRightId" class="AccessRightId" />
+				<input type="hidden" name="Rights[0].AccountId" class="AccountId" value="0" />
+				<input type="hidden" name="Rights[0].OrganizationId" class="OrganizationId" />
+				<input type="hidden" name="Rights[0].Id" class="Id" />
+			</td>
+			<td>
+				<button class="btn btn-danger" type="button" title="Удалить" onclick="removeRight(this);"><i class="glyphicon glyphicon-remove"></i></button>
+			</td>
+		</tr>
+	</script>
+}
+
+

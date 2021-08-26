@@ -1,0 +1,113 @@
+﻿@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.Models
+@model IList<DocumentType>
+@{
+	var type = (TypeOfLimitListEnum) (ViewBag.TypeLimit ?? TypeOfLimitListEnum.Profile);
+}
+<div class="modal fade" id="dialogAttendant">
+	<div class="modal-dialog big-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span></button>
+				<h4 class="modal-title">@Html.Raw(type == TypeOfLimitListEnum.Orphan ? "Воспитатели и сопровождающие" : "Тренеры и педагоги")	</h4>
+			</div>
+			<div class="modal-body  big-dialog">
+				<fieldset class="form-horizontal">
+					<div class="row">
+						<div class="col-md-offset-10 col-md-2">
+							<label class="checkbox-inline">
+								<input type="checkbox" class="middleName-present" />
+								Нет отчества
+							</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label text-right">Фамилия<span class="requared">*</span>:</label>
+						<div class="col-md-3">
+							<input type="text" class="lastName form-control" maxlength="1000" />
+						</div>
+						<label class="col-md-1 control-label text-right">Имя<span class="requared">*</span>:</label>
+						<div class="col-md-3">
+							<input type="text" class="firstName form-control" maxlength="1000" />
+						</div>
+						<label class="col-md-1 control-label text-right">Отчество<span class="requared">*</span>:</label>
+						<div class="col-md-2">
+							<input type="text" class="middleName form-control" maxlength="1000" />
+						</div>
+					</div>					
+					<div class="form-group">
+						<label class="col-md-2 control-label text-right">Пол<span class="requared">*</span>:</label>
+						<div class="col-md-3">
+							<label>
+								<input type="radio" name="male" class="male" value="True"/>
+								Мужской
+							</label>
+							<label>
+								<input type="radio" name="male" class="male" value="False"/>
+								Женский
+							</label>
+						</div>
+						<label class="col-md-3 control-label text-right">Дата рождения<span class="requared">*</span>:</label>
+						<div class="col-md-3">
+							<input type="text" class="datebirth form-control datepicker required input-mask-date" maxlength="1000"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label text-right">Место рождения:</label>
+						<div class="col-md-10">
+							<input type="text" class="placebirth form-control required" maxlength="1000"/>
+						</div>
+					</div>
+					<h5>Документ удостоверяющий личность</h5>
+					<div class="form-group">
+						<label class="col-md-2 control-label text-right">Тип<span class="requared">*</span>:</label>
+						<div class="col-md-3">
+							@Html.DropDownList("documentTypeAttendant", new SelectList(Model, "Id", "Name"), new {@class = "form-control select2 document-type"})
+						</div>
+						<label class="col-md-2 control-label text-right">Серия, номер<span class="requared">*</span>:</label>
+						<div class="col-md-2">
+							<input type="text" class="document-seria form-control" maxlength="1000"/>
+						</div>
+						<div class="col-md-3">
+							<input type="text" class="document-number form-control" maxlength="1000"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label text-right">Дата выдачи<span class="requared">*</span>:</label>
+						<div class="col-md-3">
+							<input type="text" class="document-date-issue form-control datepicker required input-mask-date" maxlength="1000"/>
+						</div>
+						<label class="col-md-2 control-label text-right">Кем выдан<span class="requared">*</span>:</label>
+						<div class="col-md-5">
+							<input type="text" class="document-subject-issue form-control" maxlength="1000"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label text-right">Гражданство:</label>
+						<div class="col-md-10">
+							<input type="hidden" class="country form-control select2"/>
+						</div>
+					</div>
+               <div class="form-group">
+                  <label class="col-md-2 control-label text-right">Должность<span class="requared">*</span>:</label>
+                  <div class="col-md-4">
+                     <input type="text" class="position form-control" autocomplete="off" maxlength="1000" />
+                  </div>
+                  <label class="col-md-2 control-label text-right">Телефон<span class="requared">*</span>:</label>
+                  <div class="col-md-4">
+                     <input type="text" class="telephone form-control input-mask-phone" autocomplete="off" maxlength="1000" />
+                  </div>
+               </div>
+				</fieldset>
+				<div class="alert alert-danger col-md-12 dialog-validation-alert hidden">
+					Заполнены не все поля или заполнены некорректно
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary save-button">Сохранить</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>

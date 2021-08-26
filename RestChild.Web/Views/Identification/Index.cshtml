@@ -1,0 +1,121 @@
+﻿@using RestChild.Comon
+@using RestChild.Web.IdentificationService
+@model RestChild.Web.Models.IdentificationModel
+@using (Html.BeginForm("Index"))
+{
+<fieldset class="form-horizontal" style="margin-top: 30px">
+	<div class="row form-group">
+		<label class="col-md-3 control-label">Снилс</label>
+		<div class="col-md-9 line-height35">
+			@Html.TextBoxFor(m => m.Snils, new { @class = "form-control" })
+		</div>
+	</div>
+	<div class="row form-group">
+		<label class="col-md-3 control-label">Фамилия</label>
+		<div class="col-md-9 line-height35">
+			@Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+		</div>
+	</div>
+	<div class="row form-group">
+		<label class="col-md-3 control-label">Имя</label>
+		<div class="col-md-9 line-height35">
+			@Html.TextBoxFor(m => m.FirstName, new {@class = "form-control"})
+		</div>
+	</div>
+	<div class="row form-group">
+		<label class="col-md-3 control-label">Отчество</label>
+		<div class="col-md-9 line-height35">
+			@Html.TextBoxFor(m => m.MiddleName, new { @class = "form-control" })
+		</div>
+	</div>
+	<div class="row form-group">
+		<label class="col-md-3 control-label">Дата рождения</label>
+		<div class="col-md-9 line-height35">
+			@Html.TextBoxFor(m => m.BithDate, new {@class = "form-control"})
+		</div>
+	</div>
+	@*<div class="row form-group">
+		<label class="col-md-3 control-label">Номер документа</label>
+		<div class="col-md-9 line-height35">
+			@Html.TextBoxFor(m => m.DocumentNumber, new { @class = "form-control" })
+		</div>
+	</div>*@
+	<div class="row form-group">
+		<label class="col-md-3 control-label">Мужской пол</label>
+		<div class="col-md-9">
+			@Html.CheckBoxFor(m => m.Male)
+		</div>
+	</div>
+	<button type="submit" class="btn btn-default">Отправить</button>
+</fieldset>
+}
+<h4>Заявитель</h4>
+@if (Model.Declarant != null && Model.Declarant.Declarants != null && Model.Declarant.Declarants.Any())
+{
+	foreach (var declarant in Model.Declarant.Declarants)
+	{
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<ul>
+					<li>@declarant.LastName @declarant.FirstName @declarant.Patronymic</li>
+					<li>ИНН: @declarant.Inn</li>
+					<li>СНИЛС: @declarant.Snils</li>
+					<li>Дата рождения: @declarant.BirthDate.FormatEx()</li>
+					<li>Место рождения: @declarant.BirthPlace</li>
+					<li>Пол: @(declarant.Gender == Gender.Male ? "Муж" : declarant.Gender == Gender.Female ? "Жен":"-")</li>
+					<li>ИД: @declarant.Id</li>
+				</ul>
+			</div>
+		</div>
+		<h4>Документы</h4>
+
+		if (Model.Documents != null && Model.Documents.ContainsKey(declarant.Id) && Model.Documents[declarant.Id]!=null && Model.Documents[declarant.Id].Any())
+		{
+			<table class="table">
+				<thead>
+				<tr>
+					<td>Тип документа</td>
+					<td>Серия</td>
+					<td>Номер</td>
+					<td>Дата выдачи</td>
+					<td>Место выдачи</td>
+					<td>Дата окончания</td>
+					<td>Причина окончания</td>
+					<td>Код ведомства</td>
+					<td>ИД</td>
+				</tr>
+				</thead>
+				<tbody>
+				@foreach (var doc in Model.Documents[declarant.Id])
+				{
+					var documentType = doc.DocumentType.ToString();
+					if (Model.DocumentTypes.ContainsKey(doc.DocumentType))
+					{
+						documentType = Model.DocumentTypes[doc.DocumentType].Caption;
+					}
+					<tr>
+						<td>@documentType</td>
+						<td>@doc.DocumentSeries</td>
+						<td>@doc.DocumentNumber</td>
+						<td>@doc.DateOfIssue.FormatEx()</td>
+						<td>@doc.PlaceOfIssue</td>
+						<td>@doc.ExpirationDate.FormatEx()</td>
+						<td>@doc.ExpirationReason</td>
+						<td>@doc.DepartamentCode</td>
+						<td>@doc.Id</td>
+					</tr>
+				}
+				</tbody>
+			</table>
+		}
+		else
+		{
+			<h5>Документы не найдены</h5>
+		}
+	}
+}
+else
+{
+	<h5>Заявитель не найден (@Model.Error)</h5>
+}
+

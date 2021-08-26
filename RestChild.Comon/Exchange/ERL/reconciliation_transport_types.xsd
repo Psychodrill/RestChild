@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema
+        targetNamespace="http://erl.msr.com/schemas/reconciliation" version="1.0"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:complexType name="change_guid">
+        <xs:annotation>
+            <xs:documentation>Измененный guid</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="actual_citizen_pk" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Актуальный GUID</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="not_actual_citizen_pk" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Неактуальный GUID, сведенья о гражданине для которого стали актуальными</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

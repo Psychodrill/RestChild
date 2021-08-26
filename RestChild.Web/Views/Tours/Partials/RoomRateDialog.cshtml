@@ -1,0 +1,50 @@
+﻿@using RestChild.Comon
+@model RestChild.Web.Models.TourModel
+<div class="modal fade" id="roomRateDialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog" style="width: 601px">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Размещение</h4>
+			</div>
+			<div class="modal-body">
+				<fieldset class="form-horizontal">
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Вид номера</label>
+						<div class="col-md-9">
+							@Html.DropDownList("TypeOfRoomsId", new SelectList(Model.TypeOfRooms, "Id", "Name"), new { @class = "form-control select2" })
+						</div>
+					</div>					
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Вид размещения</label>
+						<div class="col-md-9">
+							@Html.DropDownList("AccommodationsId", new SelectList(Model.Accommodations, "Id", "Name"), new { @class = "form-control select2" })
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Питание</label>
+						<div class="col-md-9">
+							@Html.DropDownList("DiningOptionsId", new SelectList(Model.DiningOptions, "Id", "Name"), new { @class = "form-control select2" })							
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Стоимость за ночь (руб)</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" id="summa" maxlength="20"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-3 control-label text-right">Для дополнительного места</label>
+						<div class="col-md-9">
+							<input type="checkbox" id="isAddonPlace" />
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" id="saveRoomRateClick">Сохранить</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

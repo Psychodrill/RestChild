@@ -1,0 +1,122 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.RequestViewModel
+
+@for (var i = 0; i < Model.InformationVouchers.Count; i++)
+{
+	<fieldset class="bs-callout bs-callout-info request-block">
+		@Html.HiddenFor(m => m.InformationVouchers[i].Data.Id, new {@class="id"})
+		<div class="row">
+			<div class="col-md-1 col-md-offset-11">
+				<button class="btn btn-danger" title="Удалить" type="button" onclick="removeInformationVoucherElement(this);"><i class="glyphicon glyphicon-remove"></i></button>
+			</div>
+		</div>
+		<div class="row">
+			&nbsp;
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Цель обращения</label>
+			<div class="col-md-9">
+				@Html.DropDownListFor(m => m.InformationVouchers[i].Data.TypeId, SelectListHelper.Create(Model.TypeInformationVoucher, s => new SelectListItem {Value = s.Id.ToString(), Text = s.Name, Selected = s.Id == Model.InformationVouchers[i].Data.TypeId}), new {@class = "form-control"})
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Наименование организации</label>
+			<div class="col-md-9">
+				@Html.TextBoxFor(m => m.InformationVouchers[i].Data.OrganizationName, new {maxlength = 1000, @class = "form-control organizationName" })
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Дата начала</label>
+			<div class="col-md-9">
+				<div class='input-group datepicker-my datepicker'>
+					@Html.TextBoxFor(r => r.InformationVouchers[i].Data.DateFrom, new {@class = "form-control required input-mask-date informationVouchers-dateFrom", placeholder = "", @Value = Model.InformationVouchers[i].Data.DateFrom.FormatEx(string.Empty, string.Empty), autocomplete = "off"})
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Дата окончания</label>
+			<div class="col-md-9">
+				<div class='input-group datepicker-my datepicker'>
+					@Html.TextBoxFor(r => r.InformationVouchers[i].Data.DateTo, new {@class = "form-control required input-mask-date", placeholder = "", @Value = Model.InformationVouchers[i].Data.DateTo.FormatEx(string.Empty, string.Empty), autocomplete = "off"})
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Стоимость (руб.)</label>
+			<div class="col-md-9">
+				@Html.TextBoxFor(m => m.InformationVouchers[i].Data.Price, new {maxlength = 10, @class = "form-control decimal"})
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Стоимость дороги(руб)</label>
+			<div class="col-md-9">
+				@Html.TextBoxFor(m => m.InformationVouchers[i].Data.CostOfRide, new {maxlength = 10, @class = "form-control decimal"})
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Количество отдохнувших</label>
+			<div class="col-md-9">
+				@Html.TextBoxFor(m => m.InformationVouchers[i].Data.CountPeople, new {@style = "width: 60px", maxlength = 6, @class = "form-control integer"})
+			</div>
+		</div>
+		<button class="btn btn-default btn-xs AddVoucherAttendant" title="Добавить" type="button"><i class="glyphicon glyphicon-plus"></i>Добавить</button>
+		<table class="table">
+			<thead>
+			<tr>
+				<th>@(Model.Data.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest ? "Отдыхающий" : "Сопровождающий")</th>
+				<th>Стоимость (руб.)</th>
+				<th>Стоимость дороги(руб)</th>
+				<th>Компенсация (руб)</th>
+				<th></th>
+			</tr>
+			</thead>
+			<tbody>
+			@for (var j = 0; j < Model.InformationVouchers[i].AttendantsPrice.Count; j++)
+			{
+				<tr>
+					<td>
+						@Html.TextBoxFor(t => t.InformationVouchers[i].AttendantsPrice[j].AttendantGuid, new {@class = "form-control child-attendant-fio" })
+					</td>
+					<td>
+						@Html.TextBoxFor(t => t.InformationVouchers[i].AttendantsPrice[j].Price, new {maxlength = 10, @class = "form-control decimal"})
+					</td>
+					<td>
+						@Html.TextBoxFor(t => t.InformationVouchers[i].AttendantsPrice[j].CostOfRide, new {maxlength = 10, @class = "form-control decimal"})
+					</td>
+					<td>
+						@Html.TextBoxFor(t => t.InformationVouchers[i].AttendantsPrice[j].AmountOfCompensation, new {maxlength = 10, @class = "form-control decimal"})
+					</td>
+					<td>
+						@Html.HiddenFor(t => t.InformationVouchers[i].AttendantsPrice[j].Id)
+						@Html.HiddenFor(t => t.InformationVouchers[i].AttendantsPrice[j].RequestInformationVoucherId)
+						<button class="btn btn-danger btn-xs" title="Удалить" type="button" onclick="removeInformationVoucherAttendantElement(this);"><i class="glyphicon glyphicon-remove"></i></button>
+					</td>
+				</tr>
+			}
+			@if (!Model.InformationVouchers[i].AttendantsPrice.Any())
+			{
+			    <tr class="emptyRow"><td colspan="5">
+                    @if (Model.Data.TypeOfRestId == (long) TypeOfRestEnum.CompensationYouthRest)
+                    {
+                        <i>Нет отдыхающих</i>
+                    }
+                    else
+                    {
+                        <i>Нет сопровождающих</i>
+                    }
+                </td></tr>
+			}
+			</tbody>
+		</table>
+	</fieldset>
+}
+
+

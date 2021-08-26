@@ -1,0 +1,298 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@model RestChild.Domain.ChildUniqe
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Карточка ребёнка";
+    var current = Model.LastInfo ?? Model.Children.FirstOrDefault();
+    var children = Model.Children.Where(c => c.Id != current.Id).OrderByDescending(c => c.Request.DateRequest).ToList();
+
+    var otherChildren = Model.Relatives.SelectMany(r => r.Children).Where(c => c.Id != Model.Id).ToList();
+    var publishedChild = new HashSet<long>();
+
+    var documents = Model.Children.SelectMany(r => r.Request.Files).OrderBy(r => r.Request.RequestNumber).ToList();
+    var requests = Model.Children.Where(r => r.Request.StatusId == (long) StatusEnum.CertificateIssued).OrderByDescending(r => r.Request.YearOfRest.Name).ThenByDescending(r => r.Request.DateRequest).ToList();
+}
+
+<div class="form-horizontal">
+    <h2>Карточка ребёнка</h2>
+    <div class="form-group">
+        <div class="col-xs-6">
+            СНИЛС: @Model.Snils.FormatSnils()
+        </div>
+        <div class="col-xs-6 text-right">
+            Данные по заявлению <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = current.RequestId})" target="_blank">@current.Request.RequestNumber</a>
+        </div>
+    </div>
+    <hr/>
+
+    @if (current != null)
+    {
+        <div class="block-base">
+            <h4>
+                Общие сведения
+                @if (children.Any())
+                {
+                    <button type="button" class="btn btn-default unhideitem">Сведения прошлых лет</button>
+                }
+            </h4>
+            <div class="form-group">
+                <div class="col-xs-12 start-div">
+                    @current.LastName @current.FirstName @current.MiddleName, @current.DateOfBirth.FormatEx(), @current.PlaceOfBirth, @(current.Male ? "мужской" : "женский")
+                </div>
+            </div>
+            <div class="blockitems hidden">
+                @foreach (var child in children)
+                {
+                    <div class="form-group">
+                        <div class="col-xs-8 start-div">
+                            @child.LastName @child.FirstName @child.MiddleName, @child.DateOfBirth.FormatEx(), @child.PlaceOfBirth, @(child.Male ? "мужской" : "женский")
+                        </div>
+                        <div class="col-xs-4 text-right">
+                            <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = child.RequestId})" target="_blank">@child.Request.RequestNumber</a>
+                        </div>
+                    </div>
+                }
+            </div>
+            <hr/>
+        </div>
+
+        <div class="block-base">
+            <h4>
+                Документ удостоверяющий личность
+                @if (children.Any())
+                {
+                    <button type="button" class="btn btn-default unhideitem">Документы прошлых лет</button>
+                }
+            </h4>
+            <div class="form-group">
+                <div class="col-xs-12 start-div">
+                    @current.DocumentType.Name, @current.DocumentSeria @current.DocumentNumber, выдан @current.DocumentDateOfIssue.FormatEx(), @current.DocumentSubjectIssue
+                </div>
+            </div>
+            <div class="blockitems hidden">
+                @foreach (var child in children)
+                {
+                    <div class="form-group">
+                        <div class="col-xs-8 start-div">
+                            @child.DocumentType.Name, @child.DocumentSeria @child.DocumentNumber, выдан @child.DocumentDateOfIssue.FormatEx(), @child.DocumentSubjectIssue
+                        </div>
+                        <div class="col-xs-4 text-right">
+                            <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = child.RequestId})" target="_blank">@child.Request.RequestNumber</a>
+                        </div>
+                    </div>
+                }
+            </div>
+            <hr/>
+        </div>
+
+        <div class="block-base">
+            <h4>
+                Адрес регистрации
+                @if (children.Any())
+                {
+                    <button type="button" class="btn btn-default unhideitem">Адреса прошлых лет</button>
+                }
+            </h4>
+            <div class="form-group">
+                <div class="col-xs-12 start-div">
+                    @(current.Address != null ? current.Address.ToString() : "Не указан")
+                </div>
+            </div>
+            <div class="blockitems hidden">
+                @foreach (var child in children)
+                {
+                    <div class="form-group">
+                        <div class="col-xs-8 start-div">
+                            @(child.Address != null ? child.Address.ToString() : "Не указан")
+                        </div>
+                        <div class="col-xs-4 text-right">
+                            <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = child.RequestId})" target="_blank">@child.Request.RequestNumber</a>
+                        </div>
+                    </div>
+                }
+            </div>
+            <hr/>
+        </div>
+
+        <div class="block-base">
+            <h4>
+                Льготная категория
+                @if (children.Any())
+                {
+                    <button type="button" class="btn btn-default unhideitem">Льготы прошлых лет</button>
+                }
+            </h4>
+            <div class="form-group">
+                <div class="col-xs-8 start-div">
+                    @(current.BenefitType != null ? current.BenefitType.Name : "Не указана")
+                </div>
+            </div>
+            <div class="blockitems hidden">
+                @foreach (var child in children)
+                {
+                    <div class="form-group">
+                        <div class="col-xs-8 start-div">
+                            @(child.BenefitType != null ? child.BenefitType.Name : "Не указана")
+                        </div>
+                        <div class="col-xs-4 text-right">
+                            <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = child.RequestId})" target="_blank">@child.Request.RequestNumber</a>
+                        </div>
+                    </div>
+                }
+            </div>
+            <hr/>
+        </div>
+
+        if (Model.Relatives.Any())
+        {
+            <div class="block-base">
+                <h4>
+                    Сведения о родителях, законных представителях и сопровождающих
+                </h4>
+
+                <div class="blockitems">
+                    @foreach (var relative in Model.Relatives.Where(r => r.LastInfo != null).OrderBy(r => r.LastInfo.LastName).ThenBy(r => r.LastInfo.FirstName).ThenBy(r => r.LastInfo.MiddleName).ToList())
+                    {
+                        var li = relative.LastInfo;
+                        <div class="form-group">
+                            <div class="col-xs-8 start-div">
+                                <a href="@Url.Action("Relative", "UniqueCard", new {@id = @relative.Id})">
+                                    @li.LastName @li.FirstName @li.MiddleName, @li.DateOfBirth.FormatEx(), @li.Snils, @((li.DocumentType ?? new DocumentType()).Name) @li.DocumentSeria @li.DocumentNumber
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <hr/>
+            </div>
+        }
+
+        if (otherChildren.Any())
+        {
+            <div class="block-base">
+                <h4>
+                    Прочие дети в заявлениях
+                </h4>
+
+                <div class="blockitems">
+                    @foreach (var child in otherChildren.Where(r => r.LastInfo != null).OrderBy(r => r.LastInfo.LastName).ThenBy(r => r.LastInfo.FirstName).ThenBy(r => r.LastInfo.MiddleName).ToList())
+                    {
+                        if (publishedChild.Contains(child.Id))
+                        {
+                            continue;
+                        }
+
+                        publishedChild.Add(child.Id);
+
+                        var li = child.LastInfo;
+                        <div class="form-group">
+                            <div class="col-xs-8 start-div">
+                                <a href="@Url.Action("Child", "UniqueCard", new {@id = @child.Id})">
+                                    @li.LastName @li.FirstName @li.MiddleName, @li.DateOfBirth.FormatEx(), @li.Snils, @((li.DocumentType ?? new DocumentType()).Name) @li.DocumentSeria @li.DocumentNumber
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <hr/>
+            </div>
+        }
+
+        if (requests.Any())
+        {
+            <h4>Ранее предоставленные услуги и нарушения за предыдущие годы</h4>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Год предоставления</th>
+                    <th>Вид услуги</th>
+                    <th>Заявление</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var d in requests.Where(y=>y.Request.YearOfRest != null).ToList())
+                {
+                    <tr>
+                        <td>
+                            @(d.Request.YearOfRest.Name)
+                        </td>
+                        <td>
+                            <div>
+                                @(d.Request.TypeOfRest.Name)
+                                @if (d.Request.Tour != null && d.Request.Tour.Hotels != null)
+                                {
+                                    <div>@d.Request.Tour.Hotels.Name</div>
+                                    <div>
+                                        @if (d.Request.Tour.TimeOfRest != null)
+                                        {
+                                        <span>@d.Request.Tour.TimeOfRest.Name,</span>
+                                        }
+                                        c @d.Request.Tour.DateIncome.FormatEx() до @d.Request.Tour.DateOutcome.FormatEx()
+                                    </div>
+                                }
+                            </div>
+                            @if (d.TypeViolation != null)
+                            {
+                                <div style="font-style: italic">
+                                    @d.TypeViolation.Name
+                                </div>
+                            }
+                        </td>
+                        <td>
+                            <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = d.RequestId})" target="_blank">@d.Request.RequestNumber</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+
+
+        if (documents.Any())
+        {
+            <h4>Прикрепленные к заявлениям документы</h4>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>Вид документа</th>
+                    <th>Ссылка на документ</th>
+                    <th>Дата добавления</th>
+                    <th>Ссылка на заявление</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var d in documents)
+                {
+                    <tr>
+                        <td>
+                            @(d.RequestFileType != null ? d.RequestFileType.Name : "-")
+                        </td>
+                        <td>
+                            <a target="_blank" class="href-file" href="@Url.Content("~/")Upload.ashx?f=@Url.Encode(d.FileName)&t=@Url.Encode(d.FileTitle)@(d.RemoteSave?"&r=1":"")">@Html.Raw(d.FileTitle.FormatEx())</a>
+                        </td>
+                        <td>
+                            @(d.DataCreate.FormatEx())
+                        </td>
+                        <td>
+                            <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = d.RequestId})" target="_blank">@d.Request.RequestNumber</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    }
+</div>
+
+@section styles
+{
+    @Styles.Render("~/Content/childUniqe.css")
+}
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/childUniqe.js")
+}

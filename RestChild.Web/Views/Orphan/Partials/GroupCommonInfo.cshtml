@@ -1,0 +1,126 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.Orphans.OrphanageGroupModel
+
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)" id="CommonInfo">
+    @using (Html.BeginForm("OrphanageGroupSave", "Orphan", FormMethod.Post, new { id = "groupForm", autocomplete = "off" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Data.Id)
+        @Html.HiddenFor(m => m.Data.StateId)
+        @Html.HiddenFor(m => m.Data.OrganizationId)
+        @Html.HiddenFor(m => m.StateMachineActionString, new { id = "StateMachineActionString" })
+        @Html.HiddenFor(m => m.Data.LastUpdateTick)
+        @Html.HiddenFor(m => m.OrganisationName)
+
+        <fieldset class="form-horizontal main">
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Название учреждения</label>
+                <div class="col-md-9" style="padding-top: 7px;">@Model.OrganisationName</div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Год потребности</label>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(r => r.YearOfRestId, new SelectList(Model.YearsOfRest.Select(o => new { Id = o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (string)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" }).DisableIf(() => Model.Data.Id > 0)
+                    @Html.ValidationMessageFor(r => r.YearOfRestId, "Необходимо заполнить поле")
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Каникулярный период</label>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(r => r.Data.VacationPeriodId, new SelectList(Model.VacationPeriods.Select(o => new { Id = o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (string)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" }).DisableIf(() => Model.Data.Id > 0)
+                    @Html.ValidationMessageFor(r => r.Data.VacationPeriodId, "Необходимо заполнить поле")
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Порядковый номер группы</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.Data.Name, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).DisableIf(() => Model.Data.StateId != StateMachineStateEnum.PupilGroup.Formation)
+                    @Html.ValidationMessageFor(model => model.Data.Name, "Необходимо заполнить поле")
+                </div>
+            </div>
+        </fieldset>
+        <h3><hr /></h3>
+        <fieldset class="form-horizontal main">
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Форма отдыха и оздоровления</label>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(r => r.FormOfRestId, new SelectList(Model.FormsOfRest.Select(o => new { Id = o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (string)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" }).DisableIf(() => Model.Data.Id > 0)
+                    @Html.ValidationMessageFor(r => r.FormOfRestId, "Необходимо заполнить поле")
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Общее кол-во мест для воспитанников</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.Data.PupilsCount, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).ReadonlyIf(() => true)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Общее кол-во мест для работников</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.Data.CollaboratorsCount, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).ReadonlyIf(() => true)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Общее кол-во сопровождающих от МГТ</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.Data.MGTCollaboratorsCount, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).ReadonlyIf(() => true)
+                </div>
+            </div>
+        </fieldset>
+        <h3><hr /></h3>
+
+        if (Model.Data.Id > 0)
+        {
+            @Html.HiddenFor(m => m.Data.YearOfRestId)
+            @Html.HiddenFor(m => m.Data.FormOfRestId)
+            @Html.HiddenFor(m => m.Data.VacationPeriodId)
+        }
+
+        <fieldset class="form-horizontal pupil-health-statuses">
+            <div class="form-group">
+                <div class="col-md-7">
+                    <h3 style="margin: 0;">Информация о состоянии здоровья воспитанников</h3>
+                </div>
+                @if (Model.Data.StateId == StateMachineStateEnum.PupilGroup.Formation)
+                {
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-success btn-primary form-control add-pupil-health-status"><i class="glyphicon glyphicon-plus"></i> Добавить </button>
+                    </div>
+                }
+            </div>
+            @if (Model.HealthStatuses != null && Model.HealthStatuses.Any())
+            {
+                foreach (var key in Model.HealthStatuses.Keys)
+                {
+                    @Html.EditorFor(m => m.HealthStatuses[key], "GroupPupilHealthStatuses")
+                }
+            }
+        </fieldset>
+        <h3><hr /></h3>
+        if (Model.Data.Id > 0)
+        {
+            <fieldset class="form-horizontal requestst-fpr">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <h3 style="margin: 0;">Периоды отдыха</h3>
+                    </div>
+                    @if (Model.Data.StateId == StateMachineStateEnum.PupilGroup.Formation)
+                    {
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-success btn-primary form-control add-request-for-period-of-rest"><i class="glyphicon glyphicon-plus"></i> Добавить </button>
+                        </div>
+                    }
+                </div>
+                @if (Model.RequestsForPeriodOfRest != null && Model.RequestsForPeriodOfRest.Any())
+                {
+                    foreach (var key in Model.RequestsForPeriodOfRest.Keys)
+                    {
+                        @Html.EditorFor(m => m.RequestsForPeriodOfRest[key], "GroupRequestsForPeriodOfRest", new { @HasLimit = Model.HasLimit, @vacationPeriod = Model.Data.VacationPeriodId })
+                    }
+                }
+            </fieldset>
+        }
+    }
+</div>

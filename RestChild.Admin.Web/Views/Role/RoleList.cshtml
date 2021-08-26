@@ -1,0 +1,73 @@
+﻿using PagedList.Mvc
+@using PagedList.Mvc
+@model RestChild.Extensions.Filter.CommonPagedList<RestChild.Domain.Role>
+@{
+	ViewBag.Title = "Роли пользователей";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "Search";
+	ViewBag.InsertAction = "Insert";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "Role";
+	ViewBag.Caption = "Роли пользователей";
+	ViewBag.InsertButtonCaption = "Добавить роль";
+	ViewBag.SearchPanelCaption = "Поиск ролей";
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-3 control-label text-right">Название роли</label>
+		<div class="col-md-9">
+			@Html.TextBox("name", (string)ViewBag.name, new { @class = "form-control" })
+		</div>
+	</div>
+}
+
+@section searchResult
+{
+@if (!ViewData.ModelState.IsValid)
+{
+	<div class="alert alert-danger" role="alert">
+		@Html.ValidationSummary(false)
+	</div>
+}
+
+	@if (Model.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="text-center">№</th>
+					<th class="text-left">Название роли</th>
+					<th class="text-center"></th>
+					<th class="text-center"></th>
+				</tr>
+			</thead>
+			<tbody>
+				@{int rowNumber = Model.FirstItemOnPage;}
+				@foreach (var role in Model)
+				{
+					<tr>
+						<td class="text-center">@(rowNumber++)</td>
+						<td>@role.Name</td>
+						<td class="text-center">@Html.ActionLink(" ", "Update", new {id = role.Id}, new {@class = " glyphicon glyphicon-pencil", target = "_blank"})</td>
+						<td class="text-center">@Html.ActionLink(" ", "Delete", new { id = role.Id }, new { @class = " glyphicon glyphicon-trash text-danger"})</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model, page => Url.Action("Search", new { pageNumber = page, name = (string)ViewBag.name }), new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}

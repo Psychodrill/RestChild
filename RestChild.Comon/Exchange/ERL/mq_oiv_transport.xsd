@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:tns="http://erl.msr.com/schemas/oiv/mq" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:oiv="http://erl.msr.com/schemas/oiv" targetNamespace="http://erl.msr.com/schemas/oiv/mq" version="1.0">
+    <xs:import namespace="http://erl.msr.com/schemas/oiv" schemaLocation="oiv_transport_types.xsd"/>
+
+    <xs:element name="message_response" type="tns:message_response">
+        <xs:annotation>
+            <xs:documentation>Ответ на сообщение</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="oiv_persons_incoming" type="tns:oiv_persons_incoming">
+        <xs:annotation>
+            <xs:documentation>2.1 Список данных о людях. Данные, получаемые ИС РМСП</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="citizen_benefitcategory_incoming" type="tns:citizen_benefitcategory_incoming">
+        <xs:annotation>
+            <xs:documentation>2.2 Сведения по льготным категориям, получаемые из ОИВ</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="citizen_benefits_incoming" type="tns:citizen_benefits_incoming">
+        <xs:annotation>
+            <xs:documentation>2.3 МСП, получаемые из ОИВ</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="citizen_transactions_incoming" type="tns:citizen_transactions_incoming">
+        <xs:annotation>
+            <xs:documentation>2.4 Факты оказания МСП, получаемые из ОИВ</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="granting_citizen_benefit_incoming" type="tns:granting_citizen_benefit_incoming">
+        <xs:annotation>
+            <xs:documentation>2.7 Передача в Регистр поставщиками сведений Регистра данных, обосновывающих отсутствие оснований утраты права на получение мер социальной поддержки.
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="oiv_persons_outgoing" type="tns:oiv_persons_outgoing">
+        <xs:annotation>
+            <xs:documentation>2.5 Новые люди с присвоенным GUID (ответ на 2.1)</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="wrong_persons_outgoing" type="tns:wrong_persons_outgoing">
+        <xs:annotation>
+            <xs:documentation>2.6 МСП, ЛК с нарушенными правами</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:complexType name="citizen_benefitcategory_incoming">
+        <xs:annotation>
+            <xs:documentation>Сведения по льготным категориям, получаемые из ОИВ</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="identity" type="tns:messageIdentityWithSession">
+                <xs:annotation>
+                    <xs:documentation>Идентификация сообщения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="person_benefitcategories">
+                <xs:annotation>
+                    <xs:documentation>Множество льготных категорий для людей</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="person_benefitcategory" type="oiv:person_benefitcategory" maxOccurs="1000">
+                            <xs:annotation>
+                                <xs:documentation>Льготные категории для человека</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="oiv_persons_incoming">
+        <xs:annotation>
+            <xs:documentation>Список данных о людях. Данные, получаемые ИС РМСП</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="identity" type="tns:messageIdentityWithSession">
+                <xs:annotation>
+                    <xs:documentation>Идентификация сообщения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="persons">
+                <xs:annotation>
+                    <xs:documentation>Список данных о новых людях.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="person_incoming" type="oiv:person_incoming" maxOccurs="1000">
+                            <xs:annotation>
+                                <xs:documentation>Информация о человеке, добавляемая в ИС РМСП</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="oiv_persons_outgoing">
+        <xs:annotation>
+            <xs:documentation>Список данных о людях, выгружаемых из ИС РМСП</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="identity" type="tns:messageIdentity"/>
+            <xs:element name="persons">
+                <xs:annotation>
+                    <xs:documentation>Список информации о людях</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="person_outgoing" type="oiv:person_outgoing" maxOccurs="1000">
+                            <xs:annotation>
+                                <xs:documentation>Информация о человеке</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="message_response">
+        <xs:annotation>
+            <xs:documentation>Результат обработки входящего пакета</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="identity" type="tns:messageIdentity">
+                <xs:annotation>
+                    <xs:documentation>Идентификация сообщения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="response" type="tns:response">
+                <xs:annotation>
+                    <xs:documentation>Ответ</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="response">
+        <xs:annotation>
+            <xs:documentation>Ответ</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="oiv:response">
+                <xs:sequence>
+                    <xs:element name="request_identity" type="tns:messageIdentityWithSession">
+                        <xs:annotation>
+                            <xs:documentation>Идентификация сообщения, на которое формируется ответ</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="package_error" type="oiv:error" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>Ошибки обработки пакета</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="citizen_benefits_incoming">
+        <xs:annotation>
+            <xs:documentation>МСП, получаемые из ОИВ</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="identity" type="tns:messageIdentityWithSession">
+                <xs:annotation>
+                    <xs:documentation>Идентификация сообщения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="person_benefits">
+                <xs:annotation>
+                    <xs:documentation>МСП для людей</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="person_benefit" type="oiv:person_benefit" maxOccurs="1000">
+                            <xs:annotation>
+                                <xs:documentation>МСП для человека</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="citizen_transactions_incoming">
+        <xs:annotation>
+            <xs:documentation>Факты оказания МСП, получаемые из ОИВ</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="identity" type="tns:messageIdentityWithSession">
+                <xs:annotation>
+                    <xs:documentation>Идентификация сообщения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="person_transaction" type="oiv:person_transactions" maxOccurs="1000">
+                <xs:annotation>
+                    <xs:documentation>Факты оказания МСП для человека</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="wrong_persons_outgoing">
+        <xs:annotation>
+            <xs:documentation>МСП, ЛК с нарушенными правами</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="identity" type="tns:messageIdentity"/>
+            <xs:element name="wrong_persons">
+                <xs:annotation>
+                    <xs:documentation>Список людей с изменившимися значениями атомов для ЛК и МСП.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="wrong_person" type="oiv:wrong_person" maxOccurs="1000">
+                            <xs:annotation>
+                                <xs:documentation>Информация о человеке с изменившимися значениями атомов для ЛК и МСП.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="granting_citizen_benefit_incoming">
+        <xs:annotation>
+            <xs:documentation>Сведения, обосновывающие отсутствие оснований утраты права на получение МСП.</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="identity" type="tns:messageIdentityWithSession">
+                <xs:annotation>
+                    <xs:documentation>Идентификация сообщения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="granting_citizen_benefits">
+                <xs:annotation>
+                    <xs:documentation>Список сведений для гражданина, обосновывающих отсутствие оснований утраты права на получение МСП</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="granting_citizen_benefit" type="oiv:granting_citizen_benefit"
+                                    maxOccurs="1000">
+                            <xs:annotation>
+                                <xs:documentation>Сведения для гражданина, обосновывающие отсутствие оснований утраты права на получение МСП</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="messageIdentity">
+        <xs:annotation>
+            <xs:documentation>Идентификация сообщения</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="sender">
+                <xs:annotation>
+                    <xs:documentation>Код отправителя</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:minLength value="1"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="message_id" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Уникальный идентификатор сообщения</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="messageIdentityWithSession">
+        <xs:annotation>
+            <xs:documentation>Идентификация сообщения с сессией</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="tns:messageIdentity">
+                <xs:sequence>
+                    <xs:element name="session" type="tns:session">
+                        <xs:annotation>
+                            <xs:documentation>Уникальный идентификатор сессии</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="session">
+        <xs:all>
+            <xs:element name="session_id" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Уникальный идентификатор сессии</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="count" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Кол-во записей</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

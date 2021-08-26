@@ -1,0 +1,18 @@
+﻿@using System.Security.Claims
+@using Microsoft.AspNet.Identity
+@using RestChild.Comon
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-right">
+	    <li>
+		    @Html.ActionLink(User.Identity.GetUserName(), "Manage", "Account", routeValues: new {id = ((ClaimsIdentity) User.Identity).NullSafe(i => i.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid).NullSafe(c => c.Value))}, htmlAttributes: new {title = "Управление настройками"})
+	    </li>
+	    <li><a class="glyphicon glyphicon-question-sign" title="Руководство пользователя" data-toggle="tooltip" data-placement="bottom" target="_blank" href="@Url.Action("Index", "HelpPage")"></a></li>
+	    <li><a href="javascript:document.getElementById('logoutForm').submit()">Выход</a></li>
+    </ul>
+    }
+}

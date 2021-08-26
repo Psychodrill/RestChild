@@ -1,0 +1,73 @@
+﻿@using System.Configuration
+@using System.Globalization
+@using Newtonsoft.Json
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using Styles = System.Web.Optimization.Styles
+@model RestChild.Web.Models.SelectPlaceModel
+
+<div id="FirstSelectTypeTimeAndPlace" @Html.Raw(Model.SelectPlaceStep != SelectPlaceStepEnum.FirstSelectTypeTimeAndPlace ? "style='display:none'" : string.Empty)>
+	<div class="form-group row">
+		<div class="col-md-12">
+			<h3>Шаг 1. Выбор вида, времени и места отдыха</h3>
+		</div>
+	</div>
+
+	<div class="row form-group">
+		<label class="col-md-3 control-label">Цель обращения<span class="requared">*</span></label>
+		<div class="col-md-9">
+			@Html.Hidden("typeOfRest-select2", Model.TypeOfRestId, new { @class = "form-control type-of-rest" })
+			@Html.HiddenFor(r => r.TypeOfRestId, new { @class = "TypeOfRestId" })
+			<span class="validation-summary-errors">@Html.Raw(Model.TypeOfRestError)</span>
+		</div>
+	</div>
+	<div class="row form-group">
+		<label class="col-md-3 control-label">Год кампании</label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(r => r.YearOfRestId, new SelectList(Model.YearOfRests, "Id", "Name", Model.NullSafe(x => x.YearOfRestId)), new { @class = "form-control year-of-rest select2" })
+		</div>
+	</div>
+	<div class="row form-group">
+		<label class="col-md-3 control-label">Время отдыха</label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(r => r.TimeOfRestId, new SelectList(Model.TimeOfRests, "Id", "Name", Model.NullSafe(x => x.TimeOfRestId)), new { @class = "form-control time-of-rest select2" })
+		</div>
+	</div>
+	<div class="row form-group">
+		<label class="col-md-3 control-label">Число детей льготных категорий<span class="requared">*</span></label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(
+				r => r.CountChildren,
+				new SelectList(
+				Enumerable.Range(1, 15)
+				.Select(x => new { val = x.ToString(CultureInfo.InvariantCulture), text = x.ToString(CultureInfo.InvariantCulture) })
+				.InsertAt(new { val = "0", text = "-- Не выбрано --" })
+				, "val", "text"),
+				new { @class = "form-control required select2" })
+			<span class="validation-summary-errors">@Html.Raw(Model.CountChildrenError)</span>
+		</div>
+	</div>
+
+	<div class="row form-group">
+		<label class="col-md-3 control-label">Число сопровождающих<span class="requared">*</span></label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(
+				r => r.CountAttendant,
+				new SelectList(
+				Enumerable.Range(1, 2)
+				.Select(x => new { val = x.ToString(CultureInfo.InvariantCulture), text = x.ToString(CultureInfo.InvariantCulture) })
+				.InsertAt(new { val = "0", text = "-- Нет сопровождающих --" }), "val", "text"),
+				new { @class = "form-control required select2" })
+			<span class="validation-summary-errors">@Html.Raw(Model.CountAttendantError)</span>
+		</div>
+	</div>
+
+	<div class="row form-group">
+		<label class="col-md-3 control-label">Место отдыха</label>
+		<div class="col-md-9">
+			@Html.DropDownListFor(m => m.PlaceOfRestId, new SelectList(((IEnumerable<PlaceOfRest>)Model.PlaceOfRests).Select(x => new { Val = x.Id, Text = x.Name }), "Val", "Text", Model.PlaceOfRestId), new { @class = "form-control select2" })
+		</div>
+	</div>
+	<button class="btn btn-default btn-primary" onclick="$('.action-step').val('nextstep');$('#mainForm').submit(); " type="button">Продолжить</button>
+</div>

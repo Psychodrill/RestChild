@@ -1,0 +1,9 @@
+﻿@model RestChild.Web.Models.BoutModel
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "Personal" ? "active" : string.Empty)" id="Personal">
+	<h3>
+		Персонал
+	</h3>
+	<div class="col-md-12" id="BoutPersonal">
+		@Html.Partial("BoutPersonal", Model)
+	</div>
+</div>

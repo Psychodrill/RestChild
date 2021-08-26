@@ -1,0 +1,65 @@
+﻿@using PagedList.Mvc
+@model RestChild.Extensions.Filter.CommonPagedList<RestChild.Domain.FunctioningType>
+@{
+	ViewBag.Title = "Справочник типов функционирования оздоровительных организаций";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "Search";
+	ViewBag.InsertAction = "Insert";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "FunctioningType";
+	ViewBag.Caption = "Справочник типов функционирования оздоровительной организации";
+	ViewBag.InsertButtonCaption = "Добавить тип функционирования оздоровительной организации";
+	ViewBag.SearchPanelCaption = "Поиск типов функционирования оздоровительной организации";
+}
+
+@section searchForm
+{
+<div class="form-group">
+	<label class="col-md-3 control-label text-right">Название</label>
+	<div class="col-md-9">
+		@Html.TextBox("name", (string)ViewBag.name, new { @class = "form-control" })
+	</div>
+</div>
+
+}
+
+@section searchResult
+{
+	@if (Model.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="text-center">№</th>
+					<th class="text-center">Название</th>
+					<th class="text-center"></th>
+				</tr>
+			</thead>
+			<tbody>
+				@{int rowNumber = Model.FirstItemOnPage;}
+				@foreach (var subject in Model)
+				{
+					<tr>
+						<td class="text-center">@(rowNumber++)</td>
+						<td>@subject.Name</td>
+						<td class="text-center">@Html.ActionLink(" ", "Update", new { id = subject.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model, page => Url.Action("Search", new { pageNumber = page, name = (string)ViewBag.name }), new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+	

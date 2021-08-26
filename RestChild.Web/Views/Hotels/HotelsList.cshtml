@@ -1,0 +1,129 @@
+﻿@using DocumentFormat.OpenXml.Drawing.ChartDrawing
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Extensions.Filter.HotelsFilterModel
+	@{
+		ViewBag.Title = "Реестр оздоровительных организаций";
+		Layout = "~/Views/Shared/_SearchLayout.cshtml";
+		ViewBag.SearchAction = "Search";
+		ViewBag.InsertAction = "Insert";
+		ViewBag.SaveAction = "Save";
+		ViewBag.Controller = "Hotels";
+		ViewBag.Caption = "Реестр оздоровительных организаций";
+		ViewBag.InsertButtonCaption = "Добавить оздоровительную организацию";
+		ViewBag.SearchPanelCaption = "Поиск оздоровительных организаций";
+		ViewBag.NeedInsertButton = Security.HasRight(AccessRightEnum.Hotel.Manage);
+	}
+
+	@section searchForm
+{
+		<div class="form-group">
+			<label class="col-md-2 control-label text-right">Наименование</label>
+			<div class="col-md-4">
+				@Html.TextBoxFor(m => m.Name, (string)Model.Name, new { @class = "form-control" })
+			</div>
+			<label class="col-md-1 control-label text-right">Адрес</label>
+			<div class="col-md-4">
+				@Html.TextBoxFor(m => m.Address, (string)Model.Address, new { @class = "form-control" })
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label text-right">Регион</label>
+			<div class="col-md-4">
+				@Html.DropDownListFor(m => m.Region, SelectListHelper.Create(Model.Regions, r => new SelectListItem(){ Value = r.Id.ToString(), Text = r.Name}), new { @class = "form-control" })
+			</div>
+			<label class="col-md-1 control-label text-right">Удобства</label>
+			<div class="col-md-4">
+				<div class="col-md-6 checkbox"><label>@Html.CheckBox("tv", (bool)(Model.Tv ?? false)) Телевизор</label></div>
+				<div class="col-md-6 checkbox"><label>@Html.CheckBox("fridge", (bool)(Model.Fridge ?? false)) Холодильник</label></div>
+				<div class="col-md-6 checkbox"><label>@Html.CheckBox("shower", (bool)(Model.Shower ?? false)) Душ</label></div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-2 control-label text-right">Вид места отдыха</label>
+			<div class="col-md-4">
+				@Html.DropDownListFor(m => m.HotelTypeId, SelectListHelper.Create(Model.HotelTypes, t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control" })
+			</div>
+			<label class="col-md-1 control-label text-right">Статус</label>
+			<div class="col-md-4">
+				@Html.DropDownListFor(m => m.StateId, SelectListHelper.Create(Model.States, s => new SelectListItem() { Value = s.Id.ToString(), Text = s.Name }), new { @class = "form-control" })
+			</div>
+		</div>
+		<div class="form-group">
+         <label class="col-md-offset-6 col-md-1 control-label text-right"></label>
+         <div class="col-md-4" checkbox>@Html.CheckBox("Habitat", (bool)(Model.Habitat ?? false)) Доступная среда</div>
+		</div>
+
+	}
+
+	@section searchResult
+{
+		@if (Model.Result != null && Model.Result.Any())
+		{
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th class="text-center" width="5%">№</th>
+						<th width="25%">Наименование</th>
+						<th width="15%">Регион</th>
+						<th width="20%">Адрес</th>
+						<th width="15%">Удобства</th>
+						<th width="10%">Телефон</th>
+						<th width="10%">Статус</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					@{int rowNumber = Model.Result.FirstItemOnPage;}
+					@foreach (var place in Model.Result)
+					{
+						<tr>
+							<td class="text-center">@(rowNumber++)</td>
+							<td>@Html.Raw(place.Name.FormatEx())</td>
+							<td>@place.NullSafe(p => p.PlaceOfRest.Name).FormatEx()</td>
+							<td>@Html.Raw(place.Address.FormatEx())</td>
+							<td>@(place.TypeOfRooms != null ? string.Join(", ", place.TypeOfRooms.SelectMany(t => t.GetConviencs()).Distinct()) : string.Empty)</td>
+							<td>@place.Phone.FormatEx()</td>
+							<td>@place.NullSafe(p => p.State.Name).FormatEx()</td>
+							<td class="text-center">@Html.ActionLink(" ", "Update", new { id = place.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+			<div class="row">
+				<div class="col-md-12">
+					@Html.PagedListPager(Model.Result, page =>
+						{
+							Model.Result = null;
+							Model.PageNumber = page;
+							return Url.Action("Search", Model);
+						}, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+				</div>
+			</div>
+		}
+		else
+		{
+			<div class="row">
+				<div class="col-md-12">
+					<p>Поиск не дал результатов</p>
+				</div>
+			</div>
+		}
+	}
+
+	@section styles
+{
+		@Styles.Render("~/Content/css/select2.css")
+		@Styles.Render("~/Content/css/select2-bootstrap.css")
+	}
+
+	@section scripts
+{
+		@Scripts.Render("~/Scripts/select2.min.js")
+		@Scripts.Render("~/Scripts/select2_locale_ru.js")
+		@Scripts.Render("~/Scripts/Vocabulary/HotelsList.js")
+	}

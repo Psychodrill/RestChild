@@ -1,0 +1,148 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Extensions.Extensions
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.RequestViewModel
+@{
+   var needParentInvalid = Model.Child.Any(c => c.Data.BenefitTypeId == (long) BenefitTypeEnum.ParentsInvalid || (c.Data.BenefitType != null && c.Data.BenefitType.SameBenefitId == (long) BenefitTypeEnum.ParentsInvalid));
+   var typeOfRest = Model.Data.TypeOfRest ?? new TypeOfRest();
+}
+
+@if (!typeOfRest.NeedAttendant)
+{
+   <fieldset id="parentIvalid" class="bs-callout bs-callout-info request-block @(needParentInvalid ? string.Empty : "hidden")">
+      <h3 class="anchor bs-callout-info">Сведения о родителе-инвалиде</h3>
+      <div class="row form-group">
+         <label class="col-md-3 control-label">Родитель, по которому определяется льготная категория ребёнка</label>
+         <div class="col-md-9 line-height35 wordbreak">
+            @Html.DropDownListFor(m => m.Data.BeneficiariesId, new SelectList(Model.Beneficiaries, "Id", "Name"), new {@class = "form-control select2 beneficiariesId"})
+         </div>
+      </div>
+      <fieldset id="AttendantInvalid" class="@(Model.Data.BeneficiariesId == (long) BeneficiariesEnum.SecondParent ? " " : "hidden")">
+         <h4 class="bs-callout-info">Родитель-инвалид</h4>
+
+         @Html.HiddenFor(r => r.ParentInvalid.Data.Id, new {@class = "id"})
+         @Html.HiddenFor(r => r.ParentInvalid.Data.EntityId)
+         @Html.HiddenFor(r => r.ParentInvalid.Data.Payed)
+         @Html.HiddenFor(r => r.ParentInvalid.Guid, new {@class = "guid attendant-guid"})
+         @Html.HiddenFor(r => r.ParentInvalid.Data.IsAccomp)
+         @Html.HiddenFor(r => r.ParentInvalid.Data.IsApplicant)
+         <div class="row form-group">
+            <label class="col-md-3 control-label">Фамилия<span class="requared">*</span></label>
+            <div class="col-md-9">
+               @Html.TextBoxFor(r => r.ParentInvalid.Data.LastName, new {@class = "form-control name-input", autocomplete = "off"})
+               <span class="field-validation-error">@Model.ParentInvalid.LastNameEm.FormatEx(string.Empty)</span>
+            </div>
+         </div>
+         <div class="row form-group">
+            <label class="col-md-3 control-label">Имя<span class="requared">*</span></label>
+            <div class="col-md-9">
+               @Html.TextBoxFor(r => r.ParentInvalid.Data.FirstName, new {@class = "form-control name-input", autocomplete = "off"})
+               <span class="field-validation-error">@Model.ParentInvalid.FirstNameEm.FormatEx(string.Empty)</span>
+            </div>
+         </div>
+         <div class="row form-group">
+            <div class="col-md-offset-3 col-md-9">
+               <div class="checkbox">
+                  <label>
+                     @Html.CheckBoxFor(r => r.ParentInvalid.HasNotMiddlename, new {@class = "middlename-havenot"})
+                     Нет отчества
+                  </label>
+               </div>
+            </div>
+         </div>
+         <div class="row form-group">
+            <label class="col-md-3 control-label">Отчество</label>
+
+            <div class="col-md-9">
+               @Html.TextBoxFor(r => r.ParentInvalid.Data.MiddleName, new {@class = "form-control name-input middlename", autocomplete = "off", Value = Model.NullSafe(m => m.ParentInvalid.HasNotMiddlename) ? string.Empty : Model.NullSafe(m => m.ParentInvalid.Data.MiddleName)}).DisableIf(() => Model.NullSafe(m => m.ParentInvalid.HasNotMiddlename))
+               <span class="field-validation-error">@Model.ParentInvalid.MiddleNameEm.FormatEx(string.Empty)</span>
+            </div>
+         </div>
+         <div class="row form-group">
+            <label class="col-md-3 control-label">Пол<span class="requared">*</span></label>
+            <div class="col-md-9">
+               <label>
+                  @Html.RadioButtonFor(r => r.ParentInvalid.Data.Male, true).DisableIf(() => Model.ParentInvalid.Data.IsDeleted)
+                  Мужской
+               </label>&nbsp;
+               <label>
+                  @Html.RadioButtonFor(r => r.ParentInvalid.Data.Male, false).DisableIf(() => Model.ParentInvalid.Data.IsDeleted)
+                  Женский
+               </label>
+               <span class="field-validation-error">@Model.ParentInvalid.MaleEm.FormatEx(string.Empty)</span>
+            </div>
+         </div>
+         <div class="row form-group">
+            <label class="col-md-3 control-label">СНИЛС<span class="requared">*</span></label>
+            <div class="col-md-9">
+               @Html.TextBoxFor(r => r.ParentInvalid.Data.Snils, new {@class = "form-control required snils", maxlength = "100"})
+            </div>
+         </div>
+         <div class="row form-group">
+            <label class="col-md-3 control-label">Дата рождения<span class="requared">*</span></label>
+            <div class="col-md-9">
+               <div class='input-group datepicker-my datepicker'>
+                  @Html.TextBoxFor(r => r.ParentInvalid.Data.DateOfBirth, new {@class = "form-control required input-mask-date", placeholder = "", @Value = Model.ParentInvalid.Data.DateOfBirth.FormatEx(string.Empty, string.Empty), autocomplete = "off"})
+                  <span class="input-group-addon">
+                     <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+               </div>
+               <span class="field-validation-error">@Model.ParentInvalid.DateOfBirthEm.FormatEx(string.Empty)</span>
+            </div>
+         </div>
+         <div class="row form-group">
+            <label class="col-md-3 control-label">Место рождения<span class="requared">*</span></label>
+            <div class="col-md-9">
+               @Html.TextBoxFor(r => r.ParentInvalid.Data.PlaceOfBirth, new {@class = "form-control required", placeholder = "", autocomplete = "off"})
+               <span class="field-validation-error">@Model.ParentInvalid.PlaceOfBirthEm.FormatEx(string.Empty)</span>
+            </div>
+         </div>
+
+         <div class="row form-group">
+            <label class="col-md-3 control-label">Тип документа удостоверяющего личность<span class="requared">*</span></label>
+            <div class="col-md-9">
+               @Html.DropDownListFor(r => r.ParentInvalid.Data.DocumentTypeId, new SelectList(ViewBag.DocumentsTypeOther, "Id", "Name", Model.ParentInvalid.Data.DocumentTypeId), new {@class = "form-control document-dropdown select2"})
+               <span class="field-validation-error">@Model.ParentInvalid.DocumentTypeEm.FormatEx(string.Empty)</span>
+            </div>
+         </div>
+         <div class="row form-group">
+            <label class="col-md-3 col-xs-12 col-sm-12 control-label">Серия и номер<span class="requared">*</span></label>
+            <div class="col-md-3 col-xs-4 col-sm-4">
+               @Html.TextBoxFor(r => r.ParentInvalid.Data.DocumentSeria, new {@class = "form-control input-mask-passport-series " + (Model.ParentInvalid.NullSafe(m => m.Data.DocumentType.Name) == "Паспорт гражданина РФ" ? "input-mask-passport-series-active" : string.Empty), autocomplete = "off"})
+               <span class="field-validation-error">@Model.ParentInvalid.DocumentSeriaEm.FormatEx(string.Empty)</span>
+            </div>
+            <div class="col-xs-8 col-md-6 col-sm-8">
+               @Html.TextBoxFor(r => r.ParentInvalid.Data.DocumentNumber, new {@class = "form-control input-mask-passport-number " + (Model.ParentInvalid.NullSafe(m => m.Data.DocumentType.Name) == "Паспорт гражданина РФ" ? "input-mask-passport-number-active" : string.Empty), autocomplete = "off"})
+               <span class="field-validation-error">@Model.ParentInvalid.DocumentNumberEm.FormatEx(string.Empty)</span>
+            </div>
+         </div>
+         <div class="row form-group">
+            <label class="col-md-3 control-label">Когда выдан документ<span class="requared">*</span></label>
+            <div class="col-md-9">
+               <div class='input-group datepicker-my datepicker'>
+                  @Html.TextBoxFor(r => r.ParentInvalid.Data.DocumentDateOfIssue, new {@class = "form-control input-mask-date", @Value = Model.ParentInvalid.Data.DocumentDateOfIssue.FormatEx(string.Empty, string.Empty), autocomplete = "off"})
+                  <span class="input-group-addon">
+                     <span class="glyphicon glyphicon-calendar"></span>
+                  </span>
+               </div>
+               <span class="field-validation-error">@Model.ParentInvalid.DocumentDateOfIssueEm.FormatEx(string.Empty)</span>
+            </div>
+         </div>
+         <div class="row form-group">
+            <label class="col-md-3 control-label">Кем выдан документ<span class="requared">*</span></label>
+            <div class="col-md-9">
+               @Html.TextBoxFor(r => r.ParentInvalid.Data.DocumentSubjectIssue, new {@class = "form-control", autocomplete = "off"})
+               <span class="field-validation-error">@Model.ParentInvalid.DocumentSubjectIssueEm.FormatEx(string.Empty)</span>
+            </div>
+         </div>
+         @foreach (var e in (Model.ParentInvalid.Data.BaseRegistryInfo ?? new List<ExchangeBaseRegistry>
+            ()).Where(b => !b.NotActual).ToList())
+         {
+            var res = e.Parse();
+            Html.RenderPartial("BaseRegistryBenefitResult", res);
+         }
+      </fieldset>
+   </fieldset>
+}

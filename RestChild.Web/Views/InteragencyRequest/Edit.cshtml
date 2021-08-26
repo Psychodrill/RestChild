@@ -1,0 +1,477 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Models
+@model RestChild.Web.Models.InteragencyRequestViewModel
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<div class="row">
+	<div class="col-md-11">
+		<h2>@ViewBag.Title</h2>
+		<a href="@Url.Action("List")">Вернуться</a>
+	</div>
+	<div class="col-md-1">
+	</div>
+</div>
+
+<form action="@Url.Action("Save", "InteragencyRequest")" method="POST" class="form-horizontal" role="form" id="mainForm">
+	@Html.Hidden("RequestId", Model.Data.Id)
+	@Html.HiddenFor(m => m.Data.IsSecondaryRequest)
+	<fieldset>
+		<div class="form-group row">
+			<div class="col-md-12 text-right">
+				<span class="well well-sm">Статус: <strong>@Model.Data.StatusInteragencyRequest.NullSafe(s => s.Name).FormatEx()</strong></span>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				@if (Model.BenefitTypes != null && Model.BenefitTypes.Any())
+				{
+					<button type="submit" class="btn btn-default btn-primary">
+						Сохранить
+					</button>
+
+					if (Model.Results != null && Model.Results.Any())
+					{
+						if (Model.Data.StatusInteragencyRequestId == (long)StatusInteragencyRequestEnum.Draft)
+						{
+							<button type="button" class="btn btn-default btn-primary" onclick="confirmChangeStatus('Подтвердить информацию об отправке запроса? ', 'Отправка запроса', @((long) StatusInteragencyRequestEnum.Sended))">
+								Отправить запрос
+							</button>
+						}
+						if (Model.Data.StatusInteragencyRequestId == (long)StatusInteragencyRequestEnum.Sended)
+						{
+							<button type="button" class="btn btn-default btn-primary" onclick="confirmChangeStatus('Подтвердить сведения? ', 'Получение ответа', @((long) StatusInteragencyRequestEnum.Answered))">
+								Подтвердить сведения
+							</button>
+						}
+						if (Model.Data.Id > 0)
+						{
+							<a class="btn btn-default active-control" target="_blank" href="@Url.Action("GetSpreadsheet", "InteragencyRequest", new { id = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Печать</a>
+						}
+					}
+
+				}
+
+				@if (Model.Data.Id != 0)
+				{
+					<button type="button" class="btn btn-default history-button active-control"><span class="glyphicon glyphicon-list-alt"></span> История</button>
+				}
+			</div>
+		</div>
+
+		<div class="row">
+			@if ((Model.Results == null || !Model.Results.Any()))
+			{
+				<div class="col-md-12">
+					<text>
+						<em>Нет детей в заявлениях для отправки запроса</em>
+					</text>
+				</div>
+			}
+		</div>
+
+	</fieldset>
+	@Html.HiddenFor(r => r.Data.Id)
+	@Html.HiddenFor(r => r.Data.StatusInteragencyRequestId)
+	@Html.HiddenFor(r => r.Data.AccountId)
+	@Html.HiddenFor(r => r.Data.CreateDate)
+	@Html.HiddenFor(r => r.Data.RequestFileUrl)
+	@Html.HiddenFor(r => r.Data.AnswerFileUrl)
+	<fieldset class="panel-gray">
+		<h3 id="GeneralInfo" class="anchor">Сведения о запросе</h3>
+		<span class="field-validation-error">@Model.ErrorMessage.FormatEx(string.Empty)</span>
+		@if (Model.NullSafe(m => m.Data.Id) == 0 && Model.Results != null && Model.Results.Any())
+		{
+			<div class="row form-group">
+				@Html.HiddenFor(m => m.Data.ForAllRegion)
+				<div class="col-md-3 col-md-offset-8" style="padding-left: 23px">
+					@Html.CheckBox("CheckAllCheckbox", Model.BenefitTypes.Any(bt => !bt.IsChecked))
+					<strong>Все льготы</strong>
+				</div>
+			</div>
+		}
+		@if (Model.NullSafe(m => m.Data.Id) != 0)
+		{
+			@Html.HiddenFor(m => m.Data.BtiRegionId)
+		}
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Районы</label>
+			<div class="col-md-4 line-height35">
+				<div class="pre-scrollable">
+					<table class="table table-striped table-hover">
+						<tbody>
+						@if (Model.NullSafe(m => m.Data.Id) != 0)
+						{
+							<tr>
+								<td>
+									@if (Model.Data.ForAllRegion)
+									{
+										<text>Все районы</text> <text>(детей: @(Model.Results.Count.FormatEx()))</text>
+									}
+									else
+									{
+										@Html.Raw(Model.NullSafe(m => m.Data.BtiRegion.Name).FormatEx("Без района"))<text>(детей: @(Model.Results.Count.FormatEx()))</text>
+										<br/>
+										<small>@Model.NullSafe(m => m.Data.BtiRegion.BtiDistrict.Name)</small>
+									}
+								</td>
+							</tr>
+
+						}
+						else
+						{
+							<tr>
+								<td>
+									<label class="radio-inline">
+										@{
+							var forAllReginsRadioAttrs = new Dictionary<string, object>();
+							forAllReginsRadioAttrs["class"] = "radio radio-all-regions";
+							if (Model.Data.ForAllRegion)
+							{
+								forAllReginsRadioAttrs["checked"] = "checked";
+							}
+										}
+										@Html.RadioButtonFor(m => m.Data.BtiRegionId, -1, forAllReginsRadioAttrs) Все районы  (детей: @Model.Results.Count)
+									</label>
+								</td>
+							</tr>
+							foreach (var region in Model.Regions)
+							{
+								<tr>
+									<td>
+										<label class="radio-inline">
+											@Html.RadioButtonFor(m => m.Data.BtiRegionId, region.NullSafe(r => r.Data.Id), new { @class = "radio" }) @Html.Raw(region.NullSafe(r => r.Data.Name).FormatEx("Без района")) (детей: @(region.ChildsCount.FormatEx()))
+											<br />
+											<small>@region.NullSafe(r => r.Data.BtiDistrict.Name)</small>
+										</label>
+									</td>
+								</tr>
+							}
+						}
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<label class="col-md-1 control-label">Льготы<span class="requared">*</span></label>
+			<div class="col-md-4 line-height35">
+				<div class="pre-scrollable">
+					<table class="table table-striped table-hover" id="TableBenefitsTypes">
+						<tbody>
+						@for (int i = 0; i < Model.BenefitTypes.Count; i++)
+						{
+							<tr>
+								<td>
+									@Html.HiddenFor(r => r.BenefitTypes[i].Data.Id)
+									@if (Model.NullSafe(m => m.Data.Id) != 0)
+									{
+										@Html.HiddenFor(r => r.BenefitTypes[i].IsChecked)
+										@Model.BenefitTypes[i].Data.Name @Model.BenefitTypes[i].Description
+									}
+									else
+									{
+										<div class="checkbox">
+											<label>
+												@{
+										var checkBoxAttrs = new Dictionary<string, object>();
+										checkBoxAttrs["class"] = "benefit-type-checkbox";
+										if (Model.NullSafe(m => m.Data.Id) != 0)
+										{
+											checkBoxAttrs["disabled"] = "disabled";
+										}
+
+												}
+
+												@Html.CheckBoxFor(r => r.BenefitTypes[i].IsChecked, checkBoxAttrs)
+												@Model.BenefitTypes[i].Data.Name @Model.BenefitTypes[i].Description
+											</label>
+										</div>
+									}
+
+
+								</td>
+							</tr>
+						}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Номер запроса<span class="requared">*</span></label>
+			<div class="col-md-9 line-height35">
+				@Html.TextBoxFor(t => t.Data.RequestNumber, new { @class = "form-control required", autocomplete = "off" })
+				<span class="field-validation-error">@Model.RequestNumberEm.FormatEx(string.Empty)</span>
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Организация</label>
+			<div class="col-md-9">
+				@Html.TextBoxFor(t => t.Data.OrganizationId, new { @class = "form-control required", autocomplete = "off", Id = "OrganizationId" })
+				@Html.Hidden("_OrganizationId", Model.Data.OrganizationId, new { Id = "_OrganizationId" })
+				@Html.Hidden("_OrganizationName", Model.NullSafe(m => m.Data.Organization.Name), new { Id = "_OrganizationName" })
+			</div>
+		</div>
+		@*<div class="row form-group">
+			<label class="col-md-3 control-label">Район</label>
+			<div class="col-md-7">
+				@Html.DropDownListFor(t => t.Data.BtiRegionId, SelectListHelper.Create(Model.Regions, o => new SelectListItem() { Value = o.Id.ToString(), Text = o.Name }, "-- Без района --"), new { @class = "form-control required", autocomplete = "off" }).DisableIf(() => Model.Data.Id != 0)
+				@if (Model.Data.Id != 0)
+				{
+					Html.HiddenFor(t => t.Data.BtiRegionId);
+				}
+			</div>
+			<div class="checkbox col-md-2">
+				@Html.CheckBoxFor(m => m.Data.ForAllRegion).DisableIf(() => Model.Data.Id != 0) Все районы
+				@if (Model.Data.Id != 0)
+				{
+					Html.HiddenFor(t => t.Data.ForAllRegion);
+				}
+			</div>
+		</div>*@
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Дата запроса<span class="requared">*</span></label>
+			<div class="col-md-9 line-height35">
+				@Html.TextBoxFor(t => t.Data.RequsetDate, new { @class = "form-control datepicker required input-mask-date", placeholder = "", @Value = Model.Data.RequsetDate.FormatEx(string.Empty, string.Empty), autocomplete = "off" })
+				<span class="field-validation-error">@Model.RequestDateEm.FormatEx(string.Empty)</span>
+			</div>
+		</div>
+		<div class="row form-group">
+			<label class="col-md-3 control-label">Комментарий к запросу</label>
+			<div class="col-md-9">
+				@Html.TextAreaFor(t => t.Data.RequestComment, new { @class = "form-control vertical", style = "min-height:100px;resize:vertical;", placeholder = "" })
+			</div>
+		</div>
+		@if (Model.Data.StatusInteragencyRequestId != (long)StatusInteragencyRequestEnum.Draft)
+		{
+			<div class="row form-group">
+				<label class="col-md-3 control-label">Номер ответа<span class="requared">*</span></label>
+				<div class="col-md-9 line-height35">
+					@Html.TextBoxFor(t => t.Data.AnswerNumber, new { @class = "form-control required", autocomplete = "off" })
+					<span class="field-validation-error">@Model.AnswerNumberEm.FormatEx(string.Empty)</span>
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-md-3 control-label">Дата ответа<span class="requared">*</span></label>
+				<div class="col-md-9 line-height35">
+					@Html.TextBoxFor(t => t.Data.AnswerDate, new { @class = "form-control datepicker required input-mask-date", placeholder = "", @Value = Model.Data.AnswerDate.FormatEx(string.Empty, string.Empty), autocomplete = "off" })
+					<span class="field-validation-error">@Model.AnswerDateEm.FormatEx(string.Empty)</span>
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-md-3 control-label">Комментарий к ответу</label>
+				<div class="col-md-9">
+					@Html.TextAreaFor(t => t.Data.AnswerComment, new { @class = "form-control vertical", style = "min-height:100px;resize:vertical;", placeholder = "" })
+				</div>
+			</div>
+		}
+
+	</fieldset>
+
+	<fieldset>
+		@if (Model.Results != null && Model.Results.Any())
+		{
+			<h3 id="GeneralInfo">Дети</h3>
+			if (Model.Data.StatusInteragencyRequestId == (long)StatusInteragencyRequestEnum.Sended)
+			{
+				<div class="pull-right">
+					<div class="form-group">
+						Статус подтверждения для всех:
+						<button type="button" class="btn btn-xs btn-success" id="AllChildrenApproved" title="Подтвердить всем">Подтвердить</button>
+						<button type="button" class="btn btn-xs btn-danger" id="AllChildrenRejected" title="Отказать всем">Отказать</button>
+					</div>
+				</div>
+			}
+			<div class="row">
+				<table class="table table-striped table-bordered">
+					<thead>
+					<tr>
+						<th>№</th>
+						<th>Фамилия, Имя, Отчество</th>
+						<th>Дата рождения</th>
+						<th>Вид документа</th>
+						<th>Серия, номер</th>
+						<th>Вид льготы</th>
+						<th>Номер заявления</th>
+						<th>Статус подтверждения</th>
+						<th>Район</th>
+					</tr>
+					</thead>
+					<tbody>
+						@for (int i = 0; i < Model.Results.Count; i++)
+						{
+							InteragencyRequestResultViewModel child = Model.Results[i];
+							<tr>
+								<td>@(i+1)</td>
+								<td>
+									@child.NullSafe(c => c.Child.LastName).FormatEx()
+									@child.NullSafe(c => c.Child.FirstName).FormatEx()
+									@child.NullSafe(c => c.Child.MiddleName).FormatEx(string.Empty)
+								</td>
+								<td>@child.NullSafe(c => c.Child.DateOfBirth).FormatEx()</td>
+								<td>@child.NullSafe(c => c.Child.DocumentType.NullSafe(d => d.Name)).FormatEx()</td>
+								<td>@child.NullSafe(c => c.Child.DocumentSeria).FormatEx(), @child.NullSafe(c => c.Child.DocumentNumber).FormatEx()</td>
+								<td>@child.NullSafe(c => c.Child.BenefitType.NullSafe(b => b.Name)).FormatEx()</td>
+								<td><a href="@Url.Action("RequestEdit", "FirstRequestCompany", new { id = child.NullSafe(c => c.Child.NullSafe(v => v.RequestId)) })" target="_blank">@child.NullSafe(c => c.Child.Request.NullSafe(b => b.RequestNumber)).FormatEx()</a></td>
+								<td style="width: 200px">
+									@Html.HiddenFor(m => m.Results[i].Data.ChildId)
+									@Html.HiddenFor(m => m.Results[i].Data.Id)
+									@Html.HiddenFor(m => m.Results[i].Data.InteragencyRequestId)
+									@Html.HiddenFor(m => m.Results[i].Data.Comment)
+									@if (Model.Data.StatusInteragencyRequestId == (long)StatusInteragencyRequestEnum.Sended)
+									{
+										@Html.DropDownListFor(m => m.Results[i].Data.StatusResultId, new SelectList(Model.StatusResults, "Id", "Name", Model.Results[i].Data.StatusResultId), new { @class = "form-control not-select2 benefit-select" })
+										<span class="field-validation-error">@Model.Results[i].StatusResultEm.FormatEx(string.Empty)</span>
+									}
+									else
+									{
+										@Html.HiddenFor(m => m.Results[i].Data.StatusResultId)
+										@Model.NullSafe(s => s.Results[i].Data.StatusResult.Name).FormatEx()
+									}
+								</td>
+								<td>
+									@((child.NullSafe(c => c.Child.Address.BtiAddress.BtiRegion.Name) ?? child.NullSafe(c => c.Child.Address.BtiRegion.Name)).FormatEx())
+									<br/>
+									<small>
+										@((child.NullSafe(c => c.Child.Address.BtiAddress.BtiRegion.BtiDistrict.Name) ?? child.NullSafe(c => c.Child.Address.BtiRegion.BtiDistrict.Name)).FormatEx())
+									</small>
+							</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+		else
+		{
+			<text>
+				<em>Нет детей в заявлениях для отправки запроса</em>
+			</text>
+		}
+	</fieldset>
+</form>
+
+<div class="modal fade" id="HistoryModal">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<h4 class="modal-title">История</h4>
+			</div>
+			<div class="modal-body">
+				<div id="HistoryModalError" align="center">
+					Ошибка загрузки
+				</div>
+				<div id="HistoryModalLoading" align="center">
+					<img src="~/Content/images/spinner.gif" /> Загрузка истории
+				</div>
+				<div id="HistoryModalTable">
+					<table class="table table-striped table-hover">
+						<thead>
+							<tr>
+								<th class="text-center">Операция</th>
+								<th class="text-center">Дата и время изменения</th>
+								<th class="text-center">ФИО оператора</th>
+								<th class="text-center">Телефон оператора</th>
+								<th class="text-center">Email оператора</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section styles {
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/HistoryModal.css")
+}
+
+@section scripts {
+	<script type="text/javascript" src="~/Scripts/doT.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+		var benefitTypeApproved = '@((long)StatusResultEnum.Approved)';
+		var benefitTypeRejected = '@((long)StatusResultEnum.Rejected)';
+	</script>
+	<script type="text/javascript" src="~/Scripts/select2.min.js"></script>
+	<script type="text/javascript" src="~/Scripts/select2_locale_ru.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+	<script type="text/javascript" src="~/Scripts/InteragencyRequest.js"></script>
+	<script type="text/javascript" src="~/Scripts/Selectors/Organization.js"></script>
+	<script type="text/javascript">
+		$(function () {
+			@if (!Model.IsEditable)
+			{
+				<text>
+		$('#mainForm').find('input, select, a .btn, button, textarea').not('.active-control').not('[type="hidden"]').addClass('disabled');
+		$('#mainForm').find('input, select, a, button, textarea').not('.active-control').not('[type="hidden"]').attr("disabled", "disabled");
+		$('#mainForm').find('button').not('.active-control').hide();
+			</text>
+			}
+
+		});
+
+		function confirmChangeStatus(message, title, statusId) {
+			BootstrapDialog.show({
+				title: title,
+				message: message,
+				buttons: [{
+					label: 'Подтвердить',
+					cssClass: 'btn-danger',
+					action: function (dialogItself) {
+						$('#@Html.IdFor(r => r.Data.StatusInteragencyRequestId)').val(statusId);
+						$('#mainForm').submit();
+					}
+				}, {
+					label: 'Отмена',
+					action: function (dialogItself) {
+						dialogItself.close();
+					}
+				}]
+			});
+		}
+	</script>
+
+	<script type="text/dot-template" id="historyTableTemplate">
+		{{~it :h:hi}}
+		<tr>
+			<td>{{=h.Operation}}</td>
+			<td>{{=h.DateTime}}</td>
+			<td>{{=h.AccountName?h.AccountName:'-'}}</td>
+			<td>{{=h.AccountPhone?h.AccountPhone:'-'}}</td>
+			<td>{{=h.AccountEmail?h.AccountEmail:'-'}}</td>
+		</tr>
+		{{~}}
+	</script>
+
+	<script type="text/dot-template" id="BeneftitTypesTemplate">
+		{{~it :b:bi}}
+		<tr>
+			<td>
+				<input name="BenefitTypes[{{=bi}}].Data.Id" type="hidden" value="{{=b.Data.id}}">
+				<div class="checkbox">
+					<label>
+						<input checked="checked" class="benefit-type-checkbox" name="BenefitTypes[{{=bi}}].IsChecked" type="checkbox" value="true">
+						{{=b.Data.name}} {{=b.Description}}
+					</label>
+				</div>
+			</td>
+
+		</tr>
+		{{~}}
+	</script>
+}

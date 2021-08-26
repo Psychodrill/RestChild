@@ -1,0 +1,121 @@
+﻿@using System.Collections
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Domain
+@model RestChild.Extensions.Filter.ContractFilterModel
+@{
+	ViewBag.Title = "Реестр договоров и контрактов";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "Search";
+	ViewBag.InsertAction = "Insert";
+	ViewBag.SaveAction = "Save";
+	ViewBag.Controller = "Contract";
+	ViewBag.Caption = "Реестр договоров и контрактов";
+	ViewBag.InsertButtonCaption = "Добавить";
+	ViewBag.SearchPanelCaption = "Поиск";
+}
+
+@section searchForm
+{
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Номер</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.SignNumber, new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Дата заключения</label>
+		<div class="col-md-4">
+			@Html.TextBoxFor(m => m.SignDate, new { @class = "form-control" })
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Ведомство</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.OrganizationId, new SelectList(Model.Oivs.Select(s => new { Id = (long?)s.Id, s.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано -- " }), "Id", "Name"), new { @class = "form-control" })
+		</div>
+		<label class="col-md-2 control-label text-right">Год отдыха</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.Years.Select(s => new { Id = (long?)s.Id, s.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано -- " }), "Id", "Name"), new { @class = "form-control" })
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-md-2 control-label text-right">Статус</label>
+		<div class="col-md-4">
+			@Html.DropDownListFor(m => m.StateId, new SelectList(Model.States.Select(s => new { Id = (long?)s.Id, s.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано -- " }), "Id", "Name"), new { @class = "form-control" })
+		</div>
+	</div>
+}
+
+@section searchResult
+{
+	@if (Model.Result != null && Model.Result.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="text-center" width="5%">№</th>
+					<th>Номер</th>
+					<th>Дата заключения</th>
+					<th>Ведомство</th>
+					<th>Год отдыха</th>
+					<th>Статус</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				@{int rowNumber = Model.Result.FirstItemOnPage;}
+				@foreach (var contract in Model.Result)
+				{
+					<tr>
+						<td class="text-center">@(rowNumber++)</td>
+						<td>@contract.SignNumber.FormatEx()</td>
+						<td>@contract.SignDate.FormatEx()</td>
+						<td>@contract.NullSafe(c => c.Organization.Name).FormatEx()</td>
+						<td>@contract.NullSafe(c => c.YearOfRest.Name).FormatEx()</td>
+						<td>@contract.NullSafe(c => c.State.Name).FormatEx()</td>
+						<td class="text-center">@Html.ActionLink(" ", "Update", new { id = contract.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model.Result, page =>
+						{
+							Model.Result = null;
+							Model.PageNumber = page;
+							Model.States = null;
+							return Url.Action("Search", Model);
+						}, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+
+@section styles
+{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+}
+
+@section scripts
+{
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+	@Scripts.Render("~/Scripts/Vocabulary/ContractList.js")
+}

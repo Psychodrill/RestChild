@@ -1,0 +1,160 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@{
+	var isEditable = Security.HasRight(AccessRightEnum.Hotel.PricesEdit);
+
+	var filterTypesOfRooms = ViewBag.TypesOfRooms != null ? ((IList<SelectListItem>) ViewBag.TypesOfRooms).ToList() : new List<SelectListItem>();
+	var filterAccommodations = ViewBag.Accommodations != null ? ((IList<SelectListItem>) ViewBag.Accommodations).ToList() : new List<SelectListItem>();
+	var filterDiningOptions = ViewBag.DiningOptions != null ? ((IList<SelectListItem>) ViewBag.DiningOptions).ToList() : new List<SelectListItem>();
+	filterTypesOfRooms.Insert(0, new SelectListItem { Value = string.Empty, Text = "Все", Selected = true });
+	filterAccommodations.Insert(0, new SelectListItem { Value = string.Empty, Text = "Все", Selected = true });
+	filterDiningOptions.Insert(0, new SelectListItem { Value = string.Empty, Text = "Все", Selected = true });
+}
+
+<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "Prices" ? "active" : string.Empty)" id="Prices">
+
+	<h3>
+		Матрица цен &nbsp;
+		@if (isEditable)
+		{
+			<button type="button" class="btn btn-primary" id="btnAddHotelPrice">Добавить сведения</button>
+		}
+	</h3>
+
+	<div class="panel-group" role="tablist">
+		<div class="panel panel-default">
+			<div class="panel-heading" role="tab" id="collapseListGroupHeading1">
+				<h4 class="panel-title">
+					<a class="" data-toggle="collapse" href="#searchCriteriaPanel">
+						Фильтр
+					</a>
+				</h4>
+			</div>
+			<div id="searchCriteriaPanel" class="panel-collapse collapse in" role="tabpanel">
+				<div class="panel">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-6">
+								<fieldset class="form-horizontal">
+									<div class="form-group">
+										@if (Model.Data.HotelTypeId == (int) HotelTypeEnum.Camp)
+										{
+											<label class="col-md-offset-8 col-md-2 control-label text-right">Возраст</label>
+											<div class="col-md-2">
+												<input type="text" class="form-control integer" id="txtHpriceFilterAge" maxlength="2"/>
+											</div>
+										}
+										else
+										{
+											<label class="col-md-2 control-label text-right">Номер</label>
+											<div class="col-md-4">
+												@Html.DropDownList("selHpriceFilterTypesOfRooms", filterTypesOfRooms, new {style = "width:100%", @class = "hprices-select sel-hprice-filter-room"})
+											</div>
+											<label class="col-md-2 control-label text-right">Размещение</label>
+											<div class="col-md-4">
+												@Html.DropDownList("selHpriceFilterAccommodation", filterAccommodations, new {style = "width:100%", @class = "hprices-select sel-hprice-filter-type"})
+											</div>
+										}
+									</div>
+								</fieldset>
+							</div>
+							<div class="col-md-6">
+								<fieldset class="form-horizontal">
+									<div class="form-group">
+										<label class="col-md-2 control-label text-right">Питание</label>
+										<div class="col-md-3">
+											@Html.DropDownList("selHpriceFilterDiningOptions", filterDiningOptions, new {style = "width:100%", @class = "hprices-select sel-hprice-filter-food"})
+										</div>
+										<label class="col-md-1 control-label text-right">Дата</label>
+										<div class="col-md-4">
+											<div class="input-group date">
+												<input type="text" class="form-control datepicker txt-hprice-filter-date" maxlength="10" id="txtHpriceFilterDate"/>
+												<span class="input-group-addon">
+													<span class="glyphicon glyphicon-calendar"></span>
+												</span>
+											</div>
+										</div>
+										<div class="pull-right">
+											<button type="button" class="btn btn-primary" id="btnHotelPricesSearch" title="Искать">
+												<i class="glyphicon glyphicon-search"></i>
+											</button>
+											<button type="button" class="btn btn-default" id="btnHotelPricesSearchClear" title="Очистить форму поиска">
+												<i class="glyphicon glyphicon-trash"></i>
+											</button>
+										</div>
+									</div>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div id="divHotelPrices" class="col-md-12">
+	</div>
+
+</div>
+
+@if (isEditable)
+{
+	<script type="text/x-dot-template" id="templateHotelPriceEdit">
+		<tr class="row-hprice-editor">
+			@if (Model.Data.HotelTypeId == (int)HotelTypeEnum.Camp)
+			{
+				<td class="cell-hprice-ages">
+					<input type="text" maxlength="2" class="form-control integer txt-hprice-agefrom" style="width: 45px" />
+					<input type="text" maxlength="2" class="form-control integer txt-hprice-ageto" style="width: 45px" />
+				</td>
+			}
+			else
+			{
+				<td class="cell-hprice-room">
+					@Html.DropDownList("TypesOfRoomsId", (IList<SelectListItem>)ViewBag.TypesOfRooms, new { style = "width:100%", @class = "hprices-select" })
+				</td>
+				<td class="cell-hprice-type">
+					@Html.DropDownList("AccommodationId", (IList<SelectListItem>)ViewBag.Accommodations, new { style = "width:100%", @class = "hprices-select" })
+				</td>
+			}
+			<td class="cell-hprice-food">
+				@Html.DropDownList("DiningOptionsId", ViewBag.DiningOptions!= null ? (IList<SelectListItem>) ViewBag.DiningOptions : new List<SelectListItem>(), new {style = "width:100%", @class = "hprices-select"})
+			</td>
+			<td class="cell-hprice-dates">
+				<div class="input-group date" style="width: 140px">
+					<input type="text" class="form-control datepicker txt-hprice-datefrom" maxlength="10" />
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+				<div class="input-group date" style="width: 140px">
+					<input type="text" class="form-control datepicker txt-hprice-dateto" maxlength="10" />
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+			</td>
+			<td class="cell-hprice-price">
+				<input type="text" maxlength="7" class="form-control decimal" style="width: 85px" />
+			</td>
+			<td class="cell-hprice-intprice">
+				<input type="text" maxlength="7" class="form-control decimal" style="width: 85px" />
+			</td>
+			<td class="text-nowrap cell-hprice-editorbuttons">
+				<a class="glyphicon glyphicon-ok btn-hprice-save" title="Сохранить" href="javascript:void(0)"> </a>
+				&nbsp;
+				<a class="glyphicon glyphicon-remove btn-hprice-cancel" title="Отмена" href="javascript:void(0)"> </a>
+				<input type="hidden" value="0" class="txt-hprice-id" />
+				<input type="hidden" value="0" class="txt-hprice-hotelid" />
+			</td>
+			<td class="text-nowrap cell-hprice-rowbuttons hidden">
+				<a class="glyphicon glyphicon-pencil btn-hprice-edit" title="Изменить" href="javascript:void(0)"> </a>
+				&nbsp;
+				<a class="glyphicon glyphicon-remove btn-hprice-remove" title="Удалить" href="javascript:void(0)"> </a>
+				<input type="hidden" value="" />
+			</td>
+		</tr>
+	</script>
+}

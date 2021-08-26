@@ -1,0 +1,141 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@model RestChild.Extensions.Filter.OrganizationPagedList
+@{
+	ViewBag.Title = "Реестр организаций";
+	Layout = "~/Views/Shared/_SearchLayout.cshtml";
+	ViewBag.SearchAction = "List";
+	ViewBag.InsertAction = "Edit";
+	ViewBag.Controller = "Organization";
+	ViewBag.Caption = "Реестр организаций";
+	ViewBag.InsertButtonCaption = "Добавить организацию";
+	ViewBag.SearchPanelCaption = "Поиск организаций";
+	ViewBag.NeedInsertButton = Security.HasRight(AccessRightEnum.Organization.Edit);
+}
+
+@section searchForm
+{
+	<ul class="nav nav-tabs" role="tablist">
+	<li role="presentation" class="@Html.Raw(Model.OrganizationType == 1 ? "active" : string.Empty)">
+		<a href="#search1" aria-controls="home" role="tab" data-toggle="tab" data-organizationType="1">Государственные учреждения</a>
+	</li>
+	<li role="presentation" class="@Html.Raw(Model.OrganizationType == 2 ? "active" : string.Empty)">
+		<a href="#search1" aria-controls="home" role="tab" data-toggle="tab" data-organizationType="2">Организации</a>
+	</li>
+	<li role="presentation" class="@Html.Raw(Model.OrganizationType == 3 ? "active" : string.Empty)">
+		<a href="#search1" aria-controls="home" role="tab" data-toggle="tab" data-organizationType="3">Транспортные организации</a>
+	</li>
+	<li role="presentation" class="@Html.Raw(Model.OrganizationType == 4 ? "active" : string.Empty)">
+		<a href="#search1" aria-controls="home" role="tab" data-toggle="tab" data-organizationType="4">Профсоюзы</a>
+	</li>
+	<li role="presentation" class="@Html.Raw(Model.OrganizationType == 5 ? "active" : string.Empty)">
+		<a href="#search1" aria-controls="home" role="tab" data-toggle="tab" data-organizationType="5">Профсоюзные лагеря</a>
+	</li>
+</ul>
+
+	<div class="tab-content top-margin">
+		<div role="tabpanel" class="tab-pane active top-margin" id="search1">
+			<div class="form-group">
+				<label class="col-md-3 control-label text-margin">Название</label>
+				<div class="col-md-9 form-group">
+					@Html.TextBox("name", Model.Name, new {@class = "form-control"})
+					@Html.Hidden("OrganizationType", Model.OrganizationType)
+					@Html.HiddenFor(m => m.ChangeOrgType, new {@id = "changeOrgType"})
+				</div>
+				<label class="col-md-3 control-label text-margin">Регион</label>
+				<div class="col-md-9 form-group">
+					@Html.DropDownListFor(model => model.StateDistrictId, new SelectList(Model.StateDistricts.Select(t => new {Id = (long?) t.Id, t.Name}).ToList().InsertAt(new {Id = (long?) null, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control", autocomplete = "off"})
+				</div>
+				<label class="col-md-3 control-label text-margin">Ведомство</label>
+				<div class="col-md-9 form-group">
+					@Html.DropDownListFor(model => model.OivId, new SelectList(Model.Oivs.Select(t => new {Id = (long?) t.Id, t.Name}).ToList().InsertAt(new {Id = (long?) null, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control", autocomplete = "off"})
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+@section searchResult
+{
+	@if (Model.CommonPagedList.Any())
+	{
+		<table class="table table-striped table-hover">
+			<thead>
+			<tr>
+				<th class="text-center">№</th>
+				<th class="text-center">Название</th>
+				<th class="text-center">Телефон</th>
+				<th class="text-center">Адрес</th>
+				<th class="text-center">
+					<nobr>E-mail</nobr>
+				</th>
+				<th class="text-center">Регион</th>
+				<th class="text-center">Ведомство</th>
+				<th class="text-center"></th>
+			</tr>
+			</thead>
+			<tbody>
+			@{ var rowNumber = Model.CommonPagedList.FirstItemOnPage; }
+			@foreach (var org in Model.CommonPagedList)
+			{
+				<tr>
+					<td class="text-center">@(rowNumber++)</td>
+					<td>@Html.Raw(org.Name.FormatEx())</td>
+					<td>@Html.Raw(org.Phone.FormatEx())</td>
+					<td>@Html.Raw(org.Address.FormatEx())</td>
+					<td>@Html.Raw(org.Email.FormatEx())</td>
+					<td>@Html.Raw(org.StateDistrict != null ? org.StateDistrict.Name.FormatEx() : "-")</td>
+					<td>@Html.Raw(org.Parent.NullSafe(o => o.Name).FormatEx())</td>
+					<td class="text-center">
+						@if (Security.HasRight(AccessRightEnum.Organization.Edit))
+						{
+							@Html.ActionLink(" ", "Edit", new {id = org.Id}, new {@class = " glyphicon glyphicon-pencil", target = "_blank"})
+						}
+					</td>
+				</tr>
+			}
+			</tbody>
+		</table>
+		<div class="row">
+			<div class="col-md-12">
+				@Html.PagedListPager(Model.CommonPagedList, page => Url.Action("List", new {pageNumber = page, name = Model.Name, Model.OrganizationType}), new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			<div class="col-md-12">
+				<p>Поиск не дал результатов</p>
+			</div>
+		</div>
+	}
+}
+
+@section Scripts{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+
+
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript">
+		$(function() {
+			$('select').select2();
+			$('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+				var tab = e.target;
+				var newType = tab.getAttribute('data-organizationType');
+
+				$('#search1').find('input[type=\"hidden\"]').each((i, elem) => {
+					elem.setAttribute('value', newType);
+				});
+
+				$('#changeOrgType').val('True');
+
+				$('form').submit();
+			});
+		});
+	</script>
+}

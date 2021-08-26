@@ -1,0 +1,221 @@
+﻿@using System.Collections
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Filter
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.CounselorTaskModel
+
+@{
+	ViewBag.Title = "Взаимодействие с сотрудниками";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (@Html.BeginForm("CreateTask", "CounselorTask"))
+{
+	<div class="row">
+		<div class="col-md-12">
+			<h2>Взаимодействие с сотрудниками (@(Model.NotNessary ? "сообщение" : "задача"))</h2>
+			@if (Model.ParentTaskId.HasValue)
+			{
+				<a href="@Url.Action("Edit", "CounselorTask", new {@id=Model.ParentTaskId.Value})">Вернуться</a>
+			}
+			else
+			{
+				<a href="@Url.Action("List", "CounselorTask")">Вернуться</a>
+			}
+		</div>
+	</div>
+	<div class="row">&nbsp;</div>
+	<div class="row">
+		<div class="col-md-12">
+			<button type="button" class="btn btn-primary" id="btnCreateTask">Создать @(Model.NotNessary ? "сообщение" : "задачу")</button>
+		</div>
+	</div>
+	<div class="row">&nbsp;</div>
+
+	@Html.Partial("Tasks", Model)
+
+	<div class="col-md-12">
+		<div class="col-md-6">
+			<div class="col-md-12">
+				@Html.Hidden("CounselorsUrl", Url.Action("GetCoworkers", "CounselorTask"), new { Id = "CounselorsUrl" })
+				<!-- Сворачиваемая панель "Поиск"-->
+				@Html.HiddenFor(m => m.ParentTaskId, new { @class = "ParentTaskId" })
+				@Html.HiddenFor(m => m.NotNessary)
+				<div class="panel-group" role="tablist" id="accordion" style="@(Model.ParentTaskId.HasValue?"display:none": string.Empty)">
+					<div class="panel panel-default">
+						<div class="panel-heading" role="tab" id="collapseListGroupHeading">
+							<h4 class="panel-title">
+								<a class="" data-toggle="collapse" href="#searchFilter" data-parent="#accordion" aria-controls="searchCriteriaPanel">
+									Поиск
+								</a>
+							</h4>
+						</div>
+						<div class="panel-collapse collapse in" role="tabpanel" aria-labelledby="collapseListGroupHeading" id="searchFilter">
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-12">
+										<fieldset class="form-horizontal">
+											<div class="form-group">
+												<label class="col-md-4 control-label text-right">Вид места отдыха</label>
+												<div class="col-md-8">
+													@Html.DropDownListFor(m => m.CoworkersFilterModel.HotelTypeId, SelectListHelper.Create(Model.CoworkersFilterModel.HotelTypes, h => new SelectListItem() { Value = h.Id.ToString(), Text = h.Name }), new { @class = "form-control HotelTypeId" })
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-md-4 control-label text-right">Год кампании</label>
+												<div class="col-md-8">
+													@Html.DropDownListFor(m => m.CoworkersFilterModel.YearOfRestId, SelectListHelper.Create(Model.CoworkersFilterModel.YearsOfRest, h => new SelectListItem() { Value = h.Id.ToString(), Text = h.Name }), new { @class = "form-control YearOfRestId" })
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-md-4 control-label text-right">Место отдыха</label>
+												<div class="col-md-8">
+													@Html.TextBoxFor(m => m.CoworkersFilterModel.HotelId, new { @class = "form-control HotelId" })
+													@Html.Hidden("_HotelsId", Model.CoworkersFilterModel.HotelId, new { id = "_HotelsId" })
+													@Html.Hidden("_HotelsName", Model.CoworkersFilterModel.NullSafe(m => m.Hotels.Name), new { id = "_HotelsName" })
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-md-4 control-label text-right">Смена</label>
+												<div class="col-md-8">
+													@Html.DropDownListFor(m => m.CoworkersFilterModel.GroupedTimeOfRestId, SelectListHelper.Create(Model.CoworkersFilterModel.GroupedTimeOfRest, h => new SelectListItem() { Value = h.Id.ToString(), Text = h.Name }), new { @class = "form-control GroupedTimeOfRestId" })
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-md-4 control-label text-right">Тематика смены</label>
+												<div class="col-md-8">
+													@Html.DropDownListFor(m => m.CoworkersFilterModel.SubjectOfRestId, SelectListHelper.Create(Model.CoworkersFilterModel.SubjectsOfRest, h => new SelectListItem() { Value = h.Id.ToString(), Text = h.Name }), new { @class = "form-control SubjectOfRestId" })
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-md-4 control-label text-right">ФИО</label>
+												<div class="col-md-8">
+													@Html.TextBoxFor(m => m.CoworkersFilterModel.Name, new { @class = "form-control Name", autocomplete = "off" })
+												</div>
+											</div>
+											<div class="form-group">
+												<label class="col-md-4 control-label text-right">Сотрудник</label>
+												<div class="col-md-8">
+													@Html.DropDownListFor(m => m.CoworkersFilterModel.CoworkerType, new SelectList(new ArrayList()
+												               {
+													               new { Id = string.Empty, Name = "-- Не выбрано --" },
+																   new { Id = (long)TaskExecutorTypeEnum.Administrator, Name = "Администратор" },
+																   new { Id = (long)TaskExecutorTypeEnum.SeniorCounselor, Name = "Старший вожатый" },
+																   new { Id = (long)TaskExecutorTypeEnum.SwingCounselor, Name = "Подменный вожатый" },
+																   new { Id = (long)TaskExecutorTypeEnum.Counselor, Name = "Вожатый" }
+												               }, "Id", "Name"), new { @class = "form-control CoworkerType" })
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-md-9 col-md-offset-3">
+													<button type="button" class="btn btn-default btn-primary dialog-search-button">
+														<i class="glyphicon glyphicon-search"></i>Поиск
+													</button>
+													<button type="button" class="btn btn-default btn-primary dialog-clear-button">
+														Очистить фильтр
+													</button>
+												</div>
+											</div>
+										</fieldset>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="coworkersDiv">
+					@Html.Partial("Coworkers", Model.CoworkersFilterModel)
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<table id="PerformersTable" class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th>ФИО</th>
+						<th>Сотрудник</th>
+						<th>Заезд</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="empty-row">
+						<td colspan="4">Сотрудники не добавлены</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+}
+
+<script type="dot/template" id="rowPefomance">
+	<tr>
+		<td class="fio"></td>
+		<td class="type"></td>
+		<td class="bout"></td>
+		<td>
+			<input type="hidden" name="Performers[0].CoworkerType" class="CoworkerType" />
+			<input type="hidden" name="Performers[0].PerformerId" class="PerformerId" />
+			<input type="hidden" name="Performers[0].BoutId" class="boutId" />
+			<input type="hidden" name="Performers[0].PartyId" class="partyId" />
+			<button type="button" class="btn btn-xs glyphicon glyphicon-remove btn-danger remove-button" title="Удалить"></button>
+		</td>
+	</tr>
+</script>
+
+
+@section styles{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	<link href="~/Content/jQuery.FileUpload/css/jquery.fileupload.css" type="text/css" rel="stylesheet"></link>
+	<link href="~/Content/jQuery.FileUpload/css/jquery.fileupload-ui.css" type="text/css" rel="stylesheet"></link>
+	@Styles.Render("~/Content/css/font-awesome.min.css")
+	@Styles.Render("~/Content/summernote.css")
+}
+
+@section Scripts {
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+		$(function () {
+			var body = ($('#@Html.IdFor(m => m.Content)').val());
+			$('#body').summernote({
+				lang: 'ru-RU',
+				toolbar: [
+					['style', ['style']],
+					['font', ['bold', 'italic', 'underline', 'clear']],
+					['fontname', ['fontname']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['height', ['height']],
+					['table', ['table']],
+					['insert', ['link', 'hr']]
+				],
+				maxHeight: 300,
+				height: 300
+			});
+			$('#body').code(body);
+		});
+	</script>
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/CounselorTaskCreate.js")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote.min.js")
+	@Scripts.Render("~/Scripts/Summernote/summernote-ru-RU.js")
+
+	<script type="x-dot-template" id="PerformerTemplate">
+		<tr>
+			<td>{{=it.name}}</td>
+			<td>{{=it.typeStr}}</td>
+			<td>{{=it.bout}}</td>
+			<td></td>
+		</tr>
+	</script>
+}

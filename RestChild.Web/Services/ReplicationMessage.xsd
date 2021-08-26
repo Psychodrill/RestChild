@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns="" id="NewDataSet" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="package">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="unbounded" name="lookups">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" name="lookup">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element minOccurs="0" maxOccurs="unbounded" name="id" nillable="true">
+											<xs:complexType>
+												<xs:simpleContent msdata:ColumnName="value_Text" msdata:Ordinal="1">
+													<xs:extension base="xs:string">
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+										<xs:element minOccurs="0" maxOccurs="unbounded" name="attribute">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element minOccurs="0" maxOccurs="unbounded" name="values">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element minOccurs="0" maxOccurs="unbounded" name="value" nillable="true">
+																	<xs:complexType>
+																		<xs:simpleContent msdata:ColumnName="value_Text" msdata:Ordinal="1">
+																			<xs:extension base="xs:string">
+																				<xs:attribute name="occurrence" type="xs:string" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="name" type="xs:string" />
+												<xs:attribute name="type" type="xs:string" />
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element minOccurs="1" maxOccurs="unbounded" name="catalog">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" name="categories">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element minOccurs="0" maxOccurs="unbounded" name="category" nillable="true">
+											<xs:complexType>
+												<xs:simpleContent msdata:ColumnName="value_Text" msdata:Ordinal="1">
+													<xs:extension base="xs:string">
+														<xs:attribute name="nameHier" type="xs:string" />
+														<xs:attribute name="idHier" type="xs:string" />
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element minOccurs="0" maxOccurs="unbounded" name="data">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element minOccurs="0" maxOccurs="unbounded" name="attribute">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element minOccurs="0" maxOccurs="unbounded" name="values">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element minOccurs="0" maxOccurs="unbounded" name="value" nillable="true">
+																	<xs:complexType>
+																		<xs:simpleContent msdata:ColumnName="value_Text" msdata:Ordinal="1">
+																			<xs:extension base="xs:string">
+																				<xs:attribute name="occurrence" type="xs:string" />
+																			</xs:extension>
+																		</xs:simpleContent>
+																	</xs:complexType>
+																</xs:element>
+																<xs:element minOccurs="0" maxOccurs="unbounded" name="groupvalue">
+																	<xs:complexType>
+																		<xs:sequence>
+																			<xs:element minOccurs="0" maxOccurs="unbounded" name="attribute">
+																				<xs:complexType>
+																					<xs:sequence>
+																						<xs:element minOccurs="0" maxOccurs="unbounded" name="values">
+																							<xs:complexType>
+																								<xs:sequence>
+																									<xs:element minOccurs="0" maxOccurs="unbounded" name="value" nillable="true">
+																										<xs:complexType>
+																											<xs:simpleContent msdata:ColumnName="value_Text" msdata:Ordinal="1">
+																												<xs:extension base="xs:string">
+																													<xs:attribute name="occurrence" type="xs:string" />
+																												</xs:extension>
+																											</xs:simpleContent>
+																										</xs:complexType>
+																									</xs:element>
+																								</xs:sequence>
+																							</xs:complexType>
+																						</xs:element>
+																					</xs:sequence>
+																					<xs:attribute name="name" type="xs:string" />
+																					<xs:attribute name="type" type="xs:string" />
+																				</xs:complexType>
+																			</xs:element>
+																		</xs:sequence>
+																	</xs:complexType>
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="name" type="xs:string" />
+												<xs:attribute name="type" type="xs:string" />
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="action" type="xs:string" />
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="id" type="xs:string" />
+						<xs:attribute name="name" type="xs:string" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" />
+			<xs:attribute name="count" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element msdata:IsDataSet="true" msdata:UseCurrentLocale="true" name="NewDataSet">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="package" />
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,251 @@
+﻿@using RestChild.Domain
+@using Newtonsoft.Json
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.App_Code
+
+@model RestChild.Web.Models.Orphans.OrphanagePupilGroupListModel
+@{
+    ViewBag.Title = "Список (группа отправки) учреждения социальной защиты";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var isEditable = Model.Data.StateId == RestChild.Comon.Enumeration.StateMachineStateEnum.PupilGroupList.Formation;
+}
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/HistoryModal.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale("ru");
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Scripts.Render("~/Scripts/StateScript.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
+
+    @Scripts.Render("~/Scripts/Vocabulary/Orphanage.Group.List.Edit.js")
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Список (группа отправки) учреждения социальной защиты</h2>
+    </div>
+</div>
+
+@Html.Partial("Assets/_StatePanel", Model.State)
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="summary-block">@Html.Raw(Model.ErrorMessage)</div>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("OrphanagePupilGroupListSave", "Orphan", FormMethod.Post, new { enctype = "multipart/form-data", id = "listForm", autocomplete = "off" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Data.LastUpdateTick)
+    @Html.HiddenFor(m => m.Data.Id)
+    @Html.HiddenFor(m => m.Data.StateId)
+    @Html.HiddenFor(m => m.StateMachineActionString, new { id = "StateMachineActionString" })
+    @Html.HiddenFor(m => m.OrganizationId, new { id = "OrganizationId" })
+    @Html.HiddenFor(m => m.PupilGroupRequestId)
+    @Html.HiddenFor(m => m.Data.LimitOnOrganizationId)
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Общая информация</h3>
+        </div>
+    </div>
+    <fieldset class="form-horizontal">
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">Год</label>
+            <div class="col-md-9" style="padding-top: 7px;">@Model.YearOfRestName</div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">Порядковый номер группы</label>
+            <div class="col-md-9" style="padding-top: 7px;">@Model.PupilGroupName</div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">Форма отдыха и оздоровления</label>
+            <div class="col-md-9" style="padding-top: 7px;">@Model.FormOfRestName</div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">Период отдыха и оздоровления</label>
+            <div class="col-md-9" style="padding-top: 7px;">
+                <a href="@Url.Action("Update", "Tours", new {id = Model.Data.TourId})">
+                    @Model.TimeOfRestName
+                </a>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">Плановое кол-во воспитанников</label>
+            <div class="col-md-9" style="padding-top: 7px;">@(Model.PupilsCount)</div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">Плановое кол-во сопровождающих от учреждения</label>
+            <div class="col-md-9" style="padding-top: 7px;">@(Model.CollaboratorsCount)</div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">Плановое кол-во сопровождающих от МГТ</label>
+            <div class="col-md-9" style="padding-top: 7px;">@(Model.MGTCollaboratorsCount)</div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-9 col-md-offset-3" style="height: 34px; line-height: 34px;">
+                @Html.CheckBoxFor(m => m.Data.RulesAgreement, new { tabindex = "10", autocomplete = "off", style = "vertical-align: text-bottom;" }).ReadonlyIf(() => !isEditable)
+                <span>Подтверждаю, что ознакомлен и согласен с Правилами</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-9 col-md-offset-3" style="height: 34px; line-height: 34px;">
+                @Html.CheckBoxFor(m => m.Data.PupilsRulesAgreement, new { tabindex = "10", autocomplete = "off", style = "vertical-align: text-bottom;" }).ReadonlyIf(() => !isEditable)
+                <span>Воспитанники с Правилами ознакомлены</span>
+            </div>
+        </div>
+    </fieldset>
+
+    <h3><hr /></h3>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Воспитанники</h3>
+        </div>
+    </div>
+    if (isEditable)
+    {
+        <div class="row">
+            <div class="col-md-2">
+                <button type="button" class="btn btn-success btn-primary add-pupil" role="button">Добавить воспитанника</button>
+            </div>
+        </div>
+    }
+    <fieldset class="form-horizontal">
+        <div class="form-group">
+            <table class="table table-striped table-hover pupils">
+                <thead>
+                    <tr>
+                        <th class="text-center">Воспитанник</th>
+                        <th class="text-center">Лекарственные препараты</th>
+                        <th class="text-center">Билеты туда</th>
+                        <th class="text-center">Билеты обратно</th>
+                        <th class="text-center">Адрес подачи трансфера</th>
+                        <th style="width: 5%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var key in Model.Pupils.Keys)
+                    {
+                        @Html.EditorFor(m => m.Pupils[key], "PupilGroupListPupil", new { isEditable })
+                    }
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+
+    <h3><hr /></h3>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Сопровождающие</h3>
+        </div>
+    </div>
+    if (isEditable)
+    {
+        <div class="row">
+            <div class="col-md-2">
+                <button type="button" class="btn btn-primary btn-success add-collaborator" role="button">Добавить cопровождающего</button>
+            </div>
+        </div>
+    }
+    <fieldset class="form-horizontal">
+        <div class="form-group">
+            <table class="table table-striped table-hover collaborators">
+                <thead>
+                    <tr>
+                        <th class="text-center">ФИО сопровождающего</th>
+                        <th class="text-center">Билеты туда</th>
+                        <th class="text-center">Билеты обратно</th>
+                        <th class="text-center">Адрес подачи трансфера</th>
+                        <th style="width: 5%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var key in Model.Collaborators.Keys)
+                    {
+                        @Html.EditorFor(m => m.Collaborators[key], "PupilGroupListCollaborator", new { isEditable })
+                    }
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+
+    <h3><hr /></h3>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Трансфер</h3>
+        </div>
+    </div>
+    <fieldset class="form-horizontal">
+        <div class="form-group">
+            <table class="table table-striped table-hover transfers">
+                <thead>
+                    <tr>
+                        <th class="text-center">Адрес подачи трансфера</th>
+                        <th class="text-center">Кол-во человек</th>
+                        <th class="text-center">Помощь при погрузке/разгрузке</th>
+                        <th class="text-center" colspan="2">Территория</th>
+                        @*<th class="text-center">При отсутствии возможности разворота ТС, где можно осуществить парковку</th>
+                            <th class="text-center">Примечание</th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var key in Model.Transfers.Keys)
+                    {
+                        <tr>
+                            @Html.HiddenFor(m => m.Transfers[key].Id)
+                            @Html.HiddenFor(m => m.Transfers[key].AddressId, new { @class = "transferAdressId" })
+                            <td>
+                                @Model.Transfers[key].Address.Address.Name
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.Transfers[key].CountPeople, new { @class = "form-control CountPeople" }).ReadonlyIf(() => true)
+                            </td>
+                            <td style="text-align: center;">
+                                @Html.CheckBoxFor(m => m.Transfers[key].BoardingHelp).DisableIf(() => !isEditable)
+                            </td>
+                            <td>
+                                @if (Model.Transfers[key].Address.FencedArea)
+                                {
+                                    @:Огороженная территория;<br />
+                                }
+                                @if (Model.Transfers[key].Address.LargeParking)
+                                {
+                                    @:Имеется возможность для разворота ТС;<br />
+                                }
+                            </td>
+                            <td>
+                                При отсутствии возможности разворота ТС, где можно осуществить парковку<br />
+                                @Html.TextBoxFor(m => m.Transfers[key].LargeParkingReAddress, new { @class = "form-control" }).DisableIf(() => !isEditable)<br />
+                                Примечание<br />
+                                @Html.TextBoxFor(m => m.Transfers[key].Note, new { @class = "form-control" }).DisableIf(() => !isEditable)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+
+}
+

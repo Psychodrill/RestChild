@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:tns="http://erl.msr.com/schemas/privilege/oiv/v1" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://erl.msr.com/schemas/privilege/oiv/v1" name="OivPrivilegeService" targetNamespace="http://erl.msr.com/schemas/privilege/oiv/v1" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema>
+      <xsd:import schemaLocation="SID0003178/P399087629/OwsmImport.xsd" namespace="http://erl.msr.com/schemas/privilege/oiv/v1" />
+    </xsd:schema>
+  </types>
+  <message name="getPrivilegeResponse">
+    <part name="response" element="ns1:getPrivilegeResponse" />
+  </message>
+  <message name="getPrivilegeRequest">
+    <part name="request" element="ns1:getPrivilegeRequest" />
+  </message>
+  <message name="serviceException">
+    <part name="fault" element="ns1:simpleFault" />
+  </message>
+  <portType name="OivPrivilegeServicePortType">
+    <operation name="getPrivilege">
+      <documentation>Запрос ОИВ и подведомственными организациями ЛК при назначении и/или предоставлении МСП</documentation>
+      <input wsam:Action="getPrivilege" message="ns1:getPrivilegeRequest" />
+      <output wsam:Action="http://erl.msr.com/schemas/privilege/oiv/v1/OivPrivilegeServicePortType/getPrivilegeResponse" message="ns1:getPrivilegeResponse" />
+      <fault wsam:Action="http://erl.msr.com/schemas/privilege/oiv/v1/OivPrivilegeServicePortType/getPrivilege/Fault/ServiceException" name="serviceException" message="ns1:serviceException" />
+    </operation>
+  </portType>
+  <binding name="OivPrivilegeServicePortBinding" type="ns1:OivPrivilegeServicePortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="getPrivilege">
+      <soap:operation soapAction="getPrivilege" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="serviceException">
+        <soap:fault use="literal" name="serviceException" namespace="" />
+      </fault>
+    </operation>
+  </binding>
+  <service name="OivPrivilegeService">
+    <port name="OivPrivilegeServicePort" binding="ns1:OivPrivilegeServicePortBinding">
+      <soap:address location="http://37.230.240.33:7778/gateway/services/SID0003178" />
+    </port>
+  </service>
+</definitions>

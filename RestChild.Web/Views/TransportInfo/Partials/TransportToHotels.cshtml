@@ -1,0 +1,542 @@
+﻿@using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Extensions
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@using RestChild.Web.Models
+@model RestChild.Web.Models.TransportInfoModel
+
+@{
+	var isTransportFormed = Model.Data.StateId == StateMachineStateEnum.Transport.Formed;
+	var canChangeNeedTicket = Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicket);
+	var toTransport = Model.Data.Bout != null && Model.Data.Bout.TransportInfoToId == Model.Data.Id;
+	var boutIsClosed = Model.Data.Bout != null && Model.Data.Bout.StateId == StateMachineStateEnum.Bout.Closed;
+	var boutIsConfirmed = Model.Data.Bout != null && Model.Data.Bout.StateId == StateMachineStateEnum.Bout.Confirmed;
+	var boutIsFormed = Model.Data.Bout != null && Model.Data.Bout.StateId == StateMachineStateEnum.Bout.Formed;
+} @if (Model.TransportToHotels != null && Model.TransportToHotels.Any())
+  {
+	  <div class="row">
+	  <div class="panel-group col-md-12" id="hotelsAccordion" role="tablist" aria-multiselectable="true">
+	  <div class="panel panel-default">
+	  <div class="panel-heading" role="tab" id="hotelsAccordionHeading">
+		  <h4 class="panel-title">
+			  <a data-toggle="collapse" data-parent="#accordion" href="#hotelsAccordionCollapse" aria-expanded="true" aria-controls="hotelsAccordionCollapse">
+				  Совместный отдых
+			  </a>
+		  </h4>
+	  </div>
+	  <div id="hotelsAccordionCollapse" class="panel-collapse collapse search-to-hide" role="tabpanel" aria-labelledby="hotelsAccordionHeading">
+	  <div class="panel-body">
+	  @{ var hotelNum = 1; }
+	  @foreach (var hotel in Model.TransportToHotels)
+	  {
+		  <div class="row">
+		  <div class="panel-group col-md-12" id="hotelAccordion@(hotelNum)" role="tablist" aria-multiselectable="true">
+		  <div class="panel panel-default">
+		  <div class="panel-heading" role="tab" id="hotelAccordionHeading@(hotelNum)">
+			  <h4 class="panel-title">
+				  <a data-toggle="collapse" data-parent="#accordion" href="#hotelAccordionCollapse@(hotelNum)" aria-expanded="true" aria-controls="hotelAccordionCollapse@(hotelNum)">
+					  @(hotel != null ? hotel.Name : string.Empty)
+				  </a>
+			  </h4>
+		  </div>
+		  <div id="hotelAccordionCollapse@(hotelNum)" class="panel-collapse collapse hotel-accordion search-to-hide" data-hotel-id="@hotel.Id" role="tabpanel" aria-labelledby="hotelAccordionHeading@(hotelNum)">
+		  <div class="panel-body info">
+		  @if (Model.IsEditable)
+		  {
+			<fieldset class="form-horizontal row directory-flight-set">
+				<div class="row">
+					<div class="col-md-7  pull-right">
+						<div class="col-md-4" style="padding-right: 5px;">
+							@Html.DropDownList("DirectoryFlightSelectForHotel" + hotelNum, SelectListHelper.Create(Model.DirectoryFlights, f => new SelectListItem { Value = f.Id.ToString(), Text = f.GetName() }), new { @class = "form-control directory-flight-set-select", autocomplete = "off" })
+						</div>
+						<div class="col-md-4" style="padding-left: 5px; padding-right: 5px;">
+							<div class="input-group date datepicker-anytime">
+								@Html.TextBox("DepartureDateForHotel" + hotelNum, string.Empty, new { @class = "form-control input-mask-date-anytime departure-date-hotel-set" })
+								<span class="input-group-addon">
+									<span class="glyphicon glyphicon-calendar"></span>
+								</span>
+							</div>
+						</div>
+						<div class="col-md-3" style="padding-right: 5px;">
+							<input type="text" class="integer form-control" maxlength="3" placeholder="Вместимость" title="Вместимость рейса (пусто не ограничено)" />
+						</div>
+						<div class="col-md-1" style="padding-left: 5px;">
+							<button class="btn btn-default directory-flight-set-button" type="button">
+								<i class="glyphicon glyphicon-ok"></i>
+							</button>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2 col-md-offset-10">
+						<div class="col-md-12 pull-right" style="padding-right: 5px;">
+							<label><input type="checkbox" checked="checked"/>Не заполненные</label>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		  }
+
+		  @if (hotel.Administrators != null && hotel.Administrators.Any())
+		  {
+			  <label class="col-md-12">Администраторы</label>
+			  var administratorNum = 1;
+			  <table class="table table-bordered">
+				  <thead>
+				  <tr class="search-to-hide">
+					  <th width="40%">Администратор</th>
+					  <th width="10%">Не нужен билет</th>
+					  <th width="25%">Рейс</th>
+					  <th width="160px">Дата отправления</th>
+				  </tr>
+				  </thead>
+				  <tbody>
+				  @foreach (var counselor in hotel.Administrators)
+				  {
+					  var counselorData = counselor.BuildData();
+					  var fio = new List<string> {counselorData.NullSafe(a => a.AdministratorTour.LastName), counselorData.NullSafe(a => a.AdministratorTour.FirstName), counselorData.NullSafe(a => a.AdministratorTour.MiddleName)};
+					  <tr class="search-to-hide">
+						  <td>
+							  <div>
+								  <div class="transport-info-fio">
+									  @string.Join(" ", fio.Where(f => !string.IsNullOrEmpty(f)))
+								  </div>
+								  <div>
+									  <small>
+										  <i style="color: #666">Дата рождения: @counselorData.NullSafe(a => a.AdministratorTour.DateOfBirth).FormatEx()</i>
+									  </small>
+								  </div>
+								  <div>
+									  <small>
+										  <i style="color: #666">@(counselorData.NullSafe(a => a.AdministratorTour.Male) ? "Мужской" : "Женский")</i>
+									  </small>
+								  </div>
+								  <div>
+									  <small>
+										  <i style="color: #666">@counselorData.NullSafe(a => a.AdministratorTour.DocumentType.Name) @counselorData.NullSafe(a => a.AdministratorTour.DocumentSeria) @counselorData.NullSafe(a => a.AdministratorTour.DocumentNumber) Выдан @counselorData.NullSafe(a => a.AdministratorTour.DocumentDateOfIssue).FormatEx() @counselorData.NullSafe(a => a.AdministratorTour.DocumentSubjectIssue)</i>
+									  </small>
+								  </div>
+							  </div>
+
+						  </td>
+						  <td class="transport-info-ticket text-center">
+							  @if (canChangeNeedTicket)
+							  {
+								  <div class="checkbox">
+									  <label>
+										  @Html.CheckBoxFor(m => m.TransportToHotels[hotelNum - 1].Administrators[administratorNum - 1].NotNeedTicket, new {@class = "not-need-ticket", value = counselor.NotNeedTicket ? "True" : "False", data_id = counselor.Data.Id})
+									  </label>
+								  </div>
+							  }
+							  else
+							  {
+								  @counselor.NotNeedTicket.FormatEx()
+								  ;
+							  }
+
+						  </td>
+						  <td>
+							  <div class="transport-info-directory-flight form-group">
+
+								  <select class="form-control form-control transport-info-directory-flight-select transport-info-directory-flight-select-for-hotels" autocomplete="off" @(!Model.IsEditable || counselor.NotNeedTicket ? "disabled=disabled" : null) name="@Html.NameFor(m => m.TransportToHotels[hotelNum - 1].Administrators[administratorNum - 1].Data.DirectoryFlightsId)">
+									  <option data-need-placement="False">-- Не выбрано --</option>
+									  @if (Model.DirectoryFlights != null && Model.DirectoryFlights.Any())
+									  {
+										  foreach (var transport in Model.DirectoryFlights)
+										  {
+											  <option value="@transport.Id.ToString()" @(transport.Id == counselorData.DirectoryFlightsId && !counselorData.NotNeedTicketReasonId.HasValue ? "selected='selected'" : string.Empty) data-need-placement="@(transport.TypeOfTransportId == (long) TypeOfTransportEnum.Railway ? "True" : "False")">@(transport.GetName())</option>
+										  }
+									  }
+								  </select>
+							  </div>
+							  <div class="col-md-12 transport-info-directory-placement  @(Model.NullSafe(m => m.TransportToHotels[hotelNum - 1].Administrators[administratorNum - 1].Data.DirectoryFlights.TypeOfTransportId != (long) TypeOfTransportEnum.Railway) ? " hidden" : string.Empty)">
+								  <div class="transport-info-directory-wagon form-group">
+									  Вагон
+									  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Administrators[administratorNum - 1].Data.Wagon, new {@class = "form-control transport-info-directory-wagon-input"}).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+								  </div>
+								  <div class="transport-info-directory-placeNum form-group">
+									  Место
+									  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Administrators[administratorNum - 1].Data.PlaceNumber, new {@class = "form-control transport-info-directory-placenumber-input"}).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+								  </div>
+
+							  </div>
+							  @Html.HiddenFor(m => m.TransportToHotels[hotelNum - 1].Administrators[administratorNum - 1].Data.Id)
+						  </td>
+						  <td>
+							  <div class="input-group date datepicker-anytime">
+								  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Administrators[administratorNum - 1].Data.DateDeparture, new {@class = "form-control input-mask-date-anytime departure-date"}).DisableIf(() => !Model.IsEditable || counselor.NotNeedTicket)
+								  <span class="input-group-addon">
+																			<span class="glyphicon glyphicon-calendar"></span>
+																		</span>
+							  </div>
+
+						  </td>
+
+					  </tr>
+					  administratorNum++;
+				  }
+				  </tbody>
+
+			  </table>
+		  }
+
+		  @if (hotel.Requests != null && hotel.Requests.Any())
+		  {
+			  <label class="col-md-12">Реестр отдыхающих</label>
+			  var requestNum = 1;
+			  ViewBag.CamperNumForDisplay = 1;
+
+
+			  @helper ShowRequest(TransportRequestModel request, int requestNum, int hotelNum, bool additionalRequest, int additionalRequestNum)
+			  {
+				  if (request == null)
+				  {
+					  return;
+				  }
+
+				  var isTransportFormed = Model.Data.StateId == StateMachineStateEnum.Transport.Formed;
+
+				  var campers = request.Campers.Count + (request.AdditionalPlacesModels != null ? request.AdditionalPlacesModels.SelectMany(m => m.Campers).Count() : 0);
+				  var camperNum = 1;
+				  var isFirstCamperRow = true;
+				  foreach (var camper in request.Campers)
+				  {
+					  var camperData = camper.BuildData();
+					  if (camperData.TypeOfLinkPeopleId == (long) TypeOfLinkPeopleEnum.Child)
+					  {
+						  var fio = new List<string> {camperData.NullSafe(a => a.Child.LastName), camperData.NullSafe(a => a.Child.FirstName), camperData.NullSafe(a => a.Child.MiddleName)};
+						  var document = string.Format("{0} {1} {2}", camperData.NullSafe(c => c.Child.DocumentType.Name), camperData.NullSafe(c => c.Child.DocumentSeria), camperData.NullSafe(c => c.Child.DocumentNumber));
+						  <tr class="search-to-hide @(Extensions.NotNeedTicketColor(camper.Data.NotNeedTicketReasonId))">
+							  <td class="@(requestNum%2 == 0 ? "row-even" : "row-odd")">@ViewBag.CamperNumForDisplay</td>
+							  @if (isFirstCamperRow)
+							  {
+								  isFirstCamperRow = false;
+								  <td rowspan="@request.Campers.Count" class="text-center wordbreak @(requestNum%2 == 0 ? "row-even" : "row-odd") not-searched-rn">@request.RequestNumber</td>
+							  }
+							  <td class="text-center wordbreak @(requestNum%2 == 0 ? "row-even" : "row-odd") searched-rn" style="display: none">@request.RequestNumber</td>
+							  <td>
+								  <div class="transport-info-fio camper-name">@Html.Raw(string.Join(" ", fio).FormatEx())</div>
+								  <div>
+									  <small>
+										  <i style="color: #666">Ребенок</i>
+									  </small>
+								  </div>
+								  <div>
+									  <small>
+										  <i style="color: #666">Дата рождения: @camperData.NullSafe(c => c.Child.DateOfBirth).FormatEx()</i>
+									  </small>
+								  </div>
+								  <div>
+									  <small>
+										  <i style="color: #666">@camperData.NullSafe(c => (bool?) c.Child.Male).FormatEx("-", "Мужской", "Женский")</i>
+									  </small>
+								  </div>
+								  <div>
+									  <small>
+										  <i style="color: #666">@document</i>
+									  </small>
+								  </div>
+							  </td>
+
+
+							  @if (!additionalRequest)
+							  {
+								  <td>
+									  <div class="transport-info-directory-flight form-group">
+										  <select class="form-control transport-info-directory-flight-select transport-info-directory-flight-select-for-hotels" autocomplete="off" @(!Model.IsEditable || camperData.NotNeedTicketReasonId.HasValue ? "disabled=disabled" : null) name="@Html.NameFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.DirectoryFlightsId)">
+											  <option data-need-placement="False">-- Не выбрано --</option>
+											  @if (Model.DirectoryFlights != null && Model.DirectoryFlights.Any())
+											  {
+												  foreach (var transport in Model.DirectoryFlights)
+												  {
+													  <option value="@transport.Id.ToString()" @(transport.Id == camperData.DirectoryFlightsId && !camperData.NotNeedTicketReasonId.HasValue ? "selected='selected'" : string.Empty) data-need-placement="@(transport.TypeOfTransportId == (long) TypeOfTransportEnum.Railway ? "True" : "False")">@(transport.GetName())</option>
+												  }
+											  }
+										  </select>
+									  </div>
+									  <div class="row transport-info-directory-placement  @(camperData.DirectoryFlights == null || camperData.DirectoryFlights.TypeOfTransportId != (long) TypeOfTransportEnum.Railway || camperData.NotNeedTicketReasonId.HasValue ? " hidden" : string.Empty)">
+										  <div class="transport-info-directory-wagon form-group   col-md-6">
+											  Вагон
+											  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.Wagon, new {@class = "form-control transport-info-directory-wagon-input"}).DisableIf(() => !Model.IsEditable || camperData.NotNeedTicketReasonId.HasValue)
+										  </div>
+										  <div class="transport-info-directory-placeNum form-group   col-md-6">
+											  Место
+											  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.PlaceNumber, new {@class = "form-control transport-info-directory-placenumber-input"}).DisableIf(() => !Model.IsEditable || camperData.NotNeedTicketReasonId.HasValue)
+										  </div>
+									  </div>
+									  @Html.HiddenFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.Id)
+								  </td>
+								  <td>
+									  <div class="input-group date datepicker-anytime">
+										  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.DateDeparture, new {@class = "form-control input-mask-date-anytime departure-date"}).DisableIf(() => !Model.IsEditable || camperData.NotNeedTicketReasonId.HasValue)
+										  <span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+									  </div>
+
+								  </td>
+								  <td>
+									  @if (Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicketReason))
+									  {
+										  @Html.DropDownListFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.NotNeedTicketReasonId, SelectListHelper.Create(Model.NotNeedTicketReasons, t => new SelectListItem {Value = t.Id.ToString(), Text = t.Name, Selected = Model.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.NotNeedTicketReasonId == t.Id}), new {@class = "form-control not-need-ticket-select not-need-ticket-child", data_id = camper.Data.Id}).DisableIf(() => !Model.IsEditable || isTransportFormed)
+									  }
+									  else
+									  {
+										  @Html.DisplayTextFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.NotNeedTicketReason.Name)
+									  }
+
+								  </td>
+							  }
+							  else
+							  {
+								  <td>
+									  <div class="transport-info-directory-flight form-group">
+										  <select class="form-control transport-info-directory-flight-select transport-info-directory-flight-select-for-hotels" autocomplete="off" @(!Model.IsEditable || camper.NotNeedTicket ? "disabled=disabled" : null) name="@Html.NameFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.DirectoryFlightsId)">
+											  <option data-need-placement="False">-- Не выбрано --</option>
+											  @if (Model.DirectoryFlights != null && Model.DirectoryFlights.Any())
+											  {
+												  foreach (var transport in Model.DirectoryFlights)
+												  {
+													  <option value="@transport.Id.ToString()" @(transport.Id == camperData.DirectoryFlightsId && !camperData.NotNeedTicketReasonId.HasValue ? "selected='selected'" : string.Empty) data-need-placement="@(transport.TypeOfTransportId == (long) TypeOfTransportEnum.Railway ? "True" : "False")">@(transport.GetName())</option>
+												  }
+											  }
+										  </select>
+									  </div>
+									  <div class="row transport-info-directory-placement  @(Model.NullSafe(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.DirectoryFlights.TypeOfTransportId != (long) TypeOfTransportEnum.Railway || camperData.NotNeedTicketReasonId.HasValue) ? " hidden" : string.Empty)">
+										  <div class="transport-info-directory-wagon form-group   col-md-6">
+											  Вагон
+											  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.Wagon, new {@class = "form-control transport-info-directory-wagon-input"}).DisableIf(() => !Model.IsEditable || camper.NotNeedTicket)
+										  </div>
+										  <div class="transport-info-directory-placeNum form-group   col-md-6">
+											  Место
+											  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.PlaceNumber, new {@class = "form-control transport-info-directory-placenumber-input"}).DisableIf(() => !Model.IsEditable || camper.NotNeedTicket)
+										  </div>
+									  </div>
+									  @Html.HiddenFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.Id)
+								  </td>
+								  <td>
+									  <div class="input-group date datepicker-anytime">
+										  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.DateDeparture, new {@class = "form-control input-mask-date-anytime departure-date"}).DisableIf(() => !Model.IsEditable || camper.NotNeedTicket)
+										  <span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+									  </div>
+
+								  </td>
+								  <td>
+									  @if (Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicketReason))
+									  {
+										  @Html.DropDownListFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.NotNeedTicketReasonId, SelectListHelper.Create(Model.NotNeedTicketReasons, t => new SelectListItem {Value = t.Id.ToString(), Text = t.Name, Selected = Model.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.NotNeedTicketReasonId == t.Id}), new {@class = "form-control not-need-ticket-select not-need-ticket-child", data_id = camper.Data.Id}).DisableIf(() => isTransportFormed)
+									  }
+									  else
+									  {
+										  @Html.DisplayTextFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.NotNeedTicketReason.Name)
+									  }
+
+								  </td>
+							  }
+						  </tr>
+					  }
+					  else if (camperData.TypeOfLinkPeopleId == (long) TypeOfLinkPeopleEnum.Attendant)
+					  {
+						  var fio = new List<string> {camperData.NullSafe(a => a.Applicant.LastName), camperData.NullSafe(a => a.Applicant.FirstName), camperData.NullSafe(a => a.Applicant.MiddleName)};
+						  var document = string.Format("{0} {1} {2}", camperData.NullSafe(c => c.Applicant.DocumentType.Name), camperData.NullSafe(c => c.Applicant.DocumentSeria), camperData.NullSafe(c => c.Applicant.DocumentNumber));
+						  <tr class="search-to-hide @Extensions.NotNeedTicketColor(camperData.NotNeedTicketReasonId)">
+							  <td class="@(requestNum%2 == 0 ? "row-even" : "row-odd")">@ViewBag.CamperNumForDisplay</td>
+							  @if (isFirstCamperRow)
+							  {
+								  isFirstCamperRow = false;
+
+								  <td rowspan="@request.Campers.Count" class="text-center wordbreak @(requestNum%2 == 0 ? "row-even" : "row-odd") not-searched-rn">@request.RequestNumber</td>
+							  }
+							  <td class="text-center wordbreak @(requestNum%2 == 0 ? "row-even" : "row-odd") searched-rn" style="display: none">@request.RequestNumber</td>
+							  <td>
+								  <div class="camper-name transport-info-fio">@Html.Raw(string.Join(" ", fio).FormatEx())</div>
+								  <div>
+									  <small>
+										  <i style="color: #666">Сопровождающий</i>
+									  </small>
+								  </div>
+								  <div>
+									  <small>
+										  <i style="color: #666">Дата рождения: @camperData.NullSafe(c => c.Applicant.DateOfBirth).FormatEx()</i>
+									  </small>
+								  </div>
+								  <div>
+									  <small>
+										  <i style="color: #666">@camperData.NullSafe(c => c.Applicant.Male).FormatEx("-", "Мужской", "Женский")</i>
+									  </small>
+								  </div>
+								  <div>
+									  <small>
+										  <i style="color: #666">@document</i>
+									  </small>
+								  </div>
+							  </td>
+
+
+							  @if (!additionalRequest)
+							  {
+								  <td>
+									  <div class="transport-info-directory-flight form-group">
+										  <select class="form-control transport-info-directory-flight-select transport-info-directory-flight-select-for-hotels" autocomplete="off" @(!Model.IsEditable || camperData.NotNeedTicketReasonId.HasValue ? "disabled=disabled" : null) name="@Html.NameFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.DirectoryFlightsId)">
+											  <option data-need-placement="False">-- Не выбрано --</option>
+											  @if (Model.DirectoryFlights != null && Model.DirectoryFlights.Any())
+											  {
+												  foreach (var transport in Model.DirectoryFlights)
+												  {
+													  <option value="@transport.Id.ToString()" @(transport.Id == camperData.DirectoryFlightsId && !camperData.NotNeedTicketReasonId.HasValue ? "selected='selected'" : string.Empty) data-need-placement="@(transport.TypeOfTransportId == (long) TypeOfTransportEnum.Railway ? "True" : "False")">@(transport.GetName())</option>
+												  }
+											  }
+										  </select>
+									  </div>
+
+									  <div class="row transport-info-directory-placement   @(camperData.DirectoryFlights == null || camperData.DirectoryFlights.TypeOfTransportId != (long) TypeOfTransportEnum.Railway || camperData.NotNeedTicketReasonId.HasValue ? " hidden" : string.Empty)">
+										  <div class="transport-info-directory-wagon form-group   col-md-6">
+											  Вагон
+											  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.Wagon, new {@class = "form-control transport-info-directory-wagon-input", value = camperData.Wagon}).DisableIf(() => !Model.IsEditable || camperData.NotNeedTicketReasonId.HasValue)
+										  </div>
+										  <div class="transport-info-directory-placeNum form-group   col-md-6">
+											  Место
+											  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.PlaceNumber, new {@class = "form-control transport-info-directory-placenumber-input", value = camperData.PlaceNumber}).DisableIf(() => !Model.IsEditable || camperData.NotNeedTicketReasonId.HasValue)
+										  </div>
+									  </div>
+									  @Html.HiddenFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.Id)
+								  </td>
+								  <td>
+									  <div class="input-group date datepicker-anytime">
+										  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.DateDeparture, new {@class = "form-control input-mask-date-anytime departure-date", value = camperData.DateDeparture}).DisableIf(() => !Model.IsEditable || camperData.NotNeedTicketReasonId.HasValue)
+										  <span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+									  </div>
+
+								  </td>
+								  <td>
+									  @if (Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicketReason))
+									  {
+										  @Html.DropDownListFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.NotNeedTicketReasonId, SelectListHelper.Create(Model.NotNeedTicketReasons, t => new SelectListItem {Value = t.Id.ToString(), Text = t.Name, Selected = camperData.NotNeedTicketReasonId == t.Id}), new {@class = "form-control not-need-ticket-select not-need-ticket-attendant", data_id = camper.Data.Id}).DisableIf(() => isTransportFormed)
+									  }
+									  else
+									  {
+										  @Html.DisplayTextFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].Campers[camperNum - 1].Data.NotNeedTicketReason.Name)
+									  }
+								  </td>
+							  }
+							  else
+							  {
+								  <td>
+									  <div class="transport-info-directory-flight form-group">
+										  <select class="form-control transport-info-directory-flight-select transport-info-directory-flight-select-for-hotels" autocomplete="off" @(!Model.IsEditable || camperData.NotNeedTicketReasonId.HasValue ? "disabled=disabled" : null) name="@Html.NameFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.DirectoryFlightsId)">
+											  <option data-need-placement="False">-- Не выбрано --</option>
+											  @if (Model.DirectoryFlights != null && Model.DirectoryFlights.Any())
+											  {
+												  foreach (var transport in Model.DirectoryFlights)
+												  {
+													  <option value="@transport.Id.ToString()" @(transport.Id == camperData.DirectoryFlightsId && !camperData.NotNeedTicketReasonId.HasValue ? "selected='selected'" : string.Empty) data-need-placement="@(transport.TypeOfTransportId == (long) TypeOfTransportEnum.Railway ? "True" : "False")">@(transport.GetName())</option>
+												  }
+											  }
+										  </select>
+									  </div>
+
+									  <div class="row transport-info-directory-placement   @(camperData.DirectoryFlights == null || camperData.DirectoryFlights.TypeOfTransportId != (long) TypeOfTransportEnum.Railway || camperData.NotNeedTicketReasonId.HasValue ? " hidden" : string.Empty)">
+										  <div class="transport-info-directory-wagon form-group   col-md-6">
+											  Вагон
+											  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.Wagon, new {@class = "form-control transport-info-directory-wagon-input", value = camperData.Wagon}).DisableIf(() => !Model.IsEditable || camperData.NotNeedTicketReasonId.HasValue)
+										  </div>
+										  <div class="transport-info-directory-placeNum form-group   col-md-6">
+											  Место
+											  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.PlaceNumber, new {@class = "form-control transport-info-directory-placenumber-input", value = camperData.PlaceNumber}).DisableIf(() => !Model.IsEditable || camperData.NotNeedTicketReasonId.HasValue)
+										  </div>
+									  </div>
+									  @Html.HiddenFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.Id)
+								  </td>
+
+								  <td>
+									  <div class="input-group date datepicker-anytime">
+										  @Html.TextBoxFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.DateDeparture, new {@class = "form-control input-mask-date-anytime departure-date", value = camperData.DateDeparture}).DisableIf(() => !Model.IsEditable || camperData.NotNeedTicketReasonId.HasValue)
+										  <span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+									  </div>
+
+								  </td>
+								  <td>
+									  @if (Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicketReason))
+									  {
+										  @Html.DropDownListFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.NotNeedTicketReasonId, SelectListHelper.Create(Model.NotNeedTicketReasons, t => new SelectListItem {Value = t.Id.ToString(), Text = t.Name, Selected = camperData.NotNeedTicketReasonId == t.Id}), new {@class = "form-control not-need-ticket-select not-need-ticket-attendant", data_id = camper.Data.Id}).DisableIf(() => isTransportFormed)
+									  }
+									  else
+									  {
+										  @Html.DisplayTextFor(m => m.TransportToHotels[hotelNum - 1].Requests[requestNum - 1].AdditionalPlacesModels[additionalRequestNum - 1].Campers[camperNum - 1].Data.NotNeedTicketReason.Name)
+									  }
+								  </td>
+							  }
+
+							  @if (isFirstCamperRow)
+							  {
+								  isFirstCamperRow = false;
+								  <td rowspan="@request.Campers.Count" class="text-center wordbreak white">@request.RequestNumber</td>
+							  }
+
+						  </tr>
+					  }
+					  else
+					  {
+						  continue;
+					  }
+
+					  camperNum++;
+					  ViewBag.CamperNumForDisplay++;
+				  }
+
+				  if (!additionalRequest && request.AdditionalPlacesModels != null)
+				  {
+					  var addReqNum = 1;
+					  foreach (var addReq in request.AdditionalPlacesModels)
+					  {
+						  @ShowRequest(addReq, requestNum, hotelNum, true, addReqNum)
+						  addReqNum++;
+					  }
+				  }
+			  }<table class="table table-bordered">
+				  <thead>
+				  <tr class="search-to-hide">
+					  <th width="2%"></th>
+					  <th width="10%">Номер заявления</th>
+					  <th>Отдыхающий</th>
+					  <th width="25%">Рейс</th>
+					  <th style="width: 160px">Дата отправления</th>
+					  <th width="25%">Причина отказа от билета</th>
+				  </tr>
+				  </thead>
+				  <tbody>
+
+				  @{
+					  var trOdd = true;
+					  var groupNum = 1;
+				  }
+				  @foreach (var request in hotel.Requests)
+				  {
+					  @ShowRequest(request, requestNum, hotelNum, false, 0)
+					  requestNum++;
+					  trOdd = !trOdd;
+				  }
+				  </tbody>
+			  </table>
+		  }
+		  </div>
+		  </div>
+		  </div>
+		  </div>
+		  </div>
+		  hotelNum++;
+	  }
+	  </div>
+	  </div>
+	  </div>
+	  </div>
+	  </div>
+  }

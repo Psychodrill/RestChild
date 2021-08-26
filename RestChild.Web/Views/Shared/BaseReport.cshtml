@@ -1,0 +1,323 @@
+﻿@using RestChild.Comon
+@model RestChild.Comon.ToExcel.BaseExcelTable
+@{
+	Layout = "~/Views/Shared/HtmlReport.cshtml";
+}
+
+@section scripts
+{
+	<script type="text/javascript" language="javascript">
+		$(function () {
+			var deltaHeight = 0;
+			var scrollWidth = getScrollbarWidth();
+
+			function setComponentSize() {
+				$('#mainDiv').height($(window).height() - deltaHeight);
+				setTimeout(function () {
+					$('#scrollDiv').css('height', $(window).height() - deltaHeight);
+					var width = $(window).width() - scrollWidth;
+					$('#scrollDiv').css('width', width);
+					$('#scrollDiv').css('max-width', width);
+					$('#scrollDiv').css('min-width', width);
+					$('#tblFc').css('height', $(window).height() - deltaHeight + $('#scrollDiv').scrollTop() - scrollWidth);
+					$('#tblHead').css('width', $(window).width() + $('#scrollDiv').scrollLeft() - 2 * scrollWidth);
+					$('#tblHead').css('max-width', $(window).width() + $('#scrollDiv').scrollLeft() - 2 * scrollWidth);
+					$('#tblHead').css('min-width', $(window).width() + $('#scrollDiv').scrollLeft() - 2 * scrollWidth);
+
+				}, 100);
+			};
+
+			$('#scrollDiv').css('width', $(window).width());
+
+			setTimeout(function () {
+				var tblHeader = $('#tblHead');
+				var tbl = $('#table');
+				var tblStatic = $('#tblStatic');
+				var tblFc = $('#tblFc');
+
+				var rsHeader = $('#tblHead thead tr');
+				var rsStatic = $('#tblStatic thead tr');
+				var rsTbl = $('#table thead tr');
+				var rsFc = $('#tblFc thead tr');
+
+				var maxWidth = 0;
+
+				for (var i = 0; i < rsHeader.length; i++) {
+					var rHeader = $(rsHeader[i]);
+					var rTbl = $(rsTbl[i]);
+					var rStatic = $(rsStatic[i]);
+					var rFc = $(rsFc[i]);
+					var rowHeight = rTbl.height();
+					rTbl.css('height', rowHeight);
+					rHeader.css('height', rowHeight);
+					rStatic.css('height', rowHeight);
+					rFc.css('height', rowHeight);
+
+					var hsHeader = rHeader.find('th');
+					var hsTbl = rTbl.find('th');
+					var hsStaic = rStatic.find('th');
+					var hsFc = rFc.find('th');
+					var curWidth = 0;
+					for (var j = 0; j < hsHeader.length; j++) {
+						var hHeader = $(hsHeader[j]);
+						var hTbl = $(hsTbl[j]);
+						var colWidth = hTbl.outerWidth() + 1;
+						hTbl.css('width', colWidth);
+						hTbl.css('max-width', colWidth);
+						hTbl.css('min-width', colWidth);
+						hHeader.css('width', colWidth);
+						hHeader.css('max-width', colWidth);
+						hHeader.css('min-width', colWidth);
+						if (hsStaic.length > j) {
+							$(hsStaic[j]).css('width', colWidth);
+							$(hsStaic[j]).css('max-width', colWidth);
+							$(hsStaic[j]).css('min-width', colWidth);
+						}
+						if (hsFc.length > j) {
+							$(hsFc[j]).css('width', colWidth);
+							$(hsFc[j]).css('max-width', colWidth);
+							$(hsFc[j]).css('min-width', colWidth);
+							curWidth = curWidth + hTbl.outerWidth();
+						}
+					}
+
+					if (maxWidth < curWidth) {
+						maxWidth = curWidth;
+					}
+				}
+
+				function changeHeight(source, target) {
+					setTimeout(function () {
+						var height = source.clientHeight.toString() + 'px';
+						if (source.clientHeight !== target.clientHeight) {
+							source.style.height = height;
+							target.style.height = height;
+						}
+					}, 13);
+				}
+
+				@if (Model.FixedColumns > 0){
+			<text>
+				setTimeout(function () {
+					var rsB = $('#table tbody tr');
+					var rsBFc = $('#tblFc tbody tr');
+					for (var k = 0; k < rsB.length; k++) {
+						if (rsB[k].clientHeight) {
+							changeHeight(rsB[k], rsBFc[k]);
+						}
+					}
+				}, 50);
+				</text>
+		}
+
+				tbl.css('width', tbl.width());
+				tbl.css('max-width', tbl.width());
+				tbl.css('min-width', tbl.width());
+				tblHeader.css('width', tbl.width());
+				tblHeader.css('max-width', tbl.width());
+				tblHeader.css('min-width', tbl.width());
+				tblFc.find('table').css('width', maxWidth);
+				tblFc.find('table').css('max-width', maxWidth);
+				tblFc.find('table').css('min-width', maxWidth);
+				tblHeader.find('table').css('width', tbl.width());
+				tblHeader.find('table').css('max-width', tbl.width());
+				tblHeader.find('table').css('min-width', tbl.width());
+				tbl.addClass('main-table');
+
+				deltaHeight = ($('#scrollDiv').offset() ? $('#scrollDiv').offset().top : 0) + scrollWidth;
+				setComponentSize();
+				// отображаем таблицы
+				$('i').removeClass('icon-chevron-up');
+				$('i').removeClass('icon-chevron-down');
+				tblHeader.removeClass('hidden');
+				tblStatic.removeClass('hidden');
+				tblFc.removeClass('hidden');
+				$('table').css('table-layout', 'fixed');
+
+			}, 500);
+
+			$(window).resize(function () {
+				setComponentSize();
+			});
+
+			$('#scrollDiv').scroll(function () {
+				$('#tblHead').css('left', -$('#scrollDiv').scrollLeft());
+				$('#tblFc').css('top', -$('#scrollDiv').scrollTop());
+				$('#tblFc').css('height', $(window).height() - deltaHeight + $('#scrollDiv').scrollTop() - scrollWidth);
+				$('#tblHead').css('width', $(window).width() + $('#scrollDiv').scrollLeft() - 2 * scrollWidth);
+				$('#tblHead').css('max-width', $(window).width() + $('#scrollDiv').scrollLeft() - 2 * scrollWidth);
+				$('#tblHead').css('min-width', $(window).width() + $('#scrollDiv').scrollLeft() - 2 * scrollWidth);
+			});
+		});
+	</script>
+}
+
+@if (Model.Data == null || !Model.Data.Any())
+{
+	<h4>Нет данных</h4>
+}
+else
+{
+<div id="mainDiv">
+	<div id="scrollDiv">
+		<table class="tblrpt" id="table">
+			<thead>
+				@if (Model.Header != null && Model.Header.Any())
+				{
+					foreach (var row in Model.Header)
+					{
+						<tr>
+							@foreach (var th in row)
+							{
+								@Html.Raw(th.GetTableHeadCellHtml())
+							}
+						</tr>
+					}
+				}
+				else
+				{
+					<tr>
+						@foreach (var column in Model.Columns)
+						{
+							<th>@column.Title</th>
+						}
+					</tr>
+				}
+			</thead>
+			<tbody>
+				@foreach (var data in Model.Data)
+				{
+					<tr class="@(data.GetClasses())" @Html.Raw(data.GetSortKeys())>
+						@foreach (var column in Model.Columns)
+						{
+							<td class="@(column.GetClasses()) @Html.Raw(data.Bold?"bold-text":string.Empty)">
+								@Html.Raw(column.GetValue(data).FormatEx(string.Empty))
+							</td>
+						}
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+	<div class="hidden" id="tblFc">
+		<table class="tblrpt">
+			<thead>
+				@if (Model.Header != null && Model.Header.Any())
+				{
+					foreach (var row in Model.Header)
+					{
+						<tr>
+							@foreach (var th in row)
+							{
+								if (th.Column > Model.FixedColumns || (th.Column + th.ColSpan) >= Model.FixedColumns)
+								{
+									break;
+								}
+								@Html.Raw(th.GetTableHeadCellHtml())
+							}
+						</tr>
+					}
+				}
+				else
+				{
+					var columnCount = 0;
+					<tr>
+						@foreach (var column in Model.Columns)
+						{
+							if (columnCount >= Model.FixedColumns)
+							{
+								break;
+							}
+							columnCount++;
+							<th>
+								@column.Title
+							</th>
+						}
+					</tr>
+				}
+			</thead>
+			<tbody>
+				@foreach (var data in Model.Data)
+				{
+					var columnCount = 0;
+					<tr class="@(data.GetClasses())" @Html.Raw(data.GetSortKeys())>
+						@foreach (var column in Model.Columns)
+						{
+							if (columnCount >= Model.FixedColumns)
+							{
+								break;
+							}
+							columnCount++;
+							<td class="@(column.GetClasses()) @Html.Raw(data.Bold?"bold-text":string.Empty)">
+								@Html.Raw(column.GetValue(data).FormatEx(string.Empty))
+							</td>
+						}
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+	<div class="tblrpt hidden" id="tblHead">
+		<table class="tblrpt">
+			<thead>
+				@if (Model.Header != null && Model.Header.Any())
+				{
+					foreach (var row in Model.Header)
+					{
+						<tr>
+							@foreach (var th in row)
+							{
+								@Html.Raw(th.GetTableHeadCellHtml())
+							}
+						</tr>
+					}
+				}
+				else
+				{
+					<tr>
+						@foreach (var column in Model.Columns)
+						{
+							<th>@column.Title</th>
+						}
+					</tr>
+				}
+			</thead>
+		</table>
+	</div>
+	<table class="tblrpt hidden" id="tblStatic">
+		<thead>
+			@if (Model.Header != null && Model.Header.Any())
+			{
+				foreach (var row in Model.Header)
+				{
+					<tr>
+						@foreach (var th in row)
+						{
+							if (th.Column > Model.FixedColumns || th.Column + th.ColSpan >= Model.FixedColumns)
+							{
+								break;
+							}
+							@Html.Raw(th.GetTableHeadCellHtml())
+						}
+					</tr>
+				}
+			}
+			else
+			{
+				var columnCount = 0;
+				<tr>
+					@foreach (var column in Model.Columns)
+					{
+						if (columnCount >= Model.FixedColumns)
+						{
+							break;
+						}
+						columnCount++;
+						<th>@column.Title</th>
+					}
+				</tr>
+			}
+		</thead>
+	</table>
+</div>
+}

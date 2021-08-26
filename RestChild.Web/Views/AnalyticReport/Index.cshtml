@@ -1,0 +1,242 @@
+﻿@using RestChild.Comon
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Extensions.Filter.AnalyticReportFilter
+
+@{
+    ViewBag.Title = "Аналитический отчет";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.ReportName</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <fieldset class="form-horizontal">
+            @using (Html.BeginForm("Generate", "AnalyticReport", FormMethod.Post, new { @class = "mainForm", autocomplete = "off", target = "_blank" }))
+            {
+                @Html.HiddenFor(m => m.ReportType)
+
+                <div class="form-group row">
+                    <label class="col-md-2 control-label text-right">Год кампании</label>
+                    <div class="col-md-4 form-group">
+                        @{
+                            var currentYear = DateTime.Now.Year.ToString();
+                            var selectedYear = Model.YearsOfRest.FirstOrDefault(i => i.Name == currentYear) ?? Model.YearsOfRest.OrderByDescending(i => i.Name).FirstOrDefault();
+                            var selectedYearName = selectedYear != null ? selectedYear.Name : string.Empty;
+                            Model.YearOfRest = selectedYearName;
+                            @Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.YearsOfRest.OrderBy(i => i.Name), "Id", "Name", selectedYear != null ? selectedYear.Id : 0), new { id = "yearOfRestSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.YearOfRest, new { id = "yearOfRest" })
+                        }
+                    </div>
+                    @if (Model.TypeOfRestVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Цель обращения</label>
+                        <div class="col-md-4 form-group">
+                            @Html.DropDownListFor(m => m.TypeOfRestId, SelectListHelper.Create(Model.TypeOfRests, c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
+                        </div>
+                    }
+
+                    @if (Model.TimeOfRestVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Время отдыха</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.TimeOfRestId, new { id = "timeOfRestSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.TimeOfRest, new { id = "timeOfRest" })
+                        </div>
+                    }
+
+                    @if (Model.VedomstvoVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">ОИВ</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.OrganizationId, new { id = "vedomstvoSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.Organization, new { id = "vedomstvoName" })
+                        </div>
+                    }
+                    @if (Model.AgencyVisibility)
+                    {
+
+                        <label class="col-md-2 control-label text-right">Учреждение</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.AgencyId, new { id = "agencySelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.Agency, new { id = "agencyName" })
+                        </div>
+                    }
+                    @if (Model.SupplierVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Исполнитель</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.SupplierId, new { id = "supplierSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.Supplier, new { id = "supplierName" })
+                        </div>
+                    }
+
+                    @if (Model.PlaceOfRestVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Регион</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.PlaceOfRestId, new { id = "placeOfRestSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.PlaceOfRest, new { id = "placeOfRestName" })
+                        </div>
+                    }
+
+                    @if (Model.HotelVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Место отдыха</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.HotelId, new { id = "hotelSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.HotelName, new { id = "hotelName" })
+                        </div>
+                    }
+
+                    @if (Model.DateStartVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Дата начала</label>
+                        <div class="form-inline col-md-4 form-group">
+                            <label class="control-label text-right input-label">с</label>
+                            <div class="input-group date datepicker-anytime">
+                                @Html.TextBoxFor(r => r.DateStartBegin, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.DateStartBegin).FormatEx(string.Empty, string.Empty) })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            <label class="control-label text-right input-label">по</label>
+                            <div class="input-group date datepicker-anytime">
+                                @Html.TextBoxFor(r => r.DateStartEnd, new { @class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.DateStartEnd).FormatEx(string.Empty, string.Empty) })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    }
+                    @if (Model.DateFormingVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Период</label>
+                        <div class="form-inline col-md-4 form-group">
+                            <label class="control-label text-right input-label">c</label>
+                            <div class="input-group date datepicker-anytime">
+                                @Html.TextBoxFor(r => r.DateFormingBegin, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.DateStartBegin).FormatEx(string.Empty, string.Empty) })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            <label class="control-label text-right input-label">по</label>
+                            <div class="input-group date datepicker-anytime">
+                                @Html.TextBoxFor(r => r.DateFormingEnd, new { @class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.DateStartEnd).FormatEx(string.Empty, string.Empty) })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    }
+                    @if (Model.YearOfBirthVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Год рождения</label>
+                        <div class="form-inline col-md-4 form-group">
+                            <label class="control-label text-right input-label">с</label>
+                            @Html.TextBoxFor(r => r.YearOfBirthDateBegin, new { @class = "form-control year-inputmask width-75", autocomplete = "off", @Value = Model.YearOfBirthDateBegin })
+                            <label class="control-label text-right input-label">по</label>
+                            @Html.TextBoxFor(r => r.YearOfBirthDateEnd, new { @class = "form-control year-inputmask width-75", autocomplete = "off", @Value = Model.YearOfBirthDateEnd })
+                        </div>
+                    }
+                    @if (Model.BenefitVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Категория льготы</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.BenefitTypeId, new { id = "benefitSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.BenefitType, new { id = "benefitName" })
+                        </div>
+                    }
+                    @if (Model.DistrictVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Административный округ</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.DistrictId, new { id = "districtSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.District, new { id = "districtName" })
+                        </div>
+                    }
+                    @if (Model.FlightNumberVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Номер рейса</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.FlightNumber, new { @class = "form-control", autocomplete = "off" })
+                        </div>
+                    }
+                    @if (Model.DepartureVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Место отбытия</label>
+                        <div class="col-md-4 form-group">
+                            @Html.DropDownListFor(m => m.DepartureId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
+                        </div>
+                    }
+                    @if (Model.ArrivalVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Место прибытия</label>
+                        <div class="col-md-4 form-group">
+                            @Html.DropDownListFor(m => m.ArrivalId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
+                        </div>
+                    }
+                    @if (Model.TypeOfTransportVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Вид транспорта</label>
+                        <div class="col-md-4 form-group">
+                            @Html.DropDownListFor(m => m.TypeOfTransportId, SelectListHelper.Create(Model.TypeOfTransports, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
+                        </div>
+                    }
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-default btn-primary" type="submit" name="actionName" value="@AnalyticReportController.ShowActionName">Сформировать</button>
+                    <button class="btn btn-default" type="submit" name="actionName" value="@AnalyticReportController.ExportActionName">Выгрузить в Excel</button>
+                    @Html.ActionLink("Очистить", "Index", new { Model.ReportType }, new { @class = "btn btn-default" })
+                </div>
+            }
+        </fieldset>
+
+    </div>
+</div>
+
+@if (Model.Data != null)
+{
+    @Html.Partial("BaseReport", Model.Data, new ViewDataDictionary())
+    ;
+}
+
+@section Styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/ReportStyles.css")
+    <style type="text/css">
+        input.form-control.width-75 {
+            width: 75px
+        }
+
+        div.input-group.date.datepicker-anytime {
+            width: 140px
+        }
+    </style>
+}
+
+@section scripts{
+
+    <script type="text/javascript" src="~/Scripts/doT.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale('ru');
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/bundles/jqueryinputmask")
+    <script src="~/Scripts/Selectors/TimeOfRest.js"></script>
+    <script src="~/Scripts/Selectors/Agencies.js"></script>
+    <script src="~/Scripts/Selectors/OrgAndVedomstvo.js"></script>
+    <script src="~/Scripts/Selectors/Suppliers.js"></script>
+    <script src="~/Scripts/Selectors/PlacesOfRest.js"></script>
+    <script src="~/Scripts/Selectors/Hotels.js"></script>
+    <script src="~/Scripts/Selectors/Benefits.js"></script>
+    <script src="~/Scripts/Selectors/Districts.js"></script>
+    <script src="~/Scripts/Views/AnalyticReport.js"></script>
+}

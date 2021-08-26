@@ -1,0 +1,378 @@
+﻿@model RestChild.Web.Models.RequestViewModel
+@using RestChild.Comon
+
+@if (Model.SameChildren != null && Model.SameChildren.Any()) {
+	<text>
+		<div class="bg-danger panel-approve">
+			Найдены совпадения по фамилии, имени, отчеству, дата рождения, серии и номеру документа
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>ФИО</th>
+						<th>Дата рождения</th>
+						<th>Документ</th>
+						<th>СНИЛС</th>
+						<th>Заявление</th>
+						<th>Список</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var child in Model.SameChildren)
+					{
+						<tr>
+							<td>@child.LastName.FormatEx() @child.FirstName.FormatEx(String.Empty) @child.MiddleName.FormatEx(String.Empty)</td>
+							<td>@child.DateOfBirth.FormatEx()</td>
+							<td>
+								@child.NullSafe(d => d.DocumentType.Name).FormatEx(), @child.DocumentSeria.FormatEx() @child.DocumentNumber.FormatEx()
+							</td>
+							<td>
+								@child.Snils.FormatEx()
+							</td>
+							<td class="wordbreak">
+								@if (child != null && child.Request != null)
+								{
+									<a target="_blank" href="@Url.Action("RequestEdit", new {id = child.NullSafe(c => c.Request.Id)})">@child.NullSafe(c => c.Request.RequestNumber).FormatEx()</a>
+								}
+								else
+								{
+									<span>-</span>
+								}
+							</td>
+							<td>
+								@if (child != null && child.ChildListId.HasValue)
+								{
+									<a target="_blank" href="@Url.Action("ListOfChildsEdit", "Limits", new {id = child.NullSafe(c => c.ChildListId)})">@child.NullSafe(c => c.ChildList.Name).FormatEx()</a>
+								}
+								else
+								{
+									<span>-</span>
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</text>
+}
+
+@if (Model.ApplicantDouble != null && Model.ApplicantDouble.Any()) {
+	<text>
+		<div class="bg-danger panel-approve">
+			Найдены совпадения по СНИЛС заявителя в заявлениях на молодёжный отдых для лиц из числа детей-сирот и детей, оставшихся без попечения родителей, 18-23 лет
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>ФИО</th>
+						<th>СНИЛС</th>
+						<th>Заявление</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var request in Model.ApplicantDouble)
+					{
+						<tr>
+							<td>@request.Applicant.LastName.FormatEx() @request.Applicant.FirstName.FormatEx(String.Empty) @request.Applicant.MiddleName.FormatEx(String.Empty)</td>
+							<td>
+								@request.Applicant.Snils.FormatEx()
+							</td>
+							<td class="wordbreak">
+                                <a target="_blank" href="@Url.Action("RequestEdit", new {id = request.Id})">@request.RequestNumber.FormatEx()</a>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</text>
+}
+
+@if (Model.SimilarChildren != null && Model.SimilarChildren.Any()) {
+	<text>
+		<div class="bg-warning panel-approve">
+			Найдены совпадения по фамилии, имени и дате рождения
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>ФИО</th>
+						<th>Дата рождения</th>
+						<th>Документ</th>
+						<th>Заявление</th>
+						<th>Список</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var child in Model.SimilarChildren)
+					{
+						<tr>
+							<td>@child.LastName.FormatEx() @child.FirstName.FormatEx(String.Empty) @child.MiddleName.FormatEx(String.Empty)</td>
+							<td>@child.DateOfBirth.FormatEx()</td>
+							<td>
+								@child.NullSafe(d => d.DocumentType.Name).FormatEx(), @child.DocumentSeria.FormatEx() @child.DocumentNumber.FormatEx()
+							</td>
+							<td class="wordbreak">
+								@if (child != null && child.Request != null)
+								{
+									<a target="_blank" href="@Url.Action("RequestEdit", new {id = child.NullSafe(c => c.Request.Id)})">@child.NullSafe(c => c.Request.RequestNumber).FormatEx()</a>
+								}
+								else
+								{
+									<span>-</span>
+								}
+							</td>
+							<td>
+								@if (child != null && child.ChildListId.HasValue)
+								{
+									<a target="_blank" href="@Url.Action("ListOfChildsEdit", "Limits", new {id = child.NullSafe(c => c.ChildListId)})">@child.NullSafe(c => c.ChildList.Name).FormatEx()</a>
+								}
+								else
+								{
+									<span>-</span>
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</text>
+			}
+
+@if (Model.SameAttendantSnils != null && Model.SameAttendantSnils.Any())
+{
+    <div class="bg-danger panel-approve">
+        Найдены совпадения по номеру СНИЛС в сопровождающих: <span style="font-weight: bold">@string.Join(", ", Model.SameAttendantSnils)</span>.
+    </div>
+}
+
+@if (Model.SameAttendants != null && Model.SameAttendants.Any()) {
+    <text>
+        <div class="bg-danger panel-approve">
+            Найдены сопровождающие, с одинаковыми реквизитами документа удостоверяющего личность
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>ФИО</th>
+                    <th>Документ</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var attendant in Model.SameAttendants)
+                {
+                    <tr>
+                        <td>@attendant.LastName.FormatEx() @attendant.FirstName.FormatEx(String.Empty) @attendant.MiddleName.FormatEx(String.Empty)</td>
+                        <td>
+                            @attendant.NullSafe(d => d.DocumentType.Name).FormatEx(), @attendant.DocumentSeria.FormatEx() @attendant.DocumentNumber.FormatEx()
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </text>
+}
+
+@if (Model.CrossTimeAttendants != null && Model.CrossTimeAttendants.Any()) {
+	<text>
+		<div class="bg-warning panel-approve">
+			Найдены сопровождающие, зарегистрированные на отдых в то же время
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>ФИО</th>
+						<th>Документ</th>
+						<th>Заявление</th>
+						<th>Список</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var attendant in Model.CrossTimeAttendants)
+					{
+						<tr>
+							<td>@attendant.LastName.FormatEx() @attendant.FirstName.FormatEx(String.Empty) @attendant.MiddleName.FormatEx(String.Empty)</td>
+							<td>
+								@attendant.NullSafe(d => d.DocumentType.Name).FormatEx(), @attendant.DocumentSeria.FormatEx() @attendant.DocumentNumber.FormatEx()
+							</td>
+							<td class="wordbreak">
+								@if (attendant != null && attendant.Request != null)
+								{
+									<a target="_blank" href="@Url.Action("RequestEdit", new {id = attendant.NullSafe(c => c.Request.Id)})">@attendant.NullSafe(c => c.Request.RequestNumber).FormatEx()</a>
+								}
+								else
+								{
+									<span>-</span>
+								}
+							</td>
+							<td>
+								@if (attendant != null && attendant.ChildListId.HasValue)
+								{
+									<a target="_blank" href="@Url.Action("ListOfChildsEdit", "Limits", new {id = attendant.NullSafe(c => c.ChildListId)})">@attendant.NullSafe(c => c.ChildList.Name).FormatEx()</a>
+								}
+								else
+								{
+									<span>-</span>
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</text>
+}
+
+@if (Model.CrossTimeChilds != null && Model.CrossTimeChilds.Any()) {
+	<text>
+		<div class="bg-warning panel-approve">
+			Найдены дети, зарегистрированные на отдых в то же время
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>ФИО</th>
+						<th>Дата рождения</th>
+						<th>Документ</th>
+						<th>Заявление</th>
+						<th>Список</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var child in Model.CrossTimeChilds)
+					{
+						<tr>
+							<td>@child.LastName.FormatEx() @child.FirstName.FormatEx(String.Empty) @child.MiddleName.FormatEx(String.Empty)</td>
+							<td>@child.DateOfBirth.FormatEx()</td>
+							<td>
+								@child.NullSafe(d => d.DocumentType.Name).FormatEx(), @child.DocumentSeria.FormatEx() @child.DocumentNumber.FormatEx()
+							</td>
+							@if (child.RequestId.HasValue)
+							{
+								<td class="wordbreak"><a target="_blank" href="@Url.Action("RequestEdit", new { id = child.NullSafe(c => c.Request.Id) })">@child.NullSafe(c => c.Request.RequestNumber).FormatEx()</a></td>
+							}
+							else
+							{
+								<td>-</td>
+							}
+							@if (child.ChildListId.HasValue)
+							{
+								<td><a target="_blank" href="@Url.Action("ListOfChildsEdit", "Limits", new { id = child.NullSafe(c => c.ChildListId) })">@child.NullSafe(c => c.ChildList.Name).FormatEx()</a></td>
+							}
+							else
+							{
+								<td>-</td>
+							}
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</text>
+}
+
+@if (Model.BadAttendants != null && Model.BadAttendants.Any()) {
+	<text>
+		<div class="bg-info panel-approve">
+			Найдены сопровождающие, по которым возможно нужно отказать по пунктам 4.1, 4.2, 4.3 правил кампании
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>ФИО</th>
+						<th>Документ</th>
+						<th>Заявление</th>
+						<th>Список</th>
+						<th>Вид нарушения</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var attendant in Model.BadAttendants)
+					{
+						<tr>
+							<td>@attendant.LastName.FormatEx() @attendant.FirstName.FormatEx(String.Empty) @attendant.MiddleName.FormatEx(String.Empty)</td>
+							<td>
+								@attendant.NullSafe(d => d.DocumentType.Name).FormatEx(), @attendant.DocumentSeria.FormatEx() @attendant.DocumentNumber.FormatEx()
+							</td>
+							<td class="wordbreak">
+								@if (attendant != null && attendant.Request != null)
+								{
+								<a target="_blank" href="@Url.Action("RequestEdit", new {id = attendant.NullSafe(c => c.Request.Id)})">@attendant.NullSafe(c => c.Request.RequestNumber).FormatEx()</a>
+								}
+								else
+								{
+								<span>-</span>
+								}
+							</td>
+							<td>
+								@if (attendant != null && attendant.ChildListId.HasValue)
+								{
+									<a target="_blank" href="@Url.Action("ListOfChildsEdit", "Limits", new {id = attendant.NullSafe(c => c.ChildListId)})">@attendant.NullSafe(c => c.ChildList.Name).FormatEx()</a>
+								}
+								else
+								{
+									<span>-</span>
+								}
+							</td>
+							<td>
+								@if (attendant.TypeViolation != null)
+								{
+									<span>@attendant.TypeViolation.Name</span>
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</text>
+}
+@if (Model.BadChildren != null && Model.BadChildren.Any()) {
+	<text>
+		<div class="bg-info panel-approve">
+			Найдены дети, по которым возможно нужно отказать по пунктам 4.1, 4.2, 4.3 правил кампании
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>ФИО</th>
+						<th>Дата рождения</th>
+						<th>Документ</th>
+						<th>Заявление</th>
+						<th>Список</th>
+						<th>Вид нарушения</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var child in Model.BadChildren)
+					{
+						<tr>
+							<td>@child.LastName.FormatEx() @child.FirstName.FormatEx(String.Empty) @child.MiddleName.FormatEx(String.Empty)</td>
+							<td>@child.DateOfBirth.FormatEx()</td>
+							<td>
+								@child.NullSafe(d => d.DocumentType.Name).FormatEx(), @child.DocumentSeria.FormatEx() @child.DocumentNumber.FormatEx()
+							</td>
+							@if (child.RequestId.HasValue)
+							{
+								<td class="wordbreak"><a target="_blank" href="@Url.Action("RequestEdit", new { id = child.NullSafe(c => c.Request.Id) })">@child.NullSafe(c => c.Request.RequestNumber).FormatEx()</a></td>
+							}
+							else
+							{
+								<td>-</td>
+							}
+							@if (child.ChildListId.HasValue)
+							{
+								<td><a target="_blank" href="@Url.Action("ListOfChildsEdit", "Limits", new { id = child.NullSafe(c => c.ChildListId) })">@child.NullSafe(c => c.ChildList.Name).FormatEx()</a></td>
+							}
+							else
+							{
+								<td>-</td>
+							}
+							<td>
+								@if (child.TypeViolation != null)
+								{
+									<span>@child.TypeViolation.Name</span>
+								}
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</text>
+}

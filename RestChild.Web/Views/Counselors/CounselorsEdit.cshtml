@@ -1,0 +1,97 @@
+﻿@using System.Collections
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@model RestChild.Web.Models.CounselorsModel
+
+@{
+	ViewBag.Title = "Вожатый";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+	<div class="col-md-12">
+		<h2>Вожатый</h2>
+	</div>
+</div>
+
+<a href="@Url.Action("Search", "Counselors")">Вернуться</a>
+<div class="row">&nbsp;</div>
+
+@Html.Partial("Assets/_StatePanel", Model.State)
+
+<div class="row">
+	<div class="col-md-12">
+		@using (Html.BeginForm("Save", "Counselors", FormMethod.Post, new { enctype = "multipart/form-data", @id = "counselorForm" }))
+		{
+			@Html.AntiForgeryToken()
+			@Html.HiddenFor(m => m.Data.Id)
+			@Html.HiddenFor(m => m.Data.LinkedAccountId)
+			@Html.HiddenFor(m => m.Data.LastUpdateTick)
+			@Html.HiddenFor(m => m.Data.StateId)
+			@Html.HiddenFor(m => m.StateMachineActionString)
+			@Html.HiddenFor(m => m.Data.HistoryLinkId)
+			@Html.HiddenFor(m => m.ActiveTab)
+
+			if (!ViewData.ModelState.IsValid)
+			{
+				<div class="alert alert-danger" role="alert">
+					@Html.ValidationSummary(false)
+				</div>
+			}
+
+			<ul id="MainTabs" class="nav nav-tabs" role="tablist">
+				<li role="presentation" class="@(string.IsNullOrEmpty(Model.ActiveTab) || Model.ActiveTab == "CommonInfo" ? "active" : string.Empty)"><a href="#CommonInfo" role="tab" data-toggle="tab">Общая информация</a></li>
+				<li role="presentation" class="@(Model.ActiveTab == "Skills" ? "active" : string.Empty)"><a href="#Skills" aria-controls="profile" role="tab" data-toggle="tab">Навыки</a></li>
+			</ul>
+
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane @(string.IsNullOrEmpty(Model.ActiveTab) || Model.ActiveTab == "CommonInfo" ? "active" : string.Empty)" id="CommonInfo">
+					@Html.Partial("CounselorCommonInfo", Model)
+				</div>
+				<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "Skills" ? "active" : string.Empty)" id="Skills">
+					@Html.Partial("CounselorSkills", Model)
+				</div>
+			</div>
+		}
+	</div>
+</div>
+
+@Html.Partial("_ImageEditPartial")
+
+@section styles{
+	@Styles.Render("~/Content/css/select2.css")
+	@Styles.Render("~/Content/css/select2-bootstrap.css")
+	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+	@Styles.Render("~/Content/CounselorEdit.css")
+	<link href="~/Content/Vocabulary/VocabularyEdit.css" rel="stylesheet"/>
+}
+
+@section Scripts {
+	@Scripts.Render("~/Scripts/jquery.validate.min.js")
+	@Scripts.Render("~/Scripts/select2.min.js")
+	@Scripts.Render("~/Scripts/select2_locale_ru.js")
+	<script type="text/javascript" src="~/Scripts/moment.js"></script>
+	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+	<script type="text/javascript">
+		moment.locale('ru');
+	</script>
+	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+	@Scripts.Render("~/Scripts/doT.js")
+	@Scripts.Render("~/Scripts/Vocabulary/CounselorEdit.js")
+	@Scripts.Render("~/Scripts/StateScript.js")
+	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+	@Html.Partial("Assets/HistoryLinkTemplate")
+	@Html.Partial("CounselorCommonInfoTemplate")
+	@Scripts.Render("~/Scripts/jquery.Jcrop.min.js")
+	@Scripts.Render("~/Scripts/jquery.numeric.js")
+	@Scripts.Render("~/Scripts/Vocabulary/Vocabulary.js")
+	@Scripts.Render("~/Scripts/Selectors/PedParties.js")
+
+	<script type="text/javascript">
+		var MilitaryDutyReservist = '@((long)MilitaryDutyEnum.Reservist)';
+		var TypeOfEducationHigh = '@((long)TypeOfEducationEnum.High)';
+	</script>
+}

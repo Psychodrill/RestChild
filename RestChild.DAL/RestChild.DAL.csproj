@@ -1,0 +1,2108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4C7C2237-1CD7-477D-B930-C375295317D8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RestChild.DAL</RootNamespace>
+    <AssemblyName>RestChild.DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <Compile Include="Configurations\Configuration.AccessRight.cs" />
+    <Compile Include="Configurations\Configuration.ApplicantType.cs" />
+    <Compile Include="Configurations\Configuration.Beneficiaries.cs" />
+    <Compile Include="Configurations\Configuration.BenefitType.cs" />
+    <Compile Include="Configurations\Configuration.BenefitTypeERL.cs" />
+    <Compile Include="Configurations\Configuration.BoutJournalType.cs" />
+    <Compile Include="Configurations\Configuration.BtiDistrict.cs" />
+    <Compile Include="Configurations\Configuration.CategoryIncidents.cs" />
+    <Compile Include="Configurations\Configuration.cs" />
+    <Compile Include="Configurations\Configuration.DeclineReason.cs" />
+    <Compile Include="Configurations\Configuration.DocumentType.cs" />
+    <Compile Include="Configurations\Configuration.ExchangeBaseRegistryType.cs" />
+    <Compile Include="Configurations\Configuration.FileTypes.cs" />
+    <Compile Include="Configurations\Configuration.FormOfRest.cs" />
+    <Compile Include="Configurations\Configuration.MgtVisitBookingPersonType.cs" />
+    <Compile Include="Configurations\Configuration.MgtVisitBookingVisitStatus.cs" />
+    <Compile Include="Configurations\Configuration.MgtVisitTargets.cs" />
+    <Compile Include="Configurations\Configuration.MonitoringFinancialSource.cs" />
+    <Compile Include="Configurations\Configuration.NotNeedTicketReason.cs" />
+    <Compile Include="Configurations\Configuration.OrganizationCollaboratorPostType.cs" />
+    <Compile Include="Configurations\Configuration.PupilGroupVacationPeriod.cs" />
+    <Compile Include="Configurations\Configuration.Report.cs" />
+    <Compile Include="Configurations\Configuration.ReportSheet.cs" />
+    <Compile Include="Configurations\Configuration.ReportTable.cs" />
+    <Compile Include="Configurations\Configuration.ReportTableRow.cs" />
+    <Compile Include="Configurations\Configuration.RepresentInterest.cs" />
+    <Compile Include="Configurations\Configuration.RequestFileType.cs" />
+    <Compile Include="Configurations\Configuration.RequestStatusChainForMpgu.cs" />
+    <Compile Include="Configurations\Configuration.RestrictionGroup.cs" />
+    <Compile Include="Configurations\Configuration.SecurityJournalType.cs" />
+    <Compile Include="Configurations\Configuration.SecuritySettings.cs" />
+    <Compile Include="Configurations\Configuration.SmallLeisureSubtype.cs" />
+    <Compile Include="Configurations\Configuration.Source.cs" />
+    <Compile Include="Configurations\Configuration.StateMachine.cs" />
+    <Compile Include="Configurations\Configuration.StateMachineAction.cs" />
+    <Compile Include="Configurations\Configuration.StateMachineFromStatus.cs" />
+    <Compile Include="Configurations\Configuration.StateMachineState.cs" />
+    <Compile Include="Configurations\Configuration.Status.cs" />
+    <Compile Include="Configurations\Configuration.StatusAction.cs" />
+    <Compile Include="Configurations\Configuration.StatusByChild.cs" />
+    <Compile Include="Configurations\Configuration.TieColor.cs" />
+    <Compile Include="Configurations\Configuration.TradeUnionStatusByChild.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfCalculation.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfDrug.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfGroupCheck.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfLimitList.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfLinkPeople.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfRest.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfRestBenefitRestriction.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfRestERL.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfRestriction.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfService.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfTransfer.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfTransport.cs" />
+    <Compile Include="Configurations\Configuration.TypeRequestInformationVoucher.cs" />
+    <Compile Include="Configurations\Configuration.TypeViolation.cs" />
+    <Compile Include="Context.cs">
+      <DependentUpon>Context.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Migrations\201701251250433_Lok2017AgentMigration.cs" />
+    <Compile Include="Migrations\201701251250433_Lok2017AgentMigration.Designer.cs">
+      <DependentUpon>201701251250433_Lok2017AgentMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702011531289_Lok20174FlagInChainMigration.cs" />
+    <Compile Include="Migrations\201702011531289_Lok20174FlagInChainMigration.Designer.cs">
+      <DependentUpon>201702011531289_Lok20174FlagInChainMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702030954268_Lok20175ListOfChildsMigration.cs" />
+    <Compile Include="Migrations\201702030954268_Lok20175ListOfChildsMigration.Designer.cs">
+      <DependentUpon>201702030954268_Lok20175ListOfChildsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702141518471_Lok20176BankPropetysMigration.cs" />
+    <Compile Include="Migrations\201702141518471_Lok20176BankPropetysMigration.Designer.cs">
+      <DependentUpon>201702141518471_Lok20176BankPropetysMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702161021367_CertificateDateMigration.cs" />
+    <Compile Include="Migrations\201702161021367_CertificateDateMigration.Designer.cs">
+      <DependentUpon>201702161021367_CertificateDateMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702211508467_Lok20178ApplicantAddressMigration.cs" />
+    <Compile Include="Migrations\201702211508467_Lok20178ApplicantAddressMigration.Designer.cs">
+      <DependentUpon>201702211508467_Lok20178ApplicantAddressMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201702220946268_Lok20178StatusByChildMigration.cs" />
+    <Compile Include="Migrations\201702220946268_Lok20178StatusByChildMigration.Designer.cs">
+      <DependentUpon>201702220946268_Lok20178StatusByChildMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703061024361_Lok20179RankMigration.cs" />
+    <Compile Include="Migrations\201703061024361_Lok20179RankMigration.Designer.cs">
+      <DependentUpon>201703061024361_Lok20179RankMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703161416425_Lok201710RankingMigration.cs" />
+    <Compile Include="Migrations\201703161416425_Lok201710RankingMigration.Designer.cs">
+      <DependentUpon>201703161416425_Lok201710RankingMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703201033033_Lok201711RankDetailMigration.cs" />
+    <Compile Include="Migrations\201703201033033_Lok201711RankDetailMigration.Designer.cs">
+      <DependentUpon>201703201033033_Lok201711RankDetailMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705231201377_Lok2017ListOfChildMigration.cs" />
+    <Compile Include="Migrations\201705231201377_Lok2017ListOfChildMigration.Designer.cs">
+      <DependentUpon>201705231201377_Lok2017ListOfChildMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705300908441_Lok2017ListOfChildFamilyMigration.cs" />
+    <Compile Include="Migrations\201705300908441_Lok2017ListOfChildFamilyMigration.Designer.cs">
+      <DependentUpon>201705300908441_Lok2017ListOfChildFamilyMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706020947556_RepearedFlagMigration.cs" />
+    <Compile Include="Migrations\201706020947556_RepearedFlagMigration.Designer.cs">
+      <DependentUpon>201706020947556_RepearedFlagMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201709250813401_ExchangeBaseRegsitryControlFlagMigration.cs" />
+    <Compile Include="Migrations\201709250813401_ExchangeBaseRegsitryControlFlagMigration.Designer.cs">
+      <DependentUpon>201709250813401_ExchangeBaseRegsitryControlFlagMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710061158211_StatusChainEmailMigration.cs" />
+    <Compile Include="Migrations\201710061158211_StatusChainEmailMigration.Designer.cs">
+      <DependentUpon>201710061158211_StatusChainEmailMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710251351027_NotificationMigration.cs" />
+    <Compile Include="Migrations\201710251351027_NotificationMigration.Designer.cs">
+      <DependentUpon>201710251351027_NotificationMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808201338507_Lok2019Migration.cs" />
+    <Compile Include="Migrations\201808201338507_Lok2019Migration.Designer.cs">
+      <DependentUpon>201808201338507_Lok2019Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809271516508_Lok2019TourMigration.cs" />
+    <Compile Include="Migrations\201809271516508_Lok2019TourMigration.Designer.cs">
+      <DependentUpon>201809271516508_Lok2019TourMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201809281132183_SecurityLogMigration.cs" />
+    <Compile Include="Migrations\201809281132183_SecurityLogMigration.Designer.cs">
+      <DependentUpon>201809281132183_SecurityLogMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810050910417_SheduleBookingMigration.cs" />
+    <Compile Include="Migrations\201810050910417_SheduleBookingMigration.Designer.cs">
+      <DependentUpon>201810050910417_SheduleBookingMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810051428163_SheduleBookingStatusMigration.cs" />
+    <Compile Include="Migrations\201810051428163_SheduleBookingStatusMigration.Designer.cs">
+      <DependentUpon>201810051428163_SheduleBookingStatusMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201810120803154_IBAndScheduleBookingFixesMigration.cs" />
+    <Compile Include="Migrations\201810120803154_IBAndScheduleBookingFixesMigration.Designer.cs">
+      <DependentUpon>201810120803154_IBAndScheduleBookingFixesMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903131442185_BookingMosgorturOnlineQueueMigration.cs" />
+    <Compile Include="Migrations\201903131442185_BookingMosgorturOnlineQueueMigration.Designer.cs">
+      <DependentUpon>201903131442185_BookingMosgorturOnlineQueueMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903191539553_ERLIntegrationMigration.cs" />
+    <Compile Include="Migrations\201903191539553_ERLIntegrationMigration.Designer.cs">
+      <DependentUpon>201903191539553_ERLIntegrationMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905270935367_MPGUIntegrationMigration.cs" />
+    <Compile Include="Migrations\201905270935367_MPGUIntegrationMigration.Designer.cs">
+      <DependentUpon>201905270935367_MPGUIntegrationMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906241040175_FIASIntegrationMigration.cs" />
+    <Compile Include="Migrations\201906241040175_FIASIntegrationMigration.Designer.cs">
+      <DependentUpon>201906241040175_FIASIntegrationMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201907081319280_FixDbMigration.cs" />
+    <Compile Include="Migrations\201907081319280_FixDbMigration.Designer.cs">
+      <DependentUpon>201907081319280_FixDbMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201908271104152_Lok2019ToursUpdate.cs" />
+    <Compile Include="Migrations\201908271104152_Lok2019ToursUpdate.Designer.cs">
+      <DependentUpon>201908271104152_Lok2019ToursUpdate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909250849100_CshedIntegrationMigration.cs" />
+    <Compile Include="Migrations\201909250849100_CshedIntegrationMigration.Designer.cs">
+      <DependentUpon>201909250849100_CshedIntegrationMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910071618574_ExchangeUtsAccountMigration.cs" />
+    <Compile Include="Migrations\201910071618574_ExchangeUtsAccountMigration.Designer.cs">
+      <DependentUpon>201910071618574_ExchangeUtsAccountMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910091208576_ExchangeBrNeedSendMigration.cs" />
+    <Compile Include="Migrations\201910091208576_ExchangeBrNeedSendMigration.Designer.cs">
+      <DependentUpon>201910091208576_ExchangeBrNeedSendMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910230637083_UniqueMemberMigration.cs" />
+    <Compile Include="Migrations\201910230637083_UniqueMemberMigration.Designer.cs">
+      <DependentUpon>201910230637083_UniqueMemberMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910251549175_RestrictionGroupMigration.cs" />
+    <Compile Include="Migrations\201910251549175_RestrictionGroupMigration.Designer.cs">
+      <DependentUpon>201910251549175_RestrictionGroupMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911260720148_OrpphanBlockMigration.cs" />
+    <Compile Include="Migrations\201911260720148_OrpphanBlockMigration.Designer.cs">
+      <DependentUpon>201911260720148_OrpphanBlockMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911261523214_VisitBookingHistory.cs" />
+    <Compile Include="Migrations\201911261523214_VisitBookingHistory.Designer.cs">
+      <DependentUpon>201911261523214_VisitBookingHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912041408563_OrpphanBlockMigrationPupilGroup.cs" />
+    <Compile Include="Migrations\201912041408563_OrpphanBlockMigrationPupilGroup.Designer.cs">
+      <DependentUpon>201912041408563_OrpphanBlockMigrationPupilGroup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912251625019_OrpphanBlockMigrationPupilGroupLists.cs" />
+    <Compile Include="Migrations\201912251625019_OrpphanBlockMigrationPupilGroupLists.Designer.cs">
+      <DependentUpon>201912251625019_OrpphanBlockMigrationPupilGroupLists.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002111054379_PupilsDrugsAndCerificatesMigration.cs" />
+    <Compile Include="Migrations\202002111054379_PupilsDrugsAndCerificatesMigration.Designer.cs">
+      <DependentUpon>202002111054379_PupilsDrugsAndCerificatesMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002121445256_OrpphanBlockFormOfRestMigration.cs" />
+    <Compile Include="Migrations\202002121445256_OrpphanBlockFormOfRestMigration.Designer.cs">
+      <DependentUpon>202002121445256_OrpphanBlockFormOfRestMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002180916461_MGTIntegrationMigration.cs" />
+    <Compile Include="Migrations\202002180916461_MGTIntegrationMigration.Designer.cs">
+      <DependentUpon>202002180916461_MGTIntegrationMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002271244407_OrpphanBlockPupilDrugDoseFixMigration.cs" />
+    <Compile Include="Migrations\202002271244407_OrpphanBlockPupilDrugDoseFixMigration.Designer.cs">
+      <DependentUpon>202002271244407_OrpphanBlockPupilDrugDoseFixMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003301344101_ERLNewIterationMigration.cs" />
+    <Compile Include="Migrations\202003301344101_ERLNewIterationMigration.Designer.cs">
+      <DependentUpon>202003301344101_ERLNewIterationMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004131536441_ERL20200409UpdateMigration.cs" />
+    <Compile Include="Migrations\202004131536441_ERL20200409UpdateMigration.Designer.cs">
+      <DependentUpon>202004131536441_ERL20200409UpdateMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005251154113_Task95757Migration.cs" />
+    <Compile Include="Migrations\202005251154113_Task95757Migration.Designer.cs">
+      <DependentUpon>202005251154113_Task95757Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005261138045_Task95753Migration.cs" />
+    <Compile Include="Migrations\202005261138045_Task95753Migration.Designer.cs">
+      <DependentUpon>202005261138045_Task95753Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006031307507_Task96213Migration.cs" />
+    <Compile Include="Migrations\202006031307507_Task96213Migration.Designer.cs">
+      <DependentUpon>202006031307507_Task96213Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006040821440_Task96212Migration.cs" />
+    <Compile Include="Migrations\202006040821440_Task96212Migration.Designer.cs">
+      <DependentUpon>202006040821440_Task96212Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006081203392_Task97466Migration.cs" />
+    <Compile Include="Migrations\202006081203392_Task97466Migration.Designer.cs">
+      <DependentUpon>202006081203392_Task97466Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007030845177_ERLDBChangesMigration.cs" />
+    <Compile Include="Migrations\202007030845177_ERLDBChangesMigration.Designer.cs">
+      <DependentUpon>202007030845177_ERLDBChangesMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007291251034_Task103085And102087Migration.cs" />
+    <Compile Include="Migrations\202007291251034_Task103085And102087Migration.Designer.cs">
+      <DependentUpon>202007291251034_Task103085And102087Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009091346380_Release20200909Migration.cs" />
+    <Compile Include="Migrations\202009091346380_Release20200909Migration.Designer.cs">
+      <DependentUpon>202009091346380_Release20200909Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009100827425_Task105360Migration.cs" />
+    <Compile Include="Migrations\202009100827425_Task105360Migration.Designer.cs">
+      <DependentUpon>202009100827425_Task105360Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009100912309_Task105589Migration.cs" />
+    <Compile Include="Migrations\202009100912309_Task105589Migration.Designer.cs">
+      <DependentUpon>202009100912309_Task105589Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009230932467_Task99506Migration.cs" />
+    <Compile Include="Migrations\202009230932467_Task99506Migration.Designer.cs">
+      <DependentUpon>202009230932467_Task99506Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202009301309418_Task110112Migration.cs" />
+    <Compile Include="Migrations\202009301309418_Task110112Migration.Designer.cs">
+      <DependentUpon>202009301309418_Task110112Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011111728044_Task111806Migration.cs" />
+    <Compile Include="Migrations\202011111728044_Task111806Migration.Designer.cs">
+      <DependentUpon>202011111728044_Task111806Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011221434483_Task115934Migration.cs" />
+    <Compile Include="Migrations\202011221434483_Task115934Migration.Designer.cs">
+      <DependentUpon>202011221434483_Task115934Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202011301231332_Task115918Migration.cs" />
+    <Compile Include="Migrations\202011301231332_Task115918Migration.Designer.cs">
+      <DependentUpon>202011301231332_Task115918Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012011049005_Task115918_2Migration.cs" />
+    <Compile Include="Migrations\202012011049005_Task115918_2Migration.Designer.cs">
+      <DependentUpon>202012011049005_Task115918_2Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012011458392_Task115918_3Migration.cs" />
+    <Compile Include="Migrations\202012011458392_Task115918_3Migration.Designer.cs">
+      <DependentUpon>202012011458392_Task115918_3Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012021056355_Task115918_4Migration.cs" />
+    <Compile Include="Migrations\202012021056355_Task115918_4Migration.Designer.cs">
+      <DependentUpon>202012021056355_Task115918_4Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012031315349_Task115918_5Migration.cs" />
+    <Compile Include="Migrations\202012031315349_Task115918_5Migration.Designer.cs">
+      <DependentUpon>202012031315349_Task115918_5Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012041020026_Task115918_6Migration.cs" />
+    <Compile Include="Migrations\202012041020026_Task115918_6Migration.Designer.cs">
+      <DependentUpon>202012041020026_Task115918_6Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012141026423_Task118559Migration.cs" />
+    <Compile Include="Migrations\202012141026423_Task118559Migration.Designer.cs">
+      <DependentUpon>202012141026423_Task118559Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202012171552243_Task118961Migration.cs" />
+    <Compile Include="Migrations\202012171552243_Task118961Migration.Designer.cs">
+      <DependentUpon>202012171552243_Task118961Migration.cs</DependentUpon>
+    </Compile>
+    <None Include="Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Context.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RestChild.Comon\RestChild.Comon.csproj">
+      <Project>{4f2d7102-41a3-4a1a-86a7-b7bdd743de98}</Project>
+      <Name>RestChild.Comon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Domain\RestChild.Domain.csproj">
+      <Project>{2efdfafb-1b53-451a-be0e-2088dfff27c4}</Project>
+      <Name>RestChild.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AutoInstaller.cs" />
+    <Compile Include="Migrations\201411270915370_Initial.cs" />
+    <Compile Include="Migrations\201411270915370_Initial.Designer.cs">
+      <DependentUpon>201411270915370_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201411271104378_TypeOfRestTypesed.cs" />
+    <Compile Include="Migrations\201411271104378_TypeOfRestTypesed.Designer.cs">
+      <DependentUpon>201411271104378_TypeOfRestTypesed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201411271453307_NeedTypeOfRestriction.cs" />
+    <Compile Include="Migrations\201411271453307_NeedTypeOfRestriction.Designer.cs">
+      <DependentUpon>201411271453307_NeedTypeOfRestriction.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201411271519581_AgeCalc.cs" />
+    <Compile Include="Migrations\201411271519581_AgeCalc.Designer.cs">
+      <DependentUpon>201411271519581_AgeCalc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201411271550226_TypeOfRestBenefitRestriction.cs" />
+    <Compile Include="Migrations\201411271550226_TypeOfRestBenefitRestriction.Designer.cs">
+      <DependentUpon>201411271550226_TypeOfRestBenefitRestriction.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201411271732055_DocumentTypeForDifferent.cs" />
+    <Compile Include="Migrations\201411271732055_DocumentTypeForDifferent.Designer.cs">
+      <DependentUpon>201411271732055_DocumentTypeForDifferent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201411280815195_BenefitNeedApproveDocument.cs" />
+    <Compile Include="Migrations\201411280815195_BenefitNeedApproveDocument.Designer.cs">
+      <DependentUpon>201411280815195_BenefitNeedApproveDocument.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201411280953346_InteragencyRequestModel.cs" />
+    <Compile Include="Migrations\201411280953346_InteragencyRequestModel.Designer.cs">
+      <DependentUpon>201411280953346_InteragencyRequestModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412010743570_FailExchangeUts.cs" />
+    <Compile Include="Migrations\201412010743570_FailExchangeUts.Designer.cs">
+      <DependentUpon>201412010743570_FailExchangeUts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412011505080_SomeFields.cs" />
+    <Compile Include="Migrations\201412011505080_SomeFields.Designer.cs">
+      <DependentUpon>201412011505080_SomeFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412021017567_ChangeAttendantToApplicant.cs" />
+    <Compile Include="Migrations\201412021017567_ChangeAttendantToApplicant.Designer.cs">
+      <DependentUpon>201412021017567_ChangeAttendantToApplicant.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412021235395_ExtendAnalytics.cs" />
+    <Compile Include="Migrations\201412021235395_ExtendAnalytics.Designer.cs">
+      <DependentUpon>201412021235395_ExtendAnalytics.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412021726321_BenefitTypeToRequest.cs" />
+    <Compile Include="Migrations\201412021726321_BenefitTypeToRequest.Designer.cs">
+      <DependentUpon>201412021726321_BenefitTypeToRequest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412031021097_BenefitTypeToIntegracyRequest.cs" />
+    <Compile Include="Migrations\201412031021097_BenefitTypeToIntegracyRequest.Designer.cs">
+      <DependentUpon>201412031021097_BenefitTypeToIntegracyRequest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412031327253_BenefitTypeToIntegracyRequest2.cs" />
+    <Compile Include="Migrations\201412031327253_BenefitTypeToIntegracyRequest2.Designer.cs">
+      <DependentUpon>201412031327253_BenefitTypeToIntegracyRequest2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412040719080_DeclineReasonFlags.cs" />
+    <Compile Include="Migrations\201412040719080_DeclineReasonFlags.Designer.cs">
+      <DependentUpon>201412040719080_DeclineReasonFlags.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412051404242_FileToRequest.cs" />
+    <Compile Include="Migrations\201412051404242_FileToRequest.Designer.cs">
+      <DependentUpon>201412051404242_FileToRequest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412081725491_AddRegistryNumberAnChilds.cs" />
+    <Compile Include="Migrations\201412081725491_AddRegistryNumberAnChilds.Designer.cs">
+      <DependentUpon>201412081725491_AddRegistryNumberAnChilds.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412091612584_NeedSmsEmailAdd.cs" />
+    <Compile Include="Migrations\201412091612584_NeedSmsEmailAdd.Designer.cs">
+      <DependentUpon>201412091612584_NeedSmsEmailAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412101325565_NewFeaturesInvalidAndOther.cs" />
+    <Compile Include="Migrations\201412101325565_NewFeaturesInvalidAndOther.Designer.cs">
+      <DependentUpon>201412101325565_NewFeaturesInvalidAndOther.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412101347493_FeaturesTimeRest.cs" />
+    <Compile Include="Migrations\201412101347493_FeaturesTimeRest.Designer.cs">
+      <DependentUpon>201412101347493_FeaturesTimeRest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412111102044_ProcessErrorMesages.cs" />
+    <Compile Include="Migrations\201412111102044_ProcessErrorMesages.Designer.cs">
+      <DependentUpon>201412111102044_ProcessErrorMesages.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412111531573_ExcludeDaysMigration.cs" />
+    <Compile Include="Migrations\201412111531573_ExcludeDaysMigration.Designer.cs">
+      <DependentUpon>201412111531573_ExcludeDaysMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412120914488_SmsAndEmailSend.cs" />
+    <Compile Include="Migrations\201412120914488_SmsAndEmailSend.Designer.cs">
+      <DependentUpon>201412120914488_SmsAndEmailSend.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412121008040_ChildAttendantKeyAndLast.cs" />
+    <Compile Include="Migrations\201412121008040_ChildAttendantKeyAndLast.Designer.cs">
+      <DependentUpon>201412121008040_ChildAttendantKeyAndLast.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412121040256_ChildAttendantDates.cs" />
+    <Compile Include="Migrations\201412121040256_ChildAttendantDates.Designer.cs">
+      <DependentUpon>201412121040256_ChildAttendantDates.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412151324212_AnalyticsRowTypeMigr.cs" />
+    <Compile Include="Migrations\201412151324212_AnalyticsRowTypeMigr.Designer.cs">
+      <DependentUpon>201412151324212_AnalyticsRowTypeMigr.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412151450359_ChangeStatusDate.cs" />
+    <Compile Include="Migrations\201412151450359_ChangeStatusDate.Designer.cs">
+      <DependentUpon>201412151450359_ChangeStatusDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412160821313_BenefitRequestDateAdd.cs" />
+    <Compile Include="Migrations\201412160821313_BenefitRequestDateAdd.Designer.cs">
+      <DependentUpon>201412160821313_BenefitRequestDateAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201412161435196_VocSinglePk.cs" />
+    <Compile Include="Migrations\201412161435196_VocSinglePk.Designer.cs">
+      <DependentUpon>201412161435196_VocSinglePk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201502181705171_LimitMigration.cs" />
+    <Compile Include="Migrations\201502181705171_LimitMigration.Designer.cs">
+      <DependentUpon>201502181705171_LimitMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201502191003552_OrganizationEntity.cs" />
+    <Compile Include="Migrations\201502191003552_OrganizationEntity.Designer.cs">
+      <DependentUpon>201502191003552_OrganizationEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201502201033233_AccountRightAndOrganization.cs" />
+    <Compile Include="Migrations\201502201033233_AccountRightAndOrganization.Designer.cs">
+      <DependentUpon>201502201033233_AccountRightAndOrganization.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201502201241317_AccountRightForOrganization.cs" />
+    <Compile Include="Migrations\201502201241317_AccountRightForOrganization.Designer.cs">
+      <DependentUpon>201502201241317_AccountRightForOrganization.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201502261350507_LimitsAndAllAllFirst.cs" />
+    <Compile Include="Migrations\201502261350507_LimitsAndAllAllFirst.Designer.cs">
+      <DependentUpon>201502261350507_LimitsAndAllAllFirst.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503031706388_bookingMigrationTables.cs" />
+    <Compile Include="Migrations\201503031706388_bookingMigrationTables.Designer.cs">
+      <DependentUpon>201503031706388_bookingMigrationTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503041041435_ChildListAndFilesMigration.cs" />
+    <Compile Include="Migrations\201503041041435_ChildListAndFilesMigration.Designer.cs">
+      <DependentUpon>201503041041435_ChildListAndFilesMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503041149049_PlacesAndFields.cs" />
+    <Compile Include="Migrations\201503041149049_PlacesAndFields.Designer.cs">
+      <DependentUpon>201503041149049_PlacesAndFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503050744104_YearsAndRequestToPlace.cs" />
+    <Compile Include="Migrations\201503050744104_YearsAndRequestToPlace.Designer.cs">
+      <DependentUpon>201503050744104_YearsAndRequestToPlace.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503051511425_StatusAndSignInfo.cs" />
+    <Compile Include="Migrations\201503051511425_StatusAndSignInfo.Designer.cs">
+      <DependentUpon>201503051511425_StatusAndSignInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503110946557_AddLimitOrganizationName.cs" />
+    <Compile Include="Migrations\201503110946557_AddLimitOrganizationName.Designer.cs">
+      <DependentUpon>201503110946557_AddLimitOrganizationName.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503111116469_AddNewPropertysMigration.cs" />
+    <Compile Include="Migrations\201503111116469_AddNewPropertysMigration.Designer.cs">
+      <DependentUpon>201503111116469_AddNewPropertysMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503111613077_NewFeaturesMigration.cs" />
+    <Compile Include="Migrations\201503111613077_NewFeaturesMigration.Designer.cs">
+      <DependentUpon>201503111613077_NewFeaturesMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503121232553_VocsUpdateMigration.cs" />
+    <Compile Include="Migrations\201503121232553_VocsUpdateMigration.Designer.cs">
+      <DependentUpon>201503121232553_VocsUpdateMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503121425155_UrlToRulesRestMigration.cs" />
+    <Compile Include="Migrations\201503121425155_UrlToRulesRestMigration.Designer.cs">
+      <DependentUpon>201503121425155_UrlToRulesRestMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503161501107_StateMachineMigration.cs" />
+    <Compile Include="Migrations\201503161501107_StateMachineMigration.Designer.cs">
+      <DependentUpon>201503161501107_StateMachineMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503161558492_StateMachineMigrationChange.cs" />
+    <Compile Include="Migrations\201503161558492_StateMachineMigrationChange.Designer.cs">
+      <DependentUpon>201503161558492_StateMachineMigrationChange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503181111338_HotelsTypeAndOther.cs" />
+    <Compile Include="Migrations\201503181111338_HotelsTypeAndOther.Designer.cs">
+      <DependentUpon>201503181111338_HotelsTypeAndOther.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503201523007_StateHotelTourAndOther.cs" />
+    <Compile Include="Migrations\201503201523007_StateHotelTourAndOther.Designer.cs">
+      <DependentUpon>201503201523007_StateHotelTourAndOther.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503231255369_ListOfChildRelationWithTour.cs" />
+    <Compile Include="Migrations\201503231255369_ListOfChildRelationWithTour.Designer.cs">
+      <DependentUpon>201503231255369_ListOfChildRelationWithTour.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503241045106_ListChildAndOther.cs" />
+    <Compile Include="Migrations\201503241045106_ListChildAndOther.Designer.cs">
+      <DependentUpon>201503241045106_ListChildAndOther.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503241334381_ListChildAndOtherNew.cs" />
+    <Compile Include="Migrations\201503241334381_ListChildAndOtherNew.Designer.cs">
+      <DependentUpon>201503241334381_ListChildAndOtherNew.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503241628222_TourPriceAdd.cs" />
+    <Compile Include="Migrations\201503241628222_TourPriceAdd.Designer.cs">
+      <DependentUpon>201503241628222_TourPriceAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503251414004_PaymentsFileds.cs" />
+    <Compile Include="Migrations\201503251414004_PaymentsFileds.Designer.cs">
+      <DependentUpon>201503251414004_PaymentsFileds.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503251746452_PaymentsNew.cs" />
+    <Compile Include="Migrations\201503251746452_PaymentsNew.Designer.cs">
+      <DependentUpon>201503251746452_PaymentsNew.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503261242466_ContactPropertys.cs" />
+    <Compile Include="Migrations\201503261242466_ContactPropertys.Designer.cs">
+      <DependentUpon>201503261242466_ContactPropertys.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503261815114_HistoryLinkMigration.cs" />
+    <Compile Include="Migrations\201503261815114_HistoryLinkMigration.Designer.cs">
+      <DependentUpon>201503261815114_HistoryLinkMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503300954421_partysMigrationFirst.cs" />
+    <Compile Include="Migrations\201503300954421_partysMigrationFirst.Designer.cs">
+      <DependentUpon>201503300954421_partysMigrationFirst.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503301715440_OrganizationPhoneMigration.cs" />
+    <Compile Include="Migrations\201503301715440_OrganizationPhoneMigration.Designer.cs">
+      <DependentUpon>201503301715440_OrganizationPhoneMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503311154195_BookingNewFieldMigration.cs" />
+    <Compile Include="Migrations\201503311154195_BookingNewFieldMigration.Designer.cs">
+      <DependentUpon>201503311154195_BookingNewFieldMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503311258209_BookingNewFieldMigrationAndRel.cs" />
+    <Compile Include="Migrations\201503311258209_BookingNewFieldMigrationAndRel.Designer.cs">
+      <DependentUpon>201503311258209_BookingNewFieldMigrationAndRel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201503311313412_MiddleNameRel.cs" />
+    <Compile Include="Migrations\201503311313412_MiddleNameRel.Designer.cs">
+      <DependentUpon>201503311313412_MiddleNameRel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504011114219_CountAttendantAndCountApplicantInRequest.cs" />
+    <Compile Include="Migrations\201504011114219_CountAttendantAndCountApplicantInRequest.Designer.cs">
+      <DependentUpon>201504011114219_CountAttendantAndCountApplicantInRequest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504021823465_CounselorsAddMigration.cs" />
+    <Compile Include="Migrations\201504021823465_CounselorsAddMigration.Designer.cs">
+      <DependentUpon>201504021823465_CounselorsAddMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504031104569_RelationLimitsNewMigration.cs" />
+    <Compile Include="Migrations\201504031104569_RelationLimitsNewMigration.Designer.cs">
+      <DependentUpon>201504031104569_RelationLimitsNewMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504061419451_ContractAddMigration.cs" />
+    <Compile Include="Migrations\201504061419451_ContractAddMigration.Designer.cs">
+      <DependentUpon>201504061419451_ContractAddMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504071133492_ContractAddMigrationTour.cs" />
+    <Compile Include="Migrations\201504071133492_ContractAddMigrationTour.Designer.cs">
+      <DependentUpon>201504071133492_ContractAddMigrationTour.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504071218486_PlaceOfBirthMigration.cs" />
+    <Compile Include="Migrations\201504071218486_PlaceOfBirthMigration.Designer.cs">
+      <DependentUpon>201504071218486_PlaceOfBirthMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504071223322_PlaceOfBirthMigration2.cs" />
+    <Compile Include="Migrations\201504071223322_PlaceOfBirthMigration2.Designer.cs">
+      <DependentUpon>201504071223322_PlaceOfBirthMigration2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504071546393_HistoryLinkHotels.cs" />
+    <Compile Include="Migrations\201504071546393_HistoryLinkHotels.Designer.cs">
+      <DependentUpon>201504071546393_HistoryLinkHotels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504080957165_ContactHotelPersonsMigration.cs" />
+    <Compile Include="Migrations\201504080957165_ContactHotelPersonsMigration.Designer.cs">
+      <DependentUpon>201504080957165_ContactHotelPersonsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504081657417_BoutsMigration.cs" />
+    <Compile Include="Migrations\201504081657417_BoutsMigration.Designer.cs">
+      <DependentUpon>201504081657417_BoutsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504091132517_ReleaseBookingMigration.cs" />
+    <Compile Include="Migrations\201504091132517_ReleaseBookingMigration.Designer.cs">
+      <DependentUpon>201504091132517_ReleaseBookingMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504091528209_PartysMigration.cs" />
+    <Compile Include="Migrations\201504091528209_PartysMigration.Designer.cs">
+      <DependentUpon>201504091528209_PartysMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504091758488_NotRequaredTourNameMigration.cs" />
+    <Compile Include="Migrations\201504091758488_NotRequaredTourNameMigration.Designer.cs">
+      <DependentUpon>201504091758488_NotRequaredTourNameMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504141257059_PaidFlagMigration.cs" />
+    <Compile Include="Migrations\201504141257059_PaidFlagMigration.Designer.cs">
+      <DependentUpon>201504141257059_PaidFlagMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504141627161_PartyNumberMigration.cs" />
+    <Compile Include="Migrations\201504141627161_PartyNumberMigration.Designer.cs">
+      <DependentUpon>201504141627161_PartyNumberMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504151154530_BoatNewMigration.cs" />
+    <Compile Include="Migrations\201504151154530_BoatNewMigration.Designer.cs">
+      <DependentUpon>201504151154530_BoatNewMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504151437592_CertificateNumberMigration.cs" />
+    <Compile Include="Migrations\201504151437592_CertificateNumberMigration.Designer.cs">
+      <DependentUpon>201504151437592_CertificateNumberMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504161041526_PositionAccountMigration.cs" />
+    <Compile Include="Migrations\201504161041526_PositionAccountMigration.Designer.cs">
+      <DependentUpon>201504161041526_PositionAccountMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504161658023_RequestFileMigration.cs" />
+    <Compile Include="Migrations\201504161658023_RequestFileMigration.Designer.cs">
+      <DependentUpon>201504161658023_RequestFileMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504171021017_AdministratorIdentityMigration.cs" />
+    <Compile Include="Migrations\201504171021017_AdministratorIdentityMigration.Designer.cs">
+      <DependentUpon>201504171021017_AdministratorIdentityMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504171657403_GroupTypeRestForDoubleMigration.cs" />
+    <Compile Include="Migrations\201504171657403_GroupTypeRestForDoubleMigration.Designer.cs">
+      <DependentUpon>201504171657403_GroupTypeRestForDoubleMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504211218267_HotelAddonFieldMigration.cs" />
+    <Compile Include="Migrations\201504211218267_HotelAddonFieldMigration.Designer.cs">
+      <DependentUpon>201504211218267_HotelAddonFieldMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504211254476_HotelOrganizationMigration.cs" />
+    <Compile Include="Migrations\201504211254476_HotelOrganizationMigration.Designer.cs">
+      <DependentUpon>201504211254476_HotelOrganizationMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504211703085_YearOfRestInBoutMigration.cs" />
+    <Compile Include="Migrations\201504211703085_YearOfRestInBoutMigration.Designer.cs">
+      <DependentUpon>201504211703085_YearOfRestInBoutMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504221010339_YearOfRestBoat.cs" />
+    <Compile Include="Migrations\201504221010339_YearOfRestBoat.Designer.cs">
+      <DependentUpon>201504221010339_YearOfRestBoat.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504221116397_LinkBoatToChildAndApplication.cs" />
+    <Compile Include="Migrations\201504221116397_LinkBoatToChildAndApplication.Designer.cs">
+      <DependentUpon>201504221116397_LinkBoatToChildAndApplication.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504221504086_ReportTablesAndContractMigration.cs" />
+    <Compile Include="Migrations\201504221504086_ReportTablesAndContractMigration.Designer.cs">
+      <DependentUpon>201504221504086_ReportTablesAndContractMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504231243166_ReportCascadeDeleteMigration.cs" />
+    <Compile Include="Migrations\201504231243166_ReportCascadeDeleteMigration.Designer.cs">
+      <DependentUpon>201504231243166_ReportCascadeDeleteMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504241534367_ReportsAndDescriptionMigration.cs" />
+    <Compile Include="Migrations\201504241534367_ReportsAndDescriptionMigration.Designer.cs">
+      <DependentUpon>201504241534367_ReportsAndDescriptionMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504271314316_OrganizationInIntegracyRequest.cs" />
+    <Compile Include="Migrations\201504271314316_OrganizationInIntegracyRequest.Designer.cs">
+      <DependentUpon>201504271314316_OrganizationInIntegracyRequest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504291510387_ReportNewFieldAndIntegracyRequest.cs" />
+    <Compile Include="Migrations\201504291510387_ReportNewFieldAndIntegracyRequest.Designer.cs">
+      <DependentUpon>201504291510387_ReportNewFieldAndIntegracyRequest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201504291627133_AddAllRegionFlagMigration.cs" />
+    <Compile Include="Migrations\201504291627133_AddAllRegionFlagMigration.Designer.cs">
+      <DependentUpon>201504291627133_AddAllRegionFlagMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505051329523_TransportFirstMigration.cs" />
+    <Compile Include="Migrations\201505051329523_TransportFirstMigration.Designer.cs">
+      <DependentUpon>201505051329523_TransportFirstMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505061337228_AddBoutToLinkToPeople.cs" />
+    <Compile Include="Migrations\201505061337228_AddBoutToLinkToPeople.Designer.cs">
+      <DependentUpon>201505061337228_AddBoutToLinkToPeople.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505061507496_IncludedInTransportMigration.cs" />
+    <Compile Include="Migrations\201505061507496_IncludedInTransportMigration.Designer.cs">
+      <DependentUpon>201505061507496_IncludedInTransportMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505071028203_PlaceOfBirthMigration1.cs" />
+    <Compile Include="Migrations\201505071028203_PlaceOfBirthMigration1.Designer.cs">
+      <DependentUpon>201505071028203_PlaceOfBirthMigration1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505140921233_CommercialMigration.cs" />
+    <Compile Include="Migrations\201505140921233_CommercialMigration.Designer.cs">
+      <DependentUpon>201505140921233_CommercialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505151146063_ComerciaclPaymentRequest.cs" />
+    <Compile Include="Migrations\201505151146063_ComerciaclPaymentRequest.Designer.cs">
+      <DependentUpon>201505151146063_ComerciaclPaymentRequest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505151152454_TypeOfRestNeedPrice.cs" />
+    <Compile Include="Migrations\201505151152454_TypeOfRestNeedPrice.Designer.cs">
+      <DependentUpon>201505151152454_TypeOfRestNeedPrice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505221327410_NotComeInPlaceOfRestMigration.cs" />
+    <Compile Include="Migrations\201505221327410_NotComeInPlaceOfRestMigration.Designer.cs">
+      <DependentUpon>201505221327410_NotComeInPlaceOfRestMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505291306138_NotNeedReasonMigratgion.cs" />
+    <Compile Include="Migrations\201505291306138_NotNeedReasonMigratgion.Designer.cs">
+      <DependentUpon>201505291306138_NotNeedReasonMigratgion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506011048544_PhotoInAddonServiceMigration.cs" />
+    <Compile Include="Migrations\201506011048544_PhotoInAddonServiceMigration.Designer.cs">
+      <DependentUpon>201506011048544_PhotoInAddonServiceMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506011607363_StateAddServiceMigration.cs" />
+    <Compile Include="Migrations\201506011607363_StateAddServiceMigration.Designer.cs">
+      <DependentUpon>201506011607363_StateAddServiceMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506021526509_LinkToChildAndApplicantAddService.cs" />
+    <Compile Include="Migrations\201506021526509_LinkToChildAndApplicantAddService.Designer.cs">
+      <DependentUpon>201506021526509_LinkToChildAndApplicantAddService.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506030957497_PaymentAndCalculation.cs" />
+    <Compile Include="Migrations\201506030957497_PaymentAndCalculation.Designer.cs">
+      <DependentUpon>201506030957497_PaymentAndCalculation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506031627168_TicketMigration.cs" />
+    <Compile Include="Migrations\201506031627168_TicketMigration.Designer.cs">
+      <DependentUpon>201506031627168_TicketMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506041556102_PlacementTourMigration.cs" />
+    <Compile Include="Migrations\201506041556102_PlacementTourMigration.Designer.cs">
+      <DependentUpon>201506041556102_PlacementTourMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506101006075_LinkToPeopleDateDeparture.cs" />
+    <Compile Include="Migrations\201506101006075_LinkToPeopleDateDeparture.Designer.cs">
+      <DependentUpon>201506101006075_LinkToPeopleDateDeparture.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506151027179_TypeOfServiceMigration.cs" />
+    <Compile Include="Migrations\201506151027179_TypeOfServiceMigration.Designer.cs">
+      <DependentUpon>201506151027179_TypeOfServiceMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506151410291_SeriaNumberCertOfBirth.cs" />
+    <Compile Include="Migrations\201506151410291_SeriaNumberCertOfBirth.Designer.cs">
+      <DependentUpon>201506151410291_SeriaNumberCertOfBirth.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506161119424_TransportAndPlaceMigration.cs" />
+    <Compile Include="Migrations\201506161119424_TransportAndPlaceMigration.Designer.cs">
+      <DependentUpon>201506161119424_TransportAndPlaceMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506161402012_BoutMemoMigration.cs" />
+    <Compile Include="Migrations\201506161402012_BoutMemoMigration.Designer.cs">
+      <DependentUpon>201506161402012_BoutMemoMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506171013140_RequestLinksMigration.cs" />
+    <Compile Include="Migrations\201506171013140_RequestLinksMigration.Designer.cs">
+      <DependentUpon>201506171013140_RequestLinksMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506180904272_CalculationRefMigration.cs" />
+    <Compile Include="Migrations\201506180904272_CalculationRefMigration.Designer.cs">
+      <DependentUpon>201506180904272_CalculationRefMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506181243456_DatesInServicesMigration.cs" />
+    <Compile Include="Migrations\201506181243456_DatesInServicesMigration.Designer.cs">
+      <DependentUpon>201506181243456_DatesInServicesMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506241817088_LonLanAndOtherMigration.cs" />
+    <Compile Include="Migrations\201506241817088_LonLanAndOtherMigration.Designer.cs">
+      <DependentUpon>201506241817088_LonLanAndOtherMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506291606273_AddPhotosAndRatingMigration.cs" />
+    <Compile Include="Migrations\201506291606273_AddPhotosAndRatingMigration.Designer.cs">
+      <DependentUpon>201506291606273_AddPhotosAndRatingMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506301453157_AddFunctioningTypeAndHotelPlacement.cs" />
+    <Compile Include="Migrations\201506301453157_AddFunctioningTypeAndHotelPlacement.Designer.cs">
+      <DependentUpon>201506301453157_AddFunctioningTypeAndHotelPlacement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507061302552_ConcelarusAddonFieldsMigration.cs" />
+    <Compile Include="Migrations\201507061302552_ConcelarusAddonFieldsMigration.Designer.cs">
+      <DependentUpon>201507061302552_ConcelarusAddonFieldsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507071112471_ConcelarusTaskMigration.cs" />
+    <Compile Include="Migrations\201507071112471_ConcelarusTaskMigration.Designer.cs">
+      <DependentUpon>201507071112471_ConcelarusTaskMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507071136377_ConcelarusTaskNewMigration.cs" />
+    <Compile Include="Migrations\201507071136377_ConcelarusTaskNewMigration.Designer.cs">
+      <DependentUpon>201507071136377_ConcelarusTaskNewMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507071719435_ConcelarusTaskCommentaryMigration.cs" />
+    <Compile Include="Migrations\201507071719435_ConcelarusTaskCommentaryMigration.Designer.cs">
+      <DependentUpon>201507071719435_ConcelarusTaskCommentaryMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507081020548_ConcelarusTaskCommentaryAddonMigration.cs" />
+    <Compile Include="Migrations\201507081020548_ConcelarusTaskCommentaryAddonMigration.Designer.cs">
+      <DependentUpon>201507081020548_ConcelarusTaskCommentaryAddonMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507091427338_PasswordInAdministratorTourMigration.cs" />
+    <Compile Include="Migrations\201507091427338_PasswordInAdministratorTourMigration.Designer.cs">
+      <DependentUpon>201507091427338_PasswordInAdministratorTourMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507101342131_SkillNameMigration.cs" />
+    <Compile Include="Migrations\201507101342131_SkillNameMigration.Designer.cs">
+      <DependentUpon>201507101342131_SkillNameMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507101426114_RelBoutAndCouncelorsTasksMigration.cs" />
+    <Compile Include="Migrations\201507101426114_RelBoutAndCouncelorsTasksMigration.Designer.cs">
+      <DependentUpon>201507101426114_RelBoutAndCouncelorsTasksMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507201125516_BoutJournalMigration.cs" />
+    <Compile Include="Migrations\201507201125516_BoutJournalMigration.Designer.cs">
+      <DependentUpon>201507201125516_BoutJournalMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507221503561_CuratorFilesAndOtherMigration.cs" />
+    <Compile Include="Migrations\201507221503561_CuratorFilesAndOtherMigration.Designer.cs">
+      <DependentUpon>201507221503561_CuratorFilesAndOtherMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507281710200_BoutJournalFilesMigration.cs" />
+    <Compile Include="Migrations\201507281710200_BoutJournalFilesMigration.Designer.cs">
+      <DependentUpon>201507281710200_BoutJournalFilesMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201507301020393_JournalBoutActiveMigration.cs" />
+    <Compile Include="Migrations\201507301020393_JournalBoutActiveMigration.Designer.cs">
+      <DependentUpon>201507301020393_JournalBoutActiveMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508031125498_CounselorTrainingMigration.cs" />
+    <Compile Include="Migrations\201508031125498_CounselorTrainingMigration.Designer.cs">
+      <DependentUpon>201508031125498_CounselorTrainingMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508061505465_RequestInformationVaucherMigration.cs" />
+    <Compile Include="Migrations\201508061505465_RequestInformationVaucherMigration.Designer.cs">
+      <DependentUpon>201508061505465_RequestInformationVaucherMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508071642372_AttendantVaucherMigration.cs" />
+    <Compile Include="Migrations\201508071642372_AttendantVaucherMigration.Designer.cs">
+      <DependentUpon>201508071642372_AttendantVaucherMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508101630254_AmountInChildMigration.cs" />
+    <Compile Include="Migrations\201508101630254_AmountInChildMigration.Designer.cs">
+      <DependentUpon>201508101630254_AmountInChildMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508141027002_BoutTransportNewRelMigration.cs" />
+    <Compile Include="Migrations\201508141027002_BoutTransportNewRelMigration.Designer.cs">
+      <DependentUpon>201508141027002_BoutTransportNewRelMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508141354229_BoutAndTransportNewMemoMigration.cs" />
+    <Compile Include="Migrations\201508141354229_BoutAndTransportNewMemoMigration.Designer.cs">
+      <DependentUpon>201508141354229_BoutAndTransportNewMemoMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508171554143_TieColorRatingMigration.cs" />
+    <Compile Include="Migrations\201508171554143_TieColorRatingMigration.Designer.cs">
+      <DependentUpon>201508171554143_TieColorRatingMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508171603442_TieColorRating2Migration.cs" />
+    <Compile Include="Migrations\201508171603442_TieColorRating2Migration.Designer.cs">
+      <DependentUpon>201508171603442_TieColorRating2Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508241011050_CounselorsAndOtherMigration.cs" />
+    <Compile Include="Migrations\201508241011050_CounselorsAndOtherMigration.Designer.cs">
+      <DependentUpon>201508241011050_CounselorsAndOtherMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508241127083_DecimalPrecisionMigration.cs" />
+    <Compile Include="Migrations\201508241127083_DecimalPrecisionMigration.Designer.cs">
+      <DependentUpon>201508241127083_DecimalPrecisionMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508271255123_TourToProductMigration.cs" />
+    <Compile Include="Migrations\201508271255123_TourToProductMigration.Designer.cs">
+      <DependentUpon>201508271255123_TourToProductMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201508281218482_TourToProductSecondMigration.cs" />
+    <Compile Include="Migrations\201508281218482_TourToProductSecondMigration.Designer.cs">
+      <DependentUpon>201508281218482_TourToProductSecondMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511031802049_CounselorTests.cs" />
+    <Compile Include="Migrations\201511031802049_CounselorTests.Designer.cs">
+      <DependentUpon>201511031802049_CounselorTests.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511051648362_BoutJournalTypeAndOther.cs" />
+    <Compile Include="Migrations\201511051648362_BoutJournalTypeAndOther.Designer.cs">
+      <DependentUpon>201511051648362_BoutJournalTypeAndOther.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511061518154_PedPartyMigration.cs" />
+    <Compile Include="Migrations\201511061518154_PedPartyMigration.Designer.cs">
+      <DependentUpon>201511061518154_PedPartyMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511100806058_ContractRelationMigration.cs" />
+    <Compile Include="Migrations\201511100806058_ContractRelationMigration.Designer.cs">
+      <DependentUpon>201511100806058_ContractRelationMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511101112035_CounselorTestAddonFieldsMigration.cs" />
+    <Compile Include="Migrations\201511101112035_CounselorTestAddonFieldsMigration.Designer.cs">
+      <DependentUpon>201511101112035_CounselorTestAddonFieldsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511101222097_LimitRequestMigration.cs" />
+    <Compile Include="Migrations\201511101222097_LimitRequestMigration.Designer.cs">
+      <DependentUpon>201511101222097_LimitRequestMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511101344486_LastUpdateTickMigration.cs" />
+    <Compile Include="Migrations\201511101344486_LastUpdateTickMigration.Designer.cs">
+      <DependentUpon>201511101344486_LastUpdateTickMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511101641237_CounselorGroupTest.cs" />
+    <Compile Include="Migrations\201511101641237_CounselorGroupTest.Designer.cs">
+      <DependentUpon>201511101641237_CounselorGroupTest.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511131220540_CounselorTestDeletedMigration.cs" />
+    <Compile Include="Migrations\201511131220540_CounselorTestDeletedMigration.Designer.cs">
+      <DependentUpon>201511131220540_CounselorTestDeletedMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511171603100_TrainingCounselorsResultIsSuccessMirgation.cs" />
+    <Compile Include="Migrations\201511171603100_TrainingCounselorsResultIsSuccessMirgation.Designer.cs">
+      <DependentUpon>201511171603100_TrainingCounselorsResultIsSuccessMirgation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511231410359_ComercialPaymentAndPyerMigration.cs" />
+    <Compile Include="Migrations\201511231410359_ComercialPaymentAndPyerMigration.Designer.cs">
+      <DependentUpon>201511231410359_ComercialPaymentAndPyerMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511260858404_HistoryStateLinkMigration.cs" />
+    <Compile Include="Migrations\201511260858404_HistoryStateLinkMigration.Designer.cs">
+      <DependentUpon>201511260858404_HistoryStateLinkMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511261217563_RemoveTypeOfRoomFileMigration.cs" />
+    <Compile Include="Migrations\201511261217563_RemoveTypeOfRoomFileMigration.Designer.cs">
+      <DependentUpon>201511261217563_RemoveTypeOfRoomFileMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511261500464_SubjectOfRestClassFileMigration.cs" />
+    <Compile Include="Migrations\201511261500464_SubjectOfRestClassFileMigration.Designer.cs">
+      <DependentUpon>201511261500464_SubjectOfRestClassFileMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511270935251_CountErrorInTestMigration.cs" />
+    <Compile Include="Migrations\201511270935251_CountErrorInTestMigration.Designer.cs">
+      <DependentUpon>201511270935251_CountErrorInTestMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511301556147_SetDefaultBoutJournalFields.cs" />
+    <Compile Include="Migrations\201511301556147_SetDefaultBoutJournalFields.Designer.cs">
+      <DependentUpon>201511301556147_SetDefaultBoutJournalFields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512011004449_IncedentRelationMigration.cs" />
+    <Compile Include="Migrations\201512011004449_IncedentRelationMigration.Designer.cs">
+      <DependentUpon>201512011004449_IncedentRelationMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512031637599_EkisAndDopFieldMigration.cs" />
+    <Compile Include="Migrations\201512031637599_EkisAndDopFieldMigration.Designer.cs">
+      <DependentUpon>201512031637599_EkisAndDopFieldMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512070735172_IntegrationMigration.cs" />
+    <Compile Include="Migrations\201512070735172_IntegrationMigration.Designer.cs">
+      <DependentUpon>201512070735172_IntegrationMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512161439269_OrganizationFileldsMigration.cs" />
+    <Compile Include="Migrations\201512161439269_OrganizationFileldsMigration.Designer.cs">
+      <DependentUpon>201512161439269_OrganizationFileldsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601121521215_RequestCommercialMigration.cs" />
+    <Compile Include="Migrations\201601121521215_RequestCommercialMigration.Designer.cs">
+      <DependentUpon>201601121521215_RequestCommercialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601140925249_TicketDateDepartureMigration.cs" />
+    <Compile Include="Migrations\201601140925249_TicketDateDepartureMigration.Designer.cs">
+      <DependentUpon>201601140925249_TicketDateDepartureMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601141603153_AddonServiceToMultiHotelMigration.cs" />
+    <Compile Include="Migrations\201601141603153_AddonServiceToMultiHotelMigration.Designer.cs">
+      <DependentUpon>201601141603153_AddonServiceToMultiHotelMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601151430170_AddServicePropertysMigration.cs" />
+    <Compile Include="Migrations\201601151430170_AddServicePropertysMigration.Designer.cs">
+      <DependentUpon>201601151430170_AddServicePropertysMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601210931162_TourTransportMigration.cs" />
+    <Compile Include="Migrations\201601210931162_TourTransportMigration.Designer.cs">
+      <DependentUpon>201601210931162_TourTransportMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601220918512_AddApproveFlagOnRequestMigration.cs" />
+    <Compile Include="Migrations\201601220918512_AddApproveFlagOnRequestMigration.Designer.cs">
+      <DependentUpon>201601220918512_AddApproveFlagOnRequestMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601261241276_TypeOfRestMigration.cs" />
+    <Compile Include="Migrations\201601261241276_TypeOfRestMigration.Designer.cs">
+      <DependentUpon>201601261241276_TypeOfRestMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601291133587_ForCalculationFlagMigration.cs" />
+    <Compile Include="Migrations\201601291133587_ForCalculationFlagMigration.Designer.cs">
+      <DependentUpon>201601291133587_ForCalculationFlagMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602011124402_TypeOfRestHaveService.cs" />
+    <Compile Include="Migrations\201602011124402_TypeOfRestHaveService.Designer.cs">
+      <DependentUpon>201602011124402_TypeOfRestHaveService.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602021447401_BookingCommercialMigration.cs" />
+    <Compile Include="Migrations\201602021447401_BookingCommercialMigration.Designer.cs">
+      <DependentUpon>201602021447401_BookingCommercialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602041121431_RequestFileTypeCodeChedMigration.cs" />
+    <Compile Include="Migrations\201602041121431_RequestFileTypeCodeChedMigration.Designer.cs">
+      <DependentUpon>201602041121431_RequestFileTypeCodeChedMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602051145012_ServicePricesMigration.cs" />
+    <Compile Include="Migrations\201602051145012_ServicePricesMigration.Designer.cs">
+      <DependentUpon>201602051145012_ServicePricesMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602091753444_TagsMigration.cs" />
+    <Compile Include="Migrations\201602091753444_TagsMigration.Designer.cs">
+      <DependentUpon>201602091753444_TagsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602121444092_BlockPlacesMigration.cs" />
+    <Compile Include="Migrations\201602121444092_BlockPlacesMigration.Designer.cs">
+      <DependentUpon>201602121444092_BlockPlacesMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602171510026_TransportServiceParentMigration.cs" />
+    <Compile Include="Migrations\201602171510026_TransportServiceParentMigration.Designer.cs">
+      <DependentUpon>201602171510026_TransportServiceParentMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602191046368_ExchangeBaseRegistryComplite.cs" />
+    <Compile Include="Migrations\201602191046368_ExchangeBaseRegistryComplite.Designer.cs">
+      <DependentUpon>201602191046368_ExchangeBaseRegistryComplite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602241721399_CountryAndOtherInTourMigration.cs" />
+    <Compile Include="Migrations\201602241721399_CountryAndOtherInTourMigration.Designer.cs">
+      <DependentUpon>201602241721399_CountryAndOtherInTourMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602291123397_FlightNumberDirectionMigration.cs" />
+    <Compile Include="Migrations\201602291123397_FlightNumberDirectionMigration.Designer.cs">
+      <DependentUpon>201602291123397_FlightNumberDirectionMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603011800107_FlightNumberDirection2Migration.cs" />
+    <Compile Include="Migrations\201603011800107_FlightNumberDirection2Migration.Designer.cs">
+      <DependentUpon>201603011800107_FlightNumberDirection2Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603091056531_CountryOnTourMigration.cs" />
+    <Compile Include="Migrations\201603091056531_CountryOnTourMigration.Designer.cs">
+      <DependentUpon>201603091056531_CountryOnTourMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603111711396_OrganizationBankPropertyMigration.cs" />
+    <Compile Include="Migrations\201603111711396_OrganizationBankPropertyMigration.Designer.cs">
+      <DependentUpon>201603111711396_OrganizationBankPropertyMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603161546320_OrganizationFiledsAndUrlToRulesMigration.cs" />
+    <Compile Include="Migrations\201603161546320_OrganizationFiledsAndUrlToRulesMigration.Designer.cs">
+      <DependentUpon>201603161546320_OrganizationFiledsAndUrlToRulesMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603211051143_ContractAddonAgreementMigration.cs" />
+    <Compile Include="Migrations\201603211051143_ContractAddonAgreementMigration.Designer.cs">
+      <DependentUpon>201603211051143_ContractAddonAgreementMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603211322053_CommercialSourceMigration.cs" />
+    <Compile Include="Migrations\201603211322053_CommercialSourceMigration.Designer.cs">
+      <DependentUpon>201603211322053_CommercialSourceMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201603241421073_BadListChildApplicantMigration.cs" />
+    <Compile Include="Migrations\201603241421073_BadListChildApplicantMigration.Designer.cs">
+      <DependentUpon>201603241421073_BadListChildApplicantMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604110948140_ServiceRelationAndFieldsMigration.cs" />
+    <Compile Include="Migrations\201604110948140_ServiceRelationAndFieldsMigration.Designer.cs">
+      <DependentUpon>201604110948140_ServiceRelationAndFieldsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604141326157_UnionAndBoutPublishMigration.cs" />
+    <Compile Include="Migrations\201604141326157_UnionAndBoutPublishMigration.Designer.cs">
+      <DependentUpon>201604141326157_UnionAndBoutPublishMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604151315257_TradeUnionAddonFieldMigration.cs" />
+    <Compile Include="Migrations\201604151315257_TradeUnionAddonFieldMigration.Designer.cs">
+      <DependentUpon>201604151315257_TradeUnionAddonFieldMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604180754461_ExchangeBaseRegistryManualRequestMigration.cs" />
+    <Compile Include="Migrations\201604180754461_ExchangeBaseRegistryManualRequestMigration.Designer.cs">
+      <DependentUpon>201604180754461_ExchangeBaseRegistryManualRequestMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604181626185_AccessRightGroupMigration.cs" />
+    <Compile Include="Migrations\201604181626185_AccessRightGroupMigration.Designer.cs">
+      <DependentUpon>201604181626185_AccessRightGroupMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201604261345133_SchoolEkisMigration.cs" />
+    <Compile Include="Migrations\201604261345133_SchoolEkisMigration.Designer.cs">
+      <DependentUpon>201604261345133_SchoolEkisMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605051144192_TradeUnProfToChldMigration.cs" />
+    <Compile Include="Migrations\201605051144192_TradeUnProfToChldMigration.Designer.cs">
+      <DependentUpon>201605051144192_TradeUnProfToChldMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605061510018_NotForSiteMigration.cs" />
+    <Compile Include="Migrations\201605061510018_NotForSiteMigration.Designer.cs">
+      <DependentUpon>201605061510018_NotForSiteMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605101652228_EidMigration.cs" />
+    <Compile Include="Migrations\201605101652228_EidMigration.Designer.cs">
+      <DependentUpon>201605101652228_EidMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605131620239_MatrixOfPriceMigration.cs" />
+    <Compile Include="Migrations\201605131620239_MatrixOfPriceMigration.Designer.cs">
+      <DependentUpon>201605131620239_MatrixOfPriceMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605171622176_TradeUnionAddonFieldsMigration.cs" />
+    <Compile Include="Migrations\201605171622176_TradeUnionAddonFieldsMigration.Designer.cs">
+      <DependentUpon>201605171622176_TradeUnionAddonFieldsMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605190905041_DeletedRecordListMigration.cs" />
+    <Compile Include="Migrations\201605190905041_DeletedRecordListMigration.Designer.cs">
+      <DependentUpon>201605190905041_DeletedRecordListMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608181801308_IdentityAddressMigration.cs" />
+    <Compile Include="Migrations\201608181801308_IdentityAddressMigration.Designer.cs">
+      <DependentUpon>201608181801308_IdentityAddressMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612261424150_FirstRequestCompanyFieldsMigaration.cs" />
+    <Compile Include="Migrations\201612261424150_FirstRequestCompanyFieldsMigaration.Designer.cs">
+      <DependentUpon>201612261424150_FirstRequestCompanyFieldsMigaration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701180838102_AppicantCamperMigration.cs" />
+    <Compile Include="Migrations\201701180838102_AppicantCamperMigration.Designer.cs">
+      <DependentUpon>201701180838102_AppicantCamperMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701201322545_Lok2017Migration.cs" />
+    <Compile Include="Migrations\201701201322545_Lok2017Migration.Designer.cs">
+      <DependentUpon>201701201322545_Lok2017Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701230903014_Lok2017_1Migration.cs" />
+    <Compile Include="Migrations\201701230903014_Lok2017_1Migration.Designer.cs">
+      <DependentUpon>201701230903014_Lok2017_1Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701231248414_Lok20172Migration.cs" />
+    <Compile Include="Migrations\201701231248414_Lok20172Migration.Designer.cs">
+      <DependentUpon>201701231248414_Lok20172Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701231414277_Lok201703Migration.cs" />
+    <Compile Include="Migrations\201701231414277_Lok201703Migration.Designer.cs">
+      <DependentUpon>201701231414277_Lok201703Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="RepositoryExtensions\Repository.cs" />
+    <Compile Include="UnitOfWork.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Facilities.Logging">
+      <HintPath>..\packages\Castle.LoggingFacility.3.3.0\lib\net45\Castle.Facilities.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Logging.Log4netIntegration">
+      <HintPath>..\packages\Castle.Core-log4net.3.3.0\lib\net45\Castle.Services.Logging.Log4netIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201411270915370_Initial.resx">
+      <DependentUpon>201411270915370_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411271104378_TypeOfRestTypesed.resx">
+      <DependentUpon>201411271104378_TypeOfRestTypesed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411271453307_NeedTypeOfRestriction.resx">
+      <DependentUpon>201411271453307_NeedTypeOfRestriction.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411271519581_AgeCalc.resx">
+      <DependentUpon>201411271519581_AgeCalc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411271550226_TypeOfRestBenefitRestriction.resx">
+      <DependentUpon>201411271550226_TypeOfRestBenefitRestriction.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411271732055_DocumentTypeForDifferent.resx">
+      <DependentUpon>201411271732055_DocumentTypeForDifferent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411280815195_BenefitNeedApproveDocument.resx">
+      <DependentUpon>201411280815195_BenefitNeedApproveDocument.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201411280953346_InteragencyRequestModel.resx">
+      <DependentUpon>201411280953346_InteragencyRequestModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412010743570_FailExchangeUts.resx">
+      <DependentUpon>201412010743570_FailExchangeUts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412011505080_SomeFields.resx">
+      <DependentUpon>201412011505080_SomeFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412021017567_ChangeAttendantToApplicant.resx">
+      <DependentUpon>201412021017567_ChangeAttendantToApplicant.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412021235395_ExtendAnalytics.resx">
+      <DependentUpon>201412021235395_ExtendAnalytics.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412021726321_BenefitTypeToRequest.resx">
+      <DependentUpon>201412021726321_BenefitTypeToRequest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412031021097_BenefitTypeToIntegracyRequest.resx">
+      <DependentUpon>201412031021097_BenefitTypeToIntegracyRequest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412031327253_BenefitTypeToIntegracyRequest2.resx">
+      <DependentUpon>201412031327253_BenefitTypeToIntegracyRequest2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412040719080_DeclineReasonFlags.resx">
+      <DependentUpon>201412040719080_DeclineReasonFlags.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412051404242_FileToRequest.resx">
+      <DependentUpon>201412051404242_FileToRequest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412081725491_AddRegistryNumberAnChilds.resx">
+      <DependentUpon>201412081725491_AddRegistryNumberAnChilds.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412091612584_NeedSmsEmailAdd.resx">
+      <DependentUpon>201412091612584_NeedSmsEmailAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412101325565_NewFeaturesInvalidAndOther.resx">
+      <DependentUpon>201412101325565_NewFeaturesInvalidAndOther.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412101347493_FeaturesTimeRest.resx">
+      <DependentUpon>201412101347493_FeaturesTimeRest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412111102044_ProcessErrorMesages.resx">
+      <DependentUpon>201412111102044_ProcessErrorMesages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412111531573_ExcludeDaysMigration.resx">
+      <DependentUpon>201412111531573_ExcludeDaysMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412120914488_SmsAndEmailSend.resx">
+      <DependentUpon>201412120914488_SmsAndEmailSend.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412121008040_ChildAttendantKeyAndLast.resx">
+      <DependentUpon>201412121008040_ChildAttendantKeyAndLast.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412121040256_ChildAttendantDates.resx">
+      <DependentUpon>201412121040256_ChildAttendantDates.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412151324212_AnalyticsRowTypeMigr.resx">
+      <DependentUpon>201412151324212_AnalyticsRowTypeMigr.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412151450359_ChangeStatusDate.resx">
+      <DependentUpon>201412151450359_ChangeStatusDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412160821313_BenefitRequestDateAdd.resx">
+      <DependentUpon>201412160821313_BenefitRequestDateAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201412161435196_VocSinglePk.resx">
+      <DependentUpon>201412161435196_VocSinglePk.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502181705171_LimitMigration.resx">
+      <DependentUpon>201502181705171_LimitMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502191003552_OrganizationEntity.resx">
+      <DependentUpon>201502191003552_OrganizationEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502201033233_AccountRightAndOrganization.resx">
+      <DependentUpon>201502201033233_AccountRightAndOrganization.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502201241317_AccountRightForOrganization.resx">
+      <DependentUpon>201502201241317_AccountRightForOrganization.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201502261350507_LimitsAndAllAllFirst.resx">
+      <DependentUpon>201502261350507_LimitsAndAllAllFirst.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503031706388_bookingMigrationTables.resx">
+      <DependentUpon>201503031706388_bookingMigrationTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503041041435_ChildListAndFilesMigration.resx">
+      <DependentUpon>201503041041435_ChildListAndFilesMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503041149049_PlacesAndFields.resx">
+      <DependentUpon>201503041149049_PlacesAndFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503050744104_YearsAndRequestToPlace.resx">
+      <DependentUpon>201503050744104_YearsAndRequestToPlace.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503051511425_StatusAndSignInfo.resx">
+      <DependentUpon>201503051511425_StatusAndSignInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503110946557_AddLimitOrganizationName.resx">
+      <DependentUpon>201503110946557_AddLimitOrganizationName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503111116469_AddNewPropertysMigration.resx">
+      <DependentUpon>201503111116469_AddNewPropertysMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503111613077_NewFeaturesMigration.resx">
+      <DependentUpon>201503111613077_NewFeaturesMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503121232553_VocsUpdateMigration.resx">
+      <DependentUpon>201503121232553_VocsUpdateMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503121425155_UrlToRulesRestMigration.resx">
+      <DependentUpon>201503121425155_UrlToRulesRestMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503161501107_StateMachineMigration.resx">
+      <DependentUpon>201503161501107_StateMachineMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503161558492_StateMachineMigrationChange.resx">
+      <DependentUpon>201503161558492_StateMachineMigrationChange.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503181111338_HotelsTypeAndOther.resx">
+      <DependentUpon>201503181111338_HotelsTypeAndOther.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503201523007_StateHotelTourAndOther.resx">
+      <DependentUpon>201503201523007_StateHotelTourAndOther.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503231255369_ListOfChildRelationWithTour.resx">
+      <DependentUpon>201503231255369_ListOfChildRelationWithTour.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503241045106_ListChildAndOther.resx">
+      <DependentUpon>201503241045106_ListChildAndOther.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503241334381_ListChildAndOtherNew.resx">
+      <DependentUpon>201503241334381_ListChildAndOtherNew.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503241628222_TourPriceAdd.resx">
+      <DependentUpon>201503241628222_TourPriceAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503251414004_PaymentsFileds.resx">
+      <DependentUpon>201503251414004_PaymentsFileds.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503251746452_PaymentsNew.resx">
+      <DependentUpon>201503251746452_PaymentsNew.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503261242466_ContactPropertys.resx">
+      <DependentUpon>201503261242466_ContactPropertys.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503261815114_HistoryLinkMigration.resx">
+      <DependentUpon>201503261815114_HistoryLinkMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503300954421_partysMigrationFirst.resx">
+      <DependentUpon>201503300954421_partysMigrationFirst.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503301715440_OrganizationPhoneMigration.resx">
+      <DependentUpon>201503301715440_OrganizationPhoneMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503311154195_BookingNewFieldMigration.resx">
+      <DependentUpon>201503311154195_BookingNewFieldMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503311258209_BookingNewFieldMigrationAndRel.resx">
+      <DependentUpon>201503311258209_BookingNewFieldMigrationAndRel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201503311313412_MiddleNameRel.resx">
+      <DependentUpon>201503311313412_MiddleNameRel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504011114219_CountAttendantAndCountApplicantInRequest.resx">
+      <DependentUpon>201504011114219_CountAttendantAndCountApplicantInRequest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504021823465_CounselorsAddMigration.resx">
+      <DependentUpon>201504021823465_CounselorsAddMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504031104569_RelationLimitsNewMigration.resx">
+      <DependentUpon>201504031104569_RelationLimitsNewMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504061419451_ContractAddMigration.resx">
+      <DependentUpon>201504061419451_ContractAddMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504071133492_ContractAddMigrationTour.resx">
+      <DependentUpon>201504071133492_ContractAddMigrationTour.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504071218486_PlaceOfBirthMigration.resx">
+      <DependentUpon>201504071218486_PlaceOfBirthMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504071223322_PlaceOfBirthMigration2.resx">
+      <DependentUpon>201504071223322_PlaceOfBirthMigration2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504071546393_HistoryLinkHotels.resx">
+      <DependentUpon>201504071546393_HistoryLinkHotels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504080957165_ContactHotelPersonsMigration.resx">
+      <DependentUpon>201504080957165_ContactHotelPersonsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504081657417_BoutsMigration.resx">
+      <DependentUpon>201504081657417_BoutsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504091132517_ReleaseBookingMigration.resx">
+      <DependentUpon>201504091132517_ReleaseBookingMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504091528209_PartysMigration.resx">
+      <DependentUpon>201504091528209_PartysMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504091758488_NotRequaredTourNameMigration.resx">
+      <DependentUpon>201504091758488_NotRequaredTourNameMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504141257059_PaidFlagMigration.resx">
+      <DependentUpon>201504141257059_PaidFlagMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504141627161_PartyNumberMigration.resx">
+      <DependentUpon>201504141627161_PartyNumberMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504151154530_BoatNewMigration.resx">
+      <DependentUpon>201504151154530_BoatNewMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504151437592_CertificateNumberMigration.resx">
+      <DependentUpon>201504151437592_CertificateNumberMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504161041526_PositionAccountMigration.resx">
+      <DependentUpon>201504161041526_PositionAccountMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504161658023_RequestFileMigration.resx">
+      <DependentUpon>201504161658023_RequestFileMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504171021017_AdministratorIdentityMigration.resx">
+      <DependentUpon>201504171021017_AdministratorIdentityMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504171657403_GroupTypeRestForDoubleMigration.resx">
+      <DependentUpon>201504171657403_GroupTypeRestForDoubleMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504211218267_HotelAddonFieldMigration.resx">
+      <DependentUpon>201504211218267_HotelAddonFieldMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504211254476_HotelOrganizationMigration.resx">
+      <DependentUpon>201504211254476_HotelOrganizationMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504211703085_YearOfRestInBoutMigration.resx">
+      <DependentUpon>201504211703085_YearOfRestInBoutMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504221010339_YearOfRestBoat.resx">
+      <DependentUpon>201504221010339_YearOfRestBoat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504221116397_LinkBoatToChildAndApplication.resx">
+      <DependentUpon>201504221116397_LinkBoatToChildAndApplication.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504221504086_ReportTablesAndContractMigration.resx">
+      <DependentUpon>201504221504086_ReportTablesAndContractMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504231243166_ReportCascadeDeleteMigration.resx">
+      <DependentUpon>201504231243166_ReportCascadeDeleteMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504241534367_ReportsAndDescriptionMigration.resx">
+      <DependentUpon>201504241534367_ReportsAndDescriptionMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504271314316_OrganizationInIntegracyRequest.resx">
+      <DependentUpon>201504271314316_OrganizationInIntegracyRequest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504291510387_ReportNewFieldAndIntegracyRequest.resx">
+      <DependentUpon>201504291510387_ReportNewFieldAndIntegracyRequest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201504291627133_AddAllRegionFlagMigration.resx">
+      <DependentUpon>201504291627133_AddAllRegionFlagMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505051329523_TransportFirstMigration.resx">
+      <DependentUpon>201505051329523_TransportFirstMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505061337228_AddBoutToLinkToPeople.resx">
+      <DependentUpon>201505061337228_AddBoutToLinkToPeople.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505061507496_IncludedInTransportMigration.resx">
+      <DependentUpon>201505061507496_IncludedInTransportMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505071028203_PlaceOfBirthMigration1.resx">
+      <DependentUpon>201505071028203_PlaceOfBirthMigration1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505140921233_CommercialMigration.resx">
+      <DependentUpon>201505140921233_CommercialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505151146063_ComerciaclPaymentRequest.resx">
+      <DependentUpon>201505151146063_ComerciaclPaymentRequest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505151152454_TypeOfRestNeedPrice.resx">
+      <DependentUpon>201505151152454_TypeOfRestNeedPrice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505221327410_NotComeInPlaceOfRestMigration.resx">
+      <DependentUpon>201505221327410_NotComeInPlaceOfRestMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505291306138_NotNeedReasonMigratgion.resx">
+      <DependentUpon>201505291306138_NotNeedReasonMigratgion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506011048544_PhotoInAddonServiceMigration.resx">
+      <DependentUpon>201506011048544_PhotoInAddonServiceMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506011607363_StateAddServiceMigration.resx">
+      <DependentUpon>201506011607363_StateAddServiceMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506021526509_LinkToChildAndApplicantAddService.resx">
+      <DependentUpon>201506021526509_LinkToChildAndApplicantAddService.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506030957497_PaymentAndCalculation.resx">
+      <DependentUpon>201506030957497_PaymentAndCalculation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506031627168_TicketMigration.resx">
+      <DependentUpon>201506031627168_TicketMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506041556102_PlacementTourMigration.resx">
+      <DependentUpon>201506041556102_PlacementTourMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506101006075_LinkToPeopleDateDeparture.resx">
+      <DependentUpon>201506101006075_LinkToPeopleDateDeparture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506151027179_TypeOfServiceMigration.resx">
+      <DependentUpon>201506151027179_TypeOfServiceMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506151410291_SeriaNumberCertOfBirth.resx">
+      <DependentUpon>201506151410291_SeriaNumberCertOfBirth.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506161119424_TransportAndPlaceMigration.resx">
+      <DependentUpon>201506161119424_TransportAndPlaceMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506161402012_BoutMemoMigration.resx">
+      <DependentUpon>201506161402012_BoutMemoMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506171013140_RequestLinksMigration.resx">
+      <DependentUpon>201506171013140_RequestLinksMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506180904272_CalculationRefMigration.resx">
+      <DependentUpon>201506180904272_CalculationRefMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506181243456_DatesInServicesMigration.resx">
+      <DependentUpon>201506181243456_DatesInServicesMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506241817088_LonLanAndOtherMigration.resx">
+      <DependentUpon>201506241817088_LonLanAndOtherMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506291606273_AddPhotosAndRatingMigration.resx">
+      <DependentUpon>201506291606273_AddPhotosAndRatingMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506301453157_AddFunctioningTypeAndHotelPlacement.resx">
+      <DependentUpon>201506301453157_AddFunctioningTypeAndHotelPlacement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507061302552_ConcelarusAddonFieldsMigration.resx">
+      <DependentUpon>201507061302552_ConcelarusAddonFieldsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507071112471_ConcelarusTaskMigration.resx">
+      <DependentUpon>201507071112471_ConcelarusTaskMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507071136377_ConcelarusTaskNewMigration.resx">
+      <DependentUpon>201507071136377_ConcelarusTaskNewMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507071719435_ConcelarusTaskCommentaryMigration.resx">
+      <DependentUpon>201507071719435_ConcelarusTaskCommentaryMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507081020548_ConcelarusTaskCommentaryAddonMigration.resx">
+      <DependentUpon>201507081020548_ConcelarusTaskCommentaryAddonMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507091427338_PasswordInAdministratorTourMigration.resx">
+      <DependentUpon>201507091427338_PasswordInAdministratorTourMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507101342131_SkillNameMigration.resx">
+      <DependentUpon>201507101342131_SkillNameMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507101426114_RelBoutAndCouncelorsTasksMigration.resx">
+      <DependentUpon>201507101426114_RelBoutAndCouncelorsTasksMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507201125516_BoutJournalMigration.resx">
+      <DependentUpon>201507201125516_BoutJournalMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507221503561_CuratorFilesAndOtherMigration.resx">
+      <DependentUpon>201507221503561_CuratorFilesAndOtherMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507281710200_BoutJournalFilesMigration.resx">
+      <DependentUpon>201507281710200_BoutJournalFilesMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507301020393_JournalBoutActiveMigration.resx">
+      <DependentUpon>201507301020393_JournalBoutActiveMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508031125498_CounselorTrainingMigration.resx">
+      <DependentUpon>201508031125498_CounselorTrainingMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508061505465_RequestInformationVaucherMigration.resx">
+      <DependentUpon>201508061505465_RequestInformationVaucherMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508071642372_AttendantVaucherMigration.resx">
+      <DependentUpon>201508071642372_AttendantVaucherMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508101630254_AmountInChildMigration.resx">
+      <DependentUpon>201508101630254_AmountInChildMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508141027002_BoutTransportNewRelMigration.resx">
+      <DependentUpon>201508141027002_BoutTransportNewRelMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508141354229_BoutAndTransportNewMemoMigration.resx">
+      <DependentUpon>201508141354229_BoutAndTransportNewMemoMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508171554143_TieColorRatingMigration.resx">
+      <DependentUpon>201508171554143_TieColorRatingMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508171603442_TieColorRating2Migration.resx">
+      <DependentUpon>201508171603442_TieColorRating2Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508241011050_CounselorsAndOtherMigration.resx">
+      <DependentUpon>201508241011050_CounselorsAndOtherMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508241127083_DecimalPrecisionMigration.resx">
+      <DependentUpon>201508241127083_DecimalPrecisionMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508271255123_TourToProductMigration.resx">
+      <DependentUpon>201508271255123_TourToProductMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201508281218482_TourToProductSecondMigration.resx">
+      <DependentUpon>201508281218482_TourToProductSecondMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511031802049_CounselorTests.resx">
+      <DependentUpon>201511031802049_CounselorTests.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511051648362_BoutJournalTypeAndOther.resx">
+      <DependentUpon>201511051648362_BoutJournalTypeAndOther.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511061518154_PedPartyMigration.resx">
+      <DependentUpon>201511061518154_PedPartyMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511100806058_ContractRelationMigration.resx">
+      <DependentUpon>201511100806058_ContractRelationMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511101112035_CounselorTestAddonFieldsMigration.resx">
+      <DependentUpon>201511101112035_CounselorTestAddonFieldsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511101222097_LimitRequestMigration.resx">
+      <DependentUpon>201511101222097_LimitRequestMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511101344486_LastUpdateTickMigration.resx">
+      <DependentUpon>201511101344486_LastUpdateTickMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511101641237_CounselorGroupTest.resx">
+      <DependentUpon>201511101641237_CounselorGroupTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511131220540_CounselorTestDeletedMigration.resx">
+      <DependentUpon>201511131220540_CounselorTestDeletedMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511171603100_TrainingCounselorsResultIsSuccessMirgation.resx">
+      <DependentUpon>201511171603100_TrainingCounselorsResultIsSuccessMirgation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511231410359_ComercialPaymentAndPyerMigration.resx">
+      <DependentUpon>201511231410359_ComercialPaymentAndPyerMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511260858404_HistoryStateLinkMigration.resx">
+      <DependentUpon>201511260858404_HistoryStateLinkMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511261217563_RemoveTypeOfRoomFileMigration.resx">
+      <DependentUpon>201511261217563_RemoveTypeOfRoomFileMigration.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511261500464_SubjectOfRestClassFileMigration.resx">
+      <DependentUpon>201511261500464_SubjectOfRestClassFileMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511270935251_CountErrorInTestMigration.resx">
+      <DependentUpon>201511270935251_CountErrorInTestMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511301556147_SetDefaultBoutJournalFields.resx">
+      <DependentUpon>201511301556147_SetDefaultBoutJournalFields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512011004449_IncedentRelationMigration.resx">
+      <DependentUpon>201512011004449_IncedentRelationMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512031637599_EkisAndDopFieldMigration.resx">
+      <DependentUpon>201512031637599_EkisAndDopFieldMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512070735172_IntegrationMigration.resx">
+      <DependentUpon>201512070735172_IntegrationMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512161439269_OrganizationFileldsMigration.resx">
+      <DependentUpon>201512161439269_OrganizationFileldsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601121521215_RequestCommercialMigration.resx">
+      <DependentUpon>201601121521215_RequestCommercialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601140925249_TicketDateDepartureMigration.resx">
+      <DependentUpon>201601140925249_TicketDateDepartureMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601141603153_AddonServiceToMultiHotelMigration.resx">
+      <DependentUpon>201601141603153_AddonServiceToMultiHotelMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601151430170_AddServicePropertysMigration.resx">
+      <DependentUpon>201601151430170_AddServicePropertysMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601210931162_TourTransportMigration.resx">
+      <DependentUpon>201601210931162_TourTransportMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601220918512_AddApproveFlagOnRequestMigration.resx">
+      <DependentUpon>201601220918512_AddApproveFlagOnRequestMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601261241276_TypeOfRestMigration.resx">
+      <DependentUpon>201601261241276_TypeOfRestMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601291133587_ForCalculationFlagMigration.resx">
+      <DependentUpon>201601291133587_ForCalculationFlagMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602011124402_TypeOfRestHaveService.resx">
+      <DependentUpon>201602011124402_TypeOfRestHaveService.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602021447401_BookingCommercialMigration.resx">
+      <DependentUpon>201602021447401_BookingCommercialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602041121431_RequestFileTypeCodeChedMigration.resx">
+      <DependentUpon>201602041121431_RequestFileTypeCodeChedMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602051145012_ServicePricesMigration.resx">
+      <DependentUpon>201602051145012_ServicePricesMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602091753444_TagsMigration.resx">
+      <DependentUpon>201602091753444_TagsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602121444092_BlockPlacesMigration.resx">
+      <DependentUpon>201602121444092_BlockPlacesMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602171510026_TransportServiceParentMigration.resx">
+      <DependentUpon>201602171510026_TransportServiceParentMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602191046368_ExchangeBaseRegistryComplite.resx">
+      <DependentUpon>201602191046368_ExchangeBaseRegistryComplite.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602241721399_CountryAndOtherInTourMigration.resx">
+      <DependentUpon>201602241721399_CountryAndOtherInTourMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602291123397_FlightNumberDirectionMigration.resx">
+      <DependentUpon>201602291123397_FlightNumberDirectionMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603011800107_FlightNumberDirection2Migration.resx">
+      <DependentUpon>201603011800107_FlightNumberDirection2Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603091056531_CountryOnTourMigration.resx">
+      <DependentUpon>201603091056531_CountryOnTourMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603111711396_OrganizationBankPropertyMigration.resx">
+      <DependentUpon>201603111711396_OrganizationBankPropertyMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603161546320_OrganizationFiledsAndUrlToRulesMigration.resx">
+      <DependentUpon>201603161546320_OrganizationFiledsAndUrlToRulesMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603211051143_ContractAddonAgreementMigration.resx">
+      <DependentUpon>201603211051143_ContractAddonAgreementMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603211322053_CommercialSourceMigration.resx">
+      <DependentUpon>201603211322053_CommercialSourceMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603241421073_BadListChildApplicantMigration.resx">
+      <DependentUpon>201603241421073_BadListChildApplicantMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604110948140_ServiceRelationAndFieldsMigration.resx">
+      <DependentUpon>201604110948140_ServiceRelationAndFieldsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604141326157_UnionAndBoutPublishMigration.resx">
+      <DependentUpon>201604141326157_UnionAndBoutPublishMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604151315257_TradeUnionAddonFieldMigration.resx">
+      <DependentUpon>201604151315257_TradeUnionAddonFieldMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604180754461_ExchangeBaseRegistryManualRequestMigration.resx">
+      <DependentUpon>201604180754461_ExchangeBaseRegistryManualRequestMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604181626185_AccessRightGroupMigration.resx">
+      <DependentUpon>201604181626185_AccessRightGroupMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604261345133_SchoolEkisMigration.resx">
+      <DependentUpon>201604261345133_SchoolEkisMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605051144192_TradeUnProfToChldMigration.resx">
+      <DependentUpon>201605051144192_TradeUnProfToChldMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605061510018_NotForSiteMigration.resx">
+      <DependentUpon>201605061510018_NotForSiteMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605101652228_EidMigration.resx">
+      <DependentUpon>201605101652228_EidMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605131620239_MatrixOfPriceMigration.resx">
+      <DependentUpon>201605131620239_MatrixOfPriceMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605171622176_TradeUnionAddonFieldsMigration.resx">
+      <DependentUpon>201605171622176_TradeUnionAddonFieldsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605190905041_DeletedRecordListMigration.resx">
+      <DependentUpon>201605190905041_DeletedRecordListMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608181801308_IdentityAddressMigration.resx">
+      <DependentUpon>201608181801308_IdentityAddressMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612261424150_FirstRequestCompanyFieldsMigaration.resx">
+      <DependentUpon>201612261424150_FirstRequestCompanyFieldsMigaration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701180838102_AppicantCamperMigration.resx">
+      <DependentUpon>201701180838102_AppicantCamperMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701201322545_Lok2017Migration.resx">
+      <DependentUpon>201701201322545_Lok2017Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701230903014_Lok2017_1Migration.resx">
+      <DependentUpon>201701230903014_Lok2017_1Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701231248414_Lok20172Migration.resx">
+      <DependentUpon>201701231248414_Lok20172Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701231414277_Lok201703Migration.resx">
+      <DependentUpon>201701231414277_Lok201703Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701251250433_Lok2017AgentMigration.resx">
+      <DependentUpon>201701251250433_Lok2017AgentMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702011531289_Lok20174FlagInChainMigration.resx">
+      <DependentUpon>201702011531289_Lok20174FlagInChainMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702030954268_Lok20175ListOfChildsMigration.resx">
+      <DependentUpon>201702030954268_Lok20175ListOfChildsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702141518471_Lok20176BankPropetysMigration.resx">
+      <DependentUpon>201702141518471_Lok20176BankPropetysMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702161021367_CertificateDateMigration.resx">
+      <DependentUpon>201702161021367_CertificateDateMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702211508467_Lok20178ApplicantAddressMigration.resx">
+      <DependentUpon>201702211508467_Lok20178ApplicantAddressMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702220946268_Lok20178StatusByChildMigration.resx">
+      <DependentUpon>201702220946268_Lok20178StatusByChildMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703061024361_Lok20179RankMigration.resx">
+      <DependentUpon>201703061024361_Lok20179RankMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703161416425_Lok201710RankingMigration.resx">
+      <DependentUpon>201703161416425_Lok201710RankingMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703201033033_Lok201711RankDetailMigration.resx">
+      <DependentUpon>201703201033033_Lok201711RankDetailMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705231201377_Lok2017ListOfChildMigration.resx">
+      <DependentUpon>201705231201377_Lok2017ListOfChildMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705300908441_Lok2017ListOfChildFamilyMigration.resx">
+      <DependentUpon>201705300908441_Lok2017ListOfChildFamilyMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706020947556_RepearedFlagMigration.resx">
+      <DependentUpon>201706020947556_RepearedFlagMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201709250813401_ExchangeBaseRegsitryControlFlagMigration.resx">
+      <DependentUpon>201709250813401_ExchangeBaseRegsitryControlFlagMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710061158211_StatusChainEmailMigration.resx">
+      <DependentUpon>201710061158211_StatusChainEmailMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710251351027_NotificationMigration.resx">
+      <DependentUpon>201710251351027_NotificationMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808201338507_Lok2019Migration.resx">
+      <DependentUpon>201808201338507_Lok2019Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809271516508_Lok2019TourMigration.resx">
+      <DependentUpon>201809271516508_Lok2019TourMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201809281132183_SecurityLogMigration.resx">
+      <DependentUpon>201809281132183_SecurityLogMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810050910417_SheduleBookingMigration.resx">
+      <DependentUpon>201810050910417_SheduleBookingMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810051428163_SheduleBookingStatusMigration.resx">
+      <DependentUpon>201810051428163_SheduleBookingStatusMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810120803154_IBAndScheduleBookingFixesMigration.resx">
+      <DependentUpon>201810120803154_IBAndScheduleBookingFixesMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903131442185_BookingMosgorturOnlineQueueMigration.resx">
+      <DependentUpon>201903131442185_BookingMosgorturOnlineQueueMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903191539553_ERLIntegrationMigration.resx">
+      <DependentUpon>201903191539553_ERLIntegrationMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905270935367_MPGUIntegrationMigration.resx">
+      <DependentUpon>201905270935367_MPGUIntegrationMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906241040175_FIASIntegrationMigration.resx">
+      <DependentUpon>201906241040175_FIASIntegrationMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907081319280_FixDbMigration.resx">
+      <DependentUpon>201907081319280_FixDbMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908271104152_Lok2019ToursUpdate.resx">
+      <DependentUpon>201908271104152_Lok2019ToursUpdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909250849100_CshedIntegrationMigration.resx">
+      <DependentUpon>201909250849100_CshedIntegrationMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910071618574_ExchangeUtsAccountMigration.resx">
+      <DependentUpon>201910071618574_ExchangeUtsAccountMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910091208576_ExchangeBrNeedSendMigration.resx">
+      <DependentUpon>201910091208576_ExchangeBrNeedSendMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910230637083_UniqueMemberMigration.resx">
+      <DependentUpon>201910230637083_UniqueMemberMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910251549175_RestrictionGroupMigration.resx">
+      <DependentUpon>201910251549175_RestrictionGroupMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911260720148_OrpphanBlockMigration.resx">
+      <DependentUpon>201911260720148_OrpphanBlockMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911261523214_VisitBookingHistory.resx">
+      <DependentUpon>201911261523214_VisitBookingHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912041408563_OrpphanBlockMigrationPupilGroup.resx">
+      <DependentUpon>201912041408563_OrpphanBlockMigrationPupilGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912251625019_OrpphanBlockMigrationPupilGroupLists.resx">
+      <DependentUpon>201912251625019_OrpphanBlockMigrationPupilGroupLists.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002111054379_PupilsDrugsAndCerificatesMigration.resx">
+      <DependentUpon>202002111054379_PupilsDrugsAndCerificatesMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002121445256_OrpphanBlockFormOfRestMigration.resx">
+      <DependentUpon>202002121445256_OrpphanBlockFormOfRestMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002180916461_MGTIntegrationMigration.resx">
+      <DependentUpon>202002180916461_MGTIntegrationMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002271244407_OrpphanBlockPupilDrugDoseFixMigration.resx">
+      <DependentUpon>202002271244407_OrpphanBlockPupilDrugDoseFixMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003301344101_ERLNewIterationMigration.resx">
+      <DependentUpon>202003301344101_ERLNewIterationMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004131536441_ERL20200409UpdateMigration.resx">
+      <DependentUpon>202004131536441_ERL20200409UpdateMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005251154113_Task95757Migration.resx">
+      <DependentUpon>202005251154113_Task95757Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005261138045_Task95753Migration.resx">
+      <DependentUpon>202005261138045_Task95753Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006031307507_Task96213Migration.resx">
+      <DependentUpon>202006031307507_Task96213Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006040821440_Task96212Migration.resx">
+      <DependentUpon>202006040821440_Task96212Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006081203392_Task97466Migration.resx">
+      <DependentUpon>202006081203392_Task97466Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007030845177_ERLDBChangesMigration.resx">
+      <DependentUpon>202007030845177_ERLDBChangesMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007291251034_Task103085And102087Migration.resx">
+      <DependentUpon>202007291251034_Task103085And102087Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009091346380_Release20200909Migration.resx">
+      <DependentUpon>202009091346380_Release20200909Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009100827425_Task105360Migration.resx">
+      <DependentUpon>202009100827425_Task105360Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009100912309_Task105589Migration.resx">
+      <DependentUpon>202009100912309_Task105589Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009230932467_Task99506Migration.resx">
+      <DependentUpon>202009230932467_Task99506Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009301309418_Task110112Migration.resx">
+      <DependentUpon>202009301309418_Task110112Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011111728044_Task111806Migration.resx">
+      <DependentUpon>202011111728044_Task111806Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011221434483_Task115934Migration.resx">
+      <DependentUpon>202011221434483_Task115934Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011301231332_Task115918Migration.resx">
+      <DependentUpon>202011301231332_Task115918Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012011049005_Task115918_2Migration.resx">
+      <DependentUpon>202012011049005_Task115918_2Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012011458392_Task115918_3Migration.resx">
+      <DependentUpon>202012011458392_Task115918_3Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012021056355_Task115918_4Migration.resx">
+      <DependentUpon>202012021056355_Task115918_4Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012031315349_Task115918_5Migration.resx">
+      <DependentUpon>202012031315349_Task115918_5Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012041020026_Task115918_6Migration.resx">
+      <DependentUpon>202012041020026_Task115918_6Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012141026423_Task118559Migration.resx">
+      <DependentUpon>202012141026423_Task118559Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202012171552243_Task118961Migration.resx">
+      <DependentUpon>202012171552243_Task118961Migration.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
