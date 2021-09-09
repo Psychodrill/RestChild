@@ -1,0 +1,209 @@
+﻿@model RestChild.Web.Models.TradeUnionCashback.TradeUnionCashbackModel
+@using iTextSharp.text.pdf.qrcode
+@using Newtonsoft.Json
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.Extensions
+@using RestChild.Web.Models.TradeUnionCashback
+
+@{
+    ViewBag.Title = "Список фактически отдохнувших";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var campCountInTour = Model.Data != null && Model.Data.Camp != null && Model.Data.Camp.CountInTour.HasValue ? Model.Data.Camp.CountInTour : -1;
+    var overChildren = campCountInTour > 0 && campCountInTour < (Model.Campers != null ? Model.Campers.Count : 0);
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Список фактически отдохнувших</h2>
+    </div>
+</div>
+
+<a href="@Url.Action("List", "TradeUnionCashback")">Вернуться в реестр списков</a>
+<div class="row">&nbsp;</div>
+
+@Html.Partial("Assets/_StatePanel", Model.State)
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("Save", "TradeUnionCashback", FormMethod.Post, new {enctype = "multipart/form-data", @id = "requestForm"}))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Data.Id)
+            @Html.HiddenFor(m => m.Data.StateId)
+            @Html.HiddenFor(m => m.Data.LastUpdateTick)
+            @Html.HiddenFor(m => m.StateMachineActionString)
+            @Html.HiddenFor(m => m.Data.HistoryLinkId)
+            @Html.HiddenFor(m => m.CommentToDeclined)
+            @Html.HiddenFor(m => m.Data.YearOfRestId)
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-2 control-label text-right">Лагерь<span class="requared">*</span></label>
+                    <div class="col-md-5">
+                        @Html.DropDownListFor(m => m.Data.CampId, new SelectList(Model.Organizations, "Id", "Name"), new {@class = "form-control"}).DisableIf(!Model.IsEditable)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label text-right">Смена<span class="requared">*</span></label>
+                    <div class="col-md-4">
+                        @Html.DropDownListFor(m => m.Data.GroupedTimeOfRestId, new SelectList(Model.TimeOfRests.InsertAt(new GroupedTimeOfRest {Id = 0, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control GroupedTimeOfRestId"}).DisableIf(!Model.IsEditable)
+                    </div>
+                    <label class="col-md-1 control-label text-right">Дата с</label>
+                    <div class="col-md-2">
+                        <div class='input-group date'>
+                            @Html.TextBoxFor(m => m.Data.DateFrom, new {@class = "form-control", autocomplete = "Off", Value = Model.Data.DateFrom != default(DateTime) ? Model.Data.DateFrom.FormatEx(string.Empty, string.Empty) : string.Empty}).DisableIf(!Model.IsEditable)
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <label class="col-md-1 control-label text-right">по</label>
+                    <div class="col-md-2">
+                        <div class='input-group date'>
+                            @Html.TextBoxFor(m => m.Data.DateTo, new {@class = "form-control", autocomplete = "Off", Value = Model.Data.DateTo != default(DateTime) ? Model.Data.DateTo.FormatEx(string.Empty, string.Empty) : string.Empty}).DisableIf(!Model.IsEditable)
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            if (Model.IsEditable && Model.Data.Id > 0)
+            {
+                <h3 class="anchor">
+                    Дети
+                    <button type="button" class="btn btn-primary btn-xs" id="addPerson" title="Добавить">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </button>
+                </h3>
+            }
+            <table class="table @(Model.Campers.Count == 0 ? "hidden" : "")" id="persons">
+                <thead>
+                <tr>
+                    <th>ФИО ребёнка</th>
+                    <th>Пол</th>
+                    <th>Дата рождения</th>
+                    <th>Документ</th>
+                    <th style="text-align: center">Запрашивался кэшбэк</th>
+                    @if (Model.IsIncomeFlag || Model.Data.StateId == StateMachineStateEnum.TradeUnion.Finish)
+                    {
+                        <th>Заехал</th>
+                    }
+                    <th style="width:60px">
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var key in Model.Campers.Keys)
+                {
+                    <tr>
+                        <td class="fio">
+                            @Model.Campers[key].ChildLastName @Model.Campers[key].ChildFirstName @Model.Campers[key].ChildMiddleName
+                        </td>
+                        <td class="sex">
+                            @(Model.Campers[key].ChildMale ? "муж" : "жен")
+                        </td>
+                        <td class="birthDate">
+                            @(Model.Campers[key].ChildDateOfBirth.FormatEx())
+                        </td>
+                        <td class="document">
+                            @(Model.Campers[key].ChildDocumentTypeId.HasValue ? Model.Campers[key].ChildDocumentTypeName : "") @(Model.Campers[key].ChildDocumentSeria) @(Model.Campers[key].ChildDocumentNumber)
+                        </td>
+                        <td class="cashbackRequested" style="text-align: center">
+                            @Html.CheckBoxFor(m => m.Campers[key].CashbackRequested)
+                        </td>
+                        @if (Model.IsIncomeFlag || Model.Data.StateId == StateMachineStateEnum.TradeUnion.Finish)
+                        {
+                            <td>@Html.CheckBoxFor(m => m.Campers[key].IsChecked).DisableIf(!Model.IsIncomeFlag)</td>
+                        }
+                        <td style="width:60px">
+                            <input type="hidden" value="@Html.ValueFor(m => m.CampersJson[key])" class="hdn-json" disabled="disabled"/>
+                            @Html.HiddenFor(m => m.Campers[key].Id)
+                            <a class="edit-person-btn" type="button" title="Редактировать" href="javascript:void(0)">
+                                <i class="glyphicon glyphicon-pencil"></i>
+                            </a>
+                            @if (Model.IsEditable)
+                            {
+                                <a class="remove-person-btn" type="button" title="Удалить" href="javascript:void(0)">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@Html.Partial("Partials/PersonDialog")
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    <link href="~/Content/Vocabulary/VocabularyEdit.css" rel="stylesheet"/>
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/bootstrap3-typeahead.min.js")
+    @Scripts.Render("~/Scripts/jquery.validate.min.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+		moment.locale('ru');
+		$(function () {
+			$('[data-toggle="tooltip"]').tooltip();
+			$.datepicker.setDefaults($.datepicker.regional["ru"]);
+			jQuery.validator.methods["date"] = function (value, element) { return true; }
+			@if (overChildren)
+			{
+			    <text>
+				ShowAlert('Количество детей (внесено @(Model.Campers.Count) чел.) превышает вместимость в смену (для лагеря указано @(campCountInTour)).', 'alert-danger', '', true);
+				</text>
+			}
+		});
+	</script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    @Scripts.Render("~/Scripts/assets/AddressControlFIAS.js")
+    @Scripts.Render("~/Scripts/AddressExt.js")
+    <script>
+		addressControl(rootPath);
+	</script>
+
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/StateScript.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Scripts.Render("~/Scripts/Vocabulary/TradeUnionCashbackEdit.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
+
+    <script type="text/template" id="rowPerson">
+		<tr>
+			<td class="fio">
+				-
+			</td>
+			<td class="sex">
+				-
+			</td>
+			<td class="birthDate">
+				-
+			</td>
+			<td class="document">
+				-
+			</td>
+			<td style="width:60px">
+				<input class="hdn-json" name="CampersJson[{{=it}}]" type="hidden" value="@JsonConvert.SerializeObject(new TradeUnionCashbackCamperModel())">
+				<input type="hidden" class="hdn-Child-DocumentTypeName" value="-- Не выбрано --" />
+				<input type="hidden" class="hdn-SelectedSchoolName" value="-- Не выбрано --" />
+				<input type="hidden" class="hdn-TradeUnionOrganizationName" value="-- Не выбрано --" />
+				<a class="edit-person-btn" type="button" title="Редактировать" href="javascript:void(0)"><i class="glyphicon glyphicon-pencil"></i></a>
+				<a class="remove-person-btn" type="button" title="Удалить" href="javascript:void(0)"><i class="glyphicon glyphicon-remove"></i></a>
+				<input data-val="true" data-val-required="&quot;Заехал&quot; должно быть заполнено" id="Campers_3__IsChecked" name="Campers[{{=it}}].IsChecked" type="hidden" value="False">
+			</td>
+		</tr>
+	</script>
+}

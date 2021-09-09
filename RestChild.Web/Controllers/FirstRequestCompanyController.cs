@@ -6,6 +6,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Web.Helpers;
+using System.Web.Http;
 using System.Web.Mvc;
 using RestChild.Booking.Logic.Extensions;
 using RestChild.Booking.Logic.Services;
@@ -22,6 +24,7 @@ using RestChild.Extensions.Extensions;
 using RestChild.Extensions.Filter;
 using RestChild.Security.Logger;
 using RestChild.Web.Controllers.WebApi;
+using RestChild.Web.Extensions;
 using RestChild.Web.Models;
 using RestChild.Web.Models.Business.Export;
 using RestChild.Web.Properties;
@@ -32,7 +35,7 @@ namespace RestChild.Web.Controllers
     /// <summary>
     ///     управление заявочной кампанией
     /// </summary>
-    [Authorize]
+    [System.Web.Mvc.Authorize]
     public partial class FirstRequestCompanyController : BaseController
     {
         private readonly string DefaultOptionValue = "-- Не выбрано --";
@@ -75,7 +78,7 @@ namespace RestChild.Web.Controllers
         /// <summary>
         ///     редактирование заявления
         /// </summary>
-        [HttpGet]
+        [System.Web.Mvc.HttpGet]
         public ActionResult RequestEdit(long? id, bool needValidate = false, string saveaction = null,
             bool needCompleteionAlert = false, long? typeOfRestId = null, long? tourId = null, Guid? bookingGuid = null,
             string rateTypeString = null)
@@ -260,14 +263,14 @@ namespace RestChild.Web.Controllers
             model.IsEditable &= checks.Contains(AccessRightEnum.RequestManage) &&
                                 checks.Contains(AccessRightEnum.RequestView);
 
-            // нельзя откланять регистрацию
+            // нельзя отклонять регистрацию
             var action = actions.FirstOrDefault(a => a.Code == AccessRightEnum.Status.ToRegistrationDecline);
             if (action != null)
             {
                 actions.Remove(action);
             }
 
-            // нельзя откланять регистрацию
+            // нельзя отклонять регистрацию
             action = actions.FirstOrDefault(a => a.Code == AccessRightEnum.Status.ToRegistrationDeclineAttendant);
             if (action != null)
             {
@@ -358,6 +361,8 @@ namespace RestChild.Web.Controllers
                 }
             }
 
+
+
             /*if (model.Data?.StatusId == (long) StatusEnum.DecisionMakingCovid &&
                 model.Data?.TypeOfRest?.NeedPlacment == false &&
                 model.Data?.TypeOfRestId != (long)TypeOfRestEnum.YouthRestCamps &&
@@ -382,13 +387,23 @@ namespace RestChild.Web.Controllers
                 }
             /*}*/
 
-            //в случае если сертификат по заявлению погашен - отменяем любые возможные действия
-            if ((model.Data?.Certificates?.Any(ss => ss.StateMachineStateId != StateMachineStateEnum.Deleted) ?? false)
-                || model.Data?.DeclineReasonId != null)
+
+            //в случае если сертификат по заявлению погашен или заявления в статусе "услуга оказана" - отменяем любые возможные действия
+            if ((model.Data?.Certificates?.Any(ss => ss.StateMachineStateId != StateMachineStateEnum.Deleted) ?? false) ||
+                (model.Data?.DeclineReasonId != null && model.Data?.StatusId == (long) StatusEnum.CertificateIssued))
             {
-                actions.Clear();
+                foreach (var act in actions.ToList())
+                {
+                    //Услуга оказана "1075.3" приравнена к отказам (причина отказа - 201911) (КОВИД 2019)
+                    //архимегакостыль-кровь-из-глаз
+                    if (act.Id == ((long) StatusEnum.DecisionMaking + 200000) && model.Data?.DeclineReasonId == 201911)
+                    {
+                        continue;
+                    }
+                    actions.Remove(act);
+                }
             }
-            
+
             model.Actions = actions;
         }
 
@@ -725,6 +740,17 @@ namespace RestChild.Web.Controllers
                     .OrderBy(d => d.Id)
                     .InsertAt(new DeclineReason {Id = 0, Name = DefaultOptionValue});
 
+            model.TypesOfTransportInRequest =
+                UnitOfWork.GetSet<TypeOfTransportInRequest>().Where(t => t.IsActive).ToList();
+
+            model.TypesOfCamp =
+                UnitOfWork.GetSet<TypeOfCamp>().Where(t => t.IsActive).ToList();
+
+            model.TypesOfRestRequiringTransportSelection = UnitOfWork.GetSet<TypeOfRest>()
+                .Where(t => t.IsActive && t.NeedTypeOfTransport).Select(t => t.Id).ToArray();
+
+            model.PlacesOfRestRequiringTransportSelection = UnitOfWork.GetSet<PlaceOfRest>()
+                .Where(t => t.IsActive && t.NeedTypeOfTransport).Select(t => t.Id).ToArray();
 
             // заполнение проверок по выплатам и льготам
             foreach (var child in model.Child)
@@ -1100,6 +1126,7 @@ namespace RestChild.Web.Controllers
                             request.NeedSendForAisoLegalRepresentation = true;
                             request.NeedSendToRelative = true;
                             request.NeedSendForCPMPK = true;
+                            request.NeedSendForFRI = ResolveNeedSendForFRI(request);
                             UnitOfWork.SaveChanges();
                         }
                     }
@@ -1165,6 +1192,7 @@ namespace RestChild.Web.Controllers
                             request.NeedSendForCPMPK = true;
                             request.NeedSendForRegistrationByPassport = true;
                             request.NeedSendForAisoLegalRepresentation = true;
+                            request.NeedSendForFRI = ResolveNeedSendForFRI(request);
                         }
                         else
                         {
@@ -1182,6 +1210,7 @@ namespace RestChild.Web.Controllers
                                 request.NeedSendForCPMPK = true;
                                 request.NeedSendForRegistrationByPassport = true;
                                 request.NeedSendForAisoLegalRepresentation = true;
+                                request.NeedSendForFRI = ResolveNeedSendForFRI(request);
                             }
                         }
 
@@ -1196,6 +1225,14 @@ namespace RestChild.Web.Controllers
             }
 
             return processed;
+        }
+
+        /// <summary>
+        ///     Определить есть ли в заявлении персоны с инвалидностью
+        /// </summary>
+        private bool ResolveNeedSendForFRI(Request request)
+        {
+            return request.Applicant.IsInvalid || request.Child.Any(c => c.IsInvalid);
         }
 
         private static void SetupAttendants(Request request)
@@ -1231,7 +1268,6 @@ namespace RestChild.Web.Controllers
                 child.Address?.ResetZeroFk();
             }
         }
-
 
         public ActionResult CheckRequestInBaseRegistry(long requestId)
         {
@@ -2111,6 +2147,76 @@ namespace RestChild.Web.Controllers
             model.SubjectOfRests = VocController.GetSubjectsOfRest()
                 .OrderBy(p => p.Id)
                 .ToList();
+        }
+
+        /// <summary>
+        ///     Замена сопровождающего
+        /// </summary>
+        [System.Web.Http.HttpPost]
+        public ActionResult RequestReplacingAccompanying([FromBody] ApplicantViewModel model, [FromUri]long RequestId, [FromUri]long? ReplacingAccompanyId = null)
+        {
+            if (!Security.HasRight(AccessRightEnum.ReplacingAccompanying))
+            {
+                return Json(new BaseAsyncAnswer { ErrorText = "Access denied" });
+            }
+
+            SetUnitOfWorkInRefClass(UnitOfWork);
+
+            var r = UnitOfWork.GetById<Request>(RequestId);
+
+            model.Data.HaveMiddleName = model.HasNotMiddlename;
+
+            if (model.CheckModel(r))
+            {
+                using (var scope = UnitOfWork.GetTransactionScope())
+                {
+                    if (ReplacingAccompanyId.HasValue && ReplacingAccompanyId.Value > 0)
+                    {
+                        var acc = UnitOfWork.GetById<Applicant>(ReplacingAccompanyId.Value);
+                        if (acc.IsAgent)
+                        {
+                            acc.IsDeleted = true;
+                            acc.IsAccomp = false;
+                            UnitOfWork.WriteHistory(r.Id, $"Представитель заявителя {acc.GetFio()} исключен из заявления", Security.GetCurrentAccountId());
+                        }
+                        else
+                        {
+                            acc.IsDeleted = true;
+                            r.CountAttendants++;
+                            UnitOfWork.WriteHistory(r.Id, $"Сопровождающий {acc.GetFio()} исключен из заявления", Security.GetCurrentAccountId());
+                        }
+                    }
+                    else
+                    {
+                        var acc = UnitOfWork.GetById<Applicant>(r.ApplicantId);
+                        acc.IsAccomp = false;
+
+                        UnitOfWork.WriteHistory(r.Id, $"Заявитель более не является сопровождающим", Security.GetCurrentAccountId());
+                    }
+                    UnitOfWork.SaveChanges();
+
+                    var a = model.BuildData();
+                    a.IsAccomp = true;
+                    a.Payed = true;
+                    a.RequestId = r.Id;
+                    a.ForeginTypeId = a.ForeginTypeId > 0 ? a.ForeginTypeId : null;
+                    a.IsProxy = a.ApplicantTypeId == (long)ApplicantTypeEnum.Confidant;
+                    a.IsAgent = false;
+
+                    UnitOfWork.AddEntity(a);
+
+                    UnitOfWork.WriteHistory(r.Id, $"Сопровождающий {a.GetFio()} включен в заявление", Security.GetCurrentAccountId());
+
+                    scope.Complete();
+                }
+
+                return Json(new BaseAsyncAnswer());
+            }
+
+            return Json(new BaseAsyncAnswer
+            {
+                ErrorText = model.GetErrorDescription()
+            });
         }
     }
 }

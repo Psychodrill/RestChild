@@ -115,15 +115,13 @@ namespace MailingDemon.Tasks
                 Logger.Info("Connecting to queue manager.. ");
                 var dateTime = DateTime.Now;
 
-                MQQueueManager queueManager;
-                using (queueManager =
-                    new MQQueueManager(ConfigurationManager.AppSettings["MqQueueMangerName"], properties))
+                using (var queueManager = new MQQueueManager(ConfigurationManager.AppSettings["MqQueueMangerName"],
+                    properties))
                 {
                     Logger.Info($"Connecting to queue manager.. done ({DateTime.Now - dateTime})");
                     dateTime = DateTime.Now;
                     double average = 0;
-                    using (var queue =
-                        queueManager.AccessQueue(queueName, MQC.MQOO_OUTPUT + MQC.MQOO_FAIL_IF_QUIESCING))
+                    using (var queue = queueManager.AccessQueue(queueName, MQC.MQOO_OUTPUT + MQC.MQOO_FAIL_IF_QUIESCING))
                     {
                         Logger.Info($"AccessQueue done ({DateTime.Now - dateTime})");
                         foreach (var exchangeBr in messages)

@@ -9,14 +9,12 @@ namespace RestChild.Web.Models.Orphans
     /// <summary>
     ///     Модель фильтра поиска воспитанника
     /// </summary>
-    public class OrphanagePupilsFilterModel
+    public class OrphanagePupilsFilterModel : BaseFilterModel<OrphanagePupilsResultListModel>
     {
-        public OrphanagePupilsFilterModel()
+        public OrphanagePupilsFilterModel() : base(new List<OrphanagePupilsResultListModel>())
         {
-            Result = new CommonPagedList<OrphanagePupilsResultListModel>(new List<OrphanagePupilsResultListModel>(0), 1,
-                Settings.Default.TablePageSize, 0);
-            PageNumber = 1;
             IsFilled = false;
+            Deleted = false;
         }
 
         public OrphanagePupilsFilterModel(long orphanageId) : this()
@@ -26,14 +24,15 @@ namespace RestChild.Web.Models.Orphans
 
         public OrphanagePupilsFilterModel(ICollection<Pupil> collection)
         {
-            Result = new CommonPagedList<OrphanagePupilsResultListModel>(
+            Results = new CommonPagedList<OrphanagePupilsResultListModel>(
                 collection?.Select(ss => new OrphanagePupilsResultListModel
                 {
                     Id = ss.Id,
                     Name = ss.Child.GetFio(),
-                    DateOfBirth = ss.Child?.DateOfBirth
-                }).Take(Settings.Default.TablePageSize).ToList() ?? new List<OrphanagePupilsResultListModel>(0),
-                1, Settings.Default.TablePageSize, collection.Count());
+                    DateOfBirth = ss.Child?.DateOfBirth,
+                    IsDeleted = ss.Child.IsDeleted
+                }).OrderBy(ss => ss.Name).Take(Settings.Default.TablePageSize).ToList() ?? new List<OrphanagePupilsResultListModel>(),
+                1, Settings.Default.TablePageSize, collection?.Count() ?? 0);
 
             OrphanageId = collection?.Where(ss => ss.OrphanageAddress != null).Select(ss => ss.OrphanageAddress.OrganisationId).FirstOrDefault();
             PageNumber = 1;
@@ -108,19 +107,9 @@ namespace RestChild.Web.Models.Orphans
         public bool IncludeOut { get; set; }
 
         /// <summary>
-        ///     Результат поиска
-        /// </summary>
-        public CommonPagedList<OrphanagePupilsResultListModel> Result { get; set; }
-
-        /// <summary>
         ///     Текущий статус
         /// </summary>
         public long? CurrentState { get; set; }
-
-        /// <summary>
-        ///     Номер страницы
-        /// </summary>
-        public int PageNumber { get; set; }
 
         /// <summary>
         ///     Action
@@ -131,5 +120,10 @@ namespace RestChild.Web.Models.Orphans
         ///     Только заполненные
         /// </summary>
         public bool IsFilled { get; set; }
+
+        /// <summary>
+        ///     Включая удаленных
+        /// </summary>
+        public bool Deleted { get; set; }
     }
 }

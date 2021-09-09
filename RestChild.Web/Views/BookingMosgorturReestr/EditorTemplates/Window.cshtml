@@ -25,7 +25,7 @@
    <div class="form-group" style="border-bottom: 1px solid #e5e5e5; padding-bottom: 8px;">
       <label class="col-sm-2 control-label">Цели обращения <span class="requared">*</span></label>
       <div class="col-md-10">
-         @Html.ListBoxFor(m => m.SelectedTargets, new MultiSelectList(ViewBag.Targets, "Id", "Name"), new { @class = "form-control select2" }).DisableIf(() => Model.IsDeleted)
+         @Html.ListBoxFor(m => m.SelectedTargets, new MultiSelectList(ViewBag.Targets, "Id", "Name"), new { @class = "form-control select2" }).DisableIf(Model.IsDeleted)
          @Html.ValidationMessageFor(m => m.SelectedTargets)
       </div>
    </div>

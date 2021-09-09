@@ -21,5 +21,10 @@ namespace RestChild.Web.Models.Orphans
         ///     Дата рождения
         /// </summary>
         public DateTime? DateOfBirth { get; set; }
+
+        /// <summary>
+        ///     Удалён
+        /// </summary>
+        public bool IsDeleted { get; set; }
     }
 }

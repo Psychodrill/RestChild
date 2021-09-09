@@ -379,6 +379,25 @@ namespace RestChild.Web.Controllers.WebApi
             }
         }
 
+        /// <summary>
+        ///     Удалить межведомственный запрос
+        /// </summary>
+        [HttpGet]
+        public void RemoveInteragencyRequest(long id)
+        {
+            var req = UnitOfWork.GetById<InteragencyRequest>(id);
+            req.StatusInteragencyRequestId = StateMachineStateEnum.Deleted;
+            UnitOfWork.SaveChanges();
+
+            var includedChildren = UnitOfWork.GetSet<InteragencyRequestResult>()
+                .Where(x => x.InteragencyRequestId == id).Select(c => c.Child).ToList();
+
+            foreach (var c in includedChildren)
+            {
+                c.IsIncludeInInteragency = false;
+                UnitOfWork.SaveChanges();
+            }
+        }
 
         [HttpGet]
         public ICollection<CheckBoxViewModel<BenefitType>> GetBenefitTypesForRegion(long? regionId, bool allRegions)
@@ -433,7 +452,7 @@ namespace RestChild.Web.Controllers.WebApi
                                 c.Request.StatusId.Value) ||
                             (c.Request.StatusId == (long) StatusEnum.Send &&
                              c.Request.SourceId == (long) SourceEnum.Operator))
-                        .Where(c => !c.Entity.IsIncludeInInteragencySecondary);
+                        .Where(c => !c.IsIncludeInInteragencySecondary);
             }
             else
             {
@@ -443,7 +462,7 @@ namespace RestChild.Web.Controllers.WebApi
                                 c.Request.StatusId.Value) ||
                             (c.Request.StatusId == (long) StatusEnum.Send &&
                              c.Request.SourceId == (long) SourceEnum.Operator))
-                        .Where(c => !c.Entity.IsIncludeInInteragency);
+                        .Where(c => !c.IsIncludeInInteragency);
             }
 
             return allChildren;
@@ -451,12 +470,14 @@ namespace RestChild.Web.Controllers.WebApi
 
         internal InteragencyRequestListViewModel List(InteragencyRequestListViewModel model)
         {
-            IQueryable<InteragencyRequest> query = UnitOfWork.GetSet<InteragencyRequest>().AsQueryable();
+            var query = UnitOfWork.GetSet<InteragencyRequest>()
+                .Where(x => x.StatusInteragencyRequestId != (long)StatusInteragencyRequestEnum.Deleted)
+                .AsQueryable();
             var pager = new PagerState(model.PageNumber, model.PageSize);
 
             if (!string.IsNullOrWhiteSpace(model.RequestNumber))
             {
-                string number = model.RequestNumber.ToLower();
+                var number = model.RequestNumber.ToLower();
                 query = query.Where(i => i.RequestNumber.ToLower().Contains(number));
             }
 

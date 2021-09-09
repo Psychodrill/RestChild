@@ -285,6 +285,7 @@
     <Compile Include="TourTransportPrice.cs" />
     <Compile Include="TourVolume.partial.cs" />
     <Compile Include="TradeUnionCamper.cs" />
+    <Compile Include="TradeUnionCamperPrivilegePart.cs" />
     <Compile Include="TradeUnionList.cs" />
     <Compile Include="TradeUnionPersonCheck.cs" />
     <Compile Include="TradeUnionStatusByChild.cs" />
@@ -298,6 +299,7 @@
     <Compile Include="TrainingCounselorsType.cs" />
     <Compile Include="TransportInfo.cs" />
     <Compile Include="TypeOfCalculation.cs" />
+    <Compile Include="TypeOfCamp.cs" />
     <Compile Include="TypeOfDrug.cs" />
     <Compile Include="TypeOfEducation.cs" />
     <Compile Include="TypeOfGroupCheck.cs" />
@@ -376,6 +378,7 @@
     <Compile Include="TypeOfSubRestriction.cs" />
     <Compile Include="TypeOfTransfer.cs" />
     <Compile Include="TypeOfTransport.cs" />
+    <Compile Include="TypeOfTransportInRequest.cs" />
     <Compile Include="TypePriceCalculation.cs" />
     <Compile Include="TypeRequestInformationVoucher.cs" />
     <Compile Include="TypeViolation.cs" />

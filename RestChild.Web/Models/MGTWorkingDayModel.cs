@@ -50,6 +50,18 @@ namespace RestChild.Web.Models
         public List<MGTWorkingDayWindowModel> Windows { get; set; }
 
         /// <summary>
+        ///     Интервал до приёма
+        /// </summary>
+        [Required(ErrorMessage = "Необходимо заполнить интервал до приёма")]
+        public long? SuoVisitTooEarly { get; set; }
+
+        /// <summary>
+        ///     Интервал после приёма
+        /// </summary>
+        [Required(ErrorMessage = "Необходимо заполнить интервал после приёма")]
+        public long? SuoVisitTooLate { get; set; }
+
+        /// <summary>
         ///     Удалён
         /// </summary>
         public bool IsDeleted { get; set; }

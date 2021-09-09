@@ -65,9 +65,8 @@ namespace RestChild.Security
         }
 
         /// <summary>
-        ///     получить текущего пользоваителя
+        ///     получить текущего пользователя
         /// </summary>
-        /// <returns></returns>
         public static long? GetCurrentAccountId()
         {
             return
@@ -75,19 +74,7 @@ namespace RestChild.Security
                .FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value.LongParse();
         }
 
-        /// <summary>
-        ///     получить текущего сессию браузера
-        /// </summary>
-        /// <returns></returns>
-        public static string GetCurrentSession()
-        {
-            return
-               ((ClaimsIdentity)HttpContext.Current?.User?.Identity)?.Claims
-               .FirstOrDefault(c => c.Type == ClaimTypes.UserData)?.Value;
-        }
-
-        private static IAuthenticationManager AuthenticationManager =>
-           HttpContext.Current.GetOwinContext().Authentication;
+        private static IAuthenticationManager AuthenticationManager => HttpContext.Current.GetOwinContext().Authentication;
 
         /// <summary>
         /// получить список организаций по праву
@@ -102,7 +89,7 @@ namespace RestChild.Security
         }
 
         /// <summary>
-        ///     получить текущего пользоваителя
+        ///     получить текущего пользователя
         /// </summary>
         public static IList<string> GetSecurity(long? id = null)
         {
@@ -112,9 +99,9 @@ namespace RestChild.Security
 
             var savedKey = res;
 
-            bool claimPresent = !string.IsNullOrEmpty(res);
+            var claimPresent = !string.IsNullOrEmpty(res);
 
-            string dateExpirationString = identity?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Expiration)?.Value;
+            var dateExpirationString = identity?.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.Expiration)?.Value;
 
             if (!string.IsNullOrEmpty(dateExpirationString))
             {
@@ -162,7 +149,7 @@ namespace RestChild.Security
                     var rights = uw.GetSet<AccountRights>().Where(a => a.AccountId == id).Include(a => a.AccessRight)
                        .ToArray();
 
-                    List<string> result =
+                    var result =
                        rights.Select(
                           s =>
                              s.OrganizationId.HasValue && s.AccessRight.ForOrganization
@@ -243,7 +230,7 @@ namespace RestChild.Security
         }
 
         /// <summary>
-        ///     наличие права для органиации
+        ///     наличие права для организации
         /// </summary>
         public static bool HasRight(string code, long? organizationId)
         {

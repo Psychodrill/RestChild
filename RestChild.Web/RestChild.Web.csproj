@@ -290,6 +290,7 @@
     <Compile Include="Controllers\RequestNotitificationController.cs" />
     <Compile Include="Controllers\TagController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
+    <Compile Include="Controllers\TradeUnionCashbackController.cs" />
     <Compile Include="Controllers\TradeUnionController.cs" />
     <Compile Include="Controllers\UniqueCardController.cs" />
     <Compile Include="Controllers\WebApi\BaseMobileController.cs" />
@@ -308,6 +309,7 @@
     <Compile Include="Controllers\WebApi\WebHotelPlacementController.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controllers\WebApi\WebMobileVocabularyController.cs" />
     <Compile Include="Controllers\WebApi\WebMonitoringController.cs" />
     <Compile Include="Controllers\WebApi\WebOrphanController.cs" />
     <Compile Include="Controllers\WebApi\WebTradeUnionController.cs" />
@@ -330,10 +332,13 @@
     <Compile Include="Logic\AnalyticReport\ByResidenceServices.cs" />
     <Compile Include="Logic\AnalyticReport\ByTransportServices.cs" />
     <Compile Include="Logic\AnalyticReport\RestWithChildTypeOfRooms.cs" />
+    <Compile Include="Logic\AnalyticReport\RoomsFund.cs" />
     <Compile Include="Logic\AnalyticReport\SpecializedCampsByAgeAndRegions.cs" />
     <Compile Include="Logic\AnalyticReport\SpecializedCampsByOrganizations.cs" />
     <Compile Include="Logic\AnalyticReport\SpecializedCampsByVedomstvo.cs" />
     <Compile Include="Logic\ILogic.cs" />
+    <Compile Include="Models\BaseAsyncAnswer.cs" />
+    <Compile Include="Models\BaseFilterModel.cs" />
     <Compile Include="Models\BaseRegistry\BaseRegistrySearch.cs" />
     <Compile Include="Models\BookingMosgorturReestrBooking.cs" />
     <Compile Include="Models\BookingMosgorturReestrDayHistoryModel.cs" />
@@ -372,6 +377,12 @@
     <Compile Include="Models\NewBout\ListModel.cs" />
     <Compile Include="Models\NewBout\ManageModel.cs" />
     <Compile Include="Models\NewBout\TasksModel.cs" />
+    <Compile Include="Models\MonitoringHotel\MonitoringHotelFilterModel.cs" />
+    <Compile Include="Models\MonitoringHotel\MonitoringHotelModel.cs" />
+    <Compile Include="Models\OrganizationCampSearchModel.cs" />
+    <Compile Include="Models\OrganizationCampViewModel.cs" />
+    <Compile Include="Models\OrganizationGBUSearchModel.cs" />
+    <Compile Include="Models\OrganizationGBUViewModel.cs" />
     <Compile Include="Models\Orphans\OrganisatorCollaboratorModel.cs" />
     <Compile Include="Models\Orphans\OrphanageCollaboratorsFilterModel.cs" />
     <Compile Include="Models\Orphans\OrphanageCollaboratorsResultListModel.cs" />
@@ -396,6 +407,7 @@
     <Compile Include="Models\PlaceOfRestListModel.cs" />
     <Compile Include="Models\PlaceOfRestsSearchModel.cs" />
     <Compile Include="Models\ProgressStatus.cs" />
+    <Compile Include="Models\RequestCopyModel.cs" />
     <Compile Include="Models\RequestFileTypeGrouping.cs" />
     <Compile Include="Models\Task\ListModel.cs" />
     <Compile Include="Models\Task\ManageModel.cs" />
@@ -435,6 +447,10 @@
     <Compile Include="Logic\StateLogic.cs" />
     <Compile Include="Models\SubjectOfRestModel.cs" />
     <Compile Include="Models\TimeOfRestModel.cs" />
+    <Compile Include="Models\TradeUnionCashback\TradeUnionCamperCashbackFilterModel.cs" />
+    <Compile Include="Models\TradeUnionCashback\TradeUnionCashbackCamperModel.cs" />
+    <Compile Include="Models\TradeUnionCashback\TradeUnionCashbackFilterModel.cs" />
+    <Compile Include="Models\TradeUnionCashback\TradeUnionCashbackModel.cs" />
     <Compile Include="Models\TradeUnion\TradeUnionCamperModel.cs" />
     <Compile Include="Models\TradeUnion\TradeUnionModel.cs" />
     <Compile Include="Models\TradeUnion\TradeUnionSearch.cs" />
@@ -473,7 +489,6 @@
     <Compile Include="Services\Contract\IVisitBookingService.cs" />
     <Compile Include="Services\Contract\IVisitSUOService.cs" />
     <Compile Include="Services\Contract\IVisitTargetsService.cs" />
-    <Compile Include="Services\Implementation\ServiceLoggingBehavior.cs" />
     <Compile Include="Services\Implementation\VisitBookingService.cs" />
     <Compile Include="Services\Implementation\VisitSUOService.cs" />
     <Compile Include="Services\Implementation\VisitTargetsService.cs" />
@@ -714,6 +729,8 @@
     <Content Include="Content\images\mosgortur-logo.png" />
     <Content Include="Content\images\mosgortur.jpg" />
     <Content Include="Content\images\mosgortur_logo.png" />
+    <Content Include="Content\images\patch-check.svg" />
+    <Content Include="Content\images\people.svg" />
     <Content Include="Content\images\social_networks\facebook_logo.png" />
     <Content Include="Content\images\social_networks\linkedin_logo.png" />
     <Content Include="Content\images\social_networks\odnoklassniki_logo.png" />
@@ -1802,6 +1819,11 @@
     <Content Include="Views\BookingMosgorturReestr\DayManage.cshtml" />
     <Content Include="Views\BookingMosgorturTargets\BookingTargetEdit.cshtml" />
     <Content Include="Views\BookingMosgorturTargets\BookingTargetList.cshtml" />
+    <Content Include="Views\FirstRequestCompany\Partials\RequestTypeOfCamp.cshtml" />
+    <Content Include="Views\FirstRequestCompany\Partials\RequestTypeOfTransport.cshtml" />
+    <Content Include="Views\TradeUnionCashback\Edit.cshtml" />
+    <Content Include="Views\TradeUnionCashback\Partials\PersonDialog.cshtml" />
+    <Content Include="Views\TradeUnionCashback\TradeUnionCamperCashbackRegistry.cshtml" />
     <Content Include="Views\GiftReserved\List.cshtml" />
     <Content Include="Views\Gift\EditorTemplates\Row.cshtml" />
     <Content Include="Views\Gift\List.cshtml" />
@@ -1818,6 +1840,7 @@
     <Content Include="Views\Shared\BaseRegistryBenefitResultData.cshtml" />
     <Content Include="Views\Task\List.cshtml" />
     <Content Include="Views\Task\Manage.cshtml" />
+    <Content Include="Views\TradeUnionCashback\List.cshtml" />
     <Content Include="Views\UniqueCard\Child.cshtml" />
     <Content Include="Views\UniqueCard\Relative.cshtml" />
     <Content Include="Web.config">
@@ -1983,6 +2006,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Services\ReplicationMessage.xsd">
       <Generator>MSDataSetGenerator</Generator>
@@ -2197,9 +2221,6 @@
     <Content Include="Views\Monitoring\EditorTemplates\Files.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -2227,10 +2248,6 @@
       <Project>{b7b0418c-522e-45d4-bc36-99e70984a1ad}</Project>
       <Name>RestChild.Extensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RestChild.Extensions\RestChild.Extensions.csproj">
-      <Project>{b7b0418c-522e-45d4-bc36-99e70984a1ad}</Project>
-      <Name>RestChild.Extensions</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RestChild.Mobile.DAL\RestChild.Mobile.DAL.csproj">
       <Project>{85329ae0-8e45-43e8-8567-9fa3abf9146a}</Project>
       <Name>RestChild.Mobile.DAL</Name>
@@ -2250,10 +2267,6 @@
     <ProjectReference Include="..\RestChild.Templates\RestChild.Templates.csproj">
       <Project>{a2047876-feb1-46e9-aab6-f834a2ea1c8e}</Project>
       <Name>RestChild.Templates</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UtilsSmev\UtilsSmev.csproj">
-      <Project>{295c4d25-269d-4cd2-a567-709d9d9a6bc1}</Project>
-      <Name>UtilsSmev</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -2339,6 +2352,7 @@
     <TypeScriptCompile Include="Scripts\Vocabulary\Country.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\DirectoryFlightsList.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\DirectoryFlightsEdit.ts" />
+    <TypeScriptCompile Include="Scripts\Vocabulary\gbu.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\HotelPrices.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\Monitoring.ChildrenNumberInformation.Edit.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\Monitoring.CompleteForms.ts" />
@@ -2362,6 +2376,7 @@
     <TypeScriptCompile Include="Scripts\Vocabulary\ToursList.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\Tour\addonServiceTab.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\Tour\TourCopyService.ts" />
+    <TypeScriptCompile Include="Scripts\Vocabulary\TradeUnionCashbackEdit.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\TransportEdit.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\TransportList.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\TypeOfRest.ts" />
@@ -2463,7 +2478,8 @@
   </Target>
   <Import Project="..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets')" />
   <PropertyGroup>
-    <PreBuildEvent>git rev-parse --verify HEAD &gt; "$(ProjectDir)CurrentCommit.txt"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

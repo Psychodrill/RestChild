@@ -275,6 +275,8 @@ namespace RestChild.Extensions.Extensions
                     return "получение адреса регистрации";
                 case ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck:
                     return "проверку законного представительства";
+                case ExchangeBaseRegistryTypeEnum.FRIExchange:
+                    return "проверку сведений ФРИ";
             }
 
             return "-";
@@ -635,6 +637,16 @@ namespace RestChild.Extensions.Extensions
                     if (!string.IsNullOrWhiteSpace(xmlData))
                     {
                         res.SnilsInfo = Serialization.Deserialize<SnilsByAdditionalDataResponse>(xmlData);
+                    }
+                }
+
+                // проверка в ФРИ
+                if (res.Type == ExchangeBaseRegistryTypeEnum.FRIExchange)
+                {
+                    var xmlData = resultData.FirstOrDefault()?.OuterXml;
+                    if (!string.IsNullOrWhiteSpace(xmlData))
+                    {
+                        res.FRIResponse = Serialization.Deserialize<DisabilityExtractResponse>(xmlData);
                     }
                 }
             }

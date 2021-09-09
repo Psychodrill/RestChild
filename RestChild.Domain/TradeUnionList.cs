@@ -51,6 +51,14 @@ namespace RestChild.Domain
       [DataMember(Name = "dateTo", EmitDefaultValue = false)]
       public virtual DateTime? DateTo { get; set; }
       
+      /// <summary>
+      /// Используется в Кэшбэке
+      /// </summary>
+      [Display(Description = "Используется в Кэшбэке")]
+      [Required(ErrorMessage = "\"Используется в Кэшбэке\" должно быть заполнено")]
+      [DataMember(Name = "isCashbackUse", EmitDefaultValue = false)]
+      public virtual bool IsCashbackUse { get; set; }
+      
       
       /// <summary>
       /// Список отдыхающих

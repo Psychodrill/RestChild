@@ -24,7 +24,7 @@
         food_adds.Add("Без особенностей питания");
     }
 
-    string cColor = string.Empty;
+    var cColor = string.Empty;
     if (Model.Data.Pupil.Foul)
     {
         cColor = "#FCFBC2";
@@ -41,7 +41,7 @@
     @Html.HiddenFor(m => m.Data.Id)
     @Html.HiddenFor(m => m.Data.PupilId, new { @class = "ppkey" })
     <td>
-        <a target="_blank" href="@Url.Action("OrphanagePupilEdit", "Orphan", new {pupilId = Model.Data.Pupil.EntityId ?? Model.Data.PupilId })">@Model.Data.Pupil.Child.GetFio()</a>
+        <span class="numerator"></span> <a target="_blank" href="@Url.Action("OrphanagePupilEdit", "Orphan", new {pupilId = Model.Data.Pupil.EntityId ?? Model.Data.PupilId })">@Model.Data.Pupil.Child.GetFio()</a>
         <h6>@Model.Data.Pupil.Child.DateOfBirth.FormatEx()</h6>
         <h6>@Html.Raw(string.Join("</br>", food_adds))</h6>
     </td>
@@ -54,18 +54,18 @@
                 @Html.HiddenFor(m => m.DrugDoses[dose.Key].Id)
                 @(string.Format("{0} ({1})", Model.DrugDoses[dose.Key].Dose.Drug.Name, Model.DrugDoses[dose.Key].Dose.Drug.DrugType.Name))<br />
                 @:Условия хранения: @Model.DrugDoses[dose.Key].Dose.Drug.Storage<br />
-                @Html.TextBoxFor(m => m.DrugDoses[dose.Key].DrugQuantity, new { @class = "form-control" }).DisableIf(() => !isEditable)
+                @Html.TextBoxFor(m => m.DrugDoses[dose.Key].DrugQuantity, new { @class = "form-control" }).DisableIf(!isEditable)
             }
         }
     </td>
     <td class="text-center">
-        @Html.CheckBoxFor(m => m.Data.TicketTo).DisableIf(() => !isEditable)
+        @Html.CheckBoxFor(m => m.Data.TicketTo).DisableIf(!isEditable)
     </td>
     <td class="text-center">
-        @Html.CheckBoxFor(m => m.Data.TicketFrom).DisableIf(() => !isEditable)
+        @Html.CheckBoxFor(m => m.Data.TicketFrom).DisableIf(!isEditable)
     </td>
     <td>
-        @Html.DropDownListFor(m => m.Data.OrganisatonAddresId, possibleTransferAdresses, new { @class = "form-control select2 possibleTransferOrganisatonAddresId" }).DisableIf(() => !isEditable)
+        @Html.DropDownListFor(m => m.Data.OrganisatonAddresId, possibleTransferAdresses, new { @class = "form-control select2 possibleTransferOrganisatonAddresId" }).DisableIf(!isEditable)
     </td>
     <td>
         @if (isEditable)

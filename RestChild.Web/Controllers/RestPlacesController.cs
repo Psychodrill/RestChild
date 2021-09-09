@@ -30,9 +30,9 @@ namespace RestChild.Web.Controllers
         /// <returns>
         ///     The <see cref="ActionResult" />.
         /// </returns>
-        public ActionResult Index()
+        public override ActionResult Index()
         {
-            return RedirectToAction("Search");
+            return RedirectToAction(nameof(Search));
         }
 
         /// <summary>

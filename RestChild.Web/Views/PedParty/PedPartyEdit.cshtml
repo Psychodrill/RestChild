@@ -1,4 +1,4 @@
-﻿@using RestChild.Web.App_Code
+﻿@using RestChild.Web.Extensions
 @model RestChild.Web.Models.PedParty.PedPartyModel
 
 @{
@@ -37,7 +37,7 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label text-right">Название<span class="requared">*</span></label>
 					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.Name, new {@class = "form-control", autocomplete = "off"}).DisableIf(() => !Model.IsEditable)
+						@Html.TextBoxFor(model => model.Data.Name, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
 						@Html.ValidationMessageFor(model => model.Data.Name, "Заполните поле")
 					</div>
 				</div>
@@ -45,7 +45,7 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label text-right">Город<span class="requared">*</span></label>
 					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.City, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.TextBoxFor(model => model.Data.City, new { @class = "form-control", autocomplete = "off" }).DisableIf(!Model.IsEditable)
 						@Html.ValidationMessageFor(model => model.Data.City, "Заполните поле")
 					</div>
 				</div>

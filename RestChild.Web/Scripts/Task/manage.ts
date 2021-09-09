@@ -7,6 +7,10 @@
         clearIncomplete: true
     });
 
+    $("#mainForm").submit(function (){
+        $("#saveBtn").prop("disabled", true);
+    })
+
     $('.ts-type').on('change', (e)=>{
         let $e = $(e.target).closest('input');
         if (!$e.prop('checked'))

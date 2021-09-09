@@ -62,6 +62,14 @@ namespace RestChild.Domain
       [DataMember(Name = "inn", EmitDefaultValue = false)]
       public virtual string Inn { get; set; }
       
+      /// <summary>
+      /// Удалено
+      /// </summary>
+      [Display(Description = "Удалено")]
+      [Required(ErrorMessage = "\"Удалено\" должно быть заполнено")]
+      [DataMember(Name = "isDeleted", EmitDefaultValue = false)]
+      public virtual bool IsDeleted { get; set; }
+      
       
       /// <summary>
       /// Адрес лагеря мониторинга
@@ -98,6 +106,22 @@ namespace RestChild.Domain
       [InverseProperty("Hotel")]
       [DataMember(Name = "hotelDatas", EmitDefaultValue = false)]
       public virtual ICollection<MonitoringHotelData> HotelDatas { get; set; }
+      
+      /// <summary>
+      /// Мониторинг. Оздоровительные организации. Связь с историей.
+      /// </summary>
+      [ForeignKey("HistoryLink")]
+      [DataMember(Name = "historyLinkId")]
+      [Display(Description = "Мониторинг. Оздоровительные организации. Связь с историей.")]
+      public virtual long? HistoryLinkId { get; set; }
+      
+      
+      /// <summary>
+      /// Мониторинг. Оздоровительные организации. Связь с историей.
+      /// </summary>
+      [Display(Description = "Мониторинг. Оздоровительные организации. Связь с историей.")]
+      [DataMember(Name = "historyLink", EmitDefaultValue = false)]
+      public virtual HistoryLink HistoryLink { get; set; }
 
       /// <summary>
       /// Последнее сохранение

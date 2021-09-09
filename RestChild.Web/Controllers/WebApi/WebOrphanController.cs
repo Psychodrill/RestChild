@@ -133,7 +133,7 @@ namespace RestChild.Web.Controllers.WebApi
             var pageNumber = filter.PageNumber;
             var startRecord = (pageNumber - 1) * pageSize;
 
-            var query = UnitOfWork.GetSet<OrganisatorCollaborator>().Where(ss => !ss.Applicant.IsDeleted && (ss.OrganisatonAddress.OrganisationId == filter.OrphanageId || ss.OrganisatonId == filter.OrphanageId) && (ss.EntityId == null || ss.EntityId == ss.Id)).AsQueryable();
+            var query = UnitOfWork.GetSet<OrganisatorCollaborator>().Where(ss => (ss.OrganisatonAddress.OrganisationId == filter.OrphanageId || ss.OrganisatonId == filter.OrphanageId) && (ss.EntityId == null || ss.EntityId == ss.Id)).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filter.Name))
             {
@@ -142,6 +142,11 @@ namespace RestChild.Web.Controllers.WebApi
                 {
                     query = query.Where(ss => ss.Applicant.FirstName.ToLower().Contains(nm.ToLower()) || ss.Applicant.LastName.ToLower().Contains(nm.ToLower()) || ss.Applicant.MiddleName.ToLower().Contains(nm.ToLower()));
                 }
+            }
+
+            if (!filter.Deleted)
+            {
+                query = query.Where(ss => !ss.Applicant.IsDeleted);
             }
 
             var totalCount = query.Count();
@@ -154,7 +159,8 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 Id = ss.Id,
                 Name = (ss.Applicant.LastName + " " + ss.Applicant.FirstName + " " + ss.Applicant.MiddleName).Trim(),
-                Position = ss.OrganisationPosition
+                Position = ss.OrganisationPosition,
+                IsDeleted = ss.Applicant.IsDeleted
             }).ToList();
 
             return new CommonPagedList<OrphanageCollaboratorsResultListModel>(entity, pageNumber, pageSize, totalCount);
@@ -225,9 +231,14 @@ namespace RestChild.Web.Controllers.WebApi
                 query = query.Where(ss => ss.Filled);
             }
 
+            if (!filter.Deleted)
+            {
+                query = query.Where(ss => !ss.Child.IsDeleted);
+            }
+
             var totalCount = query.Count();
 
-            query = query.OrderBy(ss => ss.Child.LastName);
+            query = query.OrderBy(ss => ss.Child.LastName).ThenBy(ss => ss.Child.FirstName).ThenBy(ss => ss.Child.MiddleName);
 
             query = query.Skip(startRecord).Take(pageSize);
 
@@ -235,7 +246,8 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 Id = ss.Id,
                 Name = (ss.Child.LastName + " " + ss.Child.FirstName + " " + ss.Child.MiddleName).Trim(),
-                DateOfBirth = ss.Child.DateOfBirth
+                DateOfBirth = ss.Child.DateOfBirth,
+                IsDeleted = ss.Child.IsDeleted
             }).ToList();
 
 
@@ -245,23 +257,20 @@ namespace RestChild.Web.Controllers.WebApi
         /// <summary>
         ///     Поиск групп (потребностей)
         /// </summary>
-        internal void FillGroups(OrphanageGroupsFilterModel filter, int pageSize = -1)
+        internal void FillGroups(OrphanageGroupsFilterModel filter)
         {
-            var query = PrepareQueryPupilGroup(filter, pageSize);
+            var query = PrepareQueryPupilGroup(filter);
 
             var totalCount = query.Count();
 
-            if (pageSize > 0)
+            if (filter.PageSize > 0)
             {
-                var pageNumber = filter.PageNumber;
-                var startRecord = (pageNumber - 1) * pageSize;
-
-                query = query.Skip(startRecord).Take(pageSize);
+                query = query.Skip(filter.StartRecord).Take(filter.PageSize);
             }
 
             var result = query.ToList();
 
-            filter.Result = new CommonPagedList<OrphanageGroupsResultListModel>(result.Select(ss =>
+            filter.Results = new CommonPagedList<OrphanageGroupsResultListModel>(result.Select(ss =>
                     new OrphanageGroupsResultListModel
                     {
                         Id = ss.Id,
@@ -274,7 +283,7 @@ namespace RestChild.Web.Controllers.WebApi
                         RegionsOfRest =
                             ss.Requests?.Select(sx => sx.PlaceOfRest?.Name + " " + sx.TimeOfRest?.Name).ToList() ??
                             new List<string>(0)
-                    }).ToList(), filter.PageNumber, pageSize > 0 ? pageSize : Math.Max(10, totalCount), totalCount);
+                    }).ToList(), filter.PageNumber, filter.PageSize > 0 ? filter.PageSize : Math.Max(10, totalCount), totalCount);
 
 
             filter.YearsOfRest = UnitOfWork.GetSet<YearOfRest>().Where(ss => !ss.IsClosed || ss.Id == filter.YearOfRest)
@@ -295,10 +304,9 @@ namespace RestChild.Web.Controllers.WebApi
         /// <summary>
         ///     Поиск групп (потребностей) формирование запроса
         /// </summary>
-        internal IQueryable<PupilGroup> PrepareQueryPupilGroup(OrphanageGroupsFilterModel filter, int pageSize = -1)
+        internal IQueryable<PupilGroup> PrepareQueryPupilGroup(OrphanageGroupsFilterModel filter)
         {
-            var query = UnitOfWork.GetSet<PupilGroup>()
-                .Where(ss => ss.StateId != StateMachineStateEnum.PupilGroup.Deleted).AsQueryable();
+            var query = UnitOfWork.GetSet<PupilGroup>().AsQueryable();
 
             if (!filter.OrphanageId.HasValue)
             {
@@ -340,6 +348,10 @@ namespace RestChild.Web.Controllers.WebApi
             if (filter.StateId.HasValue && filter.StateId.Value > 0)
             {
                 query = query.Where(ss => ss.StateId == filter.StateId);
+            }
+            else
+            {
+                query = query.Where(ss => ss.StateId != StateMachineStateEnum.PupilGroup.Deleted);
             }
 
             if (filter.TimeOfRest.HasValue && filter.TimeOfRest.Value > 0)
@@ -404,7 +416,7 @@ namespace RestChild.Web.Controllers.WebApi
                 .ToDictionary(ss => ss.Id, sx => sx.Name);
             filter.FormsOfRest = UnitOfWork.GetSet<FormOfRest>().Where(ss => !ss.IsDeleted).ToDictionary(ss => ss.Id, sx => sx.Name);
             filter.States = UnitOfWork.GetSet<StateMachineState>()
-                .Where(ss => ss.StateMachineId == (long)StateMachineEnum.LimitListState)
+                .Where(ss => ss.StateMachineId == (long)StateMachineEnum.LimitListState && ss.Id >= StateMachineStateEnum.PupilGroupList.Formation )
                 .ToDictionary(ss => ss.Id, sx => sx.Name);
             filter.OrphanageName = UnitOfWork.GetSet<Organization>().Where(ss => ss.Id == filter.OrphanageId).Select(ss => ss.Name).FirstOrDefault();
         }

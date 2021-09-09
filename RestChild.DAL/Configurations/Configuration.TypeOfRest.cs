@@ -173,7 +173,7 @@ namespace RestChild.DAL.Configurations
                 new TypeOfRest
                 {
                     Id = (long) TypeOfRestEnum.ChildRestCamps,
-                    Name = "Стационарный детский лагерь, 7-15 лет",
+                    Name = "Детский лагерь, 7-15 лет",
                     IsActive = true,
                     ParentId = parent1.Id,
                     ForMPGU = true,
@@ -202,7 +202,7 @@ namespace RestChild.DAL.Configurations
                 {
                     Id = (long) TypeOfRestEnum.ChildRestOrphanCamps,
                     Name =
-                        "Стационарный детский лагерь для детей-сирот и детей, оставшихся без попечения родителей, находящихся под опекой, попечительством, в том числе в приемной или патронатной семье, 7-17 лет",
+                        "Детский лагерь для детей-сирот и детей, оставшихся без попечения родителей, находящихся под опекой, попечительством, в том числе в приемной или патронатной семье, 7-17 лет",
                     IsActive = true,
                     ParentId = parent1.Id,
                     ForMPGU = true,
@@ -230,9 +230,9 @@ namespace RestChild.DAL.Configurations
                 {
                     Id = (long) TypeOfRestEnum.TentChildrenCamp,
                     Name = "Палаточный детский лагерь, 7-15 лет",
-                    IsActive = true,
+                    IsActive = false,
                     ParentId = parent1.Id,
-                    ForMPGU = true,
+                    ForMPGU = false,
                     ServiceCode = "048001",
                     NeedApplicant = true,
                     NeedAttendant = false,
@@ -259,9 +259,9 @@ namespace RestChild.DAL.Configurations
                     Id = (long) TypeOfRestEnum.TentChildrenCampOrphan,
                     Name =
                         "Палаточный детский лагерь для детей-сирот и детей, оставшихся без попечения родителей, находящихся под опекой, попечительством, в том числе в приемной или патронатной семье, 7-17 лет",
-                    IsActive = true,
+                    IsActive = false,
                     ParentId = parent1.Id,
-                    ForMPGU = true,
+                    ForMPGU = false,
                     ServiceCode = "048001",
                     NeedApplicant = true,
                     NeedAttendant = false,
@@ -365,7 +365,8 @@ namespace RestChild.DAL.Configurations
                     FirstRequestCompanySelect = true,
                     ServiceCodeFirstCompany = "048003",
                     MayBeMoney = false,
-                    HotelTypeId = (long) HotelTypeEnum.Hotel
+                    HotelTypeId = (long) HotelTypeEnum.Hotel,
+                    NeedTypeOfTransport = true
                 },
                 new TypeOfRest
                 {
@@ -394,7 +395,8 @@ namespace RestChild.DAL.Configurations
                     ForTour = false,
                     ServiceCodeFirstCompany = "048003",
                     HotelTypeId = (long) HotelTypeEnum.Hotel,
-                    MayBeMoney = false
+                    MayBeMoney = false,
+                    NeedTypeOfTransport = true
                 },
                 new TypeOfRest
                 {
@@ -422,7 +424,8 @@ namespace RestChild.DAL.Configurations
                     NeedBookingDate = true,
                     ForTour = false,
                     ServiceCodeFirstCompany = "048003",
-                    HotelTypeId = (long) HotelTypeEnum.Hotel
+                    HotelTypeId = (long) HotelTypeEnum.Hotel,
+                    NeedTypeOfTransport = true
                 },
                 new TypeOfRest
                 {
@@ -451,7 +454,8 @@ namespace RestChild.DAL.Configurations
                     NeedBookingDate = true,
                     ForTour = false,
                     MayBeMoney = false,
-                    HotelTypeId = (long) HotelTypeEnum.Hotel
+                    HotelTypeId = (long) HotelTypeEnum.Hotel,
+                    NeedTypeOfTransport = true
                 },
                 new TypeOfRest
                 {
@@ -562,7 +566,7 @@ namespace RestChild.DAL.Configurations
                 new TypeOfRest
                 {
                     Id = (long) TypeOfRestEnum.MoneyOn3To7,
-                    Name = "Сертификат на совместный отдых и оздоровление для детей из малообеспеченных семей, 3-7 лет",
+                    Name = "Сертификат для детей из малообеспеченных семей, 3-7 лет, и сопровождающих лиц",
                     IsActive = true,
                     ParentId = parent16.Id,
                     ForMPGU = true,
@@ -618,8 +622,7 @@ namespace RestChild.DAL.Configurations
                 new TypeOfRest
                 {
                     Id = (long) TypeOfRestEnum.MoneyOnInvalidOn4To17,
-                    Name =
-                        "Сертификат на совместный отдых и оздоровление для детей-инвалидов, детей с ограниченными возможностями здоровья, 4-17 лет",
+                    Name = "Сертификат для детей-инвалидов, детей с ограниченными возможностями здоровья, 4-17 лет, и сопровождающих лиц",
                     IsActive = true,
                     ParentId = parent16.Id,
                     ForMPGU = true,

@@ -63,6 +63,11 @@
         /// <summary>
         ///     Проверка законного представительства внутри АИС ДО
         /// </summary>
-        AisoLegalRepresentationCheck = -2
+        AisoLegalRepresentationCheck = -2,
+
+        /// <summary>
+        ///     Проверка в ФРИ сведений об инвалидности
+        /// </summary>
+        FRIExchange = 2043
     }
 }

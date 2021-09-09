@@ -137,6 +137,9 @@ namespace RestChild.Web.Logic.AnalyticReport
                 case EGISO:
                     excelTable = UnitOfWork.GetEGISO(filter);
                     break;
+                case AccessRightEnum.AnalyticReports.RoomsFund:
+                    excelTable = UnitOfWork.GetRoomsFund(filter);
+                    break;
                 default:
 					throw new ArgumentOutOfRangeException(nameof(filter.ReportType));
 			}

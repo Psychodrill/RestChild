@@ -19,5 +19,10 @@
         ///     Должность
         /// </summary>
         public string Position { get; set; }
+
+        /// <summary>
+        ///     Удален
+        /// </summary>
+        public bool IsDeleted { get; set; }
     }
 }

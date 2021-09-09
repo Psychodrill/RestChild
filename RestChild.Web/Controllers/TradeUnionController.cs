@@ -251,6 +251,11 @@ namespace RestChild.Web.Controllers
                 State = UnitOfWork.GetById<StateMachineState>(StateMachineStateEnum.TradeUnion.Edit)
             };
 
+            if (entity.IsCashbackUse)
+            {
+                return RedirectToAvalibleAction();
+            }
+
             var actions = entity.Id == 0
                 ? new List<StateMachineAction>()
                 : ApiStateController.GetActions(entity.State, StateMachineEnum.TradeUnionList);
@@ -359,7 +364,7 @@ namespace RestChild.Web.Controllers
                     IconClass = "glyphicon-print",
                     Controller = "TradeUnion",
                     Action = "Word",
-                    ActionParameters = new { id = model.Data.Id, cameChildren = true }
+                    ActionParameters = new {id = model.Data.Id, cameChildren = true}
                 });
             }
 
@@ -386,7 +391,7 @@ namespace RestChild.Web.Controllers
             {
                 foreach (var camper in model.Data.Campers)
                 {
-                    if(camper.Child.PersonCheck.Any(pc => pc.PersonCheckResults.Any()))
+                    if (camper.Child.PersonCheck.Any(pc => pc.PersonCheckResults.Any()))
                     {
                         var camps = camper.Child.PersonCheck.SelectMany(sx => sx.PersonCheckResults).ToList();
                         model.DoubleChildren.AddRange(camps);
@@ -395,14 +400,15 @@ namespace RestChild.Web.Controllers
                     if (camper.Child.PersonCheckResults.Any(ss => ss.IsProcessed && !ss.NotActual))
                     {
                         var personIds = new List<long>();
-                        foreach (var pcr in camper.Child.PersonCheckResults.Where(ss => ss.IsProcessed && !ss.NotActual).ToList())
+                        foreach (var pcr in camper.Child.PersonCheckResults.Where(ss => ss.IsProcessed && !ss.NotActual)
+                            .ToList())
                         {
                             personIds.Add(pcr.PersonId.Value);
                             personIds.AddRange(pcr.PersonCheckResults.Select(ss => ss.Id).ToList());
                         }
 
                         var persIds = personIds.Distinct().Where(sx =>
-                                sx != camper.ChildId && model.DoubleChildren.All(sa => sa.Id != sx)).ToList();
+                            sx != camper.ChildId && model.DoubleChildren.All(sa => sa.Id != sx)).ToList();
 
                         var persons = UnitOfWork.GetSet<Person>().Where(ss => persIds
                             .Any(sx => ss.Id == sx)).ToList();
@@ -440,9 +446,9 @@ namespace RestChild.Web.Controllers
             var entity = await UnitOfWork.GetByIdAsync<TradeUnionCamper>(id, CancellationToken.None);
 
             this.WriteHistory(entity.TradeUnion.HistoryLink, "Удаление ребёнка",
-                $"Удалён ребёнок {GetChildName(entity)}");
+                $"Удалён ребёнок {GetChildName(UnitOfWork, entity)}");
 
-            DeleteCamper(entity);
+            DeleteCamper(UnitOfWork, entity);
 
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
 
@@ -475,7 +481,7 @@ namespace RestChild.Web.Controllers
             }
 
             var persisted = tradeUnion.Campers.FirstOrDefault(c => c.Id == data.Id);
-            var diff = persisted == null ? "" : GetChildDiff(persisted, data);
+            var diff = persisted == null ? "" : GetChildDiff(UnitOfWork, persisted, data);
 
             if (persisted != null && string.IsNullOrWhiteSpace(diff))
             {
@@ -485,13 +491,13 @@ namespace RestChild.Web.Controllers
             }
 
             diff = persisted == null
-                ? $"<ul><li>Добавлен ребёнок: {GetChildName(data)}</li></ul>"
-                : $"<ul><li>Изменен ребёнок: {GetChildName(persisted)} <ul>{diff}</ul></li></ul>";
+                ? $"<ul><li>Добавлен ребёнок: {GetChildName(UnitOfWork, data)}</li></ul>"
+                : $"<ul><li>Изменен ребёнок: {GetChildName(UnitOfWork, persisted)} <ul>{diff}</ul></li></ul>";
 
             tradeUnion.HistoryLink = this.WriteHistory(tradeUnion.HistoryLink, "Сохранение списка",
                 diff);
 
-            persisted = SaveCamper(persisted, data);
+            persisted = SaveCamper(UnitOfWork, persisted, data);
 
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
             UnitOfWork.DetachAllEntitys();
@@ -563,7 +569,7 @@ namespace RestChild.Web.Controllers
                 {
                     foreach (var camper in entity.Campers)
                     {
-                        SetPersonToDoubleCheck(camper);
+                        SetPersonToDoubleCheck(UnitOfWork, camper);
                     }
                 }
 
@@ -576,7 +582,7 @@ namespace RestChild.Web.Controllers
                 if (isEditable)
                 {
                     persisted.HistoryLink = this.WriteHistory(persisted.HistoryLink, "Сохранение списка",
-                        GetDiff(entity, persisted));
+                        GetDiff(UnitOfWork, entity, persisted));
                     persisted.LastUpdateTick = DateTime.Now.Ticks;
                     persisted.HistoryLinkId = persisted.HistoryLink?.Id;
                     persisted.CopyEntity(entity);
@@ -704,9 +710,9 @@ namespace RestChild.Web.Controllers
         }
 
         /// <summary>
-        /// удаление ребёнка
+        ///     удаление ребёнка
         /// </summary>
-        private void DeleteCamper(TradeUnionCamper camper)
+        internal static void DeleteCamper(IUnitOfWork UnitOfWork, TradeUnionCamper camper)
         {
             if (camper.Child != null)
             {
@@ -751,7 +757,7 @@ namespace RestChild.Web.Controllers
         /// <summary>
         /// сохранение ребёнка
         /// </summary>
-        private TradeUnionCamper SaveCamper(TradeUnionCamper entity, TradeUnionCamper camper)
+        internal static TradeUnionCamper SaveCamper(IUnitOfWork UnitOfWork, TradeUnionCamper entity, TradeUnionCamper camper, bool setDCheck = true)
         {
             if (camper.TradeUnionStatusByChildId <= 0)
             {
@@ -774,7 +780,11 @@ namespace RestChild.Web.Controllers
             if (camper.Id == 0)
             {
                 var c = UnitOfWork.AddEntity(camper, false);
-                SetPersonToDoubleCheck(c);
+                if (setDCheck)
+                {
+                    SetPersonToDoubleCheck(UnitOfWork, c);
+                }
+
                 return c;
             }
 
@@ -783,8 +793,11 @@ namespace RestChild.Web.Controllers
             entity?.Unionist?.CopyEntity(camper.Unionist);
             entity?.Parent?.CopyEntity(camper.Parent);
 
-            //запустить проверку на дубли
-            SetPersonToDoubleCheck(camper);
+            if (setDCheck)
+            {
+                //запустить проверку на дубли
+                SetPersonToDoubleCheck(UnitOfWork, camper);
+            }
 
             return entity;
         }
@@ -804,7 +817,7 @@ namespace RestChild.Web.Controllers
             }
         }
 
-        public string GetChildName(TradeUnionCamper camper)
+        public static string GetChildName(IUnitOfWork UnitOfWork, TradeUnionCamper camper)
         {
             if (camper == null)
             {
@@ -829,7 +842,7 @@ namespace RestChild.Web.Controllers
             foreach (var camper in persited.Campers.Where(a => !ticketsIds.Contains(a.Id)).ToList())
             {
                 res.AppendLine(
-                    $"<li>Удален ребёнок: {GetChildName(camper)}</li>");
+                    $"<li>Удален ребёнок: {GetChildName(UnitOfWork, camper)}</li>");
             }
 
             foreach (var camper in entity.Campers)
@@ -840,18 +853,18 @@ namespace RestChild.Web.Controllers
                 if (camper.Id == 0)
                 {
                     res.AppendLine(
-                        $"<li>Добавлен ребёнок: {GetChildName(camper)}</li>");
+                        $"<li>Добавлен ребёнок: {GetChildName(UnitOfWork, camper)}</li>");
                 }
                 else
                 {
                     var saved = persited.Campers.FirstOrDefault(a => a.Id == camper.Id);
                     if (saved != null)
                     {
-                        var ss = GetChildDiff(saved, camper);
+                        var ss = GetChildDiff(UnitOfWork, saved, camper);
                         if (!string.IsNullOrWhiteSpace(ss))
                         {
                             res.AppendLine(
-                                $"<li>Изменен ребёнок: {GetChildName(saved)} <ul>{ss}</ul></li>");
+                                $"<li>Изменен ребёнок: {GetChildName(UnitOfWork, saved)} <ul>{ss}</ul></li>");
                         }
                     }
                 }
@@ -863,7 +876,7 @@ namespace RestChild.Web.Controllers
         /// <summary>
         /// получить различия в ребёнке
         /// </summary>
-        private string GetChildDiff(TradeUnionCamper entity, TradeUnionCamper camper)
+        internal static string GetChildDiff(IUnitOfWork UnitOfWork, TradeUnionCamper entity, TradeUnionCamper camper)
         {
             var subRes = new StringBuilder();
 
@@ -1124,10 +1137,58 @@ namespace RestChild.Web.Controllers
                     $"<li>Изменен признак заехал старое значение:'{entity.IsChecked.FormatEx()}', новое значение:'{camper.IsChecked.FormatEx()}'</li>");
             }
 
+            if (entity.NullSafe(r => r.CashbackEstimatedAmount) != camper.NullSafe(r => r.CashbackEstimatedAmount))
+            {
+                subRes.AppendLine(
+                    $"<li>Изменено поле 'Расчетная сумма кэшбека' старое значение:'{entity.NullSafe(r => r.CashbackEstimatedAmount).FormatEx()}', новое значение:'{camper.NullSafe(r => r.CashbackEstimatedAmount).FormatEx()}'</li>");
+            }
+
+            if (entity.NullSafe(r => r.CashbackBaseEstimatedAmount) != camper.NullSafe(r => r.CashbackBaseEstimatedAmount))
+            {
+                subRes.AppendLine(
+                    $"<li>Изменено поле 'База для расчета суммы кэшбека' старое значение:'{entity.NullSafe(r => r.CashbackBaseEstimatedAmount).FormatEx()}', новое значение:'{camper.NullSafe(r => r.CashbackBaseEstimatedAmount).FormatEx()}'</li>");
+            }
+
+            if (entity.NullSafe(r => r.ContractDate) != camper.NullSafe(r => r.ContractDate))
+            {
+                subRes.AppendLine(
+                    $"<li>Изменено поле 'Дата заключения договора' старое значение:'{entity.NullSafe(r => r.ContractDate).FormatEx()}', новое значение:'{camper.NullSafe(r => r.ContractDate).FormatEx()}'</li>");
+            }
+
+            if (entity.NullSafe(r => r.ContractNumber) != camper.NullSafe(r => r.ContractNumber))
+            {
+                subRes.AppendLine(
+                    $"<li>Изменено поле 'Номер договора' старое значение:'{entity.NullSafe(r => r.ContractNumber).FormatEx()}', новое значение:'{camper.NullSafe(r => r.ContractNumber).FormatEx()}'</li>");
+            }
+
+            if (entity.NullSafe(r => r.FactDateIn) != camper.NullSafe(r => r.FactDateIn))
+            {
+                subRes.AppendLine(
+                    $"<li>Изменено поле 'Фактическая дата заезда' старое значение:'{entity.NullSafe(r => r.FactDateIn).FormatEx()}', новое значение:'{camper.NullSafe(r => r.FactDateIn).FormatEx()}'</li>");
+            }
+
+            if (entity.NullSafe(r => r.FactDateOut) != camper.NullSafe(r => r.FactDateOut))
+            {
+                subRes.AppendLine(
+                    $"<li>Изменено поле 'Фактическая дата выезда' старое значение:'{entity.NullSafe(r => r.FactDateOut).FormatEx()}', новое значение:'{camper.NullSafe(r => r.FactDateOut).FormatEx()}'</li>");
+            }
+
+            if (entity.NullSafe(r => r.CashbackRequested) != camper.NullSafe(r => r.CashbackRequested))
+            {
+                subRes.AppendLine(
+                    $"<li>Изменено поле 'Кэшбек запрашивался' старое значение:'{entity.NullSafe(r => r.CashbackRequested).FormatEx()}', новое значение:'{camper.NullSafe(r => r.CashbackRequested).FormatEx()}'</li>");
+            }
+
+            if (entity.NullSafe(r => r.PrivilegePartId)  != camper.NullSafe(r => r.PrivilegePartId ))
+            {
+                subRes.AppendLine(
+                    $"<li>Изменено поле 'Наименование' старое значение:'{entity.NullSafe(r => r.PrivilegePart.Name).FormatEx()}', новое значение:'{camper.NullSafe(r => r.PrivilegePart.Name).FormatEx()}'</li>");
+            }
+
             return subRes.ToString();
         }
 
-        private string GetDiff(TradeUnionList entity, TradeUnionList persisted)
+        internal static string GetDiff(IUnitOfWork UnitOfWork, TradeUnionList entity, TradeUnionList persisted)
         {
             var sb = new StringBuilder();
 
@@ -1162,15 +1223,21 @@ namespace RestChild.Web.Controllers
             }
 
             // Профсоюз перенесен в сведения детей (теперь множественно).
-            /*if (persisted.TradeUnionId != entity.TradeUnionId)
-			{
-				sb.AppendLine(
-					$"<li>Изменен профсоюз по старое значение:'{persisted.TradeUnion?.Name}', новое значение:'{UnitOfWork.GetById<Organization>(entity.TradeUnionId)?.Name}'</li>");
-			}*/
+            // if (persisted.TradeUnionId != entity.TradeUnionId)
+            // {
+            //     sb.AppendLine($"<li>Изменен профсоюз по старое значение:'{persisted.TradeUnion?.Name}', новое значение:'{UnitOfWork.GetById<Organization>(entity.TradeUnionId)?.Name}'</li>");
+            // }
+
             if (persisted.GroupedTimeOfRestId != entity.GroupedTimeOfRestId)
             {
                 sb.AppendLine(
                     $"<li>Изменена смена старое значение:'{persisted.GroupedTimeOfRest?.Name}', новое значение:'{UnitOfWork.GetById<GroupedTimeOfRest>(entity.GroupedTimeOfRestId)?.Name}'</li>");
+            }
+
+            if (persisted.NullSafe(r => r.IsCashbackUse) != entity.NullSafe(r => r.IsCashbackUse))
+            {
+                sb.AppendLine(
+                    $"<li>Изменено поле 'Используется в Кэшбэке' старое значение:'{persisted.NullSafe(r => r.IsCashbackUse).FormatEx()}', новое значение:'{entity.NullSafe(r => r.IsCashbackUse).FormatEx()}'</li>");
             }
 
             //sb.AppendLine(GetChildrenDiff(persisted, entity));
@@ -1223,7 +1290,7 @@ namespace RestChild.Web.Controllers
                 .Include(t => t.Camp)
                 .Include(t => t.Campers)
                 .Include(t => t.State)
-                .Where(s => s.StateId.HasValue && s.StateId != StateMachineStateEnum.Deleted)
+                .Where(s => s.StateId.HasValue && s.StateId != StateMachineStateEnum.Deleted && !s.IsCashbackUse)
                 .Where(q => q.YearOfRestId == search.YearOfRestId);
 
             if (!Security.HasRight(AccessRightEnum.TradeUnionList.View))
@@ -1288,7 +1355,7 @@ namespace RestChild.Web.Controllers
         /// <summary>
         ///     Подготовка адреса к сохранению записи ребенка.
         /// </summary>
-        private void AddressPrepareForSave(Person postedCamperChild, IUnitOfWork unitOfWork)
+        private static void AddressPrepareForSave(Person postedCamperChild, IUnitOfWork unitOfWork)
         {
             if (postedCamperChild.Address != null)
             {
@@ -1319,7 +1386,7 @@ namespace RestChild.Web.Controllers
 
                 if (postedCamperChild.Address.Id == 0)
                 {
-                    var a = UnitOfWork.AddEntity(postedCamperChild.Address);
+                    var a = unitOfWork.AddEntity(postedCamperChild.Address);
                     postedCamperChild.Address = a;
                     postedCamperChild.AddressId = a.Id;
                 }
@@ -1347,7 +1414,7 @@ namespace RestChild.Web.Controllers
         /// <summary>
         ///     Запустить проверку на дубли ребёнка (персоны)
         /// </summary>
-        private void SetPersonToDoubleCheck(TradeUnionCamper camper)
+        private static void SetPersonToDoubleCheck(IUnitOfWork UnitOfWork, TradeUnionCamper camper)
         {
             UnitOfWork.GetSet<TradeUnionPersonCheck>().Where(f =>
                     f.PersonId == camper.ChildId &&
@@ -1360,7 +1427,7 @@ namespace RestChild.Web.Controllers
             UnitOfWork.AddEntity(new TradeUnionPersonCheck
             {
                 PersonId = camper.ChildId,
-                PersonCheckType = (long)TradeUnionPersonCheckTypeEnum.ApplicantDouble
+                PersonCheckType = (long) TradeUnionPersonCheckTypeEnum.ApplicantDouble
             });
         }
     }

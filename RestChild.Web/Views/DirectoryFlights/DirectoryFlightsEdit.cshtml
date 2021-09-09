@@ -1,5 +1,6 @@
 ﻿@using RestChild.Comon
 @using RestChild.Web.App_Code
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.DirectoryFlightsModel
 
 @{
@@ -38,70 +39,70 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label text-right">Год кампании<span class="requared">*</span></label>
 					<div class="col-md-9">
-						@Html.DropDownListFor(model => model.YearId, SelectListHelper.Create(Model.Years, t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control", autocomplete = "off", @id= "yearOfRestId" }).DisableIf(() => !Model.IsEditable)
+						@Html.DropDownListFor(model => model.YearId, SelectListHelper.Create(Model.Years, t => new SelectListItem { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control", autocomplete = "off", @id= "yearOfRestId" }).DisableIf(!Model.IsEditable)
 						@Html.ValidationMessageFor(model => model.YearId, "Заполните поле")
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label text-right">Номер рейса<span class="requared">*</span></label>
 					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.FilightNumber, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.TextBoxFor(model => model.Data.FilightNumber, new { @class = "form-control", autocomplete = "off" }).DisableIf(!Model.IsEditable)
 						@Html.ValidationMessageFor(model => model.Data.FilightNumber, "Заполните поле")
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label text-right">Время отбытия</label>
 					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.TimeOfDeparture, new { @class = "form-control time", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.TextBoxFor(model => model.Data.TimeOfDeparture, new { @class = "form-control time", autocomplete = "off" }).DisableIf(!Model.IsEditable)
 						@Html.ValidationMessageFor(model => model.Data.TimeOfDeparture, "Заполните поле")
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label text-right">Время прибытия</label>
 					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.TimeOfArrival, new { @class = "form-control time", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.TextBoxFor(model => model.Data.TimeOfArrival, new { @class = "form-control time", autocomplete = "off" }).DisableIf(!Model.IsEditable)
 						@Html.ValidationMessageFor(model => model.Data.TimeOfArrival, "Заполните поле")
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label text-right">Транспортный узел отбытия</label>
 					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.CodeDeparture, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.TextBoxFor(model => model.Data.CodeDeparture, new { @class = "form-control", autocomplete = "off" }).DisableIf(!Model.IsEditable)
 						@Html.ValidationMessageFor(model => model.Data.CodeDeparture, "Заполните поле")
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label text-right">Транспортный узел прибытия</label>
 					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.CodeArrival, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.TextBoxFor(model => model.Data.CodeArrival, new { @class = "form-control", autocomplete = "off" }).DisableIf(!Model.IsEditable)
 						@Html.ValidationMessageFor(model => model.Data.CodeArrival, "Заполните поле")
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label text-right">Вид транспорта</label>
 					<div class="col-md-9">
-						@Html.DropDownListFor(model => model.Data.TypeOfTransportId, SelectListHelper.Create(Model.TypesOfTransports, t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.DropDownListFor(model => model.Data.TypeOfTransportId, SelectListHelper.Create(Model.TypesOfTransports, t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control", autocomplete = "off" }).DisableIf(!Model.IsEditable)
 						@Html.ValidationMessageFor(model => model.Data.TypeOfTransportId, "Заполните поле")
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label text-right">Место отбытия</label>
 					<div class="col-md-9">
-						@Html.DropDownListFor(model => model.Data.DepartureId, SelectListHelper.Create(Model.Cities, t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
+						@Html.DropDownListFor(model => model.Data.DepartureId, SelectListHelper.Create(Model.Cities, t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control", autocomplete = "off" }).DisableIf(!Model.IsEditable)
 						@Html.ValidationMessageFor(model => model.Data.DepartureId, "Заполните поле")
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label text-right">Место прибытия</label>
 					<div class="col-md-9">
-						@Html.DropDownListFor(model => model.Data.ArrivalId, SelectListHelper.Create(Model.Cities, t => new SelectListItem() {Value = t.Id.ToString(), Text = t.Name}), new {@class = "form-control", autocomplete = "off"}).DisableIf(() => !Model.IsEditable)
+						@Html.DropDownListFor(model => model.Data.ArrivalId, SelectListHelper.Create(Model.Cities, t => new SelectListItem() {Value = t.Id.ToString(), Text = t.Name}), new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
 						@Html.ValidationMessageFor(model => model.Data.ArrivalId, "Заполните поле")
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label text-right">Контракт</label>
 					<div class="col-md-9 ">
-						@Html.TextBoxFor(m => m.Data.ContractId, new {@class = "form-control contract-select"}).DisableIf(() => !Model.IsEditable)
+						@Html.TextBoxFor(m => m.Data.ContractId, new {@class = "form-control contract-select"}).DisableIf(!Model.IsEditable)
 						@if (!Model.IsEditable)
 						{
 							@Html.HiddenFor(m => m.Data.ContractId)

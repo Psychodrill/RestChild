@@ -17,7 +17,7 @@
                 <label class="col-sm-2 control-label">Дата заезда: </label>
                 <div class="col-md-2">
                     <div class="input-group date datepicker-anytime">
-                        @Html.TextBoxFor(m => m.Data.DateIn, new {@class = "form-control input-mask-date-anytime", autocomplete = "off", @Value = Model.NullSafe(r => r.Data.DateIn).FormatEx("dd.MM.yyyy")}).ReadOnlyIf(() => !isEditable)
+                        @Html.TextBoxFor(m => m.Data.DateIn, new {@class = "form-control input-mask-date-anytime", autocomplete = "off", @Value = Model.NullSafe(r => r.Data.DateIn).FormatEx("dd.MM.yyyy")}).ReadOnlyIf(!isEditable)
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar"></span>
                         </span>
@@ -26,7 +26,7 @@
                 <label class="col-sm-2 col-md-offset-1 control-label">Дата выезда: </label>
                 <div class="col-md-2">
                     <div class="input-group date datepicker-anytime">
-                        @Html.TextBoxFor(m => m.Data.DateOut, new {@class = "form-control input-mask-date-anytime", autocomplete = "off", @Value = Model.NullSafe(r => r.Data.DateOut).FormatEx("dd.MM.yyyy")}).ReadOnlyIf(() => !isEditable)
+                        @Html.TextBoxFor(m => m.Data.DateOut, new {@class = "form-control input-mask-date-anytime", autocomplete = "off", @Value = Model.NullSafe(r => r.Data.DateOut).FormatEx("dd.MM.yyyy")}).ReadOnlyIf(!isEditable)
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-calendar"></span>
                         </span>
@@ -46,11 +46,11 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label">Плановое кол-во детей: </label>
                 <div class="col-md-2">
-                    @Html.TextBoxFor(m => m.Data.PlanChildrenCount, new {@class = "form-control input-mask-integer"}).ReadOnlyIf(() => !isEditable)
+                    @Html.TextBoxFor(m => m.Data.PlanChildrenCount, new {@class = "form-control input-mask-integer"}).ReadOnlyIf(!isEditable)
                 </div>
                 <label class="col-sm-2 col-md-offset-1 control-label">Кол-во отдохнувших: </label>
                 <div class="col-md-2">
-                    @Html.TextBoxFor(m => m.Data.FactChildrenCount, new {@class = "form-control input-mask-integer"}).ReadOnlyIf(() => !isEditable)
+                    @Html.TextBoxFor(m => m.Data.FactChildrenCount, new {@class = "form-control input-mask-integer"}).ReadOnlyIf(!isEditable)
                 </div>
             </div>
         </fieldset>

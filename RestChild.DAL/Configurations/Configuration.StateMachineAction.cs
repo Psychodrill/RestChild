@@ -1016,6 +1016,17 @@ namespace RestChild.DAL.Configurations
                 },
                 new StateMachineAction
                 {
+                    Id = StateMachineStateEnum.PupilGroup.EditForMGT,
+                    StateMachineId = (long) StateMachineEnum.PupilGroup,
+                    ToStateId = StateMachineStateEnum.PupilGroup.Formation,
+                    ActionName = "Редактировать",
+                    ActionCode = AccessRightEnum.Orphans.PupilGroupEditFromApprove,
+                    IsSystemAction = false,
+                    NeedSign = false,
+                    LastUpdateTick = ++index
+                },
+                new StateMachineAction
+                {
                     Id = StateMachineStateEnum.PupilGroup.Deleted,
                     StateMachineId = (long) StateMachineEnum.PupilGroup,
                     ToStateId = StateMachineStateEnum.PupilGroup.Deleted,

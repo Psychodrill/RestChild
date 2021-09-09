@@ -18,16 +18,16 @@
 <div class="form-group">
     @Html.HiddenFor(r => r.Id)
     <div class="col-md-2">
-        @Html.DropDownListFor(r => r.Drug.DrugTypeId, drugTypes, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => isEditable)
+        @Html.DropDownListFor(r => r.Drug.DrugTypeId, drugTypes, new { @class = "form-control", autocomplete = "off" }).DisableIf(isEditable)
     </div>
     <div class="col-md-3">
-        @Html.TextBoxFor(r => r.Drug.Name, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => isEditable)
+        @Html.TextBoxFor(r => r.Drug.Name, new { @class = "form-control", autocomplete = "off" }).DisableIf(isEditable)
     </div>
     <div class="col-md-3">
-        @Html.TextBoxFor(r => r.Dose, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => isEditable)
+        @Html.TextBoxFor(r => r.Dose, new { @class = "form-control", autocomplete = "off" }).DisableIf(isEditable)
     </div>
     <div class="col-md-3">
-        @Html.TextBoxFor(r => r.Drug.Storage, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => isEditable)
+        @Html.TextBoxFor(r => r.Drug.Storage, new { @class = "form-control", autocomplete = "off" }).DisableIf(isEditable)
     </div>
     <div class="col-md-1">
         <button type="button" class="btn btn-danger btn-primary remove-drug" role="button">

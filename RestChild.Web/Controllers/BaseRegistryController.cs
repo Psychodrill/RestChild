@@ -24,6 +24,14 @@ namespace RestChild.Web.Controllers
         public const string GetSnilsByData = "0DC806DA-6C5C-4B56-B410-3F2E1765AAFB";
         public const string GetRelativesSmev = "49C8F097-361C-48F5-A70A-909C0B89F061";
         public const string GetRelatives = "4AFEE4AC-9251-45F7-ADC1-17F0AC41345A";
+        /// <summary>
+        ///     Проверка ЦПМПК
+        /// </summary>
+        public const string GetCPMPK = "EDC78633-AC2A-41E6-BD7E-5E6FFF695346";
+        /// <summary>
+        ///     Проверка адреса регистрации
+        /// </summary>
+        public const string GetRegistrationAddress = "38D6E2D8-CE98-4916-A267-D4469FDE6295";
 
         public WebExchangeController ExchangeController { get; set; }
 
@@ -120,6 +128,16 @@ namespace RestChild.Web.Controllers
                 if (model.ActionString == GetRelatives)
                 {
                     res = ExchangeController.AdditionallyCheckRelative(model.RequestBlock);
+                }
+
+                if (model.ActionString == GetCPMPK)
+                {
+                    res = ExchangeController.AdditionallyCheckCPMPK(model.RequestBlock);
+                }
+
+                if (model.ActionString == GetRegistrationAddress)
+                {
+                    res = ExchangeController.AdditionallyCheckRegistrationAddress(model.RequestBlock);
                 }
 
                 if (res?.HasError ?? false)

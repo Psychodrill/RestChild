@@ -1217,6 +1217,230 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class Agent : ILastUpdateTick
+	{
+		public Agent()
+		{
+		}
+
+		public Agent(Agent entity) : this(entity, null)
+		{
+		}
+
+		public Agent(Agent entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			LastName = entity.LastName;
+			FirstName = entity.FirstName;
+			MiddleName = entity.MiddleName;
+			DocumentSeria = entity.DocumentSeria;
+			DocumentNumber = entity.DocumentNumber;
+			DocumentDateOfIssue = entity.DocumentDateOfIssue;
+			DocumentSubjectIssue = entity.DocumentSubjectIssue;
+			Phone = entity.Phone;
+			Email = entity.Email;
+			ProxyDateOfIssure = entity.ProxyDateOfIssure;
+			NotaryName = entity.NotaryName;
+			ProxyEndDate = entity.ProxyEndDate;
+			ProxyNumber = entity.ProxyNumber;
+			Snils = entity.Snils;
+			IsLast = entity.IsLast;
+			HaveMiddleName = entity.HaveMiddleName;
+			Male = entity.Male;
+			DateOfBirth = entity.DateOfBirth;
+			DocumentCode = entity.DocumentCode;
+			PlaceOfBirth = entity.PlaceOfBirth;
+			DocumentTypeId = entity.DocumentTypeId;
+			if (deep > 0 && entity.DocumentType != null)
+			{
+				DocumentType = new DocumentType(entity.DocumentType, deep - 1);
+			}
+
+			StatusByChildId = entity.StatusByChildId;
+			if (deep > 0 && entity.StatusByChild != null)
+			{
+				StatusByChild = new StatusByChild(entity.StatusByChild, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public Agent CreateCopy()
+		{
+			var res = new Agent(this);
+			if (DocumentType != null)
+			{
+				res.DocumentType = new DocumentType{Id=DocumentType.Id, Eid=DocumentType.Eid};
+			}
+			if (StatusByChild != null)
+			{
+				res.StatusByChild = new StatusByChild{Id=StatusByChild.Id, Eid=StatusByChild.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(Agent entity)
+		{
+			Id = entity.Id;
+			LastName = entity.LastName;
+			FirstName = entity.FirstName;
+			MiddleName = entity.MiddleName;
+			DocumentSeria = entity.DocumentSeria;
+			DocumentNumber = entity.DocumentNumber;
+			DocumentDateOfIssue = entity.DocumentDateOfIssue;
+			DocumentSubjectIssue = entity.DocumentSubjectIssue;
+			Phone = entity.Phone;
+			Email = entity.Email;
+			ProxyDateOfIssure = entity.ProxyDateOfIssure;
+			NotaryName = entity.NotaryName;
+			ProxyEndDate = entity.ProxyEndDate;
+			ProxyNumber = entity.ProxyNumber;
+			Snils = entity.Snils;
+			IsLast = entity.IsLast;
+			HaveMiddleName = entity.HaveMiddleName;
+			Male = entity.Male;
+			DateOfBirth = entity.DateOfBirth;
+			DocumentCode = entity.DocumentCode;
+			PlaceOfBirth = entity.PlaceOfBirth;
+			DocumentTypeId = entity.DocumentTypeId;
+			StatusByChildId = entity.StatusByChildId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class AnalyticsViewRow : ILastUpdateTick
+	{
+		public AnalyticsViewRow()
+		{
+		}
+
+		public AnalyticsViewRow(AnalyticsViewRow entity) : this(entity, null)
+		{
+		}
+
+		public AnalyticsViewRow(AnalyticsViewRow entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			ByDay = entity.ByDay;
+			ByHour = entity.ByHour;
+			ByWeek = entity.ByWeek;
+			Total = entity.Total;
+			ByDayColor = entity.ByDayColor;
+			ByHourColor = entity.ByHourColor;
+			ByWeekColor = entity.ByWeekColor;
+			TotalColor = entity.TotalColor;
+			ByDay2 = entity.ByDay2;
+			ByHour2 = entity.ByHour2;
+			ByWeek2 = entity.ByWeek2;
+			Total2 = entity.Total2;
+			Day1 = entity.Day1;
+			Day2 = entity.Day2;
+			Day3 = entity.Day3;
+			Day4 = entity.Day4;
+			Day5 = entity.Day5;
+			Day6 = entity.Day6;
+			DataDay1 = entity.DataDay1;
+			DataDay2 = entity.DataDay2;
+			DataDay3 = entity.DataDay3;
+			DataDay4 = entity.DataDay4;
+			DataDay5 = entity.DataDay5;
+			DataDay6 = entity.DataDay6;
+			AnalyticsViewRowTypeId = entity.AnalyticsViewRowTypeId;
+			if (deep > 0 && entity.AnalyticsViewRowType != null)
+			{
+				AnalyticsViewRowType = new AnalyticsViewRowType(entity.AnalyticsViewRowType, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public AnalyticsViewRow CreateCopy()
+		{
+			var res = new AnalyticsViewRow(this);
+			if (AnalyticsViewRowType != null)
+			{
+				res.AnalyticsViewRowType = new AnalyticsViewRowType{Id=AnalyticsViewRowType.Id, Eid=AnalyticsViewRowType.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(AnalyticsViewRow entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			ByDay = entity.ByDay;
+			ByHour = entity.ByHour;
+			ByWeek = entity.ByWeek;
+			Total = entity.Total;
+			ByDayColor = entity.ByDayColor;
+			ByHourColor = entity.ByHourColor;
+			ByWeekColor = entity.ByWeekColor;
+			TotalColor = entity.TotalColor;
+			ByDay2 = entity.ByDay2;
+			ByHour2 = entity.ByHour2;
+			ByWeek2 = entity.ByWeek2;
+			Total2 = entity.Total2;
+			Day1 = entity.Day1;
+			Day2 = entity.Day2;
+			Day3 = entity.Day3;
+			Day4 = entity.Day4;
+			Day5 = entity.Day5;
+			Day6 = entity.Day6;
+			DataDay1 = entity.DataDay1;
+			DataDay2 = entity.DataDay2;
+			DataDay3 = entity.DataDay3;
+			DataDay4 = entity.DataDay4;
+			DataDay5 = entity.DataDay5;
+			DataDay6 = entity.DataDay6;
+			AnalyticsViewRowTypeId = entity.AnalyticsViewRowTypeId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class AnalyticsViewRowType : ILastUpdateTick
+	{
+		public AnalyticsViewRowType()
+		{
+		}
+
+		public AnalyticsViewRowType(AnalyticsViewRowType entity) : this(entity, null)
+		{
+		}
+
+		public AnalyticsViewRowType(AnalyticsViewRowType entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public AnalyticsViewRowType CreateCopy()
+		{
+			var res = new AnalyticsViewRowType(this);
+			return res;
+		}
+
+		public void CopyEntity(AnalyticsViewRowType entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class Applicant : ILastUpdateTick
 	{
 		public Applicant()
@@ -1296,6 +1520,7 @@ namespace RestChild.Domain
 			ProxyEndDate = entity.ProxyEndDate;
 			ProxyNumber = entity.ProxyNumber;
 			IsProxy = entity.IsProxy;
+			IsCPMPK = entity.IsCPMPK;
 			RequestId = entity.RequestId;
 			if (deep > 0 && entity.Request != null)
 			{
@@ -1561,6 +1786,7 @@ namespace RestChild.Domain
 			ProxyEndDate = entity.ProxyEndDate;
 			ProxyNumber = entity.ProxyNumber;
 			IsProxy = entity.IsProxy;
+			IsCPMPK = entity.IsCPMPK;
 			RequestId = entity.RequestId;
 			DocumentTypeId = entity.DocumentTypeId;
 			ApplicantTypeId = entity.ApplicantTypeId;
@@ -1579,6 +1805,89 @@ namespace RestChild.Domain
 			OfferInRequestId = entity.OfferInRequestId;
 			CountryId = entity.CountryId;
 			RelativeUniqeId = entity.RelativeUniqeId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class ApplicantType : ILastUpdateTick
+	{
+		public ApplicantType()
+		{
+		}
+
+		public ApplicantType(ApplicantType entity) : this(entity, null)
+		{
+		}
+
+		public ApplicantType(ApplicantType entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsDeleted = entity.IsDeleted;
+			CreateUserId = entity.CreateUserId;
+			if (deep > 0 && entity.CreateUser != null)
+			{
+				CreateUser = new Account(entity.CreateUser, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public ApplicantType CreateCopy()
+		{
+			var res = new ApplicantType(this);
+			if (CreateUser != null)
+			{
+				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(ApplicantType entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsDeleted = entity.IsDeleted;
+			CreateUserId = entity.CreateUserId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class AttendantType : ILastUpdateTick
+	{
+		public AttendantType()
+		{
+		}
+
+		public AttendantType(AttendantType entity) : this(entity, null)
+		{
+		}
+
+		public AttendantType(AttendantType entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public AttendantType CreateCopy()
+		{
+			var res = new AttendantType(this);
+			return res;
+		}
+
+		public void CopyEntity(AttendantType entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -1671,6 +1980,178 @@ namespace RestChild.Domain
 		{
 			Id = entity.Id;
 			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class BenefitApproveType : ILastUpdateTick
+	{
+		public BenefitApproveType()
+		{
+		}
+
+		public BenefitApproveType(BenefitApproveType entity) : this(entity, null)
+		{
+		}
+
+		public BenefitApproveType(BenefitApproveType entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public BenefitApproveType CreateCopy()
+		{
+			var res = new BenefitApproveType(this);
+			return res;
+		}
+
+		public void CopyEntity(BenefitApproveType entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class BenefitGroupInvalid : ILastUpdateTick
+	{
+		public BenefitGroupInvalid()
+		{
+		}
+
+		public BenefitGroupInvalid(BenefitGroupInvalid entity) : this(entity, null)
+		{
+		}
+
+		public BenefitGroupInvalid(BenefitGroupInvalid entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public BenefitGroupInvalid CreateCopy()
+		{
+			var res = new BenefitGroupInvalid(this);
+			return res;
+		}
+
+		public void CopyEntity(BenefitGroupInvalid entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class BenefitType : ILastUpdateTick
+	{
+		public BenefitType()
+		{
+		}
+
+		public BenefitType(BenefitType entity) : this(entity, null)
+		{
+		}
+
+		public BenefitType(BenefitType entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			ExnternalUid = entity.ExnternalUid;
+			NeedTypeOfRestriction = entity.NeedTypeOfRestriction;
+			NeedApproveDocument = entity.NeedApproveDocument;
+			IsActive = entity.IsActive;
+			ForAisoOnly = entity.ForAisoOnly;
+			TypeOfRestId = entity.TypeOfRestId;
+			if (deep > 0 && entity.TypeOfRest != null)
+			{
+				TypeOfRest = new TypeOfRest(entity.TypeOfRest, deep - 1);
+			}
+
+			SameBenefitId = entity.SameBenefitId;
+			if (deep > 0 && entity.SameBenefit != null)
+			{
+				SameBenefit = new BenefitType(entity.SameBenefit, deep - 1);
+			}
+
+			TypeOfGroupCheckId = entity.TypeOfGroupCheckId;
+			if (deep > 0 && entity.TypeOfGroupCheck != null)
+			{
+				TypeOfGroupCheck = new TypeOfGroupCheck(entity.TypeOfGroupCheck, deep - 1);
+			}
+
+			CreateUserId = entity.CreateUserId;
+			if (deep > 0 && entity.CreateUser != null)
+			{
+				CreateUser = new Account(entity.CreateUser, deep - 1);
+			}
+
+			BenefitTypeERLId = entity.BenefitTypeERLId;
+			if (deep > 0 && entity.BenefitTypeERL != null)
+			{
+				BenefitTypeERL = new BenefitTypeERL(entity.BenefitTypeERL, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public BenefitType CreateCopy()
+		{
+			var res = new BenefitType(this);
+			if (TypeOfRest != null)
+			{
+				res.TypeOfRest = new TypeOfRest{Id=TypeOfRest.Id, Eid=TypeOfRest.Eid};
+			}
+			if (SameBenefit != null)
+			{
+				res.SameBenefit = new BenefitType{Id=SameBenefit.Id, Eid=SameBenefit.Eid};
+			}
+			if (TypeOfGroupCheck != null)
+			{
+				res.TypeOfGroupCheck = new TypeOfGroupCheck{Id=TypeOfGroupCheck.Id, Eid=TypeOfGroupCheck.Eid};
+			}
+			if (CreateUser != null)
+			{
+				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
+			}
+			if (BenefitTypeERL != null)
+			{
+				res.BenefitTypeERL = new BenefitTypeERL{Id=BenefitTypeERL.Id, Eid=BenefitTypeERL.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(BenefitType entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			ExnternalUid = entity.ExnternalUid;
+			NeedTypeOfRestriction = entity.NeedTypeOfRestriction;
+			NeedApproveDocument = entity.NeedApproveDocument;
+			IsActive = entity.IsActive;
+			ForAisoOnly = entity.ForAisoOnly;
+			TypeOfRestId = entity.TypeOfRestId;
+			SameBenefitId = entity.SameBenefitId;
+			TypeOfGroupCheckId = entity.TypeOfGroupCheckId;
+			CreateUserId = entity.CreateUserId;
+			BenefitTypeERLId = entity.BenefitTypeERLId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -2326,6 +2807,208 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class BtiAddress : ILastUpdateTick
+	{
+		public BtiAddress()
+		{
+		}
+
+		public BtiAddress(BtiAddress entity) : this(entity, null)
+		{
+		}
+
+		public BtiAddress(BtiAddress entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			FullAddress = entity.FullAddress;
+			Unom = entity.Unom;
+			ShortAddress = entity.ShortAddress;
+			Unod = entity.Unod;
+			Status = entity.Status;
+			BtiDistrictId = entity.BtiDistrictId;
+			if (deep > 0 && entity.BtiDistrict != null)
+			{
+				BtiDistrict = new BtiDistrict(entity.BtiDistrict, deep - 1);
+			}
+
+			BtiRegionId = entity.BtiRegionId;
+			if (deep > 0 && entity.BtiRegion != null)
+			{
+				BtiRegion = new BtiRegion(entity.BtiRegion, deep - 1);
+			}
+
+			BtiStreetId = entity.BtiStreetId;
+			if (deep > 0 && entity.BtiStreet != null)
+			{
+				BtiStreet = new BtiStreet(entity.BtiStreet, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public BtiAddress CreateCopy()
+		{
+			var res = new BtiAddress(this);
+			if (BtiDistrict != null)
+			{
+				res.BtiDistrict = new BtiDistrict{Id=BtiDistrict.Id, Eid=BtiDistrict.Eid};
+			}
+			if (BtiRegion != null)
+			{
+				res.BtiRegion = new BtiRegion{Id=BtiRegion.Id, Eid=BtiRegion.Eid};
+			}
+			if (BtiStreet != null)
+			{
+				res.BtiStreet = new BtiStreet{Id=BtiStreet.Id, Eid=BtiStreet.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(BtiAddress entity)
+		{
+			Id = entity.Id;
+			FullAddress = entity.FullAddress;
+			Unom = entity.Unom;
+			ShortAddress = entity.ShortAddress;
+			Unod = entity.Unod;
+			Status = entity.Status;
+			BtiDistrictId = entity.BtiDistrictId;
+			BtiRegionId = entity.BtiRegionId;
+			BtiStreetId = entity.BtiStreetId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class BtiDistrict : ILastUpdateTick
+	{
+		public BtiDistrict()
+		{
+		}
+
+		public BtiDistrict(BtiDistrict entity) : this(entity, null)
+		{
+		}
+
+		public BtiDistrict(BtiDistrict entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			Givz = entity.Givz;
+			IsVisible = entity.IsVisible;
+			Okato = entity.Okato;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public BtiDistrict CreateCopy()
+		{
+			var res = new BtiDistrict(this);
+			return res;
+		}
+
+		public void CopyEntity(BtiDistrict entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			Givz = entity.Givz;
+			IsVisible = entity.IsVisible;
+			Okato = entity.Okato;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class BtiRegion : ILastUpdateTick
+	{
+		public BtiRegion()
+		{
+		}
+
+		public BtiRegion(BtiRegion entity) : this(entity, null)
+		{
+		}
+
+		public BtiRegion(BtiRegion entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			Givz = entity.Givz;
+			IsVisible = entity.IsVisible;
+			BtiDistrictId = entity.BtiDistrictId;
+			if (deep > 0 && entity.BtiDistrict != null)
+			{
+				BtiDistrict = new BtiDistrict(entity.BtiDistrict, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public BtiRegion CreateCopy()
+		{
+			var res = new BtiRegion(this);
+			if (BtiDistrict != null)
+			{
+				res.BtiDistrict = new BtiDistrict{Id=BtiDistrict.Id, Eid=BtiDistrict.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(BtiRegion entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			Givz = entity.Givz;
+			IsVisible = entity.IsVisible;
+			BtiDistrictId = entity.BtiDistrictId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class BtiStreet : ILastUpdateTick
+	{
+		public BtiStreet()
+		{
+		}
+
+		public BtiStreet(BtiStreet entity) : this(entity, null)
+		{
+		}
+
+		public BtiStreet(BtiStreet entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public BtiStreet CreateCopy()
+		{
+			var res = new BtiStreet(this);
+			return res;
+		}
+
+		public void CopyEntity(BtiStreet entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class Calculation : ILastUpdateTick
 	{
 		public Calculation()
@@ -2756,6 +3439,7 @@ namespace RestChild.Domain
 			EkisNeedSend = entity.EkisNeedSend;
 			Inn = entity.Inn;
 			Infant = entity.Infant;
+			IsCPMPK = entity.IsCPMPK;
 			RequestId = entity.RequestId;
 			if (deep > 0 && entity.Request != null)
 			{
@@ -3132,6 +3816,7 @@ namespace RestChild.Domain
 			EkisNeedSend = entity.EkisNeedSend;
 			Inn = entity.Inn;
 			Infant = entity.Infant;
+			IsCPMPK = entity.IsCPMPK;
 			RequestId = entity.RequestId;
 			SchoolId = entity.SchoolId;
 			DocumentTypeId = entity.DocumentTypeId;
@@ -4996,6 +5681,67 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class DeclineReason : ILastUpdateTick
+	{
+		public DeclineReason()
+		{
+		}
+
+		public DeclineReason(DeclineReason entity) : this(entity, null)
+		{
+		}
+
+		public DeclineReason(DeclineReason entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			FirstStage = entity.FirstStage;
+			SecondStage = entity.SecondStage;
+			IsManual = entity.IsManual;
+			ForPreferential = entity.ForPreferential;
+			ForCommerce = entity.ForCommerce;
+			ValidReasons = entity.ValidReasons;
+			StatusId = entity.StatusId;
+			if (deep > 0 && entity.Status != null)
+			{
+				Status = new Status(entity.Status, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public DeclineReason CreateCopy()
+		{
+			var res = new DeclineReason(this);
+			if (Status != null)
+			{
+				res.Status = new Status{Id=Status.Id, Eid=Status.Eid};
+			}
+			res.TypeOfRests = TypeOfRests?.Select(p=>new TypeOfRest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(DeclineReason entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			FirstStage = entity.FirstStage;
+			SecondStage = entity.SecondStage;
+			IsManual = entity.IsManual;
+			ForPreferential = entity.ForPreferential;
+			ForCommerce = entity.ForCommerce;
+			ValidReasons = entity.ValidReasons;
+			StatusId = entity.StatusId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class DeletedRecord : ILastUpdateTick
 	{
 		public DeletedRecord()
@@ -5359,6 +6105,69 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class DocumentType : ILastUpdateTick
+	{
+		public DocumentType()
+		{
+		}
+
+		public DocumentType(DocumentType entity) : this(entity, null)
+		{
+		}
+
+		public DocumentType(DocumentType entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			Owner = entity.Owner;
+			GlobalUid = entity.GlobalUid;
+			ForChild = entity.ForChild;
+			ForForeign = entity.ForForeign;
+			ForOther = entity.ForOther;
+			BaseRegistryUid = entity.BaseRegistryUid;
+			ForApplicant = entity.ForApplicant;
+			ForAgent = entity.ForAgent;
+			CreateUserId = entity.CreateUserId;
+			if (deep > 0 && entity.CreateUser != null)
+			{
+				CreateUser = new Account(entity.CreateUser, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public DocumentType CreateCopy()
+		{
+			var res = new DocumentType(this);
+			if (CreateUser != null)
+			{
+				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
+			}
+			res.TypesOfRest = TypesOfRest?.Select(p=>new TypeOfRest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(DocumentType entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			Owner = entity.Owner;
+			GlobalUid = entity.GlobalUid;
+			ForChild = entity.ForChild;
+			ForForeign = entity.ForForeign;
+			ForOther = entity.ForOther;
+			BaseRegistryUid = entity.BaseRegistryUid;
+			ForApplicant = entity.ForApplicant;
+			ForAgent = entity.ForAgent;
+			CreateUserId = entity.CreateUserId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class Drug : ILastUpdateTick
 	{
 		public Drug()
@@ -5630,6 +6439,404 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class ExchangeBaseRegistry : ILastUpdateTick
+	{
+		public ExchangeBaseRegistry()
+		{
+		}
+
+		public ExchangeBaseRegistry(ExchangeBaseRegistry entity) : this(entity, null)
+		{
+		}
+
+		public ExchangeBaseRegistry(ExchangeBaseRegistry entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			RequestGuid = entity.RequestGuid;
+			ServiceNumber = entity.ServiceNumber;
+			SendDate = entity.SendDate;
+			AcknolegmentGuid = entity.AcknolegmentGuid;
+			ResponseGuid = entity.ResponseGuid;
+			ResponseDate = entity.ResponseDate;
+			OperationType = entity.OperationType;
+			IsIncoming = entity.IsIncoming;
+			RequestText = entity.RequestText;
+			ResponseText = entity.ResponseText;
+			IsProcessed = entity.IsProcessed;
+			NotActual = entity.NotActual;
+			Success = entity.Success;
+			SearchField = entity.SearchField;
+			BirthDate = entity.BirthDate;
+			IsAddonRequest = entity.IsAddonRequest;
+			ChildId = entity.ChildId;
+			if (deep > 0 && entity.Child != null)
+			{
+				Child = new Child(entity.Child, deep - 1);
+			}
+
+			ExchangeBaseRegistryTypeId = entity.ExchangeBaseRegistryTypeId;
+			if (deep > 0 && entity.ExchangeBaseRegistryType != null)
+			{
+				ExchangeBaseRegistryType = new ExchangeBaseRegistryType(entity.ExchangeBaseRegistryType, deep - 1);
+			}
+
+			ApplicantId = entity.ApplicantId;
+			if (deep > 0 && entity.Applicant != null)
+			{
+				Applicant = new Applicant(entity.Applicant, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public ExchangeBaseRegistry CreateCopy()
+		{
+			var res = new ExchangeBaseRegistry(this);
+			if (Child != null)
+			{
+				res.Child = new Child{Id=Child.Id, Eid=Child.Eid};
+			}
+			if (ExchangeBaseRegistryType != null)
+			{
+				res.ExchangeBaseRegistryType = new ExchangeBaseRegistryType{Id=ExchangeBaseRegistryType.Id, Eid=ExchangeBaseRegistryType.Eid};
+			}
+			if (Applicant != null)
+			{
+				res.Applicant = new Applicant{Id=Applicant.Id, Eid=Applicant.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(ExchangeBaseRegistry entity)
+		{
+			Id = entity.Id;
+			RequestGuid = entity.RequestGuid;
+			ServiceNumber = entity.ServiceNumber;
+			SendDate = entity.SendDate;
+			AcknolegmentGuid = entity.AcknolegmentGuid;
+			ResponseGuid = entity.ResponseGuid;
+			ResponseDate = entity.ResponseDate;
+			OperationType = entity.OperationType;
+			IsIncoming = entity.IsIncoming;
+			RequestText = entity.RequestText;
+			ResponseText = entity.ResponseText;
+			IsProcessed = entity.IsProcessed;
+			NotActual = entity.NotActual;
+			Success = entity.Success;
+			SearchField = entity.SearchField;
+			BirthDate = entity.BirthDate;
+			IsAddonRequest = entity.IsAddonRequest;
+			ChildId = entity.ChildId;
+			ExchangeBaseRegistryTypeId = entity.ExchangeBaseRegistryTypeId;
+			ApplicantId = entity.ApplicantId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class ExchangeBaseRegistryType : ILastUpdateTick
+	{
+		public ExchangeBaseRegistryType()
+		{
+		}
+
+		public ExchangeBaseRegistryType(ExchangeBaseRegistryType entity) : this(entity, null)
+		{
+		}
+
+		public ExchangeBaseRegistryType(ExchangeBaseRegistryType entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsDeleted = entity.IsDeleted;
+			SendMessage = entity.SendMessage;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public ExchangeBaseRegistryType CreateCopy()
+		{
+			var res = new ExchangeBaseRegistryType(this);
+			return res;
+		}
+
+		public void CopyEntity(ExchangeBaseRegistryType entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsDeleted = entity.IsDeleted;
+			SendMessage = entity.SendMessage;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class ExchangeUTS : ILastUpdateTick
+	{
+		public ExchangeUTS()
+		{
+		}
+
+		public ExchangeUTS(ExchangeUTS entity) : this(entity, null)
+		{
+		}
+
+		public ExchangeUTS(ExchangeUTS entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Message = entity.Message;
+			Processed = entity.Processed;
+			QueueName = entity.QueueName;
+			DateCreate = entity.DateCreate;
+			Incoming = entity.Incoming;
+			FromOrgCode = entity.FromOrgCode;
+			ToOrgCode = entity.ToOrgCode;
+			MessageId = entity.MessageId;
+			ServiceNumber = entity.ServiceNumber;
+			IsError = entity.IsError;
+			ErrorText = entity.ErrorText;
+			ErrorDescription = entity.ErrorDescription;
+			TypeOfRestId = entity.TypeOfRestId;
+			BookingGuid = entity.BookingGuid;
+			ToState = entity.ToState;
+			IsErrorOnReleaseBooking = entity.IsErrorOnReleaseBooking;
+			DateToSend = entity.DateToSend;
+			IsSigned = entity.IsSigned;
+			RequestId = entity.RequestId;
+			if (deep > 0 && entity.Request != null)
+			{
+				Request = new Request(entity.Request, deep - 1);
+			}
+
+			AccountId = entity.AccountId;
+			if (deep > 0 && entity.Account != null)
+			{
+				Account = new Account(entity.Account, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public ExchangeUTS CreateCopy()
+		{
+			var res = new ExchangeUTS(this);
+			if (Request != null)
+			{
+				res.Request = new Request{Id=Request.Id, Eid=Request.Eid};
+			}
+			if (Account != null)
+			{
+				res.Account = new Account{Id=Account.Id, Eid=Account.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(ExchangeUTS entity)
+		{
+			Id = entity.Id;
+			Message = entity.Message;
+			Processed = entity.Processed;
+			QueueName = entity.QueueName;
+			DateCreate = entity.DateCreate;
+			Incoming = entity.Incoming;
+			FromOrgCode = entity.FromOrgCode;
+			ToOrgCode = entity.ToOrgCode;
+			MessageId = entity.MessageId;
+			ServiceNumber = entity.ServiceNumber;
+			IsError = entity.IsError;
+			ErrorText = entity.ErrorText;
+			ErrorDescription = entity.ErrorDescription;
+			TypeOfRestId = entity.TypeOfRestId;
+			BookingGuid = entity.BookingGuid;
+			ToState = entity.ToState;
+			IsErrorOnReleaseBooking = entity.IsErrorOnReleaseBooking;
+			DateToSend = entity.DateToSend;
+			IsSigned = entity.IsSigned;
+			RequestId = entity.RequestId;
+			AccountId = entity.AccountId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class ExcludeDays : ILastUpdateTick
+	{
+		public ExcludeDays()
+		{
+		}
+
+		public ExcludeDays(ExcludeDays entity) : this(entity, null)
+		{
+		}
+
+		public ExcludeDays(ExcludeDays entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Date = entity.Date;
+			IsFreeDay = entity.IsFreeDay;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public ExcludeDays CreateCopy()
+		{
+			var res = new ExcludeDays(this);
+			return res;
+		}
+
+		public void CopyEntity(ExcludeDays entity)
+		{
+			Id = entity.Id;
+			Date = entity.Date;
+			IsFreeDay = entity.IsFreeDay;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class FileHotel : ILastUpdateTick
+	{
+		public FileHotel()
+		{
+		}
+
+		public FileHotel(FileHotel entity) : this(entity, null)
+		{
+		}
+
+		public FileHotel(FileHotel entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			FileName = entity.FileName;
+			FileUrl = entity.FileUrl;
+			IsMainPhoto = entity.IsMainPhoto;
+			IsArchive = entity.IsArchive;
+			HotelId = entity.HotelId;
+			if (deep > 0 && entity.Hotel != null)
+			{
+				Hotel = new Hotels(entity.Hotel, deep - 1);
+			}
+
+			FileTypeId = entity.FileTypeId;
+			if (deep > 0 && entity.FileType != null)
+			{
+				FileType = new FileType(entity.FileType, deep - 1);
+			}
+
+			TypeOfRoomsId = entity.TypeOfRoomsId;
+			if (deep > 0 && entity.TypeOfRooms != null)
+			{
+				TypeOfRooms = new TypeOfRooms(entity.TypeOfRooms, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public FileHotel CreateCopy()
+		{
+			var res = new FileHotel(this);
+			if (Hotel != null)
+			{
+				res.Hotel = new Hotels{Id=Hotel.Id, Eid=Hotel.Eid};
+			}
+			if (FileType != null)
+			{
+				res.FileType = new FileType{Id=FileType.Id, Eid=FileType.Eid};
+			}
+			if (TypeOfRooms != null)
+			{
+				res.TypeOfRooms = new TypeOfRooms{Id=TypeOfRooms.Id, Eid=TypeOfRooms.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(FileHotel entity)
+		{
+			Id = entity.Id;
+			FileName = entity.FileName;
+			FileUrl = entity.FileUrl;
+			IsMainPhoto = entity.IsMainPhoto;
+			IsArchive = entity.IsArchive;
+			HotelId = entity.HotelId;
+			FileTypeId = entity.FileTypeId;
+			TypeOfRoomsId = entity.TypeOfRoomsId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class FileOfTour : ILastUpdateTick
+	{
+		public FileOfTour()
+		{
+		}
+
+		public FileOfTour(FileOfTour entity) : this(entity, null)
+		{
+		}
+
+		public FileOfTour(FileOfTour entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			FileName = entity.FileName;
+			FileUrl = entity.FileUrl;
+			TourId = entity.TourId;
+			if (deep > 0 && entity.Tour != null)
+			{
+				Tour = new Tour(entity.Tour, deep - 1);
+			}
+
+			FileTypeId = entity.FileTypeId;
+			if (deep > 0 && entity.FileType != null)
+			{
+				FileType = new FileType(entity.FileType, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public FileOfTour CreateCopy()
+		{
+			var res = new FileOfTour(this);
+			if (Tour != null)
+			{
+				res.Tour = new Tour{Id=Tour.Id, Eid=Tour.Eid};
+			}
+			if (FileType != null)
+			{
+				res.FileType = new FileType{Id=FileType.Id, Eid=FileType.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(FileOfTour entity)
+		{
+			Id = entity.Id;
+			FileName = entity.FileName;
+			FileUrl = entity.FileUrl;
+			TourId = entity.TourId;
+			FileTypeId = entity.FileTypeId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class FileOrLink : ILastUpdateTick
 	{
 		public FileOrLink()
@@ -5681,6 +6888,54 @@ namespace RestChild.Domain
 			IsVideo = entity.IsVideo;
 			IsMain = entity.IsMain;
 			LinkId = entity.LinkId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class FileType : ILastUpdateTick
+	{
+		public FileType()
+		{
+		}
+
+		public FileType(FileType entity) : this(entity, null)
+		{
+		}
+
+		public FileType(FileType entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsPhoto = entity.IsPhoto;
+			ParentId = entity.ParentId;
+			if (deep > 0 && entity.Parent != null)
+			{
+				Parent = new FileType(entity.Parent, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public FileType CreateCopy()
+		{
+			var res = new FileType(this);
+			if (Parent != null)
+			{
+				res.Parent = new FileType{Id=Parent.Id, Eid=Parent.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(FileType entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsPhoto = entity.IsPhoto;
+			ParentId = entity.ParentId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -5772,6 +7027,8 @@ namespace RestChild.Domain
 			Id = entity.Id;
 			Name = entity.Name;
 			IsDeleted = entity.IsDeleted;
+			AgeFrom = entity.AgeFrom;
+			AgeTo = entity.AgeTo;
 			TypeOfRestId = entity.TypeOfRestId;
 			if (deep > 0 && entity.TypeOfRest != null)
 			{
@@ -5800,6 +7057,8 @@ namespace RestChild.Domain
 			Id = entity.Id;
 			Name = entity.Name;
 			IsDeleted = entity.IsDeleted;
+			AgeFrom = entity.AgeFrom;
+			AgeTo = entity.AgeTo;
 			TypeOfRestId = entity.TypeOfRestId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
@@ -5972,6 +7231,67 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class HistoryInteragencyRequest : ILastUpdateTick
+	{
+		public HistoryInteragencyRequest()
+		{
+		}
+
+		public HistoryInteragencyRequest(HistoryInteragencyRequest entity) : this(entity, null)
+		{
+		}
+
+		public HistoryInteragencyRequest(HistoryInteragencyRequest entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Operation = entity.Operation;
+			OperationDate = entity.OperationDate;
+			Code = entity.Code;
+			AccountId = entity.AccountId;
+			if (deep > 0 && entity.Account != null)
+			{
+				Account = new Account(entity.Account, deep - 1);
+			}
+
+			InteragencyRequestId = entity.InteragencyRequestId;
+			if (deep > 0 && entity.InteragencyRequest != null)
+			{
+				InteragencyRequest = new InteragencyRequest(entity.InteragencyRequest, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public HistoryInteragencyRequest CreateCopy()
+		{
+			var res = new HistoryInteragencyRequest(this);
+			if (Account != null)
+			{
+				res.Account = new Account{Id=Account.Id, Eid=Account.Eid};
+			}
+			if (InteragencyRequest != null)
+			{
+				res.InteragencyRequest = new InteragencyRequest{Id=InteragencyRequest.Id, Eid=InteragencyRequest.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(HistoryInteragencyRequest entity)
+		{
+			Id = entity.Id;
+			Operation = entity.Operation;
+			OperationDate = entity.OperationDate;
+			Code = entity.Code;
+			AccountId = entity.AccountId;
+			InteragencyRequestId = entity.InteragencyRequestId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class HistoryLink : ILastUpdateTick
 	{
 		public HistoryLink()
@@ -6003,6 +7323,67 @@ namespace RestChild.Domain
 		public void CopyEntity(HistoryLink entity)
 		{
 			Id = entity.Id;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class HistoryRequest : ILastUpdateTick
+	{
+		public HistoryRequest()
+		{
+		}
+
+		public HistoryRequest(HistoryRequest entity) : this(entity, null)
+		{
+		}
+
+		public HistoryRequest(HistoryRequest entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Operation = entity.Operation;
+			OperationDate = entity.OperationDate;
+			Code = entity.Code;
+			RequestId = entity.RequestId;
+			if (deep > 0 && entity.Request != null)
+			{
+				Request = new Request(entity.Request, deep - 1);
+			}
+
+			AccountId = entity.AccountId;
+			if (deep > 0 && entity.Account != null)
+			{
+				Account = new Account(entity.Account, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public HistoryRequest CreateCopy()
+		{
+			var res = new HistoryRequest(this);
+			if (Request != null)
+			{
+				res.Request = new Request{Id=Request.Id, Eid=Request.Eid};
+			}
+			if (Account != null)
+			{
+				res.Account = new Account{Id=Account.Id, Eid=Account.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(HistoryRequest entity)
+		{
+			Id = entity.Id;
+			Operation = entity.Operation;
+			OperationDate = entity.OperationDate;
+			Code = entity.Code;
+			RequestId = entity.RequestId;
+			AccountId = entity.AccountId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -6329,6 +7710,658 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class Hotels : ILastUpdateTick
+	{
+		public Hotels()
+		{
+		}
+
+		public Hotels(Hotels entity) : this(entity, null)
+		{
+		}
+
+		public Hotels(Hotels entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			Address = entity.Address;
+			NameOrganization = entity.NameOrganization;
+			Phone = entity.Phone;
+			Fax = entity.Fax;
+			Email = entity.Email;
+			Url = entity.Url;
+			Head = entity.Head;
+			HeadPosition = entity.HeadPosition;
+			DrivingDirections = entity.DrivingDirections;
+			NumberHousing = entity.NumberHousing;
+			Squere = entity.Squere;
+			MedicalOfficeAvailability = entity.MedicalOfficeAvailability;
+			OutdoorPondAvailability = entity.OutdoorPondAvailability;
+			OutdoorPondName = entity.OutdoorPondName;
+			PoolAvailability = entity.PoolAvailability;
+			SecurityInformation = entity.SecurityInformation;
+			ComputerClassAvailability = entity.ComputerClassAvailability;
+			CinimaAvailability = entity.CinimaAvailability;
+			CinimaTimetable = entity.CinimaTimetable;
+			GymAvailability = entity.GymAvailability;
+			LibraryAvailability = entity.LibraryAvailability;
+			LibraryTimetable = entity.LibraryTimetable;
+			AccessibleEnvironment = entity.AccessibleEnvironment;
+			TakeChildUp3Years = entity.TakeChildUp3Years;
+			OtherLeisure = entity.OtherLeisure;
+			ContactPerson = entity.ContactPerson;
+			ContactPhone = entity.ContactPhone;
+			Description = entity.Description;
+			Latitude = entity.Latitude;
+			Longitude = entity.Longitude;
+			AgeFrom = entity.AgeFrom;
+			AgeTo = entity.AgeTo;
+			DistanceFromCenter = entity.DistanceFromCenter;
+			DistanceFromBeach = entity.DistanceFromBeach;
+			EkisId = entity.EkisId;
+			EkisNeedSend = entity.EkisNeedSend;
+			NotForSite = entity.NotForSite;
+			IsLok = entity.IsLok;
+			DescriptionHtml = entity.DescriptionHtml;
+			IsCamping = entity.IsCamping;
+			HistoryLinkId = entity.HistoryLinkId;
+			if (deep > 0 && entity.HistoryLink != null)
+			{
+				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
+			}
+
+			PlaceOfRestId = entity.PlaceOfRestId;
+			if (deep > 0 && entity.PlaceOfRest != null)
+			{
+				PlaceOfRest = new PlaceOfRest(entity.PlaceOfRest, deep - 1);
+			}
+
+			HotelTypeId = entity.HotelTypeId;
+			if (deep > 0 && entity.HotelType != null)
+			{
+				HotelType = new HotelType(entity.HotelType, deep - 1);
+			}
+
+			StateId = entity.StateId;
+			if (deep > 0 && entity.State != null)
+			{
+				State = new StateMachineState(entity.State, deep - 1);
+			}
+
+			CityId = entity.CityId;
+			if (deep > 0 && entity.City != null)
+			{
+				City = new City(entity.City, deep - 1);
+			}
+
+			OrganizationId = entity.OrganizationId;
+			if (deep > 0 && entity.Organization != null)
+			{
+				Organization = new Organization(entity.Organization, deep - 1);
+			}
+
+			FunctioningTypeId = entity.FunctioningTypeId;
+			if (deep > 0 && entity.FunctioningType != null)
+			{
+				FunctioningType = new FunctioningType(entity.FunctioningType, deep - 1);
+			}
+
+			HotelPlacementId = entity.HotelPlacementId;
+			if (deep > 0 && entity.HotelPlacement != null)
+			{
+				HotelPlacement = new HotelPlacement(entity.HotelPlacement, deep - 1);
+			}
+
+			SubHotelTypeId = entity.SubHotelTypeId;
+			if (deep > 0 && entity.SubHotelType != null)
+			{
+				SubHotelType = new HotelType(entity.SubHotelType, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public Hotels CreateCopy()
+		{
+			var res = new Hotels(this);
+			if (HistoryLink != null)
+			{
+				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
+			}
+			if (PlaceOfRest != null)
+			{
+				res.PlaceOfRest = new PlaceOfRest{Id=PlaceOfRest.Id, Eid=PlaceOfRest.Eid};
+			}
+			if (HotelType != null)
+			{
+				res.HotelType = new HotelType{Id=HotelType.Id, Eid=HotelType.Eid};
+			}
+			if (State != null)
+			{
+				res.State = new StateMachineState{Id=State.Id, Eid=State.Eid};
+			}
+			if (City != null)
+			{
+				res.City = new City{Id=City.Id, Eid=City.Eid};
+			}
+			if (Organization != null)
+			{
+				res.Organization = new Organization{Id=Organization.Id, Eid=Organization.Eid};
+			}
+			if (FunctioningType != null)
+			{
+				res.FunctioningType = new FunctioningType{Id=FunctioningType.Id, Eid=FunctioningType.Eid};
+			}
+			if (HotelPlacement != null)
+			{
+				res.HotelPlacement = new HotelPlacement{Id=HotelPlacement.Id, Eid=HotelPlacement.Eid};
+			}
+			if (SubHotelType != null)
+			{
+				res.SubHotelType = new HotelType{Id=SubHotelType.Id, Eid=SubHotelType.Eid};
+			}
+			res.TypeOfRooms = TypeOfRooms?.Select(p=>new TypeOfRooms {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Files = Files?.Select(p=>new FileHotel {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Contacts = Contacts?.Select(p=>new HotelContactPerson {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Accommodation = Accommodation?.Select(p=>new Accommodation {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.DiningOptions = DiningOptions?.Select(p=>new DiningOptions {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Prices = Prices?.Select(p=>new RoomRates {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Services = Services?.Select(p=>new AddonServices {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.MatrixOfPrice = MatrixOfPrice?.Select(p=>new HotelPrice {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.PlaceBloks = PlaceBloks?.Select(p=>new HotelBlock {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(Hotels entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			Address = entity.Address;
+			NameOrganization = entity.NameOrganization;
+			Phone = entity.Phone;
+			Fax = entity.Fax;
+			Email = entity.Email;
+			Url = entity.Url;
+			Head = entity.Head;
+			HeadPosition = entity.HeadPosition;
+			DrivingDirections = entity.DrivingDirections;
+			NumberHousing = entity.NumberHousing;
+			Squere = entity.Squere;
+			MedicalOfficeAvailability = entity.MedicalOfficeAvailability;
+			OutdoorPondAvailability = entity.OutdoorPondAvailability;
+			OutdoorPondName = entity.OutdoorPondName;
+			PoolAvailability = entity.PoolAvailability;
+			SecurityInformation = entity.SecurityInformation;
+			ComputerClassAvailability = entity.ComputerClassAvailability;
+			CinimaAvailability = entity.CinimaAvailability;
+			CinimaTimetable = entity.CinimaTimetable;
+			GymAvailability = entity.GymAvailability;
+			LibraryAvailability = entity.LibraryAvailability;
+			LibraryTimetable = entity.LibraryTimetable;
+			AccessibleEnvironment = entity.AccessibleEnvironment;
+			TakeChildUp3Years = entity.TakeChildUp3Years;
+			OtherLeisure = entity.OtherLeisure;
+			ContactPerson = entity.ContactPerson;
+			ContactPhone = entity.ContactPhone;
+			Description = entity.Description;
+			Latitude = entity.Latitude;
+			Longitude = entity.Longitude;
+			AgeFrom = entity.AgeFrom;
+			AgeTo = entity.AgeTo;
+			DistanceFromCenter = entity.DistanceFromCenter;
+			DistanceFromBeach = entity.DistanceFromBeach;
+			EkisId = entity.EkisId;
+			EkisNeedSend = entity.EkisNeedSend;
+			NotForSite = entity.NotForSite;
+			IsLok = entity.IsLok;
+			DescriptionHtml = entity.DescriptionHtml;
+			IsCamping = entity.IsCamping;
+			HistoryLinkId = entity.HistoryLinkId;
+			PlaceOfRestId = entity.PlaceOfRestId;
+			HotelTypeId = entity.HotelTypeId;
+			StateId = entity.StateId;
+			CityId = entity.CityId;
+			OrganizationId = entity.OrganizationId;
+			FunctioningTypeId = entity.FunctioningTypeId;
+			HotelPlacementId = entity.HotelPlacementId;
+			SubHotelTypeId = entity.SubHotelTypeId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class HotelType : ILastUpdateTick
+	{
+		public HotelType()
+		{
+		}
+
+		public HotelType(HotelType entity) : this(entity, null)
+		{
+		}
+
+		public HotelType(HotelType entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			ParentId = entity.ParentId;
+			if (deep > 0 && entity.Parent != null)
+			{
+				Parent = new HotelType(entity.Parent, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public HotelType CreateCopy()
+		{
+			var res = new HotelType(this);
+			if (Parent != null)
+			{
+				res.Parent = new HotelType{Id=Parent.Id, Eid=Parent.Eid};
+			}
+			res.Children = Children?.Select(p=>new HotelType {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(HotelType entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			ParentId = entity.ParentId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class InteragencyRequest : ILastUpdateTick
+	{
+		public InteragencyRequest()
+		{
+		}
+
+		public InteragencyRequest(InteragencyRequest entity) : this(entity, null)
+		{
+		}
+
+		public InteragencyRequest(InteragencyRequest entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			RequestNumber = entity.RequestNumber;
+			RequsetDate = entity.RequsetDate;
+			AnswerNumber = entity.AnswerNumber;
+			AnswerDate = entity.AnswerDate;
+			RequestComment = entity.RequestComment;
+			AnswerComment = entity.AnswerComment;
+			RequestFileUrl = entity.RequestFileUrl;
+			AnswerFileUrl = entity.AnswerFileUrl;
+			CreateDate = entity.CreateDate;
+			IsSecondaryRequest = entity.IsSecondaryRequest;
+			ForAllRegion = entity.ForAllRegion;
+			StatusInteragencyRequestId = entity.StatusInteragencyRequestId;
+			if (deep > 0 && entity.StatusInteragencyRequest != null)
+			{
+				StatusInteragencyRequest = new StatusInteragencyRequest(entity.StatusInteragencyRequest, deep - 1);
+			}
+
+			AccountId = entity.AccountId;
+			if (deep > 0 && entity.Account != null)
+			{
+				Account = new Account(entity.Account, deep - 1);
+			}
+
+			OrganizationId = entity.OrganizationId;
+			if (deep > 0 && entity.Organization != null)
+			{
+				Organization = new Organization(entity.Organization, deep - 1);
+			}
+
+			BtiDistrictId = entity.BtiDistrictId;
+			if (deep > 0 && entity.BtiDistrict != null)
+			{
+				BtiDistrict = new BtiDistrict(entity.BtiDistrict, deep - 1);
+			}
+
+			BtiRegionId = entity.BtiRegionId;
+			if (deep > 0 && entity.BtiRegion != null)
+			{
+				BtiRegion = new BtiRegion(entity.BtiRegion, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public InteragencyRequest CreateCopy()
+		{
+			var res = new InteragencyRequest(this);
+			if (StatusInteragencyRequest != null)
+			{
+				res.StatusInteragencyRequest = new StatusInteragencyRequest{Id=StatusInteragencyRequest.Id, Eid=StatusInteragencyRequest.Eid};
+			}
+			if (Account != null)
+			{
+				res.Account = new Account{Id=Account.Id, Eid=Account.Eid};
+			}
+			if (Organization != null)
+			{
+				res.Organization = new Organization{Id=Organization.Id, Eid=Organization.Eid};
+			}
+			if (BtiDistrict != null)
+			{
+				res.BtiDistrict = new BtiDistrict{Id=BtiDistrict.Id, Eid=BtiDistrict.Eid};
+			}
+			if (BtiRegion != null)
+			{
+				res.BtiRegion = new BtiRegion{Id=BtiRegion.Id, Eid=BtiRegion.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(InteragencyRequest entity)
+		{
+			Id = entity.Id;
+			RequestNumber = entity.RequestNumber;
+			RequsetDate = entity.RequsetDate;
+			AnswerNumber = entity.AnswerNumber;
+			AnswerDate = entity.AnswerDate;
+			RequestComment = entity.RequestComment;
+			AnswerComment = entity.AnswerComment;
+			RequestFileUrl = entity.RequestFileUrl;
+			AnswerFileUrl = entity.AnswerFileUrl;
+			CreateDate = entity.CreateDate;
+			IsSecondaryRequest = entity.IsSecondaryRequest;
+			ForAllRegion = entity.ForAllRegion;
+			StatusInteragencyRequestId = entity.StatusInteragencyRequestId;
+			AccountId = entity.AccountId;
+			OrganizationId = entity.OrganizationId;
+			BtiDistrictId = entity.BtiDistrictId;
+			BtiRegionId = entity.BtiRegionId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class InteragencyRequestBenefitType : ILastUpdateTick
+	{
+		public InteragencyRequestBenefitType()
+		{
+		}
+
+		public InteragencyRequestBenefitType(InteragencyRequestBenefitType entity) : this(entity, null)
+		{
+		}
+
+		public InteragencyRequestBenefitType(InteragencyRequestBenefitType entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			BenefitTypeId = entity.BenefitTypeId;
+			if (deep > 0 && entity.BenefitType != null)
+			{
+				BenefitType = new BenefitType(entity.BenefitType, deep - 1);
+			}
+
+			InteragencyRequestId = entity.InteragencyRequestId;
+			if (deep > 0 && entity.InteragencyRequest != null)
+			{
+				InteragencyRequest = new InteragencyRequest(entity.InteragencyRequest, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public InteragencyRequestBenefitType CreateCopy()
+		{
+			var res = new InteragencyRequestBenefitType(this);
+			if (BenefitType != null)
+			{
+				res.BenefitType = new BenefitType{Id=BenefitType.Id, Eid=BenefitType.Eid};
+			}
+			if (InteragencyRequest != null)
+			{
+				res.InteragencyRequest = new InteragencyRequest{Id=InteragencyRequest.Id, Eid=InteragencyRequest.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(InteragencyRequestBenefitType entity)
+		{
+			Id = entity.Id;
+			BenefitTypeId = entity.BenefitTypeId;
+			InteragencyRequestId = entity.InteragencyRequestId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class InteragencyRequestResult : ILastUpdateTick
+	{
+		public InteragencyRequestResult()
+		{
+		}
+
+		public InteragencyRequestResult(InteragencyRequestResult entity) : this(entity, null)
+		{
+		}
+
+		public InteragencyRequestResult(InteragencyRequestResult entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Comment = entity.Comment;
+			InteragencyRequestId = entity.InteragencyRequestId;
+			if (deep > 0 && entity.InteragencyRequest != null)
+			{
+				InteragencyRequest = new InteragencyRequest(entity.InteragencyRequest, deep - 1);
+			}
+
+			ChildId = entity.ChildId;
+			if (deep > 0 && entity.Child != null)
+			{
+				Child = new Child(entity.Child, deep - 1);
+			}
+
+			StatusResultId = entity.StatusResultId;
+			if (deep > 0 && entity.StatusResult != null)
+			{
+				StatusResult = new StatusResult(entity.StatusResult, deep - 1);
+			}
+
+			ApplicantId = entity.ApplicantId;
+			if (deep > 0 && entity.Applicant != null)
+			{
+				Applicant = new Applicant(entity.Applicant, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public InteragencyRequestResult CreateCopy()
+		{
+			var res = new InteragencyRequestResult(this);
+			if (InteragencyRequest != null)
+			{
+				res.InteragencyRequest = new InteragencyRequest{Id=InteragencyRequest.Id, Eid=InteragencyRequest.Eid};
+			}
+			if (Child != null)
+			{
+				res.Child = new Child{Id=Child.Id, Eid=Child.Eid};
+			}
+			if (StatusResult != null)
+			{
+				res.StatusResult = new StatusResult{Id=StatusResult.Id, Eid=StatusResult.Eid};
+			}
+			if (Applicant != null)
+			{
+				res.Applicant = new Applicant{Id=Applicant.Id, Eid=Applicant.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(InteragencyRequestResult entity)
+		{
+			Id = entity.Id;
+			Comment = entity.Comment;
+			InteragencyRequestId = entity.InteragencyRequestId;
+			ChildId = entity.ChildId;
+			StatusResultId = entity.StatusResultId;
+			ApplicantId = entity.ApplicantId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class LimitOnOrganization : ILastUpdateTick
+	{
+		public LimitOnOrganization()
+		{
+		}
+
+		public LimitOnOrganization(LimitOnOrganization entity) : this(entity, null)
+		{
+		}
+
+		public LimitOnOrganization(LimitOnOrganization entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Volume = entity.Volume;
+			Approved = entity.Approved;
+			HistoryLinkId = entity.HistoryLinkId;
+			if (deep > 0 && entity.HistoryLink != null)
+			{
+				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
+			}
+
+			OrganizationId = entity.OrganizationId;
+			if (deep > 0 && entity.Organization != null)
+			{
+				Organization = new Organization(entity.Organization, deep - 1);
+			}
+
+			LimitOnVedomstvoId = entity.LimitOnVedomstvoId;
+			if (deep > 0 && entity.LimitOnVedomstvo != null)
+			{
+				LimitOnVedomstvo = new LimitOnVedomstvo(entity.LimitOnVedomstvo, deep - 1);
+			}
+
+			StateId = entity.StateId;
+			if (deep > 0 && entity.State != null)
+			{
+				State = new StateMachineState(entity.State, deep - 1);
+			}
+
+			TourId = entity.TourId;
+			if (deep > 0 && entity.Tour != null)
+			{
+				Tour = new Tour(entity.Tour, deep - 1);
+			}
+
+			TimeOfRestId = entity.TimeOfRestId;
+			if (deep > 0 && entity.TimeOfRest != null)
+			{
+				TimeOfRest = new TimeOfRest(entity.TimeOfRest, deep - 1);
+			}
+
+			PlaceOfRestId = entity.PlaceOfRestId;
+			if (deep > 0 && entity.PlaceOfRest != null)
+			{
+				PlaceOfRest = new PlaceOfRest(entity.PlaceOfRest, deep - 1);
+			}
+
+			TypeOfLimitListId = entity.TypeOfLimitListId;
+			if (deep > 0 && entity.TypeOfLimitList != null)
+			{
+				TypeOfLimitList = new TypeOfLimitList(entity.TypeOfLimitList, deep - 1);
+			}
+
+			SignInfoId = entity.SignInfoId;
+			if (deep > 0 && entity.SignInfo != null)
+			{
+				SignInfo = new SignInfo(entity.SignInfo, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public LimitOnOrganization CreateCopy()
+		{
+			var res = new LimitOnOrganization(this);
+			if (HistoryLink != null)
+			{
+				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
+			}
+			if (Organization != null)
+			{
+				res.Organization = new Organization{Id=Organization.Id, Eid=Organization.Eid};
+			}
+			if (LimitOnVedomstvo != null)
+			{
+				res.LimitOnVedomstvo = new LimitOnVedomstvo{Id=LimitOnVedomstvo.Id, Eid=LimitOnVedomstvo.Eid};
+			}
+			if (State != null)
+			{
+				res.State = new StateMachineState{Id=State.Id, Eid=State.Eid};
+			}
+			if (Tour != null)
+			{
+				res.Tour = new Tour{Id=Tour.Id, Eid=Tour.Eid};
+			}
+			if (TimeOfRest != null)
+			{
+				res.TimeOfRest = new TimeOfRest{Id=TimeOfRest.Id, Eid=TimeOfRest.Eid};
+			}
+			if (PlaceOfRest != null)
+			{
+				res.PlaceOfRest = new PlaceOfRest{Id=PlaceOfRest.Id, Eid=PlaceOfRest.Eid};
+			}
+			if (TypeOfLimitList != null)
+			{
+				res.TypeOfLimitList = new TypeOfLimitList{Id=TypeOfLimitList.Id, Eid=TypeOfLimitList.Eid};
+			}
+			if (SignInfo != null)
+			{
+				res.SignInfo = new SignInfo{Id=SignInfo.Id, Eid=SignInfo.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(LimitOnOrganization entity)
+		{
+			Id = entity.Id;
+			Volume = entity.Volume;
+			Approved = entity.Approved;
+			HistoryLinkId = entity.HistoryLinkId;
+			OrganizationId = entity.OrganizationId;
+			LimitOnVedomstvoId = entity.LimitOnVedomstvoId;
+			StateId = entity.StateId;
+			TourId = entity.TourId;
+			TimeOfRestId = entity.TimeOfRestId;
+			PlaceOfRestId = entity.PlaceOfRestId;
+			TypeOfLimitListId = entity.TypeOfLimitListId;
+			SignInfoId = entity.SignInfoId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class LimitOnOrganizationRequest : ILastUpdateTick
 	{
 		public LimitOnOrganizationRequest()
@@ -6463,6 +8496,113 @@ namespace RestChild.Domain
 			GroupedTimeOfRestId = entity.GroupedTimeOfRestId;
 			TimeOfRestId = entity.TimeOfRestId;
 			ListOfChildsCategoryId = entity.ListOfChildsCategoryId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class LimitOnVedomstvo : ILastUpdateTick
+	{
+		public LimitOnVedomstvo()
+		{
+		}
+
+		public LimitOnVedomstvo(LimitOnVedomstvo entity) : this(entity, null)
+		{
+		}
+
+		public LimitOnVedomstvo(LimitOnVedomstvo entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			LimitYear = entity.LimitYear;
+			Approved = entity.Approved;
+			Volume = entity.Volume;
+			HistoryLinkId = entity.HistoryLinkId;
+			if (deep > 0 && entity.HistoryLink != null)
+			{
+				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
+			}
+
+			OrganizationId = entity.OrganizationId;
+			if (deep > 0 && entity.Organization != null)
+			{
+				Organization = new Organization(entity.Organization, deep - 1);
+			}
+
+			YearOfRestId = entity.YearOfRestId;
+			if (deep > 0 && entity.YearOfRest != null)
+			{
+				YearOfRest = new YearOfRest(entity.YearOfRest, deep - 1);
+			}
+
+			StateId = entity.StateId;
+			if (deep > 0 && entity.State != null)
+			{
+				State = new StateMachineState(entity.State, deep - 1);
+			}
+
+			TypeOfLimitListId = entity.TypeOfLimitListId;
+			if (deep > 0 && entity.TypeOfLimitList != null)
+			{
+				TypeOfLimitList = new TypeOfLimitList(entity.TypeOfLimitList, deep - 1);
+			}
+
+			SignInfoId = entity.SignInfoId;
+			if (deep > 0 && entity.SignInfo != null)
+			{
+				SignInfo = new SignInfo(entity.SignInfo, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public LimitOnVedomstvo CreateCopy()
+		{
+			var res = new LimitOnVedomstvo(this);
+			if (HistoryLink != null)
+			{
+				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
+			}
+			if (Organization != null)
+			{
+				res.Organization = new Organization{Id=Organization.Id, Eid=Organization.Eid};
+			}
+			if (YearOfRest != null)
+			{
+				res.YearOfRest = new YearOfRest{Id=YearOfRest.Id, Eid=YearOfRest.Eid};
+			}
+			if (State != null)
+			{
+				res.State = new StateMachineState{Id=State.Id, Eid=State.Eid};
+			}
+			if (TypeOfLimitList != null)
+			{
+				res.TypeOfLimitList = new TypeOfLimitList{Id=TypeOfLimitList.Id, Eid=TypeOfLimitList.Eid};
+			}
+			if (SignInfo != null)
+			{
+				res.SignInfo = new SignInfo{Id=SignInfo.Id, Eid=SignInfo.Eid};
+			}
+			res.VedomstvoLimit = VedomstvoLimit?.Select(p=>new LimitOnOrganization {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.LimitOnOrganizationRequests = LimitOnOrganizationRequests?.Select(p=>new LimitOnOrganizationRequest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(LimitOnVedomstvo entity)
+		{
+			Id = entity.Id;
+			LimitYear = entity.LimitYear;
+			Approved = entity.Approved;
+			Volume = entity.Volume;
+			HistoryLinkId = entity.HistoryLinkId;
+			OrganizationId = entity.OrganizationId;
+			YearOfRestId = entity.YearOfRestId;
+			StateId = entity.StateId;
+			TypeOfLimitListId = entity.TypeOfLimitListId;
+			SignInfoId = entity.SignInfoId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -6676,6 +8816,206 @@ namespace RestChild.Domain
 			ApplicantId = entity.ApplicantId;
 			BoutId = entity.BoutId;
 			NotNeedTicketReasonId = entity.NotNeedTicketReasonId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class ListOfChilds : ILastUpdateTick
+	{
+		public ListOfChilds()
+		{
+		}
+
+		public ListOfChilds(ListOfChilds entity) : this(entity, null)
+		{
+		}
+
+		public ListOfChilds(ListOfChilds entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			IsLast = entity.IsLast;
+			IsDeleted = entity.IsDeleted;
+			DateChange = entity.DateChange;
+			Name = entity.Name;
+			CountChild = entity.CountChild;
+			CountAttendants = entity.CountAttendants;
+			CertificateNumber = entity.CertificateNumber;
+			Responsible = entity.Responsible;
+			ResponsiblePhone = entity.ResponsiblePhone;
+			ForIndex = entity.ForIndex;
+			RulesAgreement = entity.RulesAgreement;
+			PupilsRulesAgreement = entity.PupilsRulesAgreement;
+			HistoryLinkId = entity.HistoryLinkId;
+			if (deep > 0 && entity.HistoryLink != null)
+			{
+				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
+			}
+
+			LimitOnOrganizationId = entity.LimitOnOrganizationId;
+			if (deep > 0 && entity.LimitOnOrganization != null)
+			{
+				LimitOnOrganization = new LimitOnOrganization(entity.LimitOnOrganization, deep - 1);
+			}
+
+			TimeOfRestId = entity.TimeOfRestId;
+			if (deep > 0 && entity.TimeOfRest != null)
+			{
+				TimeOfRest = new TimeOfRest(entity.TimeOfRest, deep - 1);
+			}
+
+			PlaceOfRestId = entity.PlaceOfRestId;
+			if (deep > 0 && entity.PlaceOfRest != null)
+			{
+				PlaceOfRest = new PlaceOfRest(entity.PlaceOfRest, deep - 1);
+			}
+
+			StateId = entity.StateId;
+			if (deep > 0 && entity.State != null)
+			{
+				State = new StateMachineState(entity.State, deep - 1);
+			}
+
+			TourId = entity.TourId;
+			if (deep > 0 && entity.Tour != null)
+			{
+				Tour = new Tour(entity.Tour, deep - 1);
+			}
+
+			ListOfChildsCategoryId = entity.ListOfChildsCategoryId;
+			if (deep > 0 && entity.ListOfChildsCategory != null)
+			{
+				ListOfChildsCategory = new ListOfChildsCategory(entity.ListOfChildsCategory, deep - 1);
+			}
+
+			TypeOfLimitListId = entity.TypeOfLimitListId;
+			if (deep > 0 && entity.TypeOfLimitList != null)
+			{
+				TypeOfLimitList = new TypeOfLimitList(entity.TypeOfLimitList, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public ListOfChilds CreateCopy()
+		{
+			var res = new ListOfChilds(this);
+			if (HistoryLink != null)
+			{
+				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
+			}
+			if (LimitOnOrganization != null)
+			{
+				res.LimitOnOrganization = new LimitOnOrganization{Id=LimitOnOrganization.Id, Eid=LimitOnOrganization.Eid};
+			}
+			if (TimeOfRest != null)
+			{
+				res.TimeOfRest = new TimeOfRest{Id=TimeOfRest.Id, Eid=TimeOfRest.Eid};
+			}
+			if (PlaceOfRest != null)
+			{
+				res.PlaceOfRest = new PlaceOfRest{Id=PlaceOfRest.Id, Eid=PlaceOfRest.Eid};
+			}
+			if (State != null)
+			{
+				res.State = new StateMachineState{Id=State.Id, Eid=State.Eid};
+			}
+			if (Tour != null)
+			{
+				res.Tour = new Tour{Id=Tour.Id, Eid=Tour.Eid};
+			}
+			if (ListOfChildsCategory != null)
+			{
+				res.ListOfChildsCategory = new ListOfChildsCategory{Id=ListOfChildsCategory.Id, Eid=ListOfChildsCategory.Eid};
+			}
+			if (TypeOfLimitList != null)
+			{
+				res.TypeOfLimitList = new TypeOfLimitList{Id=TypeOfLimitList.Id, Eid=TypeOfLimitList.Eid};
+			}
+			res.Childs = Childs?.Select(p=>new Child {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Attendants = Attendants?.Select(p=>new Applicant {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Requests = Requests?.Select(p=>new Request {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.PupilGroupRequest = PupilGroupRequest?.Select(p=>new RequestForPeriodOfRest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.GroupPupils = GroupPupils?.Select(p=>new PupilGroupListMember {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.GroupCollaborators = GroupCollaborators?.Select(p=>new PupilGroupListCollaborator {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.GroupTransfers = GroupTransfers?.Select(p=>new PupilGroupListTransfer {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(ListOfChilds entity)
+		{
+			Id = entity.Id;
+			IsLast = entity.IsLast;
+			IsDeleted = entity.IsDeleted;
+			DateChange = entity.DateChange;
+			Name = entity.Name;
+			CountChild = entity.CountChild;
+			CountAttendants = entity.CountAttendants;
+			CertificateNumber = entity.CertificateNumber;
+			Responsible = entity.Responsible;
+			ResponsiblePhone = entity.ResponsiblePhone;
+			ForIndex = entity.ForIndex;
+			RulesAgreement = entity.RulesAgreement;
+			PupilsRulesAgreement = entity.PupilsRulesAgreement;
+			HistoryLinkId = entity.HistoryLinkId;
+			LimitOnOrganizationId = entity.LimitOnOrganizationId;
+			TimeOfRestId = entity.TimeOfRestId;
+			PlaceOfRestId = entity.PlaceOfRestId;
+			StateId = entity.StateId;
+			TourId = entity.TourId;
+			ListOfChildsCategoryId = entity.ListOfChildsCategoryId;
+			TypeOfLimitListId = entity.TypeOfLimitListId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class ListOfChildsCategory : ILastUpdateTick
+	{
+		public ListOfChildsCategory()
+		{
+		}
+
+		public ListOfChildsCategory(ListOfChildsCategory entity) : this(entity, null)
+		{
+		}
+
+		public ListOfChildsCategory(ListOfChildsCategory entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			OrganizationId = entity.OrganizationId;
+			if (deep > 0 && entity.Organization != null)
+			{
+				Organization = new Organization(entity.Organization, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public ListOfChildsCategory CreateCopy()
+		{
+			var res = new ListOfChildsCategory(this);
+			if (Organization != null)
+			{
+				res.Organization = new Organization{Id=Organization.Id, Eid=Organization.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(ListOfChildsCategory entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			OrganizationId = entity.OrganizationId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -7446,6 +9786,8 @@ namespace RestChild.Domain
 			Date = entity.Date;
 			WorkingInterval = entity.WorkingInterval;
 			IsDeleted = entity.IsDeleted;
+			SuoVisitTooEarly = entity.SuoVisitTooEarly;
+			SuoVisitTooLate = entity.SuoVisitTooLate;
 			LastUpdateTick = entity.LastUpdateTick;
 			Eid = entity.Eid;
 			EidSendStatus = entity.EidSendStatus;
@@ -7472,6 +9814,8 @@ namespace RestChild.Domain
 			Date = entity.Date;
 			WorkingInterval = entity.WorkingInterval;
 			IsDeleted = entity.IsDeleted;
+			SuoVisitTooEarly = entity.SuoVisitTooEarly;
+			SuoVisitTooLate = entity.SuoVisitTooLate;
 			LastUpdateTick = entity.LastUpdateTick;
 			WindowCount = entity.WindowCount;
 			BookingCount = entity.BookingCount;
@@ -8026,6 +10370,7 @@ namespace RestChild.Domain
 			FullName = entity.FullName;
 			FactAddress = entity.FactAddress;
 			Inn = entity.Inn;
+			IsDeleted = entity.IsDeleted;
 			AddressId = entity.AddressId;
 			if (deep > 0 && entity.Address != null)
 			{
@@ -8036,6 +10381,12 @@ namespace RestChild.Domain
 			if (deep > 0 && entity.Region != null)
 			{
 				Region = new StateDistrict(entity.Region, deep - 1);
+			}
+
+			HistoryLinkId = entity.HistoryLinkId;
+			if (deep > 0 && entity.HistoryLink != null)
+			{
+				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
 			}
 
 			LastUpdateTick = entity.LastUpdateTick;
@@ -8055,6 +10406,10 @@ namespace RestChild.Domain
 			{
 				res.Region = new StateDistrict{Id=Region.Id, Eid=Region.Eid};
 			}
+			if (HistoryLink != null)
+			{
+				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
+			}
 			res.HotelDatas = HotelDatas?.Select(p=>new MonitoringHotelData {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
 			return res;
 		}
@@ -8066,8 +10421,10 @@ namespace RestChild.Domain
 			FullName = entity.FullName;
 			FactAddress = entity.FactAddress;
 			Inn = entity.Inn;
+			IsDeleted = entity.IsDeleted;
 			AddressId = entity.AddressId;
 			RegionId = entity.RegionId;
+			HistoryLinkId = entity.HistoryLinkId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -8675,6 +11032,172 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class Organization : ILastUpdateTick
+	{
+		public Organization()
+		{
+		}
+
+		public Organization(Organization entity) : this(entity, null)
+		{
+		}
+
+		public Organization(Organization entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			ShortName = entity.ShortName;
+			ExternalUid = entity.ExternalUid;
+			Inn = entity.Inn;
+			Kpp = entity.Kpp;
+			Ogrn = entity.Ogrn;
+			IsDeleted = entity.IsDeleted;
+			IsLast = entity.IsLast;
+			IsVedomstvo = entity.IsVedomstvo;
+			Phone = entity.Phone;
+			EkisSourcePk = entity.EkisSourcePk;
+			EkisExternalPk = entity.EkisExternalPk;
+			EkisStatus = entity.EkisStatus;
+			EkisGuid = entity.EkisGuid;
+			IsVedOrganization = entity.IsVedOrganization;
+			IsContractor = entity.IsContractor;
+			IsTransport = entity.IsTransport;
+			TargetOrganizationPk = entity.TargetOrganizationPk;
+			Address = entity.Address;
+			Email = entity.Email;
+			ContactPerson = entity.ContactPerson;
+			Comment = entity.Comment;
+			Commission = entity.Commission;
+			LatinName = entity.LatinName;
+			Ownership = entity.Ownership;
+			PostAdderss = entity.PostAdderss;
+			HeadPerson = entity.HeadPerson;
+			IsTradeUnion = entity.IsTradeUnion;
+			IsHotel = entity.IsHotel;
+			CountInTour = entity.CountInTour;
+			Orphanage = entity.Orphanage;
+			IsInMonitoring = entity.IsInMonitoring;
+			OKATO = entity.OKATO;
+			ESNSIType = entity.ESNSIType;
+			HistoryLinkId = entity.HistoryLinkId;
+			if (deep > 0 && entity.HistoryLink != null)
+			{
+				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
+			}
+
+			ParentId = entity.ParentId;
+			if (deep > 0 && entity.Parent != null)
+			{
+				Parent = new Organization(entity.Parent, deep - 1);
+			}
+
+			EntityId = entity.EntityId;
+			if (deep > 0 && entity.Entity != null)
+			{
+				Entity = new Organization(entity.Entity, deep - 1);
+			}
+
+			StateDistrictId = entity.StateDistrictId;
+			if (deep > 0 && entity.StateDistrict != null)
+			{
+				StateDistrict = new StateDistrict(entity.StateDistrict, deep - 1);
+			}
+
+			CuratorId = entity.CuratorId;
+			if (deep > 0 && entity.Curator != null)
+			{
+				Curator = new Account(entity.Curator, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public Organization CreateCopy()
+		{
+			var res = new Organization(this);
+			if (HistoryLink != null)
+			{
+				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
+			}
+			if (Parent != null)
+			{
+				res.Parent = new Organization{Id=Parent.Id, Eid=Parent.Eid};
+			}
+			if (Entity != null)
+			{
+				res.Entity = new Organization{Id=Entity.Id, Eid=Entity.Eid};
+			}
+			if (StateDistrict != null)
+			{
+				res.StateDistrict = new StateDistrict{Id=StateDistrict.Id, Eid=StateDistrict.Eid};
+			}
+			if (Curator != null)
+			{
+				res.Curator = new Account{Id=Curator.Id, Eid=Curator.Eid};
+			}
+			res.Okved = Okved?.Select(p=>new Okved {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Bank = Bank?.Select(p=>new OrganizationBank {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Vedomstvo = Vedomstvo?.Select(p=>new LimitOnVedomstvo {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.LimitOrganization = LimitOrganization?.Select(p=>new LimitOnOrganization {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.OrphanageOrganizationAddresses = OrphanageOrganizationAddresses?.Select(p=>new OrphanageAddress {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.OrganisatonCollaborators = OrganisatonCollaborators?.Select(p=>new OrganisatorCollaborator {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.MonitoringChildrenNumberInformations = MonitoringChildrenNumberInformations?.Select(p=>new MonitoringChildrenNumberInformation {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.MonitoringFinanceInformations = MonitoringFinanceInformations?.Select(p=>new MonitoringFinancialInformation {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.GBUs = GBUs?.Select(p=>new MonitoringGBU {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.TypeOfTransport = TypeOfTransport?.Select(p=>new TypeOfTransport {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(Organization entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			ShortName = entity.ShortName;
+			ExternalUid = entity.ExternalUid;
+			Inn = entity.Inn;
+			Kpp = entity.Kpp;
+			Ogrn = entity.Ogrn;
+			IsDeleted = entity.IsDeleted;
+			IsLast = entity.IsLast;
+			IsVedomstvo = entity.IsVedomstvo;
+			Phone = entity.Phone;
+			EkisSourcePk = entity.EkisSourcePk;
+			EkisExternalPk = entity.EkisExternalPk;
+			EkisStatus = entity.EkisStatus;
+			EkisGuid = entity.EkisGuid;
+			IsVedOrganization = entity.IsVedOrganization;
+			IsContractor = entity.IsContractor;
+			IsTransport = entity.IsTransport;
+			TargetOrganizationPk = entity.TargetOrganizationPk;
+			Address = entity.Address;
+			Email = entity.Email;
+			ContactPerson = entity.ContactPerson;
+			Comment = entity.Comment;
+			Commission = entity.Commission;
+			LatinName = entity.LatinName;
+			Ownership = entity.Ownership;
+			PostAdderss = entity.PostAdderss;
+			HeadPerson = entity.HeadPerson;
+			IsTradeUnion = entity.IsTradeUnion;
+			IsHotel = entity.IsHotel;
+			CountInTour = entity.CountInTour;
+			Orphanage = entity.Orphanage;
+			IsInMonitoring = entity.IsInMonitoring;
+			OKATO = entity.OKATO;
+			ESNSIType = entity.ESNSIType;
+			HistoryLinkId = entity.HistoryLinkId;
+			ParentId = entity.ParentId;
+			EntityId = entity.EntityId;
+			StateDistrictId = entity.StateDistrictId;
+			CuratorId = entity.CuratorId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class OrganizationBank : ILastUpdateTick
 	{
 		public OrganizationBank()
@@ -9195,6 +11718,7 @@ namespace RestChild.Domain
 			ForMpgu = entity.ForMpgu;
 			ForSite = entity.ForSite;
 			NotForSelect = entity.NotForSelect;
+			NeedTypeOfTransport = entity.NeedTypeOfTransport;
 			GroupId = entity.GroupId;
 			if (deep > 0 && entity.Group != null)
 			{
@@ -9264,6 +11788,7 @@ namespace RestChild.Domain
 			ForMpgu = entity.ForMpgu;
 			ForSite = entity.ForSite;
 			NotForSelect = entity.NotForSelect;
+			NeedTypeOfTransport = entity.NeedTypeOfTransport;
 			GroupId = entity.GroupId;
 			CreateUserId = entity.CreateUserId;
 			HistoryLinkId = entity.HistoryLinkId;
@@ -10559,6 +13084,554 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class Request : ILastUpdateTick
+	{
+		public Request()
+		{
+		}
+
+		public Request(Request entity) : this(entity, null)
+		{
+		}
+
+		public Request(Request entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			AgentApplicant = entity.AgentApplicant;
+			RequestNumber = entity.RequestNumber;
+			DateRequest = entity.DateRequest;
+			UpdateDate = entity.UpdateDate;
+			IsLast = entity.IsLast;
+			IsDeleted = entity.IsDeleted;
+			Version = entity.Version;
+			ExternalUid = entity.ExternalUid;
+			ExternalSystem = entity.ExternalSystem;
+			MainPlaces = entity.MainPlaces;
+			AdditionalPlaces = entity.AdditionalPlaces;
+			IsDraft = entity.IsDraft;
+			RequestNumberMpgu = entity.RequestNumberMpgu;
+			NeedEmail = entity.NeedEmail;
+			NeedSms = entity.NeedSms;
+			DateChangeStatus = entity.DateChangeStatus;
+			BookingGuid = entity.BookingGuid;
+			CountPlace = entity.CountPlace;
+			CountAttendants = entity.CountAttendants;
+			CertificateNumber = entity.CertificateNumber;
+			CertificateDate = entity.CertificateDate;
+			Price = entity.Price;
+			DateIncome = entity.DateIncome;
+			DateOutcome = entity.DateOutcome;
+			Commentary = entity.Commentary;
+			BankName = entity.BankName;
+			BankBik = entity.BankBik;
+			BankInn = entity.BankInn;
+			BankKpp = entity.BankKpp;
+			BankCardNumber = entity.BankCardNumber;
+			BankCorr = entity.BankCorr;
+			BankLastName = entity.BankLastName;
+			BankFirstName = entity.BankFirstName;
+			BankMiddleName = entity.BankMiddleName;
+			BankAccount = entity.BankAccount;
+			PriceInternal = entity.PriceInternal;
+			DiscountCardNumber = entity.DiscountCardNumber;
+			DiscountProcent = entity.DiscountProcent;
+			ForIndex = entity.ForIndex;
+			SiteUser = entity.SiteUser;
+			ChangeByScan = entity.ChangeByScan;
+			ProcentPrepaid = entity.ProcentPrepaid;
+			ProcentOver = entity.ProcentOver;
+			CalculationOnPerson = entity.CalculationOnPerson;
+			InternalCommentary = entity.InternalCommentary;
+			IsApplicantOrganization = entity.IsApplicantOrganization;
+			IsFirstCompany = entity.IsFirstCompany;
+			RequestOnMoney = entity.RequestOnMoney;
+			NeedSendForBenefit = entity.NeedSendForBenefit;
+			NeedSendToRelative = entity.NeedSendToRelative;
+			SsoId = entity.SsoId;
+			StatusApplicant = entity.StatusApplicant;
+			MayFinalSend = entity.MayFinalSend;
+			Repared = entity.Repared;
+			RefusalOfAdmission = entity.RefusalOfAdmission;
+			NeedSendForSnils = entity.NeedSendForSnils;
+			NeedSendForCPMPK = entity.NeedSendForCPMPK;
+			NeedSendForParent = entity.NeedSendForParent;
+			NeedSendForPassport = entity.NeedSendForPassport;
+			NeedSendForRegistrationByPassport = entity.NeedSendForRegistrationByPassport;
+			NeedSendForAisoLegalRepresentation = entity.NeedSendForAisoLegalRepresentation;
+			NeedSendForFRI = entity.NeedSendForFRI;
+			StatusId = entity.StatusId;
+			if (deep > 0 && entity.Status != null)
+			{
+				Status = new Status(entity.Status, deep - 1);
+			}
+
+			ApplicantId = entity.ApplicantId;
+			if (deep > 0 && entity.Applicant != null)
+			{
+				Applicant = new Applicant(entity.Applicant, deep - 1);
+			}
+
+			TypeOfRestId = entity.TypeOfRestId;
+			if (deep > 0 && entity.TypeOfRest != null)
+			{
+				TypeOfRest = new TypeOfRest(entity.TypeOfRest, deep - 1);
+			}
+
+			TimeOfRestId = entity.TimeOfRestId;
+			if (deep > 0 && entity.TimeOfRest != null)
+			{
+				TimeOfRest = new TimeOfRest(entity.TimeOfRest, deep - 1);
+			}
+
+			SubjectOfRestId = entity.SubjectOfRestId;
+			if (deep > 0 && entity.SubjectOfRest != null)
+			{
+				SubjectOfRest = new SubjectOfRest(entity.SubjectOfRest, deep - 1);
+			}
+
+			AttendantTypeId = entity.AttendantTypeId;
+			if (deep > 0 && entity.AttendantType != null)
+			{
+				AttendantType = new AttendantType(entity.AttendantType, deep - 1);
+			}
+
+			PlaceOfRestId = entity.PlaceOfRestId;
+			if (deep > 0 && entity.PlaceOfRest != null)
+			{
+				PlaceOfRest = new PlaceOfRest(entity.PlaceOfRest, deep - 1);
+			}
+
+			AgentId = entity.AgentId;
+			if (deep > 0 && entity.Agent != null)
+			{
+				Agent = new Agent(entity.Agent, deep - 1);
+			}
+
+			EntityId = entity.EntityId;
+			if (deep > 0 && entity.Entity != null)
+			{
+				Entity = new Request(entity.Entity, deep - 1);
+			}
+
+			SourceId = entity.SourceId;
+			if (deep > 0 && entity.Source != null)
+			{
+				Source = new Source(entity.Source, deep - 1);
+			}
+
+			DeclineReasonId = entity.DeclineReasonId;
+			if (deep > 0 && entity.DeclineReason != null)
+			{
+				DeclineReason = new DeclineReason(entity.DeclineReason, deep - 1);
+			}
+
+			CuratorId = entity.CuratorId;
+			if (deep > 0 && entity.Curator != null)
+			{
+				Curator = new Account(entity.Curator, deep - 1);
+			}
+
+			BeneficiariesId = entity.BeneficiariesId;
+			if (deep > 0 && entity.Beneficiaries != null)
+			{
+				Beneficiaries = new Beneficiaries(entity.Beneficiaries, deep - 1);
+			}
+
+			HistoryLinkId = entity.HistoryLinkId;
+			if (deep > 0 && entity.HistoryLink != null)
+			{
+				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
+			}
+
+			RepresentInterestId = entity.RepresentInterestId;
+			if (deep > 0 && entity.RepresentInterest != null)
+			{
+				RepresentInterest = new RepresentInterest(entity.RepresentInterest, deep - 1);
+			}
+
+			TransferFromId = entity.TransferFromId;
+			if (deep > 0 && entity.TransferFrom != null)
+			{
+				TransferFrom = new TypeOfTransfer(entity.TransferFrom, deep - 1);
+			}
+
+			TransferToId = entity.TransferToId;
+			if (deep > 0 && entity.TransferTo != null)
+			{
+				TransferTo = new TypeOfTransfer(entity.TransferTo, deep - 1);
+			}
+
+			PriorityTypeOfTransportInRequestId = entity.PriorityTypeOfTransportInRequestId;
+			if (deep > 0 && entity.PriorityTypeOfTransportInRequest != null)
+			{
+				PriorityTypeOfTransportInRequest = new TypeOfTransportInRequest(entity.PriorityTypeOfTransportInRequest, deep - 1);
+			}
+
+			AdditionalTypeOfTransportInRequestId = entity.AdditionalTypeOfTransportInRequestId;
+			if (deep > 0 && entity.AdditionalTypeOfTransportInRequest != null)
+			{
+				AdditionalTypeOfTransportInRequest = new TypeOfTransportInRequest(entity.AdditionalTypeOfTransportInRequest, deep - 1);
+			}
+
+			TypeOfCampId = entity.TypeOfCampId;
+			if (deep > 0 && entity.TypeOfCamp != null)
+			{
+				TypeOfCamp = new TypeOfCamp(entity.TypeOfCamp, deep - 1);
+			}
+
+			TypeOfCampAddonId = entity.TypeOfCampAddonId;
+			if (deep > 0 && entity.TypeOfCampAddon != null)
+			{
+				TypeOfCampAddon = new TypeOfCamp(entity.TypeOfCampAddon, deep - 1);
+			}
+
+			CreateUserId = entity.CreateUserId;
+			if (deep > 0 && entity.CreateUser != null)
+			{
+				CreateUser = new Account(entity.CreateUser, deep - 1);
+			}
+
+			OrganizationId = entity.OrganizationId;
+			if (deep > 0 && entity.Organization != null)
+			{
+				Organization = new Organization(entity.Organization, deep - 1);
+			}
+
+			HotelsId = entity.HotelsId;
+			if (deep > 0 && entity.Hotels != null)
+			{
+				Hotels = new Hotels(entity.Hotels, deep - 1);
+			}
+
+			YearOfRestId = entity.YearOfRestId;
+			if (deep > 0 && entity.YearOfRest != null)
+			{
+				YearOfRest = new YearOfRest(entity.YearOfRest, deep - 1);
+			}
+
+			TourId = entity.TourId;
+			if (deep > 0 && entity.Tour != null)
+			{
+				Tour = new Tour(entity.Tour, deep - 1);
+			}
+
+			GroupedTimeOfRestId = entity.GroupedTimeOfRestId;
+			if (deep > 0 && entity.GroupedTimeOfRest != null)
+			{
+				GroupedTimeOfRest = new GroupedTimeOfRest(entity.GroupedTimeOfRest, deep - 1);
+			}
+
+			ParentRequestId = entity.ParentRequestId;
+			if (deep > 0 && entity.ParentRequest != null)
+			{
+				ParentRequest = new Request(entity.ParentRequest, deep - 1);
+			}
+
+			CityId = entity.CityId;
+			if (deep > 0 && entity.City != null)
+			{
+				City = new City(entity.City, deep - 1);
+			}
+
+			TypeOfRestSubtypeId = entity.TypeOfRestSubtypeId;
+			if (deep > 0 && entity.TypeOfRestSubtype != null)
+			{
+				TypeOfRestSubtype = new TypeOfRestSubtype(entity.TypeOfRestSubtype, deep - 1);
+			}
+
+			BaseServiceId = entity.BaseServiceId;
+			if (deep > 0 && entity.BaseService != null)
+			{
+				BaseService = new AddonServices(entity.BaseService, deep - 1);
+			}
+
+			ParentListOfChildId = entity.ParentListOfChildId;
+			if (deep > 0 && entity.ParentListOfChild != null)
+			{
+				ParentListOfChild = new ListOfChilds(entity.ParentListOfChild, deep - 1);
+			}
+
+			ApplicantOrganizationId = entity.ApplicantOrganizationId;
+			if (deep > 0 && entity.ApplicantOrganization != null)
+			{
+				ApplicantOrganization = new Organization(entity.ApplicantOrganization, deep - 1);
+			}
+
+			DiscountCardId = entity.DiscountCardId;
+			if (deep > 0 && entity.DiscountCard != null)
+			{
+				DiscountCard = new DiscountCard(entity.DiscountCard, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public Request CreateCopy()
+		{
+			var res = new Request(this);
+			if (Status != null)
+			{
+				res.Status = new Status{Id=Status.Id, Eid=Status.Eid};
+			}
+			if (Applicant != null)
+			{
+				res.Applicant = new Applicant{Id=Applicant.Id, Eid=Applicant.Eid};
+			}
+			if (TypeOfRest != null)
+			{
+				res.TypeOfRest = new TypeOfRest{Id=TypeOfRest.Id, Eid=TypeOfRest.Eid};
+			}
+			if (TimeOfRest != null)
+			{
+				res.TimeOfRest = new TimeOfRest{Id=TimeOfRest.Id, Eid=TimeOfRest.Eid};
+			}
+			if (SubjectOfRest != null)
+			{
+				res.SubjectOfRest = new SubjectOfRest{Id=SubjectOfRest.Id, Eid=SubjectOfRest.Eid};
+			}
+			if (AttendantType != null)
+			{
+				res.AttendantType = new AttendantType{Id=AttendantType.Id, Eid=AttendantType.Eid};
+			}
+			if (PlaceOfRest != null)
+			{
+				res.PlaceOfRest = new PlaceOfRest{Id=PlaceOfRest.Id, Eid=PlaceOfRest.Eid};
+			}
+			if (Agent != null)
+			{
+				res.Agent = new Agent{Id=Agent.Id, Eid=Agent.Eid};
+			}
+			if (Entity != null)
+			{
+				res.Entity = new Request{Id=Entity.Id, Eid=Entity.Eid};
+			}
+			if (Source != null)
+			{
+				res.Source = new Source{Id=Source.Id, Eid=Source.Eid};
+			}
+			if (DeclineReason != null)
+			{
+				res.DeclineReason = new DeclineReason{Id=DeclineReason.Id, Eid=DeclineReason.Eid};
+			}
+			if (Curator != null)
+			{
+				res.Curator = new Account{Id=Curator.Id, Eid=Curator.Eid};
+			}
+			if (Beneficiaries != null)
+			{
+				res.Beneficiaries = new Beneficiaries{Id=Beneficiaries.Id, Eid=Beneficiaries.Eid};
+			}
+			if (HistoryLink != null)
+			{
+				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
+			}
+			if (RepresentInterest != null)
+			{
+				res.RepresentInterest = new RepresentInterest{Id=RepresentInterest.Id, Eid=RepresentInterest.Eid};
+			}
+			if (TransferFrom != null)
+			{
+				res.TransferFrom = new TypeOfTransfer{Id=TransferFrom.Id, Eid=TransferFrom.Eid};
+			}
+			if (TransferTo != null)
+			{
+				res.TransferTo = new TypeOfTransfer{Id=TransferTo.Id, Eid=TransferTo.Eid};
+			}
+			if (PriorityTypeOfTransportInRequest != null)
+			{
+				res.PriorityTypeOfTransportInRequest = new TypeOfTransportInRequest{Id=PriorityTypeOfTransportInRequest.Id, Eid=PriorityTypeOfTransportInRequest.Eid};
+			}
+			if (AdditionalTypeOfTransportInRequest != null)
+			{
+				res.AdditionalTypeOfTransportInRequest = new TypeOfTransportInRequest{Id=AdditionalTypeOfTransportInRequest.Id, Eid=AdditionalTypeOfTransportInRequest.Eid};
+			}
+			if (TypeOfCamp != null)
+			{
+				res.TypeOfCamp = new TypeOfCamp{Id=TypeOfCamp.Id, Eid=TypeOfCamp.Eid};
+			}
+			if (TypeOfCampAddon != null)
+			{
+				res.TypeOfCampAddon = new TypeOfCamp{Id=TypeOfCampAddon.Id, Eid=TypeOfCampAddon.Eid};
+			}
+			if (CreateUser != null)
+			{
+				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
+			}
+			if (Organization != null)
+			{
+				res.Organization = new Organization{Id=Organization.Id, Eid=Organization.Eid};
+			}
+			if (Hotels != null)
+			{
+				res.Hotels = new Hotels{Id=Hotels.Id, Eid=Hotels.Eid};
+			}
+			if (YearOfRest != null)
+			{
+				res.YearOfRest = new YearOfRest{Id=YearOfRest.Id, Eid=YearOfRest.Eid};
+			}
+			if (Tour != null)
+			{
+				res.Tour = new Tour{Id=Tour.Id, Eid=Tour.Eid};
+			}
+			if (GroupedTimeOfRest != null)
+			{
+				res.GroupedTimeOfRest = new GroupedTimeOfRest{Id=GroupedTimeOfRest.Id, Eid=GroupedTimeOfRest.Eid};
+			}
+			if (ParentRequest != null)
+			{
+				res.ParentRequest = new Request{Id=ParentRequest.Id, Eid=ParentRequest.Eid};
+			}
+			if (City != null)
+			{
+				res.City = new City{Id=City.Id, Eid=City.Eid};
+			}
+			if (TypeOfRestSubtype != null)
+			{
+				res.TypeOfRestSubtype = new TypeOfRestSubtype{Id=TypeOfRestSubtype.Id, Eid=TypeOfRestSubtype.Eid};
+			}
+			if (BaseService != null)
+			{
+				res.BaseService = new AddonServices{Id=BaseService.Id, Eid=BaseService.Eid};
+			}
+			if (ParentListOfChild != null)
+			{
+				res.ParentListOfChild = new ListOfChilds{Id=ParentListOfChild.Id, Eid=ParentListOfChild.Eid};
+			}
+			if (ApplicantOrganization != null)
+			{
+				res.ApplicantOrganization = new Organization{Id=ApplicantOrganization.Id, Eid=ApplicantOrganization.Eid};
+			}
+			if (DiscountCard != null)
+			{
+				res.DiscountCard = new DiscountCard{Id=DiscountCard.Id, Eid=DiscountCard.Eid};
+			}
+			res.Child = Child?.Select(p=>new Child {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Attendant = Attendant?.Select(p=>new Applicant {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Files = Files?.Select(p=>new RequestFile {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Certificates = Certificates?.Select(p=>new Certificate {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.PlacesOfRest = PlacesOfRest?.Select(p=>new RequestPlaceOfRest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.TimesOfRest = TimesOfRest?.Select(p=>new RequestsTimeOfRest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.BookingsCom = BookingsCom?.Select(p=>new BookingCommercial {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.AddonRequests = AddonRequests?.Select(p=>new Request {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.AddonServicesLinks = AddonServicesLinks?.Select(p=>new AddonServicesLink {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.RequestAccommodations = RequestAccommodations?.Select(p=>new RequestAccommodation {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Calculations = Calculations?.Select(p=>new Calculation {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Tickets = Tickets?.Select(p=>new Ticket {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.InformationVouchers = InformationVouchers?.Select(p=>new RequestInformationVoucher {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.RequestServices = RequestServices?.Select(p=>new RequestService {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.OfferInRequest = OfferInRequest?.Select(p=>new OfferInRequest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Tours = Tours?.Select(p=>new Tour {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Discounts = Discounts?.Select(p=>new Discount {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(Request entity)
+		{
+			Id = entity.Id;
+			AgentApplicant = entity.AgentApplicant;
+			RequestNumber = entity.RequestNumber;
+			DateRequest = entity.DateRequest;
+			UpdateDate = entity.UpdateDate;
+			IsLast = entity.IsLast;
+			IsDeleted = entity.IsDeleted;
+			Version = entity.Version;
+			ExternalUid = entity.ExternalUid;
+			ExternalSystem = entity.ExternalSystem;
+			MainPlaces = entity.MainPlaces;
+			AdditionalPlaces = entity.AdditionalPlaces;
+			IsDraft = entity.IsDraft;
+			RequestNumberMpgu = entity.RequestNumberMpgu;
+			NeedEmail = entity.NeedEmail;
+			NeedSms = entity.NeedSms;
+			DateChangeStatus = entity.DateChangeStatus;
+			BookingGuid = entity.BookingGuid;
+			CountPlace = entity.CountPlace;
+			CountAttendants = entity.CountAttendants;
+			CertificateNumber = entity.CertificateNumber;
+			CertificateDate = entity.CertificateDate;
+			Price = entity.Price;
+			DateIncome = entity.DateIncome;
+			DateOutcome = entity.DateOutcome;
+			Commentary = entity.Commentary;
+			BankName = entity.BankName;
+			BankBik = entity.BankBik;
+			BankInn = entity.BankInn;
+			BankKpp = entity.BankKpp;
+			BankCardNumber = entity.BankCardNumber;
+			BankCorr = entity.BankCorr;
+			BankLastName = entity.BankLastName;
+			BankFirstName = entity.BankFirstName;
+			BankMiddleName = entity.BankMiddleName;
+			BankAccount = entity.BankAccount;
+			PriceInternal = entity.PriceInternal;
+			DiscountCardNumber = entity.DiscountCardNumber;
+			DiscountProcent = entity.DiscountProcent;
+			ForIndex = entity.ForIndex;
+			SiteUser = entity.SiteUser;
+			ChangeByScan = entity.ChangeByScan;
+			ProcentPrepaid = entity.ProcentPrepaid;
+			ProcentOver = entity.ProcentOver;
+			CalculationOnPerson = entity.CalculationOnPerson;
+			InternalCommentary = entity.InternalCommentary;
+			IsApplicantOrganization = entity.IsApplicantOrganization;
+			IsFirstCompany = entity.IsFirstCompany;
+			RequestOnMoney = entity.RequestOnMoney;
+			NeedSendForBenefit = entity.NeedSendForBenefit;
+			NeedSendToRelative = entity.NeedSendToRelative;
+			SsoId = entity.SsoId;
+			StatusApplicant = entity.StatusApplicant;
+			MayFinalSend = entity.MayFinalSend;
+			Repared = entity.Repared;
+			RefusalOfAdmission = entity.RefusalOfAdmission;
+			NeedSendForSnils = entity.NeedSendForSnils;
+			NeedSendForCPMPK = entity.NeedSendForCPMPK;
+			NeedSendForParent = entity.NeedSendForParent;
+			NeedSendForPassport = entity.NeedSendForPassport;
+			NeedSendForRegistrationByPassport = entity.NeedSendForRegistrationByPassport;
+			NeedSendForAisoLegalRepresentation = entity.NeedSendForAisoLegalRepresentation;
+			NeedSendForFRI = entity.NeedSendForFRI;
+			StatusId = entity.StatusId;
+			ApplicantId = entity.ApplicantId;
+			TypeOfRestId = entity.TypeOfRestId;
+			TimeOfRestId = entity.TimeOfRestId;
+			SubjectOfRestId = entity.SubjectOfRestId;
+			AttendantTypeId = entity.AttendantTypeId;
+			PlaceOfRestId = entity.PlaceOfRestId;
+			AgentId = entity.AgentId;
+			EntityId = entity.EntityId;
+			SourceId = entity.SourceId;
+			DeclineReasonId = entity.DeclineReasonId;
+			CuratorId = entity.CuratorId;
+			BeneficiariesId = entity.BeneficiariesId;
+			HistoryLinkId = entity.HistoryLinkId;
+			RepresentInterestId = entity.RepresentInterestId;
+			TransferFromId = entity.TransferFromId;
+			TransferToId = entity.TransferToId;
+			PriorityTypeOfTransportInRequestId = entity.PriorityTypeOfTransportInRequestId;
+			AdditionalTypeOfTransportInRequestId = entity.AdditionalTypeOfTransportInRequestId;
+			TypeOfCampId = entity.TypeOfCampId;
+			TypeOfCampAddonId = entity.TypeOfCampAddonId;
+			CreateUserId = entity.CreateUserId;
+			OrganizationId = entity.OrganizationId;
+			HotelsId = entity.HotelsId;
+			YearOfRestId = entity.YearOfRestId;
+			TourId = entity.TourId;
+			GroupedTimeOfRestId = entity.GroupedTimeOfRestId;
+			ParentRequestId = entity.ParentRequestId;
+			CityId = entity.CityId;
+			TypeOfRestSubtypeId = entity.TypeOfRestSubtypeId;
+			BaseServiceId = entity.BaseServiceId;
+			ParentListOfChildId = entity.ParentListOfChildId;
+			ApplicantOrganizationId = entity.ApplicantOrganizationId;
+			DiscountCardId = entity.DiscountCardId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class RequestAccommodation : ILastUpdateTick
 	{
 		public RequestAccommodation()
@@ -11769,6 +14842,53 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class Role : ILastUpdateTick
+	{
+		public Role()
+		{
+		}
+
+		public Role(Role entity) : this(entity, null)
+		{
+		}
+
+		public Role(Role entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			CreateUserId = entity.CreateUserId;
+			if (deep > 0 && entity.CreateUser != null)
+			{
+				CreateUser = new Account(entity.CreateUser, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public Role CreateCopy()
+		{
+			var res = new Role(this);
+			if (CreateUser != null)
+			{
+				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
+			}
+			res.AccessRights = AccessRights?.Select(p=>new AccessRight {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(Role entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			CreateUserId = entity.CreateUserId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class RoomRates : ILastUpdateTick
 	{
 		public RoomRates()
@@ -11949,6 +15069,56 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class School : ILastUpdateTick
+	{
+		public School()
+		{
+		}
+
+		public School(School entity) : this(entity, null)
+		{
+		}
+
+		public School(School entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			SourcePk = entity.SourcePk;
+			Status = entity.Status;
+			CloseDate = entity.CloseDate;
+			ToOrganizationId = entity.ToOrganizationId;
+			OrganizationGuid = entity.OrganizationGuid;
+			DateChange = entity.DateChange;
+			ExternalId = entity.ExternalId;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public School CreateCopy()
+		{
+			var res = new School(this);
+			res.Pupil = Pupil?.Select(p=>new Pupil {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(School entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			SourcePk = entity.SourcePk;
+			Status = entity.Status;
+			CloseDate = entity.CloseDate;
+			ToOrganizationId = entity.ToOrganizationId;
+			OrganizationGuid = entity.OrganizationGuid;
+			DateChange = entity.DateChange;
+			ExternalId = entity.ExternalId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class SearchFormSetting : ILastUpdateTick
 	{
 		public SearchFormSetting()
@@ -12125,6 +15295,84 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class SendEmailAndSms : ILastUpdateTick
+	{
+		public SendEmailAndSms()
+		{
+		}
+
+		public SendEmailAndSms(SendEmailAndSms entity) : this(entity, null)
+		{
+		}
+
+		public SendEmailAndSms(SendEmailAndSms entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Email = entity.Email;
+			Phone = entity.Phone;
+			EmailMessage = entity.EmailMessage;
+			EmailTitle = entity.EmailTitle;
+			SmsMessage = entity.SmsMessage;
+			IsEmailSended = entity.IsEmailSended;
+			IsSmsSended = entity.IsSmsSended;
+			DateCreate = entity.DateCreate;
+			DateEmail = entity.DateEmail;
+			DateSms = entity.DateSms;
+			DateToSend = entity.DateToSend;
+			RequestId = entity.RequestId;
+			if (deep > 0 && entity.Request != null)
+			{
+				Request = new Request(entity.Request, deep - 1);
+			}
+
+			StatusRequestId = entity.StatusRequestId;
+			if (deep > 0 && entity.StatusRequest != null)
+			{
+				StatusRequest = new Status(entity.StatusRequest, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public SendEmailAndSms CreateCopy()
+		{
+			var res = new SendEmailAndSms(this);
+			if (Request != null)
+			{
+				res.Request = new Request{Id=Request.Id, Eid=Request.Eid};
+			}
+			if (StatusRequest != null)
+			{
+				res.StatusRequest = new Status{Id=StatusRequest.Id, Eid=StatusRequest.Eid};
+			}
+			res.Attachments = Attachments?.Select(p=>new SendEmailAndSmsAttachment {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(SendEmailAndSms entity)
+		{
+			Id = entity.Id;
+			Email = entity.Email;
+			Phone = entity.Phone;
+			EmailMessage = entity.EmailMessage;
+			EmailTitle = entity.EmailTitle;
+			SmsMessage = entity.SmsMessage;
+			IsEmailSended = entity.IsEmailSended;
+			IsSmsSended = entity.IsSmsSended;
+			DateCreate = entity.DateCreate;
+			DateEmail = entity.DateEmail;
+			DateSms = entity.DateSms;
+			DateToSend = entity.DateToSend;
+			RequestId = entity.RequestId;
+			StatusRequestId = entity.StatusRequestId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class SendEmailAndSmsAttachment : ILastUpdateTick
 	{
 		public SendEmailAndSmsAttachment()
@@ -12282,6 +15530,58 @@ namespace RestChild.Domain
 			Free = entity.Free;
 			BlockId = entity.BlockId;
 			AddonServicesId = entity.AddonServicesId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class SignInfo : ILastUpdateTick
+	{
+		public SignInfo()
+		{
+		}
+
+		public SignInfo(SignInfo entity) : this(entity, null)
+		{
+		}
+
+		public SignInfo(SignInfo entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			SignDate = entity.SignDate;
+			FileUrl = entity.FileUrl;
+			Title = entity.Title;
+			Information = entity.Information;
+			AccountId = entity.AccountId;
+			if (deep > 0 && entity.Account != null)
+			{
+				Account = new Account(entity.Account, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public SignInfo CreateCopy()
+		{
+			var res = new SignInfo(this);
+			if (Account != null)
+			{
+				res.Account = new Account{Id=Account.Id, Eid=Account.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(SignInfo entity)
+		{
+			Id = entity.Id;
+			SignDate = entity.SignDate;
+			FileUrl = entity.FileUrl;
+			Title = entity.Title;
+			Information = entity.Information;
+			AccountId = entity.AccountId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -12521,6 +15821,45 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class Source : ILastUpdateTick
+	{
+		public Source()
+		{
+		}
+
+		public Source(Source entity) : this(entity, null)
+		{
+		}
+
+		public Source(Source entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			Commercial = entity.Commercial;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public Source CreateCopy()
+		{
+			var res = new Source(this);
+			return res;
+		}
+
+		public void CopyEntity(Source entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			Commercial = entity.Commercial;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class StateDistrict : ILastUpdateTick
 	{
 		public StateDistrict()
@@ -12555,6 +15894,542 @@ namespace RestChild.Domain
 			Id = entity.Id;
 			Name = entity.Name;
 			IsActive = entity.IsActive;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class StateMachine : ILastUpdateTick
+	{
+		public StateMachine()
+		{
+		}
+
+		public StateMachine(StateMachine entity) : this(entity, null)
+		{
+		}
+
+		public StateMachine(StateMachine entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public StateMachine CreateCopy()
+		{
+			var res = new StateMachine(this);
+			return res;
+		}
+
+		public void CopyEntity(StateMachine entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class StateMachineAction : ILastUpdateTick
+	{
+		public StateMachineAction()
+		{
+		}
+
+		public StateMachineAction(StateMachineAction entity) : this(entity, null)
+		{
+		}
+
+		public StateMachineAction(StateMachineAction entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			ActionName = entity.ActionName;
+			Description = entity.Description;
+			ActionCode = entity.ActionCode;
+			IsSystemAction = entity.IsSystemAction;
+			NeedSign = entity.NeedSign;
+			StateMachineId = entity.StateMachineId;
+			if (deep > 0 && entity.StateMachine != null)
+			{
+				StateMachine = new StateMachine(entity.StateMachine, deep - 1);
+			}
+
+			ToStateId = entity.ToStateId;
+			if (deep > 0 && entity.ToState != null)
+			{
+				ToState = new StateMachineState(entity.ToState, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public StateMachineAction CreateCopy()
+		{
+			var res = new StateMachineAction(this);
+			if (StateMachine != null)
+			{
+				res.StateMachine = new StateMachine{Id=StateMachine.Id, Eid=StateMachine.Eid};
+			}
+			if (ToState != null)
+			{
+				res.ToState = new StateMachineState{Id=ToState.Id, Eid=ToState.Eid};
+			}
+			res.FromStates = FromStates?.Select(p=>new StateMachineFromStatus {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(StateMachineAction entity)
+		{
+			Id = entity.Id;
+			ActionName = entity.ActionName;
+			Description = entity.Description;
+			ActionCode = entity.ActionCode;
+			IsSystemAction = entity.IsSystemAction;
+			NeedSign = entity.NeedSign;
+			StateMachineId = entity.StateMachineId;
+			ToStateId = entity.ToStateId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class StateMachineFromStatus : ILastUpdateTick
+	{
+		public StateMachineFromStatus()
+		{
+		}
+
+		public StateMachineFromStatus(StateMachineFromStatus entity) : this(entity, null)
+		{
+		}
+
+		public StateMachineFromStatus(StateMachineFromStatus entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			ServiceCode = entity.ServiceCode;
+			RightCode = entity.RightCode;
+			StateMachineActionId = entity.StateMachineActionId;
+			if (deep > 0 && entity.StateMachineAction != null)
+			{
+				StateMachineAction = new StateMachineAction(entity.StateMachineAction, deep - 1);
+			}
+
+			FromStateId = entity.FromStateId;
+			if (deep > 0 && entity.FromState != null)
+			{
+				FromState = new StateMachineState(entity.FromState, deep - 1);
+			}
+
+			StateMachineId = entity.StateMachineId;
+			if (deep > 0 && entity.StateMachine != null)
+			{
+				StateMachine = new StateMachine(entity.StateMachine, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public StateMachineFromStatus CreateCopy()
+		{
+			var res = new StateMachineFromStatus(this);
+			if (StateMachineAction != null)
+			{
+				res.StateMachineAction = new StateMachineAction{Id=StateMachineAction.Id, Eid=StateMachineAction.Eid};
+			}
+			if (FromState != null)
+			{
+				res.FromState = new StateMachineState{Id=FromState.Id, Eid=FromState.Eid};
+			}
+			if (StateMachine != null)
+			{
+				res.StateMachine = new StateMachine{Id=StateMachine.Id, Eid=StateMachine.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(StateMachineFromStatus entity)
+		{
+			Id = entity.Id;
+			ServiceCode = entity.ServiceCode;
+			RightCode = entity.RightCode;
+			StateMachineActionId = entity.StateMachineActionId;
+			FromStateId = entity.FromStateId;
+			StateMachineId = entity.StateMachineId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class StateMachineState : ILastUpdateTick
+	{
+		public StateMachineState()
+		{
+		}
+
+		public StateMachineState(StateMachineState entity) : this(entity, null)
+		{
+		}
+
+		public StateMachineState(StateMachineState entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			StateMachineId = entity.StateMachineId;
+			if (deep > 0 && entity.StateMachine != null)
+			{
+				StateMachine = new StateMachine(entity.StateMachine, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public StateMachineState CreateCopy()
+		{
+			var res = new StateMachineState(this);
+			if (StateMachine != null)
+			{
+				res.StateMachine = new StateMachine{Id=StateMachine.Id, Eid=StateMachine.Eid};
+			}
+			res.Actions = Actions?.Select(p=>new StateMachineAction {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(StateMachineState entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			StateMachineId = entity.StateMachineId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class Status : ILastUpdateTick
+	{
+		public Status()
+		{
+		}
+
+		public Status(Status entity) : this(entity, null)
+		{
+		}
+
+		public Status(Status entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			ExternalUid = entity.ExternalUid;
+			MpguName = entity.MpguName;
+			MpguDescription = entity.MpguDescription;
+			MpguComment = entity.MpguComment;
+			IsFinal = entity.IsFinal;
+			SmsMessage = entity.SmsMessage;
+			ForPreferential = entity.ForPreferential;
+			ForCommerce = entity.ForCommerce;
+			CommerceName = entity.CommerceName;
+			CreateUserId = entity.CreateUserId;
+			if (deep > 0 && entity.CreateUser != null)
+			{
+				CreateUser = new Account(entity.CreateUser, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public Status CreateCopy()
+		{
+			var res = new Status(this);
+			if (CreateUser != null)
+			{
+				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
+			}
+			res.Action = Action?.Select(p=>new StatusAction {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(Status entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			ExternalUid = entity.ExternalUid;
+			MpguName = entity.MpguName;
+			MpguDescription = entity.MpguDescription;
+			MpguComment = entity.MpguComment;
+			IsFinal = entity.IsFinal;
+			SmsMessage = entity.SmsMessage;
+			ForPreferential = entity.ForPreferential;
+			ForCommerce = entity.ForCommerce;
+			CommerceName = entity.CommerceName;
+			CreateUserId = entity.CreateUserId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class StatusAction : ILastUpdateTick
+	{
+		public StatusAction()
+		{
+		}
+
+		public StatusAction(StatusAction entity) : this(entity, null)
+		{
+		}
+
+		public StatusAction(StatusAction entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Code = entity.Code;
+			Name = entity.Name;
+			IsFirstCompany = entity.IsFirstCompany;
+			RequestOnMoney = entity.RequestOnMoney;
+			ToStatusId = entity.ToStatusId;
+			if (deep > 0 && entity.ToStatus != null)
+			{
+				ToStatus = new Status(entity.ToStatus, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public StatusAction CreateCopy()
+		{
+			var res = new StatusAction(this);
+			if (ToStatus != null)
+			{
+				res.ToStatus = new Status{Id=ToStatus.Id, Eid=ToStatus.Eid};
+			}
+			res.FromStatus = FromStatus?.Select(p=>new Status {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(StatusAction entity)
+		{
+			Id = entity.Id;
+			Code = entity.Code;
+			Name = entity.Name;
+			IsFirstCompany = entity.IsFirstCompany;
+			RequestOnMoney = entity.RequestOnMoney;
+			ToStatusId = entity.ToStatusId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class StatusByChild : ILastUpdateTick
+	{
+		public StatusByChild()
+		{
+		}
+
+		public StatusByChild(StatusByChild entity) : this(entity, null)
+		{
+		}
+
+		public StatusByChild(StatusByChild entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			ForAgent = entity.ForAgent;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public StatusByChild CreateCopy()
+		{
+			var res = new StatusByChild(this);
+			return res;
+		}
+
+		public void CopyEntity(StatusByChild entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			ForAgent = entity.ForAgent;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class StatusInteragencyRequest : ILastUpdateTick
+	{
+		public StatusInteragencyRequest()
+		{
+		}
+
+		public StatusInteragencyRequest(StatusInteragencyRequest entity) : this(entity, null)
+		{
+		}
+
+		public StatusInteragencyRequest(StatusInteragencyRequest entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public StatusInteragencyRequest CreateCopy()
+		{
+			var res = new StatusInteragencyRequest(this);
+			return res;
+		}
+
+		public void CopyEntity(StatusInteragencyRequest entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class StatusResult : ILastUpdateTick
+	{
+		public StatusResult()
+		{
+		}
+
+		public StatusResult(StatusResult entity) : this(entity, null)
+		{
+		}
+
+		public StatusResult(StatusResult entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public StatusResult CreateCopy()
+		{
+			var res = new StatusResult(this);
+			return res;
+		}
+
+		public void CopyEntity(StatusResult entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class SubjectOfRest : ILastUpdateTick
+	{
+		public SubjectOfRest()
+		{
+		}
+
+		public SubjectOfRest(SubjectOfRest entity) : this(entity, null)
+		{
+		}
+
+		public SubjectOfRest(SubjectOfRest entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			Description = entity.Description;
+			PhotoUrl = entity.PhotoUrl;
+			DescriptionHtml = entity.DescriptionHtml;
+			IsActive = entity.IsActive;
+			ViewOnSite = entity.ViewOnSite;
+			ViewOnMpgu = entity.ViewOnMpgu;
+			LinkToFileId = entity.LinkToFileId;
+			if (deep > 0 && entity.LinkToFile != null)
+			{
+				LinkToFile = new LinkToFile(entity.LinkToFile, deep - 1);
+			}
+
+			CreateUserId = entity.CreateUserId;
+			if (deep > 0 && entity.CreateUser != null)
+			{
+				CreateUser = new Account(entity.CreateUser, deep - 1);
+			}
+
+			SubjectOfRestClassificationId = entity.SubjectOfRestClassificationId;
+			if (deep > 0 && entity.SubjectOfRestClassification != null)
+			{
+				SubjectOfRestClassification = new SubjectOfRestClassification(entity.SubjectOfRestClassification, deep - 1);
+			}
+
+			HistoryLinkId = entity.HistoryLinkId;
+			if (deep > 0 && entity.HistoryLink != null)
+			{
+				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public SubjectOfRest CreateCopy()
+		{
+			var res = new SubjectOfRest(this);
+			if (LinkToFile != null)
+			{
+				res.LinkToFile = new LinkToFile{Id=LinkToFile.Id, Eid=LinkToFile.Eid};
+			}
+			if (CreateUser != null)
+			{
+				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
+			}
+			if (SubjectOfRestClassification != null)
+			{
+				res.SubjectOfRestClassification = new SubjectOfRestClassification{Id=SubjectOfRestClassification.Id, Eid=SubjectOfRestClassification.Eid};
+			}
+			if (HistoryLink != null)
+			{
+				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(SubjectOfRest entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			Description = entity.Description;
+			PhotoUrl = entity.PhotoUrl;
+			DescriptionHtml = entity.DescriptionHtml;
+			IsActive = entity.IsActive;
+			ViewOnSite = entity.ViewOnSite;
+			ViewOnMpgu = entity.ViewOnMpgu;
+			LinkToFileId = entity.LinkToFileId;
+			CreateUserId = entity.CreateUserId;
+			SubjectOfRestClassificationId = entity.SubjectOfRestClassificationId;
+			HistoryLinkId = entity.HistoryLinkId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -12887,6 +16762,98 @@ namespace RestChild.Domain
 			Name = entity.Name;
 			IsActive = entity.IsActive;
 			Raiting = entity.Raiting;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class TimeOfRest : ILastUpdateTick
+	{
+		public TimeOfRest()
+		{
+		}
+
+		public TimeOfRest(TimeOfRest entity) : this(entity, null)
+		{
+		}
+
+		public TimeOfRest(TimeOfRest entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			FactorDependence = entity.FactorDependence;
+			DayOfMonth = entity.DayOfMonth;
+			Month = entity.Month;
+			PeriodLength = entity.PeriodLength;
+			Year = entity.Year;
+			IsActive = entity.IsActive;
+			TypeOfRestId = entity.TypeOfRestId;
+			if (deep > 0 && entity.TypeOfRest != null)
+			{
+				TypeOfRest = new TypeOfRest(entity.TypeOfRest, deep - 1);
+			}
+
+			CreateUserId = entity.CreateUserId;
+			if (deep > 0 && entity.CreateUser != null)
+			{
+				CreateUser = new Account(entity.CreateUser, deep - 1);
+			}
+
+			YearOfRestId = entity.YearOfRestId;
+			if (deep > 0 && entity.YearOfRest != null)
+			{
+				YearOfRest = new YearOfRest(entity.YearOfRest, deep - 1);
+			}
+
+			GroupedTimeOfRestId = entity.GroupedTimeOfRestId;
+			if (deep > 0 && entity.GroupedTimeOfRest != null)
+			{
+				GroupedTimeOfRest = new GroupedTimeOfRest(entity.GroupedTimeOfRest, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public TimeOfRest CreateCopy()
+		{
+			var res = new TimeOfRest(this);
+			if (TypeOfRest != null)
+			{
+				res.TypeOfRest = new TypeOfRest{Id=TypeOfRest.Id, Eid=TypeOfRest.Eid};
+			}
+			if (CreateUser != null)
+			{
+				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
+			}
+			if (YearOfRest != null)
+			{
+				res.YearOfRest = new YearOfRest{Id=YearOfRest.Id, Eid=YearOfRest.Eid};
+			}
+			if (GroupedTimeOfRest != null)
+			{
+				res.GroupedTimeOfRest = new GroupedTimeOfRest{Id=GroupedTimeOfRest.Id, Eid=GroupedTimeOfRest.Eid};
+			}
+			res.Requests = Requests?.Select(p=>new RequestsTimeOfRest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(TimeOfRest entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			FactorDependence = entity.FactorDependence;
+			DayOfMonth = entity.DayOfMonth;
+			Month = entity.Month;
+			PeriodLength = entity.PeriodLength;
+			Year = entity.Year;
+			IsActive = entity.IsActive;
+			TypeOfRestId = entity.TypeOfRestId;
+			CreateUserId = entity.CreateUserId;
+			YearOfRestId = entity.YearOfRestId;
+			GroupedTimeOfRestId = entity.GroupedTimeOfRestId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -13250,54 +17217,6 @@ namespace RestChild.Domain
 			BaseServiceId = entity.BaseServiceId;
 			TypeOfRestSubtypeId = entity.TypeOfRestSubtypeId;
 			ProductId = entity.ProductId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class ListOfChildsCategory : ILastUpdateTick
-	{
-		public ListOfChildsCategory()
-		{
-		}
-
-		public ListOfChildsCategory(ListOfChildsCategory entity) : this(entity, null)
-		{
-		}
-
-		public ListOfChildsCategory(ListOfChildsCategory entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			OrganizationId = entity.OrganizationId;
-			if (deep > 0 && entity.Organization != null)
-			{
-				Organization = new Organization(entity.Organization, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public ListOfChildsCategory CreateCopy()
-		{
-			var res = new ListOfChildsCategory(this);
-			if (Organization != null)
-			{
-				res.Organization = new Organization{Id=Organization.Id, Eid=Organization.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(ListOfChildsCategory entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			OrganizationId = entity.OrganizationId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -13776,6 +17695,13 @@ namespace RestChild.Domain
 			IsChecked = entity.IsChecked;
 			IsScoolNotPresent = entity.IsScoolNotPresent;
 			TradeUnionOrganizationOther = entity.TradeUnionOrganizationOther;
+			CashbackEstimatedAmount = entity.CashbackEstimatedAmount;
+			CashbackBaseEstimatedAmount = entity.CashbackBaseEstimatedAmount;
+			ContractDate = entity.ContractDate;
+			ContractNumber = entity.ContractNumber;
+			FactDateIn = entity.FactDateIn;
+			FactDateOut = entity.FactDateOut;
+			CashbackRequested = entity.CashbackRequested;
 			TradeUnionId = entity.TradeUnionId;
 			if (deep > 0 && entity.TradeUnion != null)
 			{
@@ -13824,6 +17750,12 @@ namespace RestChild.Domain
 				TradeUnionOrganization = new Organization(entity.TradeUnionOrganization, deep - 1);
 			}
 
+			PrivilegePartId = entity.PrivilegePartId;
+			if (deep > 0 && entity.PrivilegePart != null)
+			{
+				PrivilegePart = new TradeUnionCamperPrivilegePart(entity.PrivilegePart, deep - 1);
+			}
+
 			LastUpdateTick = entity.LastUpdateTick;
 			Eid = entity.Eid;
 			EidSendStatus = entity.EidSendStatus;
@@ -13865,6 +17797,10 @@ namespace RestChild.Domain
 			{
 				res.TradeUnionOrganization = new Organization{Id=TradeUnionOrganization.Id, Eid=TradeUnionOrganization.Eid};
 			}
+			if (PrivilegePart != null)
+			{
+				res.PrivilegePart = new TradeUnionCamperPrivilegePart{Id=PrivilegePart.Id, Eid=PrivilegePart.Eid};
+			}
 			return res;
 		}
 
@@ -13885,6 +17821,13 @@ namespace RestChild.Domain
 			IsChecked = entity.IsChecked;
 			IsScoolNotPresent = entity.IsScoolNotPresent;
 			TradeUnionOrganizationOther = entity.TradeUnionOrganizationOther;
+			CashbackEstimatedAmount = entity.CashbackEstimatedAmount;
+			CashbackBaseEstimatedAmount = entity.CashbackBaseEstimatedAmount;
+			ContractDate = entity.ContractDate;
+			ContractNumber = entity.ContractNumber;
+			FactDateIn = entity.FactDateIn;
+			FactDateOut = entity.FactDateOut;
+			CashbackRequested = entity.CashbackRequested;
 			TradeUnionId = entity.TradeUnionId;
 			ChildId = entity.ChildId;
 			ParentId = entity.ParentId;
@@ -13893,6 +17836,45 @@ namespace RestChild.Domain
 			SelectedSchoolId = entity.SelectedSchoolId;
 			LinkToFileId = entity.LinkToFileId;
 			TradeUnionOrganizationId = entity.TradeUnionOrganizationId;
+			PrivilegePartId = entity.PrivilegePartId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class TradeUnionCamperPrivilegePart : ILastUpdateTick
+	{
+		public TradeUnionCamperPrivilegePart()
+		{
+		}
+
+		public TradeUnionCamperPrivilegePart(TradeUnionCamperPrivilegePart entity) : this(entity, null)
+		{
+		}
+
+		public TradeUnionCamperPrivilegePart(TradeUnionCamperPrivilegePart entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public TradeUnionCamperPrivilegePart CreateCopy()
+		{
+			var res = new TradeUnionCamperPrivilegePart(this);
+			res.Campers = Campers?.Select(p=>new TradeUnionCamper {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(TradeUnionCamperPrivilegePart entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -13914,6 +17896,7 @@ namespace RestChild.Domain
 			Name = entity.Name;
 			DateFrom = entity.DateFrom;
 			DateTo = entity.DateTo;
+			IsCashbackUse = entity.IsCashbackUse;
 			HistoryLinkId = entity.HistoryLinkId;
 			if (deep > 0 && entity.HistoryLink != null)
 			{
@@ -14003,6 +17986,7 @@ namespace RestChild.Domain
 			Name = entity.Name;
 			DateFrom = entity.DateFrom;
 			DateTo = entity.DateTo;
+			IsCashbackUse = entity.IsCashbackUse;
 			HistoryLinkId = entity.HistoryLinkId;
 			YearOfRestId = entity.YearOfRestId;
 			CampId = entity.CampId;
@@ -14769,6 +18753,43 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class TypeOfCamp : ILastUpdateTick
+	{
+		public TypeOfCamp()
+		{
+		}
+
+		public TypeOfCamp(TypeOfCamp entity) : this(entity, null)
+		{
+		}
+
+		public TypeOfCamp(TypeOfCamp entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public TypeOfCamp CreateCopy()
+		{
+			var res = new TypeOfCamp(this);
+			return res;
+		}
+
+		public void CopyEntity(TypeOfCamp entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class TypeOfDrug : ILastUpdateTick
 	{
 		public TypeOfDrug()
@@ -14948,6 +18969,252 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
+	public partial class TypeOfRest : ILastUpdateTick
+	{
+		public TypeOfRest()
+		{
+		}
+
+		public TypeOfRest(TypeOfRest entity) : this(entity, null)
+		{
+		}
+
+		public TypeOfRest(TypeOfRest entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			ServiceCode = entity.ServiceCode;
+			ForMPGU = entity.ForMPGU;
+			NeedPlace = entity.NeedPlace;
+			NeedPlacment = entity.NeedPlacment;
+			NeedSubject = entity.NeedSubject;
+			NeedApplicant = entity.NeedApplicant;
+			NeedAttendant = entity.NeedAttendant;
+			MinAge = entity.MinAge;
+			MaxAge = entity.MaxAge;
+			UrlToRulesOfRest = entity.UrlToRulesOfRest;
+			ForTour = entity.ForTour;
+			Commercial = entity.Commercial;
+			IsAddon = entity.IsAddon;
+			NeedPrice = entity.NeedPrice;
+			NeedAccomodation = entity.NeedAccomodation;
+			NeedBookingDate = entity.NeedBookingDate;
+			NeedTransport = entity.NeedTransport;
+			NeedRecordingDate = entity.NeedRecordingDate;
+			HaveMainService = entity.HaveMainService;
+			HaveAddonService = entity.HaveAddonService;
+			HiddenMainService = entity.HiddenMainService;
+			NumberCode = entity.NumberCode;
+			ResponsibleText = entity.ResponsibleText;
+			NeedGeneratePermit = entity.NeedGeneratePermit;
+			UrlToListRestriction = entity.UrlToListRestriction;
+			UrlToRoolAttendant = entity.UrlToRoolAttendant;
+			FirstRequestCompanySelect = entity.FirstRequestCompanySelect;
+			ServiceCodeFirstCompany = entity.ServiceCodeFirstCompany;
+			MayBeMoney = entity.MayBeMoney;
+			NotChildren = entity.NotChildren;
+			NeedTypeOfTransport = entity.NeedTypeOfTransport;
+			UrlToStationaryTypeOfCampPhoto = entity.UrlToStationaryTypeOfCampPhoto;
+			UrlToCampTypeOfCampPhoto = entity.UrlToCampTypeOfCampPhoto;
+			TypeOfRestERLId = entity.TypeOfRestERLId;
+			if (deep > 0 && entity.TypeOfRestERL != null)
+			{
+				TypeOfRestERL = new TypeOfRestERL(entity.TypeOfRestERL, deep - 1);
+			}
+
+			ParentId = entity.ParentId;
+			if (deep > 0 && entity.Parent != null)
+			{
+				Parent = new TypeOfRest(entity.Parent, deep - 1);
+			}
+
+			TypeOfGroupCheckId = entity.TypeOfGroupCheckId;
+			if (deep > 0 && entity.TypeOfGroupCheck != null)
+			{
+				TypeOfGroupCheck = new TypeOfGroupCheck(entity.TypeOfGroupCheck, deep - 1);
+			}
+
+			ResponsibleId = entity.ResponsibleId;
+			if (deep > 0 && entity.Responsible != null)
+			{
+				Responsible = new Account(entity.Responsible, deep - 1);
+			}
+
+			CreateUserId = entity.CreateUserId;
+			if (deep > 0 && entity.CreateUser != null)
+			{
+				CreateUser = new Account(entity.CreateUser, deep - 1);
+			}
+
+			HotelTypeId = entity.HotelTypeId;
+			if (deep > 0 && entity.HotelType != null)
+			{
+				HotelType = new HotelType(entity.HotelType, deep - 1);
+			}
+
+			TypeOfServiceId = entity.TypeOfServiceId;
+			if (deep > 0 && entity.TypeOfService != null)
+			{
+				TypeOfService = new TypeOfService(entity.TypeOfService, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public TypeOfRest CreateCopy()
+		{
+			var res = new TypeOfRest(this);
+			if (TypeOfRestERL != null)
+			{
+				res.TypeOfRestERL = new TypeOfRestERL{Id=TypeOfRestERL.Id, Eid=TypeOfRestERL.Eid};
+			}
+			if (Parent != null)
+			{
+				res.Parent = new TypeOfRest{Id=Parent.Id, Eid=Parent.Eid};
+			}
+			if (TypeOfGroupCheck != null)
+			{
+				res.TypeOfGroupCheck = new TypeOfGroupCheck{Id=TypeOfGroupCheck.Id, Eid=TypeOfGroupCheck.Eid};
+			}
+			if (Responsible != null)
+			{
+				res.Responsible = new Account{Id=Responsible.Id, Eid=Responsible.Eid};
+			}
+			if (CreateUser != null)
+			{
+				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
+			}
+			if (HotelType != null)
+			{
+				res.HotelType = new HotelType{Id=HotelType.Id, Eid=HotelType.Eid};
+			}
+			if (TypeOfService != null)
+			{
+				res.TypeOfService = new TypeOfService{Id=TypeOfService.Id, Eid=TypeOfService.Eid};
+			}
+			res.TypeOfRestBenefitRestrictions = TypeOfRestBenefitRestrictions?.Select(p=>new TypeOfRestBenefitRestriction {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.BenefitTypes = BenefitTypes?.Select(p=>new BenefitType {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.DeclineReasons = DeclineReasons?.Select(p=>new DeclineReason {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.RequestFileTypes = RequestFileTypes?.Select(p=>new RequestFileType {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.Prices = Prices?.Select(p=>new AverageRestPrice {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.DocumentTypes = DocumentTypes?.Select(p=>new DocumentType {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			res.BenefitTypesERL = BenefitTypesERL?.Select(p=>new BenefitTypeERL {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(TypeOfRest entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			ServiceCode = entity.ServiceCode;
+			ForMPGU = entity.ForMPGU;
+			NeedPlace = entity.NeedPlace;
+			NeedPlacment = entity.NeedPlacment;
+			NeedSubject = entity.NeedSubject;
+			NeedApplicant = entity.NeedApplicant;
+			NeedAttendant = entity.NeedAttendant;
+			MinAge = entity.MinAge;
+			MaxAge = entity.MaxAge;
+			UrlToRulesOfRest = entity.UrlToRulesOfRest;
+			ForTour = entity.ForTour;
+			Commercial = entity.Commercial;
+			IsAddon = entity.IsAddon;
+			NeedPrice = entity.NeedPrice;
+			NeedAccomodation = entity.NeedAccomodation;
+			NeedBookingDate = entity.NeedBookingDate;
+			NeedTransport = entity.NeedTransport;
+			NeedRecordingDate = entity.NeedRecordingDate;
+			HaveMainService = entity.HaveMainService;
+			HaveAddonService = entity.HaveAddonService;
+			HiddenMainService = entity.HiddenMainService;
+			NumberCode = entity.NumberCode;
+			ResponsibleText = entity.ResponsibleText;
+			NeedGeneratePermit = entity.NeedGeneratePermit;
+			UrlToListRestriction = entity.UrlToListRestriction;
+			UrlToRoolAttendant = entity.UrlToRoolAttendant;
+			FirstRequestCompanySelect = entity.FirstRequestCompanySelect;
+			ServiceCodeFirstCompany = entity.ServiceCodeFirstCompany;
+			MayBeMoney = entity.MayBeMoney;
+			NotChildren = entity.NotChildren;
+			NeedTypeOfTransport = entity.NeedTypeOfTransport;
+			UrlToStationaryTypeOfCampPhoto = entity.UrlToStationaryTypeOfCampPhoto;
+			UrlToCampTypeOfCampPhoto = entity.UrlToCampTypeOfCampPhoto;
+			TypeOfRestERLId = entity.TypeOfRestERLId;
+			ParentId = entity.ParentId;
+			TypeOfGroupCheckId = entity.TypeOfGroupCheckId;
+			ResponsibleId = entity.ResponsibleId;
+			CreateUserId = entity.CreateUserId;
+			HotelTypeId = entity.HotelTypeId;
+			TypeOfServiceId = entity.TypeOfServiceId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class TypeOfRestBenefitRestriction : ILastUpdateTick
+	{
+		public TypeOfRestBenefitRestriction()
+		{
+		}
+
+		public TypeOfRestBenefitRestriction(TypeOfRestBenefitRestriction entity) : this(entity, null)
+		{
+		}
+
+		public TypeOfRestBenefitRestriction(TypeOfRestBenefitRestriction entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			MinAge = entity.MinAge;
+			MaxAge = entity.MaxAge;
+			BenefitTypeId = entity.BenefitTypeId;
+			if (deep > 0 && entity.BenefitType != null)
+			{
+				BenefitType = new BenefitType(entity.BenefitType, deep - 1);
+			}
+
+			TypeOfRestId = entity.TypeOfRestId;
+			if (deep > 0 && entity.TypeOfRest != null)
+			{
+				TypeOfRest = new TypeOfRest(entity.TypeOfRest, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public TypeOfRestBenefitRestriction CreateCopy()
+		{
+			var res = new TypeOfRestBenefitRestriction(this);
+			if (BenefitType != null)
+			{
+				res.BenefitType = new BenefitType{Id=BenefitType.Id, Eid=BenefitType.Eid};
+			}
+			if (TypeOfRest != null)
+			{
+				res.TypeOfRest = new TypeOfRest{Id=TypeOfRest.Id, Eid=TypeOfRest.Eid};
+			}
+			return res;
+		}
+
+		public void CopyEntity(TypeOfRestBenefitRestriction entity)
+		{
+			Id = entity.Id;
+			MinAge = entity.MinAge;
+			MaxAge = entity.MaxAge;
+			BenefitTypeId = entity.BenefitTypeId;
+			TypeOfRestId = entity.TypeOfRestId;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
 	public partial class TypeOfRestERL : ILastUpdateTick
 	{
 		public TypeOfRestERL()
@@ -14988,6 +19255,55 @@ namespace RestChild.Domain
 			IsActive = entity.IsActive;
 			UseApplicant = entity.UseApplicant;
 			MSPCode = entity.MSPCode;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class TypeOfRestriction : ILastUpdateTick
+	{
+		public TypeOfRestriction()
+		{
+		}
+
+		public TypeOfRestriction(TypeOfRestriction entity) : this(entity, null)
+		{
+		}
+
+		public TypeOfRestriction(TypeOfRestriction entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			RestrictionGroupId = entity.RestrictionGroupId;
+			if (deep > 0 && entity.RestrictionGroup != null)
+			{
+				RestrictionGroup = new RestrictionGroup(entity.RestrictionGroup, deep - 1);
+			}
+
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public TypeOfRestriction CreateCopy()
+		{
+			var res = new TypeOfRestriction(this);
+			if (RestrictionGroup != null)
+			{
+				res.RestrictionGroup = new RestrictionGroup{Id=RestrictionGroup.Id, Eid=RestrictionGroup.Eid};
+			}
+			res.Subs = Subs?.Select(p=>new TypeOfSubRestriction {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
+			return res;
+		}
+
+		public void CopyEntity(TypeOfRestriction entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			RestrictionGroupId = entity.RestrictionGroupId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -15127,4135 +19443,6 @@ namespace RestChild.Domain
 			RoomSize = entity.RoomSize;
 			RoomSizePerPerson = entity.RoomSizePerPerson;
 			HotelId = entity.HotelId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class Agent : ILastUpdateTick
-	{
-		public Agent()
-		{
-		}
-
-		public Agent(Agent entity) : this(entity, null)
-		{
-		}
-
-		public Agent(Agent entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			LastName = entity.LastName;
-			FirstName = entity.FirstName;
-			MiddleName = entity.MiddleName;
-			DocumentSeria = entity.DocumentSeria;
-			DocumentNumber = entity.DocumentNumber;
-			DocumentDateOfIssue = entity.DocumentDateOfIssue;
-			DocumentSubjectIssue = entity.DocumentSubjectIssue;
-			Phone = entity.Phone;
-			Email = entity.Email;
-			ProxyDateOfIssure = entity.ProxyDateOfIssure;
-			NotaryName = entity.NotaryName;
-			ProxyEndDate = entity.ProxyEndDate;
-			ProxyNumber = entity.ProxyNumber;
-			Snils = entity.Snils;
-			IsLast = entity.IsLast;
-			HaveMiddleName = entity.HaveMiddleName;
-			Male = entity.Male;
-			DateOfBirth = entity.DateOfBirth;
-			DocumentCode = entity.DocumentCode;
-			PlaceOfBirth = entity.PlaceOfBirth;
-			DocumentTypeId = entity.DocumentTypeId;
-			if (deep > 0 && entity.DocumentType != null)
-			{
-				DocumentType = new DocumentType(entity.DocumentType, deep - 1);
-			}
-
-			StatusByChildId = entity.StatusByChildId;
-			if (deep > 0 && entity.StatusByChild != null)
-			{
-				StatusByChild = new StatusByChild(entity.StatusByChild, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public Agent CreateCopy()
-		{
-			var res = new Agent(this);
-			if (DocumentType != null)
-			{
-				res.DocumentType = new DocumentType{Id=DocumentType.Id, Eid=DocumentType.Eid};
-			}
-			if (StatusByChild != null)
-			{
-				res.StatusByChild = new StatusByChild{Id=StatusByChild.Id, Eid=StatusByChild.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(Agent entity)
-		{
-			Id = entity.Id;
-			LastName = entity.LastName;
-			FirstName = entity.FirstName;
-			MiddleName = entity.MiddleName;
-			DocumentSeria = entity.DocumentSeria;
-			DocumentNumber = entity.DocumentNumber;
-			DocumentDateOfIssue = entity.DocumentDateOfIssue;
-			DocumentSubjectIssue = entity.DocumentSubjectIssue;
-			Phone = entity.Phone;
-			Email = entity.Email;
-			ProxyDateOfIssure = entity.ProxyDateOfIssure;
-			NotaryName = entity.NotaryName;
-			ProxyEndDate = entity.ProxyEndDate;
-			ProxyNumber = entity.ProxyNumber;
-			Snils = entity.Snils;
-			IsLast = entity.IsLast;
-			HaveMiddleName = entity.HaveMiddleName;
-			Male = entity.Male;
-			DateOfBirth = entity.DateOfBirth;
-			DocumentCode = entity.DocumentCode;
-			PlaceOfBirth = entity.PlaceOfBirth;
-			DocumentTypeId = entity.DocumentTypeId;
-			StatusByChildId = entity.StatusByChildId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class AnalyticsViewRow : ILastUpdateTick
-	{
-		public AnalyticsViewRow()
-		{
-		}
-
-		public AnalyticsViewRow(AnalyticsViewRow entity) : this(entity, null)
-		{
-		}
-
-		public AnalyticsViewRow(AnalyticsViewRow entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			ByDay = entity.ByDay;
-			ByHour = entity.ByHour;
-			ByWeek = entity.ByWeek;
-			Total = entity.Total;
-			ByDayColor = entity.ByDayColor;
-			ByHourColor = entity.ByHourColor;
-			ByWeekColor = entity.ByWeekColor;
-			TotalColor = entity.TotalColor;
-			ByDay2 = entity.ByDay2;
-			ByHour2 = entity.ByHour2;
-			ByWeek2 = entity.ByWeek2;
-			Total2 = entity.Total2;
-			Day1 = entity.Day1;
-			Day2 = entity.Day2;
-			Day3 = entity.Day3;
-			Day4 = entity.Day4;
-			Day5 = entity.Day5;
-			Day6 = entity.Day6;
-			DataDay1 = entity.DataDay1;
-			DataDay2 = entity.DataDay2;
-			DataDay3 = entity.DataDay3;
-			DataDay4 = entity.DataDay4;
-			DataDay5 = entity.DataDay5;
-			DataDay6 = entity.DataDay6;
-			AnalyticsViewRowTypeId = entity.AnalyticsViewRowTypeId;
-			if (deep > 0 && entity.AnalyticsViewRowType != null)
-			{
-				AnalyticsViewRowType = new AnalyticsViewRowType(entity.AnalyticsViewRowType, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public AnalyticsViewRow CreateCopy()
-		{
-			var res = new AnalyticsViewRow(this);
-			if (AnalyticsViewRowType != null)
-			{
-				res.AnalyticsViewRowType = new AnalyticsViewRowType{Id=AnalyticsViewRowType.Id, Eid=AnalyticsViewRowType.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(AnalyticsViewRow entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			ByDay = entity.ByDay;
-			ByHour = entity.ByHour;
-			ByWeek = entity.ByWeek;
-			Total = entity.Total;
-			ByDayColor = entity.ByDayColor;
-			ByHourColor = entity.ByHourColor;
-			ByWeekColor = entity.ByWeekColor;
-			TotalColor = entity.TotalColor;
-			ByDay2 = entity.ByDay2;
-			ByHour2 = entity.ByHour2;
-			ByWeek2 = entity.ByWeek2;
-			Total2 = entity.Total2;
-			Day1 = entity.Day1;
-			Day2 = entity.Day2;
-			Day3 = entity.Day3;
-			Day4 = entity.Day4;
-			Day5 = entity.Day5;
-			Day6 = entity.Day6;
-			DataDay1 = entity.DataDay1;
-			DataDay2 = entity.DataDay2;
-			DataDay3 = entity.DataDay3;
-			DataDay4 = entity.DataDay4;
-			DataDay5 = entity.DataDay5;
-			DataDay6 = entity.DataDay6;
-			AnalyticsViewRowTypeId = entity.AnalyticsViewRowTypeId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class AnalyticsViewRowType : ILastUpdateTick
-	{
-		public AnalyticsViewRowType()
-		{
-		}
-
-		public AnalyticsViewRowType(AnalyticsViewRowType entity) : this(entity, null)
-		{
-		}
-
-		public AnalyticsViewRowType(AnalyticsViewRowType entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public AnalyticsViewRowType CreateCopy()
-		{
-			var res = new AnalyticsViewRowType(this);
-			return res;
-		}
-
-		public void CopyEntity(AnalyticsViewRowType entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class ApplicantType : ILastUpdateTick
-	{
-		public ApplicantType()
-		{
-		}
-
-		public ApplicantType(ApplicantType entity) : this(entity, null)
-		{
-		}
-
-		public ApplicantType(ApplicantType entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			IsDeleted = entity.IsDeleted;
-			CreateUserId = entity.CreateUserId;
-			if (deep > 0 && entity.CreateUser != null)
-			{
-				CreateUser = new Account(entity.CreateUser, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public ApplicantType CreateCopy()
-		{
-			var res = new ApplicantType(this);
-			if (CreateUser != null)
-			{
-				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(ApplicantType entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			IsDeleted = entity.IsDeleted;
-			CreateUserId = entity.CreateUserId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class AttendantType : ILastUpdateTick
-	{
-		public AttendantType()
-		{
-		}
-
-		public AttendantType(AttendantType entity) : this(entity, null)
-		{
-		}
-
-		public AttendantType(AttendantType entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public AttendantType CreateCopy()
-		{
-			var res = new AttendantType(this);
-			return res;
-		}
-
-		public void CopyEntity(AttendantType entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class BenefitApproveType : ILastUpdateTick
-	{
-		public BenefitApproveType()
-		{
-		}
-
-		public BenefitApproveType(BenefitApproveType entity) : this(entity, null)
-		{
-		}
-
-		public BenefitApproveType(BenefitApproveType entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public BenefitApproveType CreateCopy()
-		{
-			var res = new BenefitApproveType(this);
-			return res;
-		}
-
-		public void CopyEntity(BenefitApproveType entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class BenefitGroupInvalid : ILastUpdateTick
-	{
-		public BenefitGroupInvalid()
-		{
-		}
-
-		public BenefitGroupInvalid(BenefitGroupInvalid entity) : this(entity, null)
-		{
-		}
-
-		public BenefitGroupInvalid(BenefitGroupInvalid entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public BenefitGroupInvalid CreateCopy()
-		{
-			var res = new BenefitGroupInvalid(this);
-			return res;
-		}
-
-		public void CopyEntity(BenefitGroupInvalid entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class BenefitType : ILastUpdateTick
-	{
-		public BenefitType()
-		{
-		}
-
-		public BenefitType(BenefitType entity) : this(entity, null)
-		{
-		}
-
-		public BenefitType(BenefitType entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			ExnternalUid = entity.ExnternalUid;
-			NeedTypeOfRestriction = entity.NeedTypeOfRestriction;
-			NeedApproveDocument = entity.NeedApproveDocument;
-			IsActive = entity.IsActive;
-			ForAisoOnly = entity.ForAisoOnly;
-			TypeOfRestId = entity.TypeOfRestId;
-			if (deep > 0 && entity.TypeOfRest != null)
-			{
-				TypeOfRest = new TypeOfRest(entity.TypeOfRest, deep - 1);
-			}
-
-			SameBenefitId = entity.SameBenefitId;
-			if (deep > 0 && entity.SameBenefit != null)
-			{
-				SameBenefit = new BenefitType(entity.SameBenefit, deep - 1);
-			}
-
-			TypeOfGroupCheckId = entity.TypeOfGroupCheckId;
-			if (deep > 0 && entity.TypeOfGroupCheck != null)
-			{
-				TypeOfGroupCheck = new TypeOfGroupCheck(entity.TypeOfGroupCheck, deep - 1);
-			}
-
-			CreateUserId = entity.CreateUserId;
-			if (deep > 0 && entity.CreateUser != null)
-			{
-				CreateUser = new Account(entity.CreateUser, deep - 1);
-			}
-
-			BenefitTypeERLId = entity.BenefitTypeERLId;
-			if (deep > 0 && entity.BenefitTypeERL != null)
-			{
-				BenefitTypeERL = new BenefitTypeERL(entity.BenefitTypeERL, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public BenefitType CreateCopy()
-		{
-			var res = new BenefitType(this);
-			if (TypeOfRest != null)
-			{
-				res.TypeOfRest = new TypeOfRest{Id=TypeOfRest.Id, Eid=TypeOfRest.Eid};
-			}
-			if (SameBenefit != null)
-			{
-				res.SameBenefit = new BenefitType{Id=SameBenefit.Id, Eid=SameBenefit.Eid};
-			}
-			if (TypeOfGroupCheck != null)
-			{
-				res.TypeOfGroupCheck = new TypeOfGroupCheck{Id=TypeOfGroupCheck.Id, Eid=TypeOfGroupCheck.Eid};
-			}
-			if (CreateUser != null)
-			{
-				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
-			}
-			if (BenefitTypeERL != null)
-			{
-				res.BenefitTypeERL = new BenefitTypeERL{Id=BenefitTypeERL.Id, Eid=BenefitTypeERL.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(BenefitType entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			ExnternalUid = entity.ExnternalUid;
-			NeedTypeOfRestriction = entity.NeedTypeOfRestriction;
-			NeedApproveDocument = entity.NeedApproveDocument;
-			IsActive = entity.IsActive;
-			ForAisoOnly = entity.ForAisoOnly;
-			TypeOfRestId = entity.TypeOfRestId;
-			SameBenefitId = entity.SameBenefitId;
-			TypeOfGroupCheckId = entity.TypeOfGroupCheckId;
-			CreateUserId = entity.CreateUserId;
-			BenefitTypeERLId = entity.BenefitTypeERLId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class BtiAddress : ILastUpdateTick
-	{
-		public BtiAddress()
-		{
-		}
-
-		public BtiAddress(BtiAddress entity) : this(entity, null)
-		{
-		}
-
-		public BtiAddress(BtiAddress entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			FullAddress = entity.FullAddress;
-			Unom = entity.Unom;
-			ShortAddress = entity.ShortAddress;
-			Unod = entity.Unod;
-			Status = entity.Status;
-			BtiDistrictId = entity.BtiDistrictId;
-			if (deep > 0 && entity.BtiDistrict != null)
-			{
-				BtiDistrict = new BtiDistrict(entity.BtiDistrict, deep - 1);
-			}
-
-			BtiRegionId = entity.BtiRegionId;
-			if (deep > 0 && entity.BtiRegion != null)
-			{
-				BtiRegion = new BtiRegion(entity.BtiRegion, deep - 1);
-			}
-
-			BtiStreetId = entity.BtiStreetId;
-			if (deep > 0 && entity.BtiStreet != null)
-			{
-				BtiStreet = new BtiStreet(entity.BtiStreet, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public BtiAddress CreateCopy()
-		{
-			var res = new BtiAddress(this);
-			if (BtiDistrict != null)
-			{
-				res.BtiDistrict = new BtiDistrict{Id=BtiDistrict.Id, Eid=BtiDistrict.Eid};
-			}
-			if (BtiRegion != null)
-			{
-				res.BtiRegion = new BtiRegion{Id=BtiRegion.Id, Eid=BtiRegion.Eid};
-			}
-			if (BtiStreet != null)
-			{
-				res.BtiStreet = new BtiStreet{Id=BtiStreet.Id, Eid=BtiStreet.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(BtiAddress entity)
-		{
-			Id = entity.Id;
-			FullAddress = entity.FullAddress;
-			Unom = entity.Unom;
-			ShortAddress = entity.ShortAddress;
-			Unod = entity.Unod;
-			Status = entity.Status;
-			BtiDistrictId = entity.BtiDistrictId;
-			BtiRegionId = entity.BtiRegionId;
-			BtiStreetId = entity.BtiStreetId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class BtiDistrict : ILastUpdateTick
-	{
-		public BtiDistrict()
-		{
-		}
-
-		public BtiDistrict(BtiDistrict entity) : this(entity, null)
-		{
-		}
-
-		public BtiDistrict(BtiDistrict entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			Givz = entity.Givz;
-			IsVisible = entity.IsVisible;
-			Okato = entity.Okato;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public BtiDistrict CreateCopy()
-		{
-			var res = new BtiDistrict(this);
-			return res;
-		}
-
-		public void CopyEntity(BtiDistrict entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			Givz = entity.Givz;
-			IsVisible = entity.IsVisible;
-			Okato = entity.Okato;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class BtiRegion : ILastUpdateTick
-	{
-		public BtiRegion()
-		{
-		}
-
-		public BtiRegion(BtiRegion entity) : this(entity, null)
-		{
-		}
-
-		public BtiRegion(BtiRegion entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			Givz = entity.Givz;
-			IsVisible = entity.IsVisible;
-			BtiDistrictId = entity.BtiDistrictId;
-			if (deep > 0 && entity.BtiDistrict != null)
-			{
-				BtiDistrict = new BtiDistrict(entity.BtiDistrict, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public BtiRegion CreateCopy()
-		{
-			var res = new BtiRegion(this);
-			if (BtiDistrict != null)
-			{
-				res.BtiDistrict = new BtiDistrict{Id=BtiDistrict.Id, Eid=BtiDistrict.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(BtiRegion entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			Givz = entity.Givz;
-			IsVisible = entity.IsVisible;
-			BtiDistrictId = entity.BtiDistrictId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class BtiStreet : ILastUpdateTick
-	{
-		public BtiStreet()
-		{
-		}
-
-		public BtiStreet(BtiStreet entity) : this(entity, null)
-		{
-		}
-
-		public BtiStreet(BtiStreet entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public BtiStreet CreateCopy()
-		{
-			var res = new BtiStreet(this);
-			return res;
-		}
-
-		public void CopyEntity(BtiStreet entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class DeclineReason : ILastUpdateTick
-	{
-		public DeclineReason()
-		{
-		}
-
-		public DeclineReason(DeclineReason entity) : this(entity, null)
-		{
-		}
-
-		public DeclineReason(DeclineReason entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			FirstStage = entity.FirstStage;
-			SecondStage = entity.SecondStage;
-			IsManual = entity.IsManual;
-			ForPreferential = entity.ForPreferential;
-			ForCommerce = entity.ForCommerce;
-			ValidReasons = entity.ValidReasons;
-			StatusId = entity.StatusId;
-			if (deep > 0 && entity.Status != null)
-			{
-				Status = new Status(entity.Status, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public DeclineReason CreateCopy()
-		{
-			var res = new DeclineReason(this);
-			if (Status != null)
-			{
-				res.Status = new Status{Id=Status.Id, Eid=Status.Eid};
-			}
-			res.TypeOfRests = TypeOfRests?.Select(p=>new TypeOfRest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(DeclineReason entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			FirstStage = entity.FirstStage;
-			SecondStage = entity.SecondStage;
-			IsManual = entity.IsManual;
-			ForPreferential = entity.ForPreferential;
-			ForCommerce = entity.ForCommerce;
-			ValidReasons = entity.ValidReasons;
-			StatusId = entity.StatusId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class DocumentType : ILastUpdateTick
-	{
-		public DocumentType()
-		{
-		}
-
-		public DocumentType(DocumentType entity) : this(entity, null)
-		{
-		}
-
-		public DocumentType(DocumentType entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			Owner = entity.Owner;
-			GlobalUid = entity.GlobalUid;
-			ForChild = entity.ForChild;
-			ForForeign = entity.ForForeign;
-			ForOther = entity.ForOther;
-			BaseRegistryUid = entity.BaseRegistryUid;
-			ForApplicant = entity.ForApplicant;
-			ForAgent = entity.ForAgent;
-			CreateUserId = entity.CreateUserId;
-			if (deep > 0 && entity.CreateUser != null)
-			{
-				CreateUser = new Account(entity.CreateUser, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public DocumentType CreateCopy()
-		{
-			var res = new DocumentType(this);
-			if (CreateUser != null)
-			{
-				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
-			}
-			res.TypesOfRest = TypesOfRest?.Select(p=>new TypeOfRest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(DocumentType entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			Owner = entity.Owner;
-			GlobalUid = entity.GlobalUid;
-			ForChild = entity.ForChild;
-			ForForeign = entity.ForForeign;
-			ForOther = entity.ForOther;
-			BaseRegistryUid = entity.BaseRegistryUid;
-			ForApplicant = entity.ForApplicant;
-			ForAgent = entity.ForAgent;
-			CreateUserId = entity.CreateUserId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class ExchangeBaseRegistry : ILastUpdateTick
-	{
-		public ExchangeBaseRegistry()
-		{
-		}
-
-		public ExchangeBaseRegistry(ExchangeBaseRegistry entity) : this(entity, null)
-		{
-		}
-
-		public ExchangeBaseRegistry(ExchangeBaseRegistry entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			RequestGuid = entity.RequestGuid;
-			ServiceNumber = entity.ServiceNumber;
-			SendDate = entity.SendDate;
-			AcknolegmentGuid = entity.AcknolegmentGuid;
-			ResponseGuid = entity.ResponseGuid;
-			ResponseDate = entity.ResponseDate;
-			OperationType = entity.OperationType;
-			IsIncoming = entity.IsIncoming;
-			RequestText = entity.RequestText;
-			ResponseText = entity.ResponseText;
-			IsProcessed = entity.IsProcessed;
-			NotActual = entity.NotActual;
-			Success = entity.Success;
-			SearchField = entity.SearchField;
-			BirthDate = entity.BirthDate;
-			IsAddonRequest = entity.IsAddonRequest;
-			ChildId = entity.ChildId;
-			if (deep > 0 && entity.Child != null)
-			{
-				Child = new Child(entity.Child, deep - 1);
-			}
-
-			ExchangeBaseRegistryTypeId = entity.ExchangeBaseRegistryTypeId;
-			if (deep > 0 && entity.ExchangeBaseRegistryType != null)
-			{
-				ExchangeBaseRegistryType = new ExchangeBaseRegistryType(entity.ExchangeBaseRegistryType, deep - 1);
-			}
-
-			ApplicantId = entity.ApplicantId;
-			if (deep > 0 && entity.Applicant != null)
-			{
-				Applicant = new Applicant(entity.Applicant, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public ExchangeBaseRegistry CreateCopy()
-		{
-			var res = new ExchangeBaseRegistry(this);
-			if (Child != null)
-			{
-				res.Child = new Child{Id=Child.Id, Eid=Child.Eid};
-			}
-			if (ExchangeBaseRegistryType != null)
-			{
-				res.ExchangeBaseRegistryType = new ExchangeBaseRegistryType{Id=ExchangeBaseRegistryType.Id, Eid=ExchangeBaseRegistryType.Eid};
-			}
-			if (Applicant != null)
-			{
-				res.Applicant = new Applicant{Id=Applicant.Id, Eid=Applicant.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(ExchangeBaseRegistry entity)
-		{
-			Id = entity.Id;
-			RequestGuid = entity.RequestGuid;
-			ServiceNumber = entity.ServiceNumber;
-			SendDate = entity.SendDate;
-			AcknolegmentGuid = entity.AcknolegmentGuid;
-			ResponseGuid = entity.ResponseGuid;
-			ResponseDate = entity.ResponseDate;
-			OperationType = entity.OperationType;
-			IsIncoming = entity.IsIncoming;
-			RequestText = entity.RequestText;
-			ResponseText = entity.ResponseText;
-			IsProcessed = entity.IsProcessed;
-			NotActual = entity.NotActual;
-			Success = entity.Success;
-			SearchField = entity.SearchField;
-			BirthDate = entity.BirthDate;
-			IsAddonRequest = entity.IsAddonRequest;
-			ChildId = entity.ChildId;
-			ExchangeBaseRegistryTypeId = entity.ExchangeBaseRegistryTypeId;
-			ApplicantId = entity.ApplicantId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class ExchangeBaseRegistryType : ILastUpdateTick
-	{
-		public ExchangeBaseRegistryType()
-		{
-		}
-
-		public ExchangeBaseRegistryType(ExchangeBaseRegistryType entity) : this(entity, null)
-		{
-		}
-
-		public ExchangeBaseRegistryType(ExchangeBaseRegistryType entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			IsDeleted = entity.IsDeleted;
-			SendMessage = entity.SendMessage;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public ExchangeBaseRegistryType CreateCopy()
-		{
-			var res = new ExchangeBaseRegistryType(this);
-			return res;
-		}
-
-		public void CopyEntity(ExchangeBaseRegistryType entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			IsDeleted = entity.IsDeleted;
-			SendMessage = entity.SendMessage;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class ExchangeUTS : ILastUpdateTick
-	{
-		public ExchangeUTS()
-		{
-		}
-
-		public ExchangeUTS(ExchangeUTS entity) : this(entity, null)
-		{
-		}
-
-		public ExchangeUTS(ExchangeUTS entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Message = entity.Message;
-			Processed = entity.Processed;
-			QueueName = entity.QueueName;
-			DateCreate = entity.DateCreate;
-			Incoming = entity.Incoming;
-			FromOrgCode = entity.FromOrgCode;
-			ToOrgCode = entity.ToOrgCode;
-			MessageId = entity.MessageId;
-			ServiceNumber = entity.ServiceNumber;
-			IsError = entity.IsError;
-			ErrorText = entity.ErrorText;
-			ErrorDescription = entity.ErrorDescription;
-			TypeOfRestId = entity.TypeOfRestId;
-			BookingGuid = entity.BookingGuid;
-			ToState = entity.ToState;
-			IsErrorOnReleaseBooking = entity.IsErrorOnReleaseBooking;
-			DateToSend = entity.DateToSend;
-			IsSigned = entity.IsSigned;
-			RequestId = entity.RequestId;
-			if (deep > 0 && entity.Request != null)
-			{
-				Request = new Request(entity.Request, deep - 1);
-			}
-
-			AccountId = entity.AccountId;
-			if (deep > 0 && entity.Account != null)
-			{
-				Account = new Account(entity.Account, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public ExchangeUTS CreateCopy()
-		{
-			var res = new ExchangeUTS(this);
-			if (Request != null)
-			{
-				res.Request = new Request{Id=Request.Id, Eid=Request.Eid};
-			}
-			if (Account != null)
-			{
-				res.Account = new Account{Id=Account.Id, Eid=Account.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(ExchangeUTS entity)
-		{
-			Id = entity.Id;
-			Message = entity.Message;
-			Processed = entity.Processed;
-			QueueName = entity.QueueName;
-			DateCreate = entity.DateCreate;
-			Incoming = entity.Incoming;
-			FromOrgCode = entity.FromOrgCode;
-			ToOrgCode = entity.ToOrgCode;
-			MessageId = entity.MessageId;
-			ServiceNumber = entity.ServiceNumber;
-			IsError = entity.IsError;
-			ErrorText = entity.ErrorText;
-			ErrorDescription = entity.ErrorDescription;
-			TypeOfRestId = entity.TypeOfRestId;
-			BookingGuid = entity.BookingGuid;
-			ToState = entity.ToState;
-			IsErrorOnReleaseBooking = entity.IsErrorOnReleaseBooking;
-			DateToSend = entity.DateToSend;
-			IsSigned = entity.IsSigned;
-			RequestId = entity.RequestId;
-			AccountId = entity.AccountId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class ExcludeDays : ILastUpdateTick
-	{
-		public ExcludeDays()
-		{
-		}
-
-		public ExcludeDays(ExcludeDays entity) : this(entity, null)
-		{
-		}
-
-		public ExcludeDays(ExcludeDays entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Date = entity.Date;
-			IsFreeDay = entity.IsFreeDay;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public ExcludeDays CreateCopy()
-		{
-			var res = new ExcludeDays(this);
-			return res;
-		}
-
-		public void CopyEntity(ExcludeDays entity)
-		{
-			Id = entity.Id;
-			Date = entity.Date;
-			IsFreeDay = entity.IsFreeDay;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class FileHotel : ILastUpdateTick
-	{
-		public FileHotel()
-		{
-		}
-
-		public FileHotel(FileHotel entity) : this(entity, null)
-		{
-		}
-
-		public FileHotel(FileHotel entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			FileName = entity.FileName;
-			FileUrl = entity.FileUrl;
-			IsMainPhoto = entity.IsMainPhoto;
-			IsArchive = entity.IsArchive;
-			HotelId = entity.HotelId;
-			if (deep > 0 && entity.Hotel != null)
-			{
-				Hotel = new Hotels(entity.Hotel, deep - 1);
-			}
-
-			FileTypeId = entity.FileTypeId;
-			if (deep > 0 && entity.FileType != null)
-			{
-				FileType = new FileType(entity.FileType, deep - 1);
-			}
-
-			TypeOfRoomsId = entity.TypeOfRoomsId;
-			if (deep > 0 && entity.TypeOfRooms != null)
-			{
-				TypeOfRooms = new TypeOfRooms(entity.TypeOfRooms, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public FileHotel CreateCopy()
-		{
-			var res = new FileHotel(this);
-			if (Hotel != null)
-			{
-				res.Hotel = new Hotels{Id=Hotel.Id, Eid=Hotel.Eid};
-			}
-			if (FileType != null)
-			{
-				res.FileType = new FileType{Id=FileType.Id, Eid=FileType.Eid};
-			}
-			if (TypeOfRooms != null)
-			{
-				res.TypeOfRooms = new TypeOfRooms{Id=TypeOfRooms.Id, Eid=TypeOfRooms.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(FileHotel entity)
-		{
-			Id = entity.Id;
-			FileName = entity.FileName;
-			FileUrl = entity.FileUrl;
-			IsMainPhoto = entity.IsMainPhoto;
-			IsArchive = entity.IsArchive;
-			HotelId = entity.HotelId;
-			FileTypeId = entity.FileTypeId;
-			TypeOfRoomsId = entity.TypeOfRoomsId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class FileOfTour : ILastUpdateTick
-	{
-		public FileOfTour()
-		{
-		}
-
-		public FileOfTour(FileOfTour entity) : this(entity, null)
-		{
-		}
-
-		public FileOfTour(FileOfTour entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			FileName = entity.FileName;
-			FileUrl = entity.FileUrl;
-			TourId = entity.TourId;
-			if (deep > 0 && entity.Tour != null)
-			{
-				Tour = new Tour(entity.Tour, deep - 1);
-			}
-
-			FileTypeId = entity.FileTypeId;
-			if (deep > 0 && entity.FileType != null)
-			{
-				FileType = new FileType(entity.FileType, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public FileOfTour CreateCopy()
-		{
-			var res = new FileOfTour(this);
-			if (Tour != null)
-			{
-				res.Tour = new Tour{Id=Tour.Id, Eid=Tour.Eid};
-			}
-			if (FileType != null)
-			{
-				res.FileType = new FileType{Id=FileType.Id, Eid=FileType.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(FileOfTour entity)
-		{
-			Id = entity.Id;
-			FileName = entity.FileName;
-			FileUrl = entity.FileUrl;
-			TourId = entity.TourId;
-			FileTypeId = entity.FileTypeId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class FileType : ILastUpdateTick
-	{
-		public FileType()
-		{
-		}
-
-		public FileType(FileType entity) : this(entity, null)
-		{
-		}
-
-		public FileType(FileType entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			IsPhoto = entity.IsPhoto;
-			ParentId = entity.ParentId;
-			if (deep > 0 && entity.Parent != null)
-			{
-				Parent = new FileType(entity.Parent, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public FileType CreateCopy()
-		{
-			var res = new FileType(this);
-			if (Parent != null)
-			{
-				res.Parent = new FileType{Id=Parent.Id, Eid=Parent.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(FileType entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			IsPhoto = entity.IsPhoto;
-			ParentId = entity.ParentId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class HistoryInteragencyRequest : ILastUpdateTick
-	{
-		public HistoryInteragencyRequest()
-		{
-		}
-
-		public HistoryInteragencyRequest(HistoryInteragencyRequest entity) : this(entity, null)
-		{
-		}
-
-		public HistoryInteragencyRequest(HistoryInteragencyRequest entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Operation = entity.Operation;
-			OperationDate = entity.OperationDate;
-			Code = entity.Code;
-			AccountId = entity.AccountId;
-			if (deep > 0 && entity.Account != null)
-			{
-				Account = new Account(entity.Account, deep - 1);
-			}
-
-			InteragencyRequestId = entity.InteragencyRequestId;
-			if (deep > 0 && entity.InteragencyRequest != null)
-			{
-				InteragencyRequest = new InteragencyRequest(entity.InteragencyRequest, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public HistoryInteragencyRequest CreateCopy()
-		{
-			var res = new HistoryInteragencyRequest(this);
-			if (Account != null)
-			{
-				res.Account = new Account{Id=Account.Id, Eid=Account.Eid};
-			}
-			if (InteragencyRequest != null)
-			{
-				res.InteragencyRequest = new InteragencyRequest{Id=InteragencyRequest.Id, Eid=InteragencyRequest.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(HistoryInteragencyRequest entity)
-		{
-			Id = entity.Id;
-			Operation = entity.Operation;
-			OperationDate = entity.OperationDate;
-			Code = entity.Code;
-			AccountId = entity.AccountId;
-			InteragencyRequestId = entity.InteragencyRequestId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class HistoryRequest : ILastUpdateTick
-	{
-		public HistoryRequest()
-		{
-		}
-
-		public HistoryRequest(HistoryRequest entity) : this(entity, null)
-		{
-		}
-
-		public HistoryRequest(HistoryRequest entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Operation = entity.Operation;
-			OperationDate = entity.OperationDate;
-			Code = entity.Code;
-			RequestId = entity.RequestId;
-			if (deep > 0 && entity.Request != null)
-			{
-				Request = new Request(entity.Request, deep - 1);
-			}
-
-			AccountId = entity.AccountId;
-			if (deep > 0 && entity.Account != null)
-			{
-				Account = new Account(entity.Account, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public HistoryRequest CreateCopy()
-		{
-			var res = new HistoryRequest(this);
-			if (Request != null)
-			{
-				res.Request = new Request{Id=Request.Id, Eid=Request.Eid};
-			}
-			if (Account != null)
-			{
-				res.Account = new Account{Id=Account.Id, Eid=Account.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(HistoryRequest entity)
-		{
-			Id = entity.Id;
-			Operation = entity.Operation;
-			OperationDate = entity.OperationDate;
-			Code = entity.Code;
-			RequestId = entity.RequestId;
-			AccountId = entity.AccountId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class Hotels : ILastUpdateTick
-	{
-		public Hotels()
-		{
-		}
-
-		public Hotels(Hotels entity) : this(entity, null)
-		{
-		}
-
-		public Hotels(Hotels entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			Address = entity.Address;
-			NameOrganization = entity.NameOrganization;
-			Phone = entity.Phone;
-			Fax = entity.Fax;
-			Email = entity.Email;
-			Url = entity.Url;
-			Head = entity.Head;
-			HeadPosition = entity.HeadPosition;
-			DrivingDirections = entity.DrivingDirections;
-			NumberHousing = entity.NumberHousing;
-			Squere = entity.Squere;
-			MedicalOfficeAvailability = entity.MedicalOfficeAvailability;
-			OutdoorPondAvailability = entity.OutdoorPondAvailability;
-			OutdoorPondName = entity.OutdoorPondName;
-			PoolAvailability = entity.PoolAvailability;
-			SecurityInformation = entity.SecurityInformation;
-			ComputerClassAvailability = entity.ComputerClassAvailability;
-			CinimaAvailability = entity.CinimaAvailability;
-			CinimaTimetable = entity.CinimaTimetable;
-			GymAvailability = entity.GymAvailability;
-			LibraryAvailability = entity.LibraryAvailability;
-			LibraryTimetable = entity.LibraryTimetable;
-			AccessibleEnvironment = entity.AccessibleEnvironment;
-			TakeChildUp3Years = entity.TakeChildUp3Years;
-			OtherLeisure = entity.OtherLeisure;
-			ContactPerson = entity.ContactPerson;
-			ContactPhone = entity.ContactPhone;
-			Description = entity.Description;
-			Latitude = entity.Latitude;
-			Longitude = entity.Longitude;
-			AgeFrom = entity.AgeFrom;
-			AgeTo = entity.AgeTo;
-			DistanceFromCenter = entity.DistanceFromCenter;
-			DistanceFromBeach = entity.DistanceFromBeach;
-			EkisId = entity.EkisId;
-			EkisNeedSend = entity.EkisNeedSend;
-			NotForSite = entity.NotForSite;
-			IsLok = entity.IsLok;
-			DescriptionHtml = entity.DescriptionHtml;
-			HistoryLinkId = entity.HistoryLinkId;
-			if (deep > 0 && entity.HistoryLink != null)
-			{
-				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
-			}
-
-			PlaceOfRestId = entity.PlaceOfRestId;
-			if (deep > 0 && entity.PlaceOfRest != null)
-			{
-				PlaceOfRest = new PlaceOfRest(entity.PlaceOfRest, deep - 1);
-			}
-
-			HotelTypeId = entity.HotelTypeId;
-			if (deep > 0 && entity.HotelType != null)
-			{
-				HotelType = new HotelType(entity.HotelType, deep - 1);
-			}
-
-			StateId = entity.StateId;
-			if (deep > 0 && entity.State != null)
-			{
-				State = new StateMachineState(entity.State, deep - 1);
-			}
-
-			CityId = entity.CityId;
-			if (deep > 0 && entity.City != null)
-			{
-				City = new City(entity.City, deep - 1);
-			}
-
-			OrganizationId = entity.OrganizationId;
-			if (deep > 0 && entity.Organization != null)
-			{
-				Organization = new Organization(entity.Organization, deep - 1);
-			}
-
-			FunctioningTypeId = entity.FunctioningTypeId;
-			if (deep > 0 && entity.FunctioningType != null)
-			{
-				FunctioningType = new FunctioningType(entity.FunctioningType, deep - 1);
-			}
-
-			HotelPlacementId = entity.HotelPlacementId;
-			if (deep > 0 && entity.HotelPlacement != null)
-			{
-				HotelPlacement = new HotelPlacement(entity.HotelPlacement, deep - 1);
-			}
-
-			SubHotelTypeId = entity.SubHotelTypeId;
-			if (deep > 0 && entity.SubHotelType != null)
-			{
-				SubHotelType = new HotelType(entity.SubHotelType, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public Hotels CreateCopy()
-		{
-			var res = new Hotels(this);
-			if (HistoryLink != null)
-			{
-				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
-			}
-			if (PlaceOfRest != null)
-			{
-				res.PlaceOfRest = new PlaceOfRest{Id=PlaceOfRest.Id, Eid=PlaceOfRest.Eid};
-			}
-			if (HotelType != null)
-			{
-				res.HotelType = new HotelType{Id=HotelType.Id, Eid=HotelType.Eid};
-			}
-			if (State != null)
-			{
-				res.State = new StateMachineState{Id=State.Id, Eid=State.Eid};
-			}
-			if (City != null)
-			{
-				res.City = new City{Id=City.Id, Eid=City.Eid};
-			}
-			if (Organization != null)
-			{
-				res.Organization = new Organization{Id=Organization.Id, Eid=Organization.Eid};
-			}
-			if (FunctioningType != null)
-			{
-				res.FunctioningType = new FunctioningType{Id=FunctioningType.Id, Eid=FunctioningType.Eid};
-			}
-			if (HotelPlacement != null)
-			{
-				res.HotelPlacement = new HotelPlacement{Id=HotelPlacement.Id, Eid=HotelPlacement.Eid};
-			}
-			if (SubHotelType != null)
-			{
-				res.SubHotelType = new HotelType{Id=SubHotelType.Id, Eid=SubHotelType.Eid};
-			}
-			res.TypeOfRooms = TypeOfRooms?.Select(p=>new TypeOfRooms {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Files = Files?.Select(p=>new FileHotel {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Contacts = Contacts?.Select(p=>new HotelContactPerson {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Accommodation = Accommodation?.Select(p=>new Accommodation {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.DiningOptions = DiningOptions?.Select(p=>new DiningOptions {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Prices = Prices?.Select(p=>new RoomRates {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Services = Services?.Select(p=>new AddonServices {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.MatrixOfPrice = MatrixOfPrice?.Select(p=>new HotelPrice {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.PlaceBloks = PlaceBloks?.Select(p=>new HotelBlock {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(Hotels entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			Address = entity.Address;
-			NameOrganization = entity.NameOrganization;
-			Phone = entity.Phone;
-			Fax = entity.Fax;
-			Email = entity.Email;
-			Url = entity.Url;
-			Head = entity.Head;
-			HeadPosition = entity.HeadPosition;
-			DrivingDirections = entity.DrivingDirections;
-			NumberHousing = entity.NumberHousing;
-			Squere = entity.Squere;
-			MedicalOfficeAvailability = entity.MedicalOfficeAvailability;
-			OutdoorPondAvailability = entity.OutdoorPondAvailability;
-			OutdoorPondName = entity.OutdoorPondName;
-			PoolAvailability = entity.PoolAvailability;
-			SecurityInformation = entity.SecurityInformation;
-			ComputerClassAvailability = entity.ComputerClassAvailability;
-			CinimaAvailability = entity.CinimaAvailability;
-			CinimaTimetable = entity.CinimaTimetable;
-			GymAvailability = entity.GymAvailability;
-			LibraryAvailability = entity.LibraryAvailability;
-			LibraryTimetable = entity.LibraryTimetable;
-			AccessibleEnvironment = entity.AccessibleEnvironment;
-			TakeChildUp3Years = entity.TakeChildUp3Years;
-			OtherLeisure = entity.OtherLeisure;
-			ContactPerson = entity.ContactPerson;
-			ContactPhone = entity.ContactPhone;
-			Description = entity.Description;
-			Latitude = entity.Latitude;
-			Longitude = entity.Longitude;
-			AgeFrom = entity.AgeFrom;
-			AgeTo = entity.AgeTo;
-			DistanceFromCenter = entity.DistanceFromCenter;
-			DistanceFromBeach = entity.DistanceFromBeach;
-			EkisId = entity.EkisId;
-			EkisNeedSend = entity.EkisNeedSend;
-			NotForSite = entity.NotForSite;
-			IsLok = entity.IsLok;
-			DescriptionHtml = entity.DescriptionHtml;
-			HistoryLinkId = entity.HistoryLinkId;
-			PlaceOfRestId = entity.PlaceOfRestId;
-			HotelTypeId = entity.HotelTypeId;
-			StateId = entity.StateId;
-			CityId = entity.CityId;
-			OrganizationId = entity.OrganizationId;
-			FunctioningTypeId = entity.FunctioningTypeId;
-			HotelPlacementId = entity.HotelPlacementId;
-			SubHotelTypeId = entity.SubHotelTypeId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class HotelType : ILastUpdateTick
-	{
-		public HotelType()
-		{
-		}
-
-		public HotelType(HotelType entity) : this(entity, null)
-		{
-		}
-
-		public HotelType(HotelType entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			ParentId = entity.ParentId;
-			if (deep > 0 && entity.Parent != null)
-			{
-				Parent = new HotelType(entity.Parent, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public HotelType CreateCopy()
-		{
-			var res = new HotelType(this);
-			if (Parent != null)
-			{
-				res.Parent = new HotelType{Id=Parent.Id, Eid=Parent.Eid};
-			}
-			res.Children = Children?.Select(p=>new HotelType {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(HotelType entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			ParentId = entity.ParentId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class InteragencyRequest : ILastUpdateTick
-	{
-		public InteragencyRequest()
-		{
-		}
-
-		public InteragencyRequest(InteragencyRequest entity) : this(entity, null)
-		{
-		}
-
-		public InteragencyRequest(InteragencyRequest entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			RequestNumber = entity.RequestNumber;
-			RequsetDate = entity.RequsetDate;
-			AnswerNumber = entity.AnswerNumber;
-			AnswerDate = entity.AnswerDate;
-			RequestComment = entity.RequestComment;
-			AnswerComment = entity.AnswerComment;
-			RequestFileUrl = entity.RequestFileUrl;
-			AnswerFileUrl = entity.AnswerFileUrl;
-			CreateDate = entity.CreateDate;
-			IsSecondaryRequest = entity.IsSecondaryRequest;
-			ForAllRegion = entity.ForAllRegion;
-			StatusInteragencyRequestId = entity.StatusInteragencyRequestId;
-			if (deep > 0 && entity.StatusInteragencyRequest != null)
-			{
-				StatusInteragencyRequest = new StatusInteragencyRequest(entity.StatusInteragencyRequest, deep - 1);
-			}
-
-			AccountId = entity.AccountId;
-			if (deep > 0 && entity.Account != null)
-			{
-				Account = new Account(entity.Account, deep - 1);
-			}
-
-			OrganizationId = entity.OrganizationId;
-			if (deep > 0 && entity.Organization != null)
-			{
-				Organization = new Organization(entity.Organization, deep - 1);
-			}
-
-			BtiDistrictId = entity.BtiDistrictId;
-			if (deep > 0 && entity.BtiDistrict != null)
-			{
-				BtiDistrict = new BtiDistrict(entity.BtiDistrict, deep - 1);
-			}
-
-			BtiRegionId = entity.BtiRegionId;
-			if (deep > 0 && entity.BtiRegion != null)
-			{
-				BtiRegion = new BtiRegion(entity.BtiRegion, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public InteragencyRequest CreateCopy()
-		{
-			var res = new InteragencyRequest(this);
-			if (StatusInteragencyRequest != null)
-			{
-				res.StatusInteragencyRequest = new StatusInteragencyRequest{Id=StatusInteragencyRequest.Id, Eid=StatusInteragencyRequest.Eid};
-			}
-			if (Account != null)
-			{
-				res.Account = new Account{Id=Account.Id, Eid=Account.Eid};
-			}
-			if (Organization != null)
-			{
-				res.Organization = new Organization{Id=Organization.Id, Eid=Organization.Eid};
-			}
-			if (BtiDistrict != null)
-			{
-				res.BtiDistrict = new BtiDistrict{Id=BtiDistrict.Id, Eid=BtiDistrict.Eid};
-			}
-			if (BtiRegion != null)
-			{
-				res.BtiRegion = new BtiRegion{Id=BtiRegion.Id, Eid=BtiRegion.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(InteragencyRequest entity)
-		{
-			Id = entity.Id;
-			RequestNumber = entity.RequestNumber;
-			RequsetDate = entity.RequsetDate;
-			AnswerNumber = entity.AnswerNumber;
-			AnswerDate = entity.AnswerDate;
-			RequestComment = entity.RequestComment;
-			AnswerComment = entity.AnswerComment;
-			RequestFileUrl = entity.RequestFileUrl;
-			AnswerFileUrl = entity.AnswerFileUrl;
-			CreateDate = entity.CreateDate;
-			IsSecondaryRequest = entity.IsSecondaryRequest;
-			ForAllRegion = entity.ForAllRegion;
-			StatusInteragencyRequestId = entity.StatusInteragencyRequestId;
-			AccountId = entity.AccountId;
-			OrganizationId = entity.OrganizationId;
-			BtiDistrictId = entity.BtiDistrictId;
-			BtiRegionId = entity.BtiRegionId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class InteragencyRequestBenefitType : ILastUpdateTick
-	{
-		public InteragencyRequestBenefitType()
-		{
-		}
-
-		public InteragencyRequestBenefitType(InteragencyRequestBenefitType entity) : this(entity, null)
-		{
-		}
-
-		public InteragencyRequestBenefitType(InteragencyRequestBenefitType entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			BenefitTypeId = entity.BenefitTypeId;
-			if (deep > 0 && entity.BenefitType != null)
-			{
-				BenefitType = new BenefitType(entity.BenefitType, deep - 1);
-			}
-
-			InteragencyRequestId = entity.InteragencyRequestId;
-			if (deep > 0 && entity.InteragencyRequest != null)
-			{
-				InteragencyRequest = new InteragencyRequest(entity.InteragencyRequest, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public InteragencyRequestBenefitType CreateCopy()
-		{
-			var res = new InteragencyRequestBenefitType(this);
-			if (BenefitType != null)
-			{
-				res.BenefitType = new BenefitType{Id=BenefitType.Id, Eid=BenefitType.Eid};
-			}
-			if (InteragencyRequest != null)
-			{
-				res.InteragencyRequest = new InteragencyRequest{Id=InteragencyRequest.Id, Eid=InteragencyRequest.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(InteragencyRequestBenefitType entity)
-		{
-			Id = entity.Id;
-			BenefitTypeId = entity.BenefitTypeId;
-			InteragencyRequestId = entity.InteragencyRequestId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class InteragencyRequestResult : ILastUpdateTick
-	{
-		public InteragencyRequestResult()
-		{
-		}
-
-		public InteragencyRequestResult(InteragencyRequestResult entity) : this(entity, null)
-		{
-		}
-
-		public InteragencyRequestResult(InteragencyRequestResult entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Comment = entity.Comment;
-			InteragencyRequestId = entity.InteragencyRequestId;
-			if (deep > 0 && entity.InteragencyRequest != null)
-			{
-				InteragencyRequest = new InteragencyRequest(entity.InteragencyRequest, deep - 1);
-			}
-
-			ChildId = entity.ChildId;
-			if (deep > 0 && entity.Child != null)
-			{
-				Child = new Child(entity.Child, deep - 1);
-			}
-
-			StatusResultId = entity.StatusResultId;
-			if (deep > 0 && entity.StatusResult != null)
-			{
-				StatusResult = new StatusResult(entity.StatusResult, deep - 1);
-			}
-
-			ApplicantId = entity.ApplicantId;
-			if (deep > 0 && entity.Applicant != null)
-			{
-				Applicant = new Applicant(entity.Applicant, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public InteragencyRequestResult CreateCopy()
-		{
-			var res = new InteragencyRequestResult(this);
-			if (InteragencyRequest != null)
-			{
-				res.InteragencyRequest = new InteragencyRequest{Id=InteragencyRequest.Id, Eid=InteragencyRequest.Eid};
-			}
-			if (Child != null)
-			{
-				res.Child = new Child{Id=Child.Id, Eid=Child.Eid};
-			}
-			if (StatusResult != null)
-			{
-				res.StatusResult = new StatusResult{Id=StatusResult.Id, Eid=StatusResult.Eid};
-			}
-			if (Applicant != null)
-			{
-				res.Applicant = new Applicant{Id=Applicant.Id, Eid=Applicant.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(InteragencyRequestResult entity)
-		{
-			Id = entity.Id;
-			Comment = entity.Comment;
-			InteragencyRequestId = entity.InteragencyRequestId;
-			ChildId = entity.ChildId;
-			StatusResultId = entity.StatusResultId;
-			ApplicantId = entity.ApplicantId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class LimitOnOrganization : ILastUpdateTick
-	{
-		public LimitOnOrganization()
-		{
-		}
-
-		public LimitOnOrganization(LimitOnOrganization entity) : this(entity, null)
-		{
-		}
-
-		public LimitOnOrganization(LimitOnOrganization entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Volume = entity.Volume;
-			Approved = entity.Approved;
-			HistoryLinkId = entity.HistoryLinkId;
-			if (deep > 0 && entity.HistoryLink != null)
-			{
-				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
-			}
-
-			OrganizationId = entity.OrganizationId;
-			if (deep > 0 && entity.Organization != null)
-			{
-				Organization = new Organization(entity.Organization, deep - 1);
-			}
-
-			LimitOnVedomstvoId = entity.LimitOnVedomstvoId;
-			if (deep > 0 && entity.LimitOnVedomstvo != null)
-			{
-				LimitOnVedomstvo = new LimitOnVedomstvo(entity.LimitOnVedomstvo, deep - 1);
-			}
-
-			StateId = entity.StateId;
-			if (deep > 0 && entity.State != null)
-			{
-				State = new StateMachineState(entity.State, deep - 1);
-			}
-
-			TourId = entity.TourId;
-			if (deep > 0 && entity.Tour != null)
-			{
-				Tour = new Tour(entity.Tour, deep - 1);
-			}
-
-			TimeOfRestId = entity.TimeOfRestId;
-			if (deep > 0 && entity.TimeOfRest != null)
-			{
-				TimeOfRest = new TimeOfRest(entity.TimeOfRest, deep - 1);
-			}
-
-			PlaceOfRestId = entity.PlaceOfRestId;
-			if (deep > 0 && entity.PlaceOfRest != null)
-			{
-				PlaceOfRest = new PlaceOfRest(entity.PlaceOfRest, deep - 1);
-			}
-
-			TypeOfLimitListId = entity.TypeOfLimitListId;
-			if (deep > 0 && entity.TypeOfLimitList != null)
-			{
-				TypeOfLimitList = new TypeOfLimitList(entity.TypeOfLimitList, deep - 1);
-			}
-
-			SignInfoId = entity.SignInfoId;
-			if (deep > 0 && entity.SignInfo != null)
-			{
-				SignInfo = new SignInfo(entity.SignInfo, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public LimitOnOrganization CreateCopy()
-		{
-			var res = new LimitOnOrganization(this);
-			if (HistoryLink != null)
-			{
-				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
-			}
-			if (Organization != null)
-			{
-				res.Organization = new Organization{Id=Organization.Id, Eid=Organization.Eid};
-			}
-			if (LimitOnVedomstvo != null)
-			{
-				res.LimitOnVedomstvo = new LimitOnVedomstvo{Id=LimitOnVedomstvo.Id, Eid=LimitOnVedomstvo.Eid};
-			}
-			if (State != null)
-			{
-				res.State = new StateMachineState{Id=State.Id, Eid=State.Eid};
-			}
-			if (Tour != null)
-			{
-				res.Tour = new Tour{Id=Tour.Id, Eid=Tour.Eid};
-			}
-			if (TimeOfRest != null)
-			{
-				res.TimeOfRest = new TimeOfRest{Id=TimeOfRest.Id, Eid=TimeOfRest.Eid};
-			}
-			if (PlaceOfRest != null)
-			{
-				res.PlaceOfRest = new PlaceOfRest{Id=PlaceOfRest.Id, Eid=PlaceOfRest.Eid};
-			}
-			if (TypeOfLimitList != null)
-			{
-				res.TypeOfLimitList = new TypeOfLimitList{Id=TypeOfLimitList.Id, Eid=TypeOfLimitList.Eid};
-			}
-			if (SignInfo != null)
-			{
-				res.SignInfo = new SignInfo{Id=SignInfo.Id, Eid=SignInfo.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(LimitOnOrganization entity)
-		{
-			Id = entity.Id;
-			Volume = entity.Volume;
-			Approved = entity.Approved;
-			HistoryLinkId = entity.HistoryLinkId;
-			OrganizationId = entity.OrganizationId;
-			LimitOnVedomstvoId = entity.LimitOnVedomstvoId;
-			StateId = entity.StateId;
-			TourId = entity.TourId;
-			TimeOfRestId = entity.TimeOfRestId;
-			PlaceOfRestId = entity.PlaceOfRestId;
-			TypeOfLimitListId = entity.TypeOfLimitListId;
-			SignInfoId = entity.SignInfoId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class LimitOnVedomstvo : ILastUpdateTick
-	{
-		public LimitOnVedomstvo()
-		{
-		}
-
-		public LimitOnVedomstvo(LimitOnVedomstvo entity) : this(entity, null)
-		{
-		}
-
-		public LimitOnVedomstvo(LimitOnVedomstvo entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			LimitYear = entity.LimitYear;
-			Approved = entity.Approved;
-			Volume = entity.Volume;
-			HistoryLinkId = entity.HistoryLinkId;
-			if (deep > 0 && entity.HistoryLink != null)
-			{
-				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
-			}
-
-			OrganizationId = entity.OrganizationId;
-			if (deep > 0 && entity.Organization != null)
-			{
-				Organization = new Organization(entity.Organization, deep - 1);
-			}
-
-			YearOfRestId = entity.YearOfRestId;
-			if (deep > 0 && entity.YearOfRest != null)
-			{
-				YearOfRest = new YearOfRest(entity.YearOfRest, deep - 1);
-			}
-
-			StateId = entity.StateId;
-			if (deep > 0 && entity.State != null)
-			{
-				State = new StateMachineState(entity.State, deep - 1);
-			}
-
-			TypeOfLimitListId = entity.TypeOfLimitListId;
-			if (deep > 0 && entity.TypeOfLimitList != null)
-			{
-				TypeOfLimitList = new TypeOfLimitList(entity.TypeOfLimitList, deep - 1);
-			}
-
-			SignInfoId = entity.SignInfoId;
-			if (deep > 0 && entity.SignInfo != null)
-			{
-				SignInfo = new SignInfo(entity.SignInfo, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public LimitOnVedomstvo CreateCopy()
-		{
-			var res = new LimitOnVedomstvo(this);
-			if (HistoryLink != null)
-			{
-				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
-			}
-			if (Organization != null)
-			{
-				res.Organization = new Organization{Id=Organization.Id, Eid=Organization.Eid};
-			}
-			if (YearOfRest != null)
-			{
-				res.YearOfRest = new YearOfRest{Id=YearOfRest.Id, Eid=YearOfRest.Eid};
-			}
-			if (State != null)
-			{
-				res.State = new StateMachineState{Id=State.Id, Eid=State.Eid};
-			}
-			if (TypeOfLimitList != null)
-			{
-				res.TypeOfLimitList = new TypeOfLimitList{Id=TypeOfLimitList.Id, Eid=TypeOfLimitList.Eid};
-			}
-			if (SignInfo != null)
-			{
-				res.SignInfo = new SignInfo{Id=SignInfo.Id, Eid=SignInfo.Eid};
-			}
-			res.VedomstvoLimit = VedomstvoLimit?.Select(p=>new LimitOnOrganization {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.LimitOnOrganizationRequests = LimitOnOrganizationRequests?.Select(p=>new LimitOnOrganizationRequest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(LimitOnVedomstvo entity)
-		{
-			Id = entity.Id;
-			LimitYear = entity.LimitYear;
-			Approved = entity.Approved;
-			Volume = entity.Volume;
-			HistoryLinkId = entity.HistoryLinkId;
-			OrganizationId = entity.OrganizationId;
-			YearOfRestId = entity.YearOfRestId;
-			StateId = entity.StateId;
-			TypeOfLimitListId = entity.TypeOfLimitListId;
-			SignInfoId = entity.SignInfoId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class ListOfChilds : ILastUpdateTick
-	{
-		public ListOfChilds()
-		{
-		}
-
-		public ListOfChilds(ListOfChilds entity) : this(entity, null)
-		{
-		}
-
-		public ListOfChilds(ListOfChilds entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			IsLast = entity.IsLast;
-			IsDeleted = entity.IsDeleted;
-			DateChange = entity.DateChange;
-			Name = entity.Name;
-			CountChild = entity.CountChild;
-			CountAttendants = entity.CountAttendants;
-			CertificateNumber = entity.CertificateNumber;
-			Responsible = entity.Responsible;
-			ResponsiblePhone = entity.ResponsiblePhone;
-			ForIndex = entity.ForIndex;
-			RulesAgreement = entity.RulesAgreement;
-			PupilsRulesAgreement = entity.PupilsRulesAgreement;
-			HistoryLinkId = entity.HistoryLinkId;
-			if (deep > 0 && entity.HistoryLink != null)
-			{
-				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
-			}
-
-			LimitOnOrganizationId = entity.LimitOnOrganizationId;
-			if (deep > 0 && entity.LimitOnOrganization != null)
-			{
-				LimitOnOrganization = new LimitOnOrganization(entity.LimitOnOrganization, deep - 1);
-			}
-
-			TimeOfRestId = entity.TimeOfRestId;
-			if (deep > 0 && entity.TimeOfRest != null)
-			{
-				TimeOfRest = new TimeOfRest(entity.TimeOfRest, deep - 1);
-			}
-
-			PlaceOfRestId = entity.PlaceOfRestId;
-			if (deep > 0 && entity.PlaceOfRest != null)
-			{
-				PlaceOfRest = new PlaceOfRest(entity.PlaceOfRest, deep - 1);
-			}
-
-			StateId = entity.StateId;
-			if (deep > 0 && entity.State != null)
-			{
-				State = new StateMachineState(entity.State, deep - 1);
-			}
-
-			TourId = entity.TourId;
-			if (deep > 0 && entity.Tour != null)
-			{
-				Tour = new Tour(entity.Tour, deep - 1);
-			}
-
-			ListOfChildsCategoryId = entity.ListOfChildsCategoryId;
-			if (deep > 0 && entity.ListOfChildsCategory != null)
-			{
-				ListOfChildsCategory = new ListOfChildsCategory(entity.ListOfChildsCategory, deep - 1);
-			}
-
-			TypeOfLimitListId = entity.TypeOfLimitListId;
-			if (deep > 0 && entity.TypeOfLimitList != null)
-			{
-				TypeOfLimitList = new TypeOfLimitList(entity.TypeOfLimitList, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public ListOfChilds CreateCopy()
-		{
-			var res = new ListOfChilds(this);
-			if (HistoryLink != null)
-			{
-				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
-			}
-			if (LimitOnOrganization != null)
-			{
-				res.LimitOnOrganization = new LimitOnOrganization{Id=LimitOnOrganization.Id, Eid=LimitOnOrganization.Eid};
-			}
-			if (TimeOfRest != null)
-			{
-				res.TimeOfRest = new TimeOfRest{Id=TimeOfRest.Id, Eid=TimeOfRest.Eid};
-			}
-			if (PlaceOfRest != null)
-			{
-				res.PlaceOfRest = new PlaceOfRest{Id=PlaceOfRest.Id, Eid=PlaceOfRest.Eid};
-			}
-			if (State != null)
-			{
-				res.State = new StateMachineState{Id=State.Id, Eid=State.Eid};
-			}
-			if (Tour != null)
-			{
-				res.Tour = new Tour{Id=Tour.Id, Eid=Tour.Eid};
-			}
-			if (ListOfChildsCategory != null)
-			{
-				res.ListOfChildsCategory = new ListOfChildsCategory{Id=ListOfChildsCategory.Id, Eid=ListOfChildsCategory.Eid};
-			}
-			if (TypeOfLimitList != null)
-			{
-				res.TypeOfLimitList = new TypeOfLimitList{Id=TypeOfLimitList.Id, Eid=TypeOfLimitList.Eid};
-			}
-			res.Childs = Childs?.Select(p=>new Child {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Attendants = Attendants?.Select(p=>new Applicant {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Requests = Requests?.Select(p=>new Request {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.PupilGroupRequest = PupilGroupRequest?.Select(p=>new RequestForPeriodOfRest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.GroupPupils = GroupPupils?.Select(p=>new PupilGroupListMember {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.GroupCollaborators = GroupCollaborators?.Select(p=>new PupilGroupListCollaborator {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.GroupTransfers = GroupTransfers?.Select(p=>new PupilGroupListTransfer {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(ListOfChilds entity)
-		{
-			Id = entity.Id;
-			IsLast = entity.IsLast;
-			IsDeleted = entity.IsDeleted;
-			DateChange = entity.DateChange;
-			Name = entity.Name;
-			CountChild = entity.CountChild;
-			CountAttendants = entity.CountAttendants;
-			CertificateNumber = entity.CertificateNumber;
-			Responsible = entity.Responsible;
-			ResponsiblePhone = entity.ResponsiblePhone;
-			ForIndex = entity.ForIndex;
-			RulesAgreement = entity.RulesAgreement;
-			PupilsRulesAgreement = entity.PupilsRulesAgreement;
-			HistoryLinkId = entity.HistoryLinkId;
-			LimitOnOrganizationId = entity.LimitOnOrganizationId;
-			TimeOfRestId = entity.TimeOfRestId;
-			PlaceOfRestId = entity.PlaceOfRestId;
-			StateId = entity.StateId;
-			TourId = entity.TourId;
-			ListOfChildsCategoryId = entity.ListOfChildsCategoryId;
-			TypeOfLimitListId = entity.TypeOfLimitListId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class Organization : ILastUpdateTick
-	{
-		public Organization()
-		{
-		}
-
-		public Organization(Organization entity) : this(entity, null)
-		{
-		}
-
-		public Organization(Organization entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			ShortName = entity.ShortName;
-			ExternalUid = entity.ExternalUid;
-			Inn = entity.Inn;
-			Kpp = entity.Kpp;
-			Ogrn = entity.Ogrn;
-			IsDeleted = entity.IsDeleted;
-			IsLast = entity.IsLast;
-			IsVedomstvo = entity.IsVedomstvo;
-			Phone = entity.Phone;
-			EkisSourcePk = entity.EkisSourcePk;
-			EkisExternalPk = entity.EkisExternalPk;
-			EkisStatus = entity.EkisStatus;
-			EkisGuid = entity.EkisGuid;
-			IsVedOrganization = entity.IsVedOrganization;
-			IsContractor = entity.IsContractor;
-			IsTransport = entity.IsTransport;
-			TargetOrganizationPk = entity.TargetOrganizationPk;
-			Address = entity.Address;
-			Email = entity.Email;
-			ContactPerson = entity.ContactPerson;
-			Comment = entity.Comment;
-			Commission = entity.Commission;
-			LatinName = entity.LatinName;
-			Ownership = entity.Ownership;
-			PostAdderss = entity.PostAdderss;
-			HeadPerson = entity.HeadPerson;
-			IsTradeUnion = entity.IsTradeUnion;
-			IsHotel = entity.IsHotel;
-			CountInTour = entity.CountInTour;
-			Orphanage = entity.Orphanage;
-			IsInMonitoring = entity.IsInMonitoring;
-			HistoryLinkId = entity.HistoryLinkId;
-			if (deep > 0 && entity.HistoryLink != null)
-			{
-				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
-			}
-
-			ParentId = entity.ParentId;
-			if (deep > 0 && entity.Parent != null)
-			{
-				Parent = new Organization(entity.Parent, deep - 1);
-			}
-
-			EntityId = entity.EntityId;
-			if (deep > 0 && entity.Entity != null)
-			{
-				Entity = new Organization(entity.Entity, deep - 1);
-			}
-
-			StateDistrictId = entity.StateDistrictId;
-			if (deep > 0 && entity.StateDistrict != null)
-			{
-				StateDistrict = new StateDistrict(entity.StateDistrict, deep - 1);
-			}
-
-			CuratorId = entity.CuratorId;
-			if (deep > 0 && entity.Curator != null)
-			{
-				Curator = new Account(entity.Curator, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public Organization CreateCopy()
-		{
-			var res = new Organization(this);
-			if (HistoryLink != null)
-			{
-				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
-			}
-			if (Parent != null)
-			{
-				res.Parent = new Organization{Id=Parent.Id, Eid=Parent.Eid};
-			}
-			if (Entity != null)
-			{
-				res.Entity = new Organization{Id=Entity.Id, Eid=Entity.Eid};
-			}
-			if (StateDistrict != null)
-			{
-				res.StateDistrict = new StateDistrict{Id=StateDistrict.Id, Eid=StateDistrict.Eid};
-			}
-			if (Curator != null)
-			{
-				res.Curator = new Account{Id=Curator.Id, Eid=Curator.Eid};
-			}
-			res.Okved = Okved?.Select(p=>new Okved {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Bank = Bank?.Select(p=>new OrganizationBank {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Vedomstvo = Vedomstvo?.Select(p=>new LimitOnVedomstvo {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.LimitOrganization = LimitOrganization?.Select(p=>new LimitOnOrganization {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.OrphanageOrganizationAddresses = OrphanageOrganizationAddresses?.Select(p=>new OrphanageAddress {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.OrganisatonCollaborators = OrganisatonCollaborators?.Select(p=>new OrganisatorCollaborator {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.MonitoringChildrenNumberInformations = MonitoringChildrenNumberInformations?.Select(p=>new MonitoringChildrenNumberInformation {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.MonitoringFinanceInformations = MonitoringFinanceInformations?.Select(p=>new MonitoringFinancialInformation {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.GBUs = GBUs?.Select(p=>new MonitoringGBU {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.TypeOfTransport = TypeOfTransport?.Select(p=>new TypeOfTransport {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(Organization entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			ShortName = entity.ShortName;
-			ExternalUid = entity.ExternalUid;
-			Inn = entity.Inn;
-			Kpp = entity.Kpp;
-			Ogrn = entity.Ogrn;
-			IsDeleted = entity.IsDeleted;
-			IsLast = entity.IsLast;
-			IsVedomstvo = entity.IsVedomstvo;
-			Phone = entity.Phone;
-			EkisSourcePk = entity.EkisSourcePk;
-			EkisExternalPk = entity.EkisExternalPk;
-			EkisStatus = entity.EkisStatus;
-			EkisGuid = entity.EkisGuid;
-			IsVedOrganization = entity.IsVedOrganization;
-			IsContractor = entity.IsContractor;
-			IsTransport = entity.IsTransport;
-			TargetOrganizationPk = entity.TargetOrganizationPk;
-			Address = entity.Address;
-			Email = entity.Email;
-			ContactPerson = entity.ContactPerson;
-			Comment = entity.Comment;
-			Commission = entity.Commission;
-			LatinName = entity.LatinName;
-			Ownership = entity.Ownership;
-			PostAdderss = entity.PostAdderss;
-			HeadPerson = entity.HeadPerson;
-			IsTradeUnion = entity.IsTradeUnion;
-			IsHotel = entity.IsHotel;
-			CountInTour = entity.CountInTour;
-			Orphanage = entity.Orphanage;
-			IsInMonitoring = entity.IsInMonitoring;
-			HistoryLinkId = entity.HistoryLinkId;
-			ParentId = entity.ParentId;
-			EntityId = entity.EntityId;
-			StateDistrictId = entity.StateDistrictId;
-			CuratorId = entity.CuratorId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class Request : ILastUpdateTick
-	{
-		public Request()
-		{
-		}
-
-		public Request(Request entity) : this(entity, null)
-		{
-		}
-
-		public Request(Request entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			AgentApplicant = entity.AgentApplicant;
-			RequestNumber = entity.RequestNumber;
-			DateRequest = entity.DateRequest;
-			UpdateDate = entity.UpdateDate;
-			IsLast = entity.IsLast;
-			IsDeleted = entity.IsDeleted;
-			Version = entity.Version;
-			ExternalUid = entity.ExternalUid;
-			ExternalSystem = entity.ExternalSystem;
-			MainPlaces = entity.MainPlaces;
-			AdditionalPlaces = entity.AdditionalPlaces;
-			IsDraft = entity.IsDraft;
-			RequestNumberMpgu = entity.RequestNumberMpgu;
-			NeedEmail = entity.NeedEmail;
-			NeedSms = entity.NeedSms;
-			DateChangeStatus = entity.DateChangeStatus;
-			BookingGuid = entity.BookingGuid;
-			CountPlace = entity.CountPlace;
-			CountAttendants = entity.CountAttendants;
-			CertificateNumber = entity.CertificateNumber;
-			CertificateDate = entity.CertificateDate;
-			Price = entity.Price;
-			DateIncome = entity.DateIncome;
-			DateOutcome = entity.DateOutcome;
-			Commentary = entity.Commentary;
-			BankName = entity.BankName;
-			BankBik = entity.BankBik;
-			BankInn = entity.BankInn;
-			BankKpp = entity.BankKpp;
-			BankCardNumber = entity.BankCardNumber;
-			BankCorr = entity.BankCorr;
-			BankLastName = entity.BankLastName;
-			BankFirstName = entity.BankFirstName;
-			BankMiddleName = entity.BankMiddleName;
-			BankAccount = entity.BankAccount;
-			PriceInternal = entity.PriceInternal;
-			DiscountCardNumber = entity.DiscountCardNumber;
-			DiscountProcent = entity.DiscountProcent;
-			ForIndex = entity.ForIndex;
-			SiteUser = entity.SiteUser;
-			ChangeByScan = entity.ChangeByScan;
-			ProcentPrepaid = entity.ProcentPrepaid;
-			ProcentOver = entity.ProcentOver;
-			CalculationOnPerson = entity.CalculationOnPerson;
-			InternalCommentary = entity.InternalCommentary;
-			IsApplicantOrganization = entity.IsApplicantOrganization;
-			IsFirstCompany = entity.IsFirstCompany;
-			RequestOnMoney = entity.RequestOnMoney;
-			NeedSendForBenefit = entity.NeedSendForBenefit;
-			NeedSendToRelative = entity.NeedSendToRelative;
-			SsoId = entity.SsoId;
-			StatusApplicant = entity.StatusApplicant;
-			MayFinalSend = entity.MayFinalSend;
-			Repared = entity.Repared;
-			RefusalOfAdmission = entity.RefusalOfAdmission;
-			NeedSendForSnils = entity.NeedSendForSnils;
-			NeedSendForCPMPK = entity.NeedSendForCPMPK;
-			NeedSendForParent = entity.NeedSendForParent;
-			NeedSendForPassport = entity.NeedSendForPassport;
-			NeedSendForRegistrationByPassport = entity.NeedSendForRegistrationByPassport;
-			NeedSendForAisoLegalRepresentation = entity.NeedSendForAisoLegalRepresentation;
-			StatusId = entity.StatusId;
-			if (deep > 0 && entity.Status != null)
-			{
-				Status = new Status(entity.Status, deep - 1);
-			}
-
-			ApplicantId = entity.ApplicantId;
-			if (deep > 0 && entity.Applicant != null)
-			{
-				Applicant = new Applicant(entity.Applicant, deep - 1);
-			}
-
-			TypeOfRestId = entity.TypeOfRestId;
-			if (deep > 0 && entity.TypeOfRest != null)
-			{
-				TypeOfRest = new TypeOfRest(entity.TypeOfRest, deep - 1);
-			}
-
-			TimeOfRestId = entity.TimeOfRestId;
-			if (deep > 0 && entity.TimeOfRest != null)
-			{
-				TimeOfRest = new TimeOfRest(entity.TimeOfRest, deep - 1);
-			}
-
-			SubjectOfRestId = entity.SubjectOfRestId;
-			if (deep > 0 && entity.SubjectOfRest != null)
-			{
-				SubjectOfRest = new SubjectOfRest(entity.SubjectOfRest, deep - 1);
-			}
-
-			AttendantTypeId = entity.AttendantTypeId;
-			if (deep > 0 && entity.AttendantType != null)
-			{
-				AttendantType = new AttendantType(entity.AttendantType, deep - 1);
-			}
-
-			PlaceOfRestId = entity.PlaceOfRestId;
-			if (deep > 0 && entity.PlaceOfRest != null)
-			{
-				PlaceOfRest = new PlaceOfRest(entity.PlaceOfRest, deep - 1);
-			}
-
-			AgentId = entity.AgentId;
-			if (deep > 0 && entity.Agent != null)
-			{
-				Agent = new Agent(entity.Agent, deep - 1);
-			}
-
-			EntityId = entity.EntityId;
-			if (deep > 0 && entity.Entity != null)
-			{
-				Entity = new Request(entity.Entity, deep - 1);
-			}
-
-			SourceId = entity.SourceId;
-			if (deep > 0 && entity.Source != null)
-			{
-				Source = new Source(entity.Source, deep - 1);
-			}
-
-			DeclineReasonId = entity.DeclineReasonId;
-			if (deep > 0 && entity.DeclineReason != null)
-			{
-				DeclineReason = new DeclineReason(entity.DeclineReason, deep - 1);
-			}
-
-			CuratorId = entity.CuratorId;
-			if (deep > 0 && entity.Curator != null)
-			{
-				Curator = new Account(entity.Curator, deep - 1);
-			}
-
-			BeneficiariesId = entity.BeneficiariesId;
-			if (deep > 0 && entity.Beneficiaries != null)
-			{
-				Beneficiaries = new Beneficiaries(entity.Beneficiaries, deep - 1);
-			}
-
-			HistoryLinkId = entity.HistoryLinkId;
-			if (deep > 0 && entity.HistoryLink != null)
-			{
-				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
-			}
-
-			RepresentInterestId = entity.RepresentInterestId;
-			if (deep > 0 && entity.RepresentInterest != null)
-			{
-				RepresentInterest = new RepresentInterest(entity.RepresentInterest, deep - 1);
-			}
-
-			TransferFromId = entity.TransferFromId;
-			if (deep > 0 && entity.TransferFrom != null)
-			{
-				TransferFrom = new TypeOfTransfer(entity.TransferFrom, deep - 1);
-			}
-
-			TransferToId = entity.TransferToId;
-			if (deep > 0 && entity.TransferTo != null)
-			{
-				TransferTo = new TypeOfTransfer(entity.TransferTo, deep - 1);
-			}
-
-			CreateUserId = entity.CreateUserId;
-			if (deep > 0 && entity.CreateUser != null)
-			{
-				CreateUser = new Account(entity.CreateUser, deep - 1);
-			}
-
-			OrganizationId = entity.OrganizationId;
-			if (deep > 0 && entity.Organization != null)
-			{
-				Organization = new Organization(entity.Organization, deep - 1);
-			}
-
-			HotelsId = entity.HotelsId;
-			if (deep > 0 && entity.Hotels != null)
-			{
-				Hotels = new Hotels(entity.Hotels, deep - 1);
-			}
-
-			YearOfRestId = entity.YearOfRestId;
-			if (deep > 0 && entity.YearOfRest != null)
-			{
-				YearOfRest = new YearOfRest(entity.YearOfRest, deep - 1);
-			}
-
-			TourId = entity.TourId;
-			if (deep > 0 && entity.Tour != null)
-			{
-				Tour = new Tour(entity.Tour, deep - 1);
-			}
-
-			GroupedTimeOfRestId = entity.GroupedTimeOfRestId;
-			if (deep > 0 && entity.GroupedTimeOfRest != null)
-			{
-				GroupedTimeOfRest = new GroupedTimeOfRest(entity.GroupedTimeOfRest, deep - 1);
-			}
-
-			ParentRequestId = entity.ParentRequestId;
-			if (deep > 0 && entity.ParentRequest != null)
-			{
-				ParentRequest = new Request(entity.ParentRequest, deep - 1);
-			}
-
-			CityId = entity.CityId;
-			if (deep > 0 && entity.City != null)
-			{
-				City = new City(entity.City, deep - 1);
-			}
-
-			TypeOfRestSubtypeId = entity.TypeOfRestSubtypeId;
-			if (deep > 0 && entity.TypeOfRestSubtype != null)
-			{
-				TypeOfRestSubtype = new TypeOfRestSubtype(entity.TypeOfRestSubtype, deep - 1);
-			}
-
-			BaseServiceId = entity.BaseServiceId;
-			if (deep > 0 && entity.BaseService != null)
-			{
-				BaseService = new AddonServices(entity.BaseService, deep - 1);
-			}
-
-			ParentListOfChildId = entity.ParentListOfChildId;
-			if (deep > 0 && entity.ParentListOfChild != null)
-			{
-				ParentListOfChild = new ListOfChilds(entity.ParentListOfChild, deep - 1);
-			}
-
-			ApplicantOrganizationId = entity.ApplicantOrganizationId;
-			if (deep > 0 && entity.ApplicantOrganization != null)
-			{
-				ApplicantOrganization = new Organization(entity.ApplicantOrganization, deep - 1);
-			}
-
-			DiscountCardId = entity.DiscountCardId;
-			if (deep > 0 && entity.DiscountCard != null)
-			{
-				DiscountCard = new DiscountCard(entity.DiscountCard, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public Request CreateCopy()
-		{
-			var res = new Request(this);
-			if (Status != null)
-			{
-				res.Status = new Status{Id=Status.Id, Eid=Status.Eid};
-			}
-			if (Applicant != null)
-			{
-				res.Applicant = new Applicant{Id=Applicant.Id, Eid=Applicant.Eid};
-			}
-			if (TypeOfRest != null)
-			{
-				res.TypeOfRest = new TypeOfRest{Id=TypeOfRest.Id, Eid=TypeOfRest.Eid};
-			}
-			if (TimeOfRest != null)
-			{
-				res.TimeOfRest = new TimeOfRest{Id=TimeOfRest.Id, Eid=TimeOfRest.Eid};
-			}
-			if (SubjectOfRest != null)
-			{
-				res.SubjectOfRest = new SubjectOfRest{Id=SubjectOfRest.Id, Eid=SubjectOfRest.Eid};
-			}
-			if (AttendantType != null)
-			{
-				res.AttendantType = new AttendantType{Id=AttendantType.Id, Eid=AttendantType.Eid};
-			}
-			if (PlaceOfRest != null)
-			{
-				res.PlaceOfRest = new PlaceOfRest{Id=PlaceOfRest.Id, Eid=PlaceOfRest.Eid};
-			}
-			if (Agent != null)
-			{
-				res.Agent = new Agent{Id=Agent.Id, Eid=Agent.Eid};
-			}
-			if (Entity != null)
-			{
-				res.Entity = new Request{Id=Entity.Id, Eid=Entity.Eid};
-			}
-			if (Source != null)
-			{
-				res.Source = new Source{Id=Source.Id, Eid=Source.Eid};
-			}
-			if (DeclineReason != null)
-			{
-				res.DeclineReason = new DeclineReason{Id=DeclineReason.Id, Eid=DeclineReason.Eid};
-			}
-			if (Curator != null)
-			{
-				res.Curator = new Account{Id=Curator.Id, Eid=Curator.Eid};
-			}
-			if (Beneficiaries != null)
-			{
-				res.Beneficiaries = new Beneficiaries{Id=Beneficiaries.Id, Eid=Beneficiaries.Eid};
-			}
-			if (HistoryLink != null)
-			{
-				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
-			}
-			if (RepresentInterest != null)
-			{
-				res.RepresentInterest = new RepresentInterest{Id=RepresentInterest.Id, Eid=RepresentInterest.Eid};
-			}
-			if (TransferFrom != null)
-			{
-				res.TransferFrom = new TypeOfTransfer{Id=TransferFrom.Id, Eid=TransferFrom.Eid};
-			}
-			if (TransferTo != null)
-			{
-				res.TransferTo = new TypeOfTransfer{Id=TransferTo.Id, Eid=TransferTo.Eid};
-			}
-			if (CreateUser != null)
-			{
-				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
-			}
-			if (Organization != null)
-			{
-				res.Organization = new Organization{Id=Organization.Id, Eid=Organization.Eid};
-			}
-			if (Hotels != null)
-			{
-				res.Hotels = new Hotels{Id=Hotels.Id, Eid=Hotels.Eid};
-			}
-			if (YearOfRest != null)
-			{
-				res.YearOfRest = new YearOfRest{Id=YearOfRest.Id, Eid=YearOfRest.Eid};
-			}
-			if (Tour != null)
-			{
-				res.Tour = new Tour{Id=Tour.Id, Eid=Tour.Eid};
-			}
-			if (GroupedTimeOfRest != null)
-			{
-				res.GroupedTimeOfRest = new GroupedTimeOfRest{Id=GroupedTimeOfRest.Id, Eid=GroupedTimeOfRest.Eid};
-			}
-			if (ParentRequest != null)
-			{
-				res.ParentRequest = new Request{Id=ParentRequest.Id, Eid=ParentRequest.Eid};
-			}
-			if (City != null)
-			{
-				res.City = new City{Id=City.Id, Eid=City.Eid};
-			}
-			if (TypeOfRestSubtype != null)
-			{
-				res.TypeOfRestSubtype = new TypeOfRestSubtype{Id=TypeOfRestSubtype.Id, Eid=TypeOfRestSubtype.Eid};
-			}
-			if (BaseService != null)
-			{
-				res.BaseService = new AddonServices{Id=BaseService.Id, Eid=BaseService.Eid};
-			}
-			if (ParentListOfChild != null)
-			{
-				res.ParentListOfChild = new ListOfChilds{Id=ParentListOfChild.Id, Eid=ParentListOfChild.Eid};
-			}
-			if (ApplicantOrganization != null)
-			{
-				res.ApplicantOrganization = new Organization{Id=ApplicantOrganization.Id, Eid=ApplicantOrganization.Eid};
-			}
-			if (DiscountCard != null)
-			{
-				res.DiscountCard = new DiscountCard{Id=DiscountCard.Id, Eid=DiscountCard.Eid};
-			}
-			res.Child = Child?.Select(p=>new Child {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Attendant = Attendant?.Select(p=>new Applicant {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Files = Files?.Select(p=>new RequestFile {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Certificates = Certificates?.Select(p=>new Certificate {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.PlacesOfRest = PlacesOfRest?.Select(p=>new RequestPlaceOfRest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.TimesOfRest = TimesOfRest?.Select(p=>new RequestsTimeOfRest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.BookingsCom = BookingsCom?.Select(p=>new BookingCommercial {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.AddonRequests = AddonRequests?.Select(p=>new Request {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.AddonServicesLinks = AddonServicesLinks?.Select(p=>new AddonServicesLink {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.RequestAccommodations = RequestAccommodations?.Select(p=>new RequestAccommodation {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Calculations = Calculations?.Select(p=>new Calculation {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Tickets = Tickets?.Select(p=>new Ticket {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.InformationVouchers = InformationVouchers?.Select(p=>new RequestInformationVoucher {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.RequestServices = RequestServices?.Select(p=>new RequestService {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.OfferInRequest = OfferInRequest?.Select(p=>new OfferInRequest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Tours = Tours?.Select(p=>new Tour {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Discounts = Discounts?.Select(p=>new Discount {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(Request entity)
-		{
-			Id = entity.Id;
-			AgentApplicant = entity.AgentApplicant;
-			RequestNumber = entity.RequestNumber;
-			DateRequest = entity.DateRequest;
-			UpdateDate = entity.UpdateDate;
-			IsLast = entity.IsLast;
-			IsDeleted = entity.IsDeleted;
-			Version = entity.Version;
-			ExternalUid = entity.ExternalUid;
-			ExternalSystem = entity.ExternalSystem;
-			MainPlaces = entity.MainPlaces;
-			AdditionalPlaces = entity.AdditionalPlaces;
-			IsDraft = entity.IsDraft;
-			RequestNumberMpgu = entity.RequestNumberMpgu;
-			NeedEmail = entity.NeedEmail;
-			NeedSms = entity.NeedSms;
-			DateChangeStatus = entity.DateChangeStatus;
-			BookingGuid = entity.BookingGuid;
-			CountPlace = entity.CountPlace;
-			CountAttendants = entity.CountAttendants;
-			CertificateNumber = entity.CertificateNumber;
-			CertificateDate = entity.CertificateDate;
-			Price = entity.Price;
-			DateIncome = entity.DateIncome;
-			DateOutcome = entity.DateOutcome;
-			Commentary = entity.Commentary;
-			BankName = entity.BankName;
-			BankBik = entity.BankBik;
-			BankInn = entity.BankInn;
-			BankKpp = entity.BankKpp;
-			BankCardNumber = entity.BankCardNumber;
-			BankCorr = entity.BankCorr;
-			BankLastName = entity.BankLastName;
-			BankFirstName = entity.BankFirstName;
-			BankMiddleName = entity.BankMiddleName;
-			BankAccount = entity.BankAccount;
-			PriceInternal = entity.PriceInternal;
-			DiscountCardNumber = entity.DiscountCardNumber;
-			DiscountProcent = entity.DiscountProcent;
-			ForIndex = entity.ForIndex;
-			SiteUser = entity.SiteUser;
-			ChangeByScan = entity.ChangeByScan;
-			ProcentPrepaid = entity.ProcentPrepaid;
-			ProcentOver = entity.ProcentOver;
-			CalculationOnPerson = entity.CalculationOnPerson;
-			InternalCommentary = entity.InternalCommentary;
-			IsApplicantOrganization = entity.IsApplicantOrganization;
-			IsFirstCompany = entity.IsFirstCompany;
-			RequestOnMoney = entity.RequestOnMoney;
-			NeedSendForBenefit = entity.NeedSendForBenefit;
-			NeedSendToRelative = entity.NeedSendToRelative;
-			SsoId = entity.SsoId;
-			StatusApplicant = entity.StatusApplicant;
-			MayFinalSend = entity.MayFinalSend;
-			Repared = entity.Repared;
-			RefusalOfAdmission = entity.RefusalOfAdmission;
-			NeedSendForSnils = entity.NeedSendForSnils;
-			NeedSendForCPMPK = entity.NeedSendForCPMPK;
-			NeedSendForParent = entity.NeedSendForParent;
-			NeedSendForPassport = entity.NeedSendForPassport;
-			NeedSendForRegistrationByPassport = entity.NeedSendForRegistrationByPassport;
-			NeedSendForAisoLegalRepresentation = entity.NeedSendForAisoLegalRepresentation;
-			StatusId = entity.StatusId;
-			ApplicantId = entity.ApplicantId;
-			TypeOfRestId = entity.TypeOfRestId;
-			TimeOfRestId = entity.TimeOfRestId;
-			SubjectOfRestId = entity.SubjectOfRestId;
-			AttendantTypeId = entity.AttendantTypeId;
-			PlaceOfRestId = entity.PlaceOfRestId;
-			AgentId = entity.AgentId;
-			EntityId = entity.EntityId;
-			SourceId = entity.SourceId;
-			DeclineReasonId = entity.DeclineReasonId;
-			CuratorId = entity.CuratorId;
-			BeneficiariesId = entity.BeneficiariesId;
-			HistoryLinkId = entity.HistoryLinkId;
-			RepresentInterestId = entity.RepresentInterestId;
-			TransferFromId = entity.TransferFromId;
-			TransferToId = entity.TransferToId;
-			CreateUserId = entity.CreateUserId;
-			OrganizationId = entity.OrganizationId;
-			HotelsId = entity.HotelsId;
-			YearOfRestId = entity.YearOfRestId;
-			TourId = entity.TourId;
-			GroupedTimeOfRestId = entity.GroupedTimeOfRestId;
-			ParentRequestId = entity.ParentRequestId;
-			CityId = entity.CityId;
-			TypeOfRestSubtypeId = entity.TypeOfRestSubtypeId;
-			BaseServiceId = entity.BaseServiceId;
-			ParentListOfChildId = entity.ParentListOfChildId;
-			ApplicantOrganizationId = entity.ApplicantOrganizationId;
-			DiscountCardId = entity.DiscountCardId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class Role : ILastUpdateTick
-	{
-		public Role()
-		{
-		}
-
-		public Role(Role entity) : this(entity, null)
-		{
-		}
-
-		public Role(Role entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			CreateUserId = entity.CreateUserId;
-			if (deep > 0 && entity.CreateUser != null)
-			{
-				CreateUser = new Account(entity.CreateUser, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public Role CreateCopy()
-		{
-			var res = new Role(this);
-			if (CreateUser != null)
-			{
-				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
-			}
-			res.AccessRights = AccessRights?.Select(p=>new AccessRight {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(Role entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			CreateUserId = entity.CreateUserId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class School : ILastUpdateTick
-	{
-		public School()
-		{
-		}
-
-		public School(School entity) : this(entity, null)
-		{
-		}
-
-		public School(School entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			SourcePk = entity.SourcePk;
-			Status = entity.Status;
-			CloseDate = entity.CloseDate;
-			ToOrganizationId = entity.ToOrganizationId;
-			OrganizationGuid = entity.OrganizationGuid;
-			DateChange = entity.DateChange;
-			ExternalId = entity.ExternalId;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public School CreateCopy()
-		{
-			var res = new School(this);
-			res.Pupil = Pupil?.Select(p=>new Pupil {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(School entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			SourcePk = entity.SourcePk;
-			Status = entity.Status;
-			CloseDate = entity.CloseDate;
-			ToOrganizationId = entity.ToOrganizationId;
-			OrganizationGuid = entity.OrganizationGuid;
-			DateChange = entity.DateChange;
-			ExternalId = entity.ExternalId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class SendEmailAndSms : ILastUpdateTick
-	{
-		public SendEmailAndSms()
-		{
-		}
-
-		public SendEmailAndSms(SendEmailAndSms entity) : this(entity, null)
-		{
-		}
-
-		public SendEmailAndSms(SendEmailAndSms entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Email = entity.Email;
-			Phone = entity.Phone;
-			EmailMessage = entity.EmailMessage;
-			EmailTitle = entity.EmailTitle;
-			SmsMessage = entity.SmsMessage;
-			IsEmailSended = entity.IsEmailSended;
-			IsSmsSended = entity.IsSmsSended;
-			DateCreate = entity.DateCreate;
-			DateEmail = entity.DateEmail;
-			DateSms = entity.DateSms;
-			DateToSend = entity.DateToSend;
-			RequestId = entity.RequestId;
-			if (deep > 0 && entity.Request != null)
-			{
-				Request = new Request(entity.Request, deep - 1);
-			}
-
-			StatusRequestId = entity.StatusRequestId;
-			if (deep > 0 && entity.StatusRequest != null)
-			{
-				StatusRequest = new Status(entity.StatusRequest, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public SendEmailAndSms CreateCopy()
-		{
-			var res = new SendEmailAndSms(this);
-			if (Request != null)
-			{
-				res.Request = new Request{Id=Request.Id, Eid=Request.Eid};
-			}
-			if (StatusRequest != null)
-			{
-				res.StatusRequest = new Status{Id=StatusRequest.Id, Eid=StatusRequest.Eid};
-			}
-			res.Attachments = Attachments?.Select(p=>new SendEmailAndSmsAttachment {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(SendEmailAndSms entity)
-		{
-			Id = entity.Id;
-			Email = entity.Email;
-			Phone = entity.Phone;
-			EmailMessage = entity.EmailMessage;
-			EmailTitle = entity.EmailTitle;
-			SmsMessage = entity.SmsMessage;
-			IsEmailSended = entity.IsEmailSended;
-			IsSmsSended = entity.IsSmsSended;
-			DateCreate = entity.DateCreate;
-			DateEmail = entity.DateEmail;
-			DateSms = entity.DateSms;
-			DateToSend = entity.DateToSend;
-			RequestId = entity.RequestId;
-			StatusRequestId = entity.StatusRequestId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class SignInfo : ILastUpdateTick
-	{
-		public SignInfo()
-		{
-		}
-
-		public SignInfo(SignInfo entity) : this(entity, null)
-		{
-		}
-
-		public SignInfo(SignInfo entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			SignDate = entity.SignDate;
-			FileUrl = entity.FileUrl;
-			Title = entity.Title;
-			Information = entity.Information;
-			AccountId = entity.AccountId;
-			if (deep > 0 && entity.Account != null)
-			{
-				Account = new Account(entity.Account, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public SignInfo CreateCopy()
-		{
-			var res = new SignInfo(this);
-			if (Account != null)
-			{
-				res.Account = new Account{Id=Account.Id, Eid=Account.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(SignInfo entity)
-		{
-			Id = entity.Id;
-			SignDate = entity.SignDate;
-			FileUrl = entity.FileUrl;
-			Title = entity.Title;
-			Information = entity.Information;
-			AccountId = entity.AccountId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class Source : ILastUpdateTick
-	{
-		public Source()
-		{
-		}
-
-		public Source(Source entity) : this(entity, null)
-		{
-		}
-
-		public Source(Source entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			Commercial = entity.Commercial;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public Source CreateCopy()
-		{
-			var res = new Source(this);
-			return res;
-		}
-
-		public void CopyEntity(Source entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			Commercial = entity.Commercial;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class StateMachine : ILastUpdateTick
-	{
-		public StateMachine()
-		{
-		}
-
-		public StateMachine(StateMachine entity) : this(entity, null)
-		{
-		}
-
-		public StateMachine(StateMachine entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public StateMachine CreateCopy()
-		{
-			var res = new StateMachine(this);
-			return res;
-		}
-
-		public void CopyEntity(StateMachine entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class StateMachineAction : ILastUpdateTick
-	{
-		public StateMachineAction()
-		{
-		}
-
-		public StateMachineAction(StateMachineAction entity) : this(entity, null)
-		{
-		}
-
-		public StateMachineAction(StateMachineAction entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			ActionName = entity.ActionName;
-			Description = entity.Description;
-			ActionCode = entity.ActionCode;
-			IsSystemAction = entity.IsSystemAction;
-			NeedSign = entity.NeedSign;
-			StateMachineId = entity.StateMachineId;
-			if (deep > 0 && entity.StateMachine != null)
-			{
-				StateMachine = new StateMachine(entity.StateMachine, deep - 1);
-			}
-
-			ToStateId = entity.ToStateId;
-			if (deep > 0 && entity.ToState != null)
-			{
-				ToState = new StateMachineState(entity.ToState, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public StateMachineAction CreateCopy()
-		{
-			var res = new StateMachineAction(this);
-			if (StateMachine != null)
-			{
-				res.StateMachine = new StateMachine{Id=StateMachine.Id, Eid=StateMachine.Eid};
-			}
-			if (ToState != null)
-			{
-				res.ToState = new StateMachineState{Id=ToState.Id, Eid=ToState.Eid};
-			}
-			res.FromStates = FromStates?.Select(p=>new StateMachineFromStatus {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(StateMachineAction entity)
-		{
-			Id = entity.Id;
-			ActionName = entity.ActionName;
-			Description = entity.Description;
-			ActionCode = entity.ActionCode;
-			IsSystemAction = entity.IsSystemAction;
-			NeedSign = entity.NeedSign;
-			StateMachineId = entity.StateMachineId;
-			ToStateId = entity.ToStateId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class StateMachineFromStatus : ILastUpdateTick
-	{
-		public StateMachineFromStatus()
-		{
-		}
-
-		public StateMachineFromStatus(StateMachineFromStatus entity) : this(entity, null)
-		{
-		}
-
-		public StateMachineFromStatus(StateMachineFromStatus entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			ServiceCode = entity.ServiceCode;
-			RightCode = entity.RightCode;
-			StateMachineActionId = entity.StateMachineActionId;
-			if (deep > 0 && entity.StateMachineAction != null)
-			{
-				StateMachineAction = new StateMachineAction(entity.StateMachineAction, deep - 1);
-			}
-
-			FromStateId = entity.FromStateId;
-			if (deep > 0 && entity.FromState != null)
-			{
-				FromState = new StateMachineState(entity.FromState, deep - 1);
-			}
-
-			StateMachineId = entity.StateMachineId;
-			if (deep > 0 && entity.StateMachine != null)
-			{
-				StateMachine = new StateMachine(entity.StateMachine, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public StateMachineFromStatus CreateCopy()
-		{
-			var res = new StateMachineFromStatus(this);
-			if (StateMachineAction != null)
-			{
-				res.StateMachineAction = new StateMachineAction{Id=StateMachineAction.Id, Eid=StateMachineAction.Eid};
-			}
-			if (FromState != null)
-			{
-				res.FromState = new StateMachineState{Id=FromState.Id, Eid=FromState.Eid};
-			}
-			if (StateMachine != null)
-			{
-				res.StateMachine = new StateMachine{Id=StateMachine.Id, Eid=StateMachine.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(StateMachineFromStatus entity)
-		{
-			Id = entity.Id;
-			ServiceCode = entity.ServiceCode;
-			RightCode = entity.RightCode;
-			StateMachineActionId = entity.StateMachineActionId;
-			FromStateId = entity.FromStateId;
-			StateMachineId = entity.StateMachineId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class StateMachineState : ILastUpdateTick
-	{
-		public StateMachineState()
-		{
-		}
-
-		public StateMachineState(StateMachineState entity) : this(entity, null)
-		{
-		}
-
-		public StateMachineState(StateMachineState entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			StateMachineId = entity.StateMachineId;
-			if (deep > 0 && entity.StateMachine != null)
-			{
-				StateMachine = new StateMachine(entity.StateMachine, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public StateMachineState CreateCopy()
-		{
-			var res = new StateMachineState(this);
-			if (StateMachine != null)
-			{
-				res.StateMachine = new StateMachine{Id=StateMachine.Id, Eid=StateMachine.Eid};
-			}
-			res.Actions = Actions?.Select(p=>new StateMachineAction {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(StateMachineState entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			StateMachineId = entity.StateMachineId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class Status : ILastUpdateTick
-	{
-		public Status()
-		{
-		}
-
-		public Status(Status entity) : this(entity, null)
-		{
-		}
-
-		public Status(Status entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			ExternalUid = entity.ExternalUid;
-			MpguName = entity.MpguName;
-			MpguDescription = entity.MpguDescription;
-			MpguComment = entity.MpguComment;
-			IsFinal = entity.IsFinal;
-			SmsMessage = entity.SmsMessage;
-			ForPreferential = entity.ForPreferential;
-			ForCommerce = entity.ForCommerce;
-			CommerceName = entity.CommerceName;
-			CreateUserId = entity.CreateUserId;
-			if (deep > 0 && entity.CreateUser != null)
-			{
-				CreateUser = new Account(entity.CreateUser, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public Status CreateCopy()
-		{
-			var res = new Status(this);
-			if (CreateUser != null)
-			{
-				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
-			}
-			res.Action = Action?.Select(p=>new StatusAction {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(Status entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			ExternalUid = entity.ExternalUid;
-			MpguName = entity.MpguName;
-			MpguDescription = entity.MpguDescription;
-			MpguComment = entity.MpguComment;
-			IsFinal = entity.IsFinal;
-			SmsMessage = entity.SmsMessage;
-			ForPreferential = entity.ForPreferential;
-			ForCommerce = entity.ForCommerce;
-			CommerceName = entity.CommerceName;
-			CreateUserId = entity.CreateUserId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class StatusAction : ILastUpdateTick
-	{
-		public StatusAction()
-		{
-		}
-
-		public StatusAction(StatusAction entity) : this(entity, null)
-		{
-		}
-
-		public StatusAction(StatusAction entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Code = entity.Code;
-			Name = entity.Name;
-			IsFirstCompany = entity.IsFirstCompany;
-			RequestOnMoney = entity.RequestOnMoney;
-			ToStatusId = entity.ToStatusId;
-			if (deep > 0 && entity.ToStatus != null)
-			{
-				ToStatus = new Status(entity.ToStatus, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public StatusAction CreateCopy()
-		{
-			var res = new StatusAction(this);
-			if (ToStatus != null)
-			{
-				res.ToStatus = new Status{Id=ToStatus.Id, Eid=ToStatus.Eid};
-			}
-			res.FromStatus = FromStatus?.Select(p=>new Status {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(StatusAction entity)
-		{
-			Id = entity.Id;
-			Code = entity.Code;
-			Name = entity.Name;
-			IsFirstCompany = entity.IsFirstCompany;
-			RequestOnMoney = entity.RequestOnMoney;
-			ToStatusId = entity.ToStatusId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class StatusByChild : ILastUpdateTick
-	{
-		public StatusByChild()
-		{
-		}
-
-		public StatusByChild(StatusByChild entity) : this(entity, null)
-		{
-		}
-
-		public StatusByChild(StatusByChild entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			ForAgent = entity.ForAgent;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public StatusByChild CreateCopy()
-		{
-			var res = new StatusByChild(this);
-			return res;
-		}
-
-		public void CopyEntity(StatusByChild entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			ForAgent = entity.ForAgent;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class StatusInteragencyRequest : ILastUpdateTick
-	{
-		public StatusInteragencyRequest()
-		{
-		}
-
-		public StatusInteragencyRequest(StatusInteragencyRequest entity) : this(entity, null)
-		{
-		}
-
-		public StatusInteragencyRequest(StatusInteragencyRequest entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public StatusInteragencyRequest CreateCopy()
-		{
-			var res = new StatusInteragencyRequest(this);
-			return res;
-		}
-
-		public void CopyEntity(StatusInteragencyRequest entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class StatusResult : ILastUpdateTick
-	{
-		public StatusResult()
-		{
-		}
-
-		public StatusResult(StatusResult entity) : this(entity, null)
-		{
-		}
-
-		public StatusResult(StatusResult entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public StatusResult CreateCopy()
-		{
-			var res = new StatusResult(this);
-			return res;
-		}
-
-		public void CopyEntity(StatusResult entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class SubjectOfRest : ILastUpdateTick
-	{
-		public SubjectOfRest()
-		{
-		}
-
-		public SubjectOfRest(SubjectOfRest entity) : this(entity, null)
-		{
-		}
-
-		public SubjectOfRest(SubjectOfRest entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			Description = entity.Description;
-			PhotoUrl = entity.PhotoUrl;
-			DescriptionHtml = entity.DescriptionHtml;
-			IsActive = entity.IsActive;
-			ViewOnSite = entity.ViewOnSite;
-			ViewOnMpgu = entity.ViewOnMpgu;
-			LinkToFileId = entity.LinkToFileId;
-			if (deep > 0 && entity.LinkToFile != null)
-			{
-				LinkToFile = new LinkToFile(entity.LinkToFile, deep - 1);
-			}
-
-			CreateUserId = entity.CreateUserId;
-			if (deep > 0 && entity.CreateUser != null)
-			{
-				CreateUser = new Account(entity.CreateUser, deep - 1);
-			}
-
-			SubjectOfRestClassificationId = entity.SubjectOfRestClassificationId;
-			if (deep > 0 && entity.SubjectOfRestClassification != null)
-			{
-				SubjectOfRestClassification = new SubjectOfRestClassification(entity.SubjectOfRestClassification, deep - 1);
-			}
-
-			HistoryLinkId = entity.HistoryLinkId;
-			if (deep > 0 && entity.HistoryLink != null)
-			{
-				HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public SubjectOfRest CreateCopy()
-		{
-			var res = new SubjectOfRest(this);
-			if (LinkToFile != null)
-			{
-				res.LinkToFile = new LinkToFile{Id=LinkToFile.Id, Eid=LinkToFile.Eid};
-			}
-			if (CreateUser != null)
-			{
-				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
-			}
-			if (SubjectOfRestClassification != null)
-			{
-				res.SubjectOfRestClassification = new SubjectOfRestClassification{Id=SubjectOfRestClassification.Id, Eid=SubjectOfRestClassification.Eid};
-			}
-			if (HistoryLink != null)
-			{
-				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(SubjectOfRest entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			Description = entity.Description;
-			PhotoUrl = entity.PhotoUrl;
-			DescriptionHtml = entity.DescriptionHtml;
-			IsActive = entity.IsActive;
-			ViewOnSite = entity.ViewOnSite;
-			ViewOnMpgu = entity.ViewOnMpgu;
-			LinkToFileId = entity.LinkToFileId;
-			CreateUserId = entity.CreateUserId;
-			SubjectOfRestClassificationId = entity.SubjectOfRestClassificationId;
-			HistoryLinkId = entity.HistoryLinkId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class TimeOfRest : ILastUpdateTick
-	{
-		public TimeOfRest()
-		{
-		}
-
-		public TimeOfRest(TimeOfRest entity) : this(entity, null)
-		{
-		}
-
-		public TimeOfRest(TimeOfRest entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			FactorDependence = entity.FactorDependence;
-			DayOfMonth = entity.DayOfMonth;
-			Month = entity.Month;
-			PeriodLength = entity.PeriodLength;
-			Year = entity.Year;
-			IsActive = entity.IsActive;
-			TypeOfRestId = entity.TypeOfRestId;
-			if (deep > 0 && entity.TypeOfRest != null)
-			{
-				TypeOfRest = new TypeOfRest(entity.TypeOfRest, deep - 1);
-			}
-
-			CreateUserId = entity.CreateUserId;
-			if (deep > 0 && entity.CreateUser != null)
-			{
-				CreateUser = new Account(entity.CreateUser, deep - 1);
-			}
-
-			YearOfRestId = entity.YearOfRestId;
-			if (deep > 0 && entity.YearOfRest != null)
-			{
-				YearOfRest = new YearOfRest(entity.YearOfRest, deep - 1);
-			}
-
-			GroupedTimeOfRestId = entity.GroupedTimeOfRestId;
-			if (deep > 0 && entity.GroupedTimeOfRest != null)
-			{
-				GroupedTimeOfRest = new GroupedTimeOfRest(entity.GroupedTimeOfRest, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public TimeOfRest CreateCopy()
-		{
-			var res = new TimeOfRest(this);
-			if (TypeOfRest != null)
-			{
-				res.TypeOfRest = new TypeOfRest{Id=TypeOfRest.Id, Eid=TypeOfRest.Eid};
-			}
-			if (CreateUser != null)
-			{
-				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
-			}
-			if (YearOfRest != null)
-			{
-				res.YearOfRest = new YearOfRest{Id=YearOfRest.Id, Eid=YearOfRest.Eid};
-			}
-			if (GroupedTimeOfRest != null)
-			{
-				res.GroupedTimeOfRest = new GroupedTimeOfRest{Id=GroupedTimeOfRest.Id, Eid=GroupedTimeOfRest.Eid};
-			}
-			res.Requests = Requests?.Select(p=>new RequestsTimeOfRest {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(TimeOfRest entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			FactorDependence = entity.FactorDependence;
-			DayOfMonth = entity.DayOfMonth;
-			Month = entity.Month;
-			PeriodLength = entity.PeriodLength;
-			Year = entity.Year;
-			IsActive = entity.IsActive;
-			TypeOfRestId = entity.TypeOfRestId;
-			CreateUserId = entity.CreateUserId;
-			YearOfRestId = entity.YearOfRestId;
-			GroupedTimeOfRestId = entity.GroupedTimeOfRestId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class TypeOfRest : ILastUpdateTick
-	{
-		public TypeOfRest()
-		{
-		}
-
-		public TypeOfRest(TypeOfRest entity) : this(entity, null)
-		{
-		}
-
-		public TypeOfRest(TypeOfRest entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			ServiceCode = entity.ServiceCode;
-			ForMPGU = entity.ForMPGU;
-			NeedPlace = entity.NeedPlace;
-			NeedPlacment = entity.NeedPlacment;
-			NeedSubject = entity.NeedSubject;
-			NeedApplicant = entity.NeedApplicant;
-			NeedAttendant = entity.NeedAttendant;
-			MinAge = entity.MinAge;
-			MaxAge = entity.MaxAge;
-			UrlToRulesOfRest = entity.UrlToRulesOfRest;
-			ForTour = entity.ForTour;
-			Commercial = entity.Commercial;
-			IsAddon = entity.IsAddon;
-			NeedPrice = entity.NeedPrice;
-			NeedAccomodation = entity.NeedAccomodation;
-			NeedBookingDate = entity.NeedBookingDate;
-			NeedTransport = entity.NeedTransport;
-			NeedRecordingDate = entity.NeedRecordingDate;
-			HaveMainService = entity.HaveMainService;
-			HaveAddonService = entity.HaveAddonService;
-			HiddenMainService = entity.HiddenMainService;
-			NumberCode = entity.NumberCode;
-			ResponsibleText = entity.ResponsibleText;
-			NeedGeneratePermit = entity.NeedGeneratePermit;
-			UrlToListRestriction = entity.UrlToListRestriction;
-			UrlToRoolAttendant = entity.UrlToRoolAttendant;
-			FirstRequestCompanySelect = entity.FirstRequestCompanySelect;
-			ServiceCodeFirstCompany = entity.ServiceCodeFirstCompany;
-			MayBeMoney = entity.MayBeMoney;
-			NotChildren = entity.NotChildren;
-			TypeOfRestERLId = entity.TypeOfRestERLId;
-			if (deep > 0 && entity.TypeOfRestERL != null)
-			{
-				TypeOfRestERL = new TypeOfRestERL(entity.TypeOfRestERL, deep - 1);
-			}
-
-			ParentId = entity.ParentId;
-			if (deep > 0 && entity.Parent != null)
-			{
-				Parent = new TypeOfRest(entity.Parent, deep - 1);
-			}
-
-			TypeOfGroupCheckId = entity.TypeOfGroupCheckId;
-			if (deep > 0 && entity.TypeOfGroupCheck != null)
-			{
-				TypeOfGroupCheck = new TypeOfGroupCheck(entity.TypeOfGroupCheck, deep - 1);
-			}
-
-			ResponsibleId = entity.ResponsibleId;
-			if (deep > 0 && entity.Responsible != null)
-			{
-				Responsible = new Account(entity.Responsible, deep - 1);
-			}
-
-			CreateUserId = entity.CreateUserId;
-			if (deep > 0 && entity.CreateUser != null)
-			{
-				CreateUser = new Account(entity.CreateUser, deep - 1);
-			}
-
-			HotelTypeId = entity.HotelTypeId;
-			if (deep > 0 && entity.HotelType != null)
-			{
-				HotelType = new HotelType(entity.HotelType, deep - 1);
-			}
-
-			TypeOfServiceId = entity.TypeOfServiceId;
-			if (deep > 0 && entity.TypeOfService != null)
-			{
-				TypeOfService = new TypeOfService(entity.TypeOfService, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public TypeOfRest CreateCopy()
-		{
-			var res = new TypeOfRest(this);
-			if (TypeOfRestERL != null)
-			{
-				res.TypeOfRestERL = new TypeOfRestERL{Id=TypeOfRestERL.Id, Eid=TypeOfRestERL.Eid};
-			}
-			if (Parent != null)
-			{
-				res.Parent = new TypeOfRest{Id=Parent.Id, Eid=Parent.Eid};
-			}
-			if (TypeOfGroupCheck != null)
-			{
-				res.TypeOfGroupCheck = new TypeOfGroupCheck{Id=TypeOfGroupCheck.Id, Eid=TypeOfGroupCheck.Eid};
-			}
-			if (Responsible != null)
-			{
-				res.Responsible = new Account{Id=Responsible.Id, Eid=Responsible.Eid};
-			}
-			if (CreateUser != null)
-			{
-				res.CreateUser = new Account{Id=CreateUser.Id, Eid=CreateUser.Eid};
-			}
-			if (HotelType != null)
-			{
-				res.HotelType = new HotelType{Id=HotelType.Id, Eid=HotelType.Eid};
-			}
-			if (TypeOfService != null)
-			{
-				res.TypeOfService = new TypeOfService{Id=TypeOfService.Id, Eid=TypeOfService.Eid};
-			}
-			res.TypeOfRestBenefitRestrictions = TypeOfRestBenefitRestrictions?.Select(p=>new TypeOfRestBenefitRestriction {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.BenefitTypes = BenefitTypes?.Select(p=>new BenefitType {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.DeclineReasons = DeclineReasons?.Select(p=>new DeclineReason {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.RequestFileTypes = RequestFileTypes?.Select(p=>new RequestFileType {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.Prices = Prices?.Select(p=>new AverageRestPrice {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.DocumentTypes = DocumentTypes?.Select(p=>new DocumentType {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			res.BenefitTypesERL = BenefitTypesERL?.Select(p=>new BenefitTypeERL {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(TypeOfRest entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			ServiceCode = entity.ServiceCode;
-			ForMPGU = entity.ForMPGU;
-			NeedPlace = entity.NeedPlace;
-			NeedPlacment = entity.NeedPlacment;
-			NeedSubject = entity.NeedSubject;
-			NeedApplicant = entity.NeedApplicant;
-			NeedAttendant = entity.NeedAttendant;
-			MinAge = entity.MinAge;
-			MaxAge = entity.MaxAge;
-			UrlToRulesOfRest = entity.UrlToRulesOfRest;
-			ForTour = entity.ForTour;
-			Commercial = entity.Commercial;
-			IsAddon = entity.IsAddon;
-			NeedPrice = entity.NeedPrice;
-			NeedAccomodation = entity.NeedAccomodation;
-			NeedBookingDate = entity.NeedBookingDate;
-			NeedTransport = entity.NeedTransport;
-			NeedRecordingDate = entity.NeedRecordingDate;
-			HaveMainService = entity.HaveMainService;
-			HaveAddonService = entity.HaveAddonService;
-			HiddenMainService = entity.HiddenMainService;
-			NumberCode = entity.NumberCode;
-			ResponsibleText = entity.ResponsibleText;
-			NeedGeneratePermit = entity.NeedGeneratePermit;
-			UrlToListRestriction = entity.UrlToListRestriction;
-			UrlToRoolAttendant = entity.UrlToRoolAttendant;
-			FirstRequestCompanySelect = entity.FirstRequestCompanySelect;
-			ServiceCodeFirstCompany = entity.ServiceCodeFirstCompany;
-			MayBeMoney = entity.MayBeMoney;
-			NotChildren = entity.NotChildren;
-			TypeOfRestERLId = entity.TypeOfRestERLId;
-			ParentId = entity.ParentId;
-			TypeOfGroupCheckId = entity.TypeOfGroupCheckId;
-			ResponsibleId = entity.ResponsibleId;
-			CreateUserId = entity.CreateUserId;
-			HotelTypeId = entity.HotelTypeId;
-			TypeOfServiceId = entity.TypeOfServiceId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class TypeOfRestBenefitRestriction : ILastUpdateTick
-	{
-		public TypeOfRestBenefitRestriction()
-		{
-		}
-
-		public TypeOfRestBenefitRestriction(TypeOfRestBenefitRestriction entity) : this(entity, null)
-		{
-		}
-
-		public TypeOfRestBenefitRestriction(TypeOfRestBenefitRestriction entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			MinAge = entity.MinAge;
-			MaxAge = entity.MaxAge;
-			BenefitTypeId = entity.BenefitTypeId;
-			if (deep > 0 && entity.BenefitType != null)
-			{
-				BenefitType = new BenefitType(entity.BenefitType, deep - 1);
-			}
-
-			TypeOfRestId = entity.TypeOfRestId;
-			if (deep > 0 && entity.TypeOfRest != null)
-			{
-				TypeOfRest = new TypeOfRest(entity.TypeOfRest, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public TypeOfRestBenefitRestriction CreateCopy()
-		{
-			var res = new TypeOfRestBenefitRestriction(this);
-			if (BenefitType != null)
-			{
-				res.BenefitType = new BenefitType{Id=BenefitType.Id, Eid=BenefitType.Eid};
-			}
-			if (TypeOfRest != null)
-			{
-				res.TypeOfRest = new TypeOfRest{Id=TypeOfRest.Id, Eid=TypeOfRest.Eid};
-			}
-			return res;
-		}
-
-		public void CopyEntity(TypeOfRestBenefitRestriction entity)
-		{
-			Id = entity.Id;
-			MinAge = entity.MinAge;
-			MaxAge = entity.MaxAge;
-			BenefitTypeId = entity.BenefitTypeId;
-			TypeOfRestId = entity.TypeOfRestId;
-			LastUpdateTick = entity.LastUpdateTick;
-		}
-	}
-	public partial class TypeOfRestriction : ILastUpdateTick
-	{
-		public TypeOfRestriction()
-		{
-		}
-
-		public TypeOfRestriction(TypeOfRestriction entity) : this(entity, null)
-		{
-		}
-
-		public TypeOfRestriction(TypeOfRestriction entity, int? deep)
-		{
-			if (entity == null) return;
-
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			RestrictionGroupId = entity.RestrictionGroupId;
-			if (deep > 0 && entity.RestrictionGroup != null)
-			{
-				RestrictionGroup = new RestrictionGroup(entity.RestrictionGroup, deep - 1);
-			}
-
-			LastUpdateTick = entity.LastUpdateTick;
-			Eid = entity.Eid;
-			EidSendStatus = entity.EidSendStatus;
-			EidSyncDate = entity.EidSyncDate;
-		}
-
-		public TypeOfRestriction CreateCopy()
-		{
-			var res = new TypeOfRestriction(this);
-			if (RestrictionGroup != null)
-			{
-				res.RestrictionGroup = new RestrictionGroup{Id=RestrictionGroup.Id, Eid=RestrictionGroup.Eid};
-			}
-			res.Subs = Subs?.Select(p=>new TypeOfSubRestriction {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
-			return res;
-		}
-
-		public void CopyEntity(TypeOfRestriction entity)
-		{
-			Id = entity.Id;
-			Name = entity.Name;
-			IsActive = entity.IsActive;
-			RestrictionGroupId = entity.RestrictionGroupId;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -19466,6 +19653,43 @@ namespace RestChild.Domain
 			Id = entity.Id;
 			Name = entity.Name;
 			Code = entity.Code;
+			LastUpdateTick = entity.LastUpdateTick;
+		}
+	}
+	public partial class TypeOfTransportInRequest : ILastUpdateTick
+	{
+		public TypeOfTransportInRequest()
+		{
+		}
+
+		public TypeOfTransportInRequest(TypeOfTransportInRequest entity) : this(entity, null)
+		{
+		}
+
+		public TypeOfTransportInRequest(TypeOfTransportInRequest entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public TypeOfTransportInRequest CreateCopy()
+		{
+			var res = new TypeOfTransportInRequest(this);
+			return res;
+		}
+
+		public void CopyEntity(TypeOfTransportInRequest entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			IsActive = entity.IsActive;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}

@@ -4,144 +4,144 @@
 @model RestChild.Extensions.Filter.TransportFilterModel
 
 @{
-	ViewBag.Title = "Транспорт";
-	Layout = "~/Views/Shared/_SearchLayout.cshtml";
-	ViewBag.SearchAction = "Search";
-	ViewBag.InsertAction = "Insert";
-	ViewBag.SaveAction = "Save";
-	ViewBag.Controller = "TransportInfo";
-	ViewBag.Caption = "Реестр транспорта";
-	ViewBag.SearchPanelCaption = "Поиск транспорта";
-	ViewBag.NeedInsertButton = false;
-	var currentYear = Model.YearsOfRest.FirstOrDefault(y => y.Id == Model.YearOfRestId);
+    ViewBag.Title = "Транспорт";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.SearchAction = "Search";
+    ViewBag.InsertAction = "Insert";
+    ViewBag.SaveAction = "Save";
+    ViewBag.Controller = "TransportInfo";
+    ViewBag.Caption = "Реестр транспорта";
+    ViewBag.SearchPanelCaption = "Поиск транспорта";
+    ViewBag.NeedInsertButton = false;
+    var currentYear = Model.YearsOfRest.FirstOrDefault(y => y.Id == Model.YearOfRestId);
 }
 
 @section searchForm
 {
-	@Html.HiddenFor(m => m.IsFilterSet, new { Value = "True" })
-	<div class="form-group">
-		<label class="col-md-2 control-label text-right">Место отбытия</label>
-		<div class="col-md-4">
-			@Html.DropDownListFor(m => m.DepartureCityId, SelectListHelper.Create(Model.Cities, s => new SelectListItem() { Value = s.Id.ToString(), Text = s.Name }), new { @class = "form-control" })
-		</div>
-		<label class="col-md-2 control-label text-right">Место прибытия</label>
-		<div class="col-md-4">
-			@Html.DropDownListFor(m => m.ArrivalCityId, SelectListHelper.Create(Model.Cities, s => new SelectListItem() { Value = s.Id.ToString(), Text = s.Name }), new { @class = "form-control" })
-		</div>
-	</div>
+    @Html.HiddenFor(m => m.IsFilterSet, new {Value = "True"})
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Место отбытия</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(m => m.DepartureCityId, SelectListHelper.Create(Model.Cities, s => new SelectListItem() {Value = s.Id.ToString(), Text = s.Name}), new {@class = "form-control"})
+        </div>
+        <label class="col-md-2 control-label text-right">Место прибытия</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(m => m.ArrivalCityId, SelectListHelper.Create(Model.Cities, s => new SelectListItem() {Value = s.Id.ToString(), Text = s.Name}), new {@class = "form-control"})
+        </div>
+    </div>
 
-	<div class="form-group">
-		<label class="col-md-2 control-label text-right">Год кампании</label>
-		<div class="col-md-4">
-			@Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.YearsOfRest, "Id", "Year", currentYear), new { @class = "form-control" })
-		</div>
-		<label class="col-md-2 control-label text-right">Статус</label>
-		<div class="col-md-4">
-			@Html.DropDownListFor(m => m.StateId, SelectListHelper.Create(Model.States, s => new SelectListItem() { Value = s.Id.ToString(), Text = s.Name }), new { @class = "form-control" })
-		</div>
-	</div>
-	<div class="form-group">
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Год кампании</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.YearsOfRest, "Id", "Year", currentYear), new {@class = "form-control"})
+        </div>
+        <label class="col-md-2 control-label text-right">Статус</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(m => m.StateId, SelectListHelper.Create(Model.States, s => new SelectListItem() {Value = s.Id.ToString(), Text = s.Name}), new {@class = "form-control"})
+        </div>
+    </div>
+    <div class="form-group">
 
-		<label class="col-md-2 control-label text-right">Дата отправления</label>
-		<div class="form-inline">
-			<div class="form-group">
-				<label class="control-label text-right input-label date-interval-label date-interval-label">С</label>
-				<div class="input-group date datepicker-anytime">
-					@Html.TextBoxFor(m => m.DateOfDepartureBegin, new { @class = "form-control input-mask-date-anytime" })
-					<span class="input-group-addon">
-						<span class="glyphicon glyphicon-calendar"></span>
-					</span>
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="control-label text-right input-label date-interval-label date-interval-label">По</label>
-				<div class="input-group date datepicker-anytime">
-					@Html.TextBoxFor(m => m.DateOfDepartureEnd, new { @class = "form-control input-mask-date-anytime" })
-					<span class="input-group-addon">
-						<span class="glyphicon glyphicon-calendar"></span>
-					</span>
-				</div>
-			</div>
-		</div>
-	</div>
+        <label class="col-md-2 control-label text-right">Дата отправления</label>
+        <div class="form-inline">
+            <div class="form-group">
+                <label class="control-label text-right input-label date-interval-label date-interval-label">С</label>
+                <div class="input-group date datepicker-anytime">
+                    @Html.TextBoxFor(m => m.DateOfDepartureBegin, new {@class = "form-control input-mask-date-anytime"})
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label text-right input-label date-interval-label date-interval-label">По</label>
+                <div class="input-group date datepicker-anytime">
+                    @Html.TextBoxFor(m => m.DateOfDepartureEnd, new {@class = "form-control input-mask-date-anytime"})
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 @section searchResult
 {
-	@if (Model.Result != null && Model.Result.Any())
-	{
-		<table class="table table-striped table-hover">
-			<thead>
-				<tr>
-					<th class="text-center" width="5%">№</th>
-					<th>Заезд</th>
-					<th>Место отбытия</th>
-					<th>Место прибытия</th>
-					<th width="20%">Дата прибытия/выбытия из места отдыха</th>
-					<th>Год отдыха</th>
-					<th>Статус</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				@{int rowNumber = Model.Result.FirstItemOnPage;}
-				@foreach (var transport in Model.Result)
-				{
-					<tr>
-						<td class="text-center">@(rowNumber++)</td>
-						<td>@Html.Raw(transport.NullSafe(c => c.Bout.ToString()).FormatEx())</td>
-						<td>@Html.Raw(transport.NullSafe(c => c.Departure.Name).FormatEx())</td>
-						<td>@Html.Raw(transport.NullSafe(c => c.Arrival.Name).FormatEx())</td>
-						<td>@transport.DateOfDeparture.FormatEx()</td>
-						<td>@(transport.NullSafe(c => c.YearOfRest.Name).FormatEx())</td>
-						<td>@transport.NullSafe(c => c.State.Name).FormatEx()</td>
-						<td class="text-center">@Html.ActionLink(" ", "Update", new { id = transport.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-		<div class="row">
-			<div class="col-md-12">
-				@Html.PagedListPager(Model.Result, page =>
-						{
-							Model.Result = null;
-							Model.PageNumber = page;
-							Model.States = null;
-							Model.YearsOfRest = null;
-							Model.Cities = null;
-							return Url.Action("Search", Model);
-						}
-					 , new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
-			</div>
-		</div>
-	}
-	else
-	{
-		<div class="row">
-			<div class="col-md-12">
-				<p>Поиск не дал результатов</p>
-			</div>
-		</div>
-	}
+    @if (Model.Result != null && Model.Result.Any())
+    {
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th class="text-center" width="5%">№</th>
+                <th>Заезд</th>
+                <th>Место отбытия</th>
+                <th>Место прибытия</th>
+                <th width="20%">Дата прибытия/выбытия из места отдыха</th>
+                <th>Год отдыха</th>
+                <th>Статус</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @{ int rowNumber = Model.Result.FirstItemOnPage; }
+            @foreach (var transport in Model.Result)
+            {
+                <tr>
+                    <td class="text-center">@(rowNumber++)</td>
+                    <td>@Html.Raw(transport.NullSafe(c => c.Bout.ToString()).FormatEx())</td>
+                    <td>@Html.Raw(transport.NullSafe(c => c.Departure.Name).FormatEx())</td>
+                    <td>@Html.Raw(transport.NullSafe(c => c.Arrival.Name).FormatEx())</td>
+                    <td>@transport.DateOfDeparture.FormatEx()</td>
+                    <td>@(transport.NullSafe(c => c.YearOfRest.Name).FormatEx())</td>
+                    <td>@transport.NullSafe(c => c.State.Name).FormatEx()</td>
+                    <td class="text-center">@Html.ActionLink(" ", "Update", new {id = transport.Id}, new {@class = " glyphicon glyphicon-pencil", target = "_blank"})</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.PagedListPager(Model.Result, page =>
+                {
+                    Model.Result = null;
+                    Model.PageNumber = page;
+                    Model.States = null;
+                    Model.YearsOfRest = null;
+                    Model.Cities = null;
+                    return Url.Action("Search", Model);
+                }
+                    , new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
 }
 
 @section styles
 {
-	@Styles.Render("~/Content/css/select2.css")
-	@Styles.Render("~/Content/css/select2-bootstrap.css")
-	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
-	@Styles.Render("~/Content/Vocabulary/TransportInfoList.css")
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/Vocabulary/TransportInfoList.css")
 }
 
 @section scripts
 {
-	<script type="text/javascript" src="~/Scripts/moment.js"></script>
-	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
-	<script type="text/javascript">
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
 		moment.locale('ru');
 	</script>
 
-	@Scripts.Render("~/Scripts/select2.js")
-	@Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
-	@Scripts.Render("~/Scripts/Vocabulary/TransportList.js")
+    @Scripts.Render("~/Scripts/select2.js")
+    @Scripts.Render("~/Scripts/bootstrap-datetimepicker.min.js")
+    @Scripts.Render("~/Scripts/Vocabulary/TransportList.js")
 }

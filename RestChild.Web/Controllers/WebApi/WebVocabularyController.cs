@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -36,7 +36,6 @@ namespace RestChild.Web.Controllers.WebApi
 
             return res;
         }
-
 
         /// <summary>
         ///     Получить регионы отдыха
@@ -254,6 +253,20 @@ namespace RestChild.Web.Controllers.WebApi
                 {
                     v.UrlToListRestriction = string.Format(WebConfigurationManager.AppSettings["DownloadRuleUrl"],
                         v.UrlToListRestriction);
+                }
+
+                if (!string.IsNullOrEmpty(v.UrlToCampTypeOfCampPhoto) && !v.UrlToCampTypeOfCampPhoto.StartsWith("http:\\") &&
+                    !string.IsNullOrEmpty(WebConfigurationManager.AppSettings["DownloadRuleUrl"]))
+                {
+                    v.UrlToCampTypeOfCampPhoto = string.Format(WebConfigurationManager.AppSettings["DownloadRuleUrl"],
+                        v.UrlToCampTypeOfCampPhoto);
+                }
+
+                if (!string.IsNullOrEmpty(v.UrlToStationaryTypeOfCampPhoto) && !v.UrlToStationaryTypeOfCampPhoto.StartsWith("http:\\") &&
+                    !string.IsNullOrEmpty(WebConfigurationManager.AppSettings["DownloadRuleUrl"]))
+                {
+                    v.UrlToStationaryTypeOfCampPhoto = string.Format(WebConfigurationManager.AppSettings["DownloadRuleUrl"],
+                        v.UrlToStationaryTypeOfCampPhoto);
                 }
             }
 

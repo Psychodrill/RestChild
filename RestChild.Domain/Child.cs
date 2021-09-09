@@ -591,6 +591,14 @@ namespace RestChild.Domain
       [DataMember(Name = "infant", EmitDefaultValue = false)]
       public virtual bool Infant { get; set; }
       
+      /// <summary>
+      /// Признак что имеется заключение ЦПМПК города Москвы
+      /// </summary>
+      [Display(Description = "Признак что имеется заключение ЦПМПК города Москвы")]
+      [Required(ErrorMessage = "\"Признак что имеется заключение ЦПМПК города Москвы\" должно быть заполнено")]
+      [DataMember(Name = "isCPMPK", EmitDefaultValue = false)]
+      public virtual bool IsCPMPK { get; set; }
+      
       
       /// <summary>
       /// Ребёнок <-> Родитель

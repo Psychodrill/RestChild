@@ -767,6 +767,26 @@ namespace RestChild.Web.Models
         /// </summary>
         public IList<PlaceOfRest> PlacesOfRest { get; set; }
 
+        /// <summary>
+        ///     список типов транспорта в рамках заявления
+        /// </summary>
+        public IList<TypeOfTransportInRequest> TypesOfTransportInRequest { get; set; }
+
+        /// <summary>
+        ///     список типов лагерей
+        /// </summary>
+        public IList<TypeOfCamp> TypesOfCamp { get; set; }
+
+        /// <summary>
+        ///     список мест отдыха, для которых нужно выбрать тип транспорта
+        /// </summary>
+        public IList<long> PlacesOfRestRequiringTransportSelection { get; set; }
+
+        /// <summary>
+        ///     список целей обращения, для которых нужно выбрать тип транспорта
+        /// </summary>
+        public IList<long> TypesOfRestRequiringTransportSelection { get; set; }
+
         #endregion
 
         #region Сообщения об ошибках заявления
@@ -884,6 +904,30 @@ namespace RestChild.Web.Models
         /// </summary>
         [Display(Description = "Сведения о размещении сопровождающих")]
         public virtual string CountAttendantsEm { get; set; }
+
+        /// <summary>
+        ///     Приоритетный тип транспорта
+        /// </summary>
+        [Display(Description = "Приоритетный тип транспорта")]
+        public virtual string PriorityTypeOfTransportEm { get; set; }
+
+        /// <summary>
+        ///     Дополнительный тип транспорта
+        /// </summary>
+        [Display(Description = "Дополнительный тип транспорта")]
+        public virtual string AdditioanlTypeOfTransportEm { get; set; }
+
+        /// <summary>
+        ///     Приоритетный тип лагеря
+        /// </summary>
+        [Display(Description = "Приоритетный тип лагеря")]
+        public virtual string TypeOfCampEm { get; set; }
+
+        /// <summary>
+        ///     Дополнительный тип лагеря
+        /// </summary>
+        [Display(Description = "Дополнительный тип лагеря")]
+        public virtual string TypeOfCampAddonEm { get; set; }
 
         public override bool CheckModel(string action = null)
         {
@@ -1280,6 +1324,46 @@ namespace RestChild.Web.Models
                         FormBlocksValidness[RequestViewBlockEnum.PlacesBlock] = false;
                     }
                 }
+
+                if ((Data.TypeOfRest.IsActive && Data.TypeOfRest.NeedTypeOfTransport) &&
+                    (Data.PlaceOfRest.IsActive && Data.PlaceOfRest.NeedTypeOfTransport) &&
+                    ((Data.TransferFromId == (long) TypeOfTransferEnum.AsGroupMemberByMoscowBudget) ||
+                     (Data.TransferToId == (long) TypeOfTransferEnum.AsGroupMemberByMoscowBudget)))
+                {
+                    if (Data.PriorityTypeOfTransportInRequestId == null)
+                    {
+                        PriorityTypeOfTransportEm =
+                            "Не указан приоритетный тип транспорта";
+                        IsValid = false;
+                        FormBlocksValidness[RequestViewBlockEnum.TypeOfTransport] = false;
+                    }
+                    if (Data.AdditionalTypeOfTransportInRequestId == null)
+                    {
+                        AdditioanlTypeOfTransportEm =
+                            "Не указан дополнительный тип транспорта";
+                        IsValid = false;
+                        FormBlocksValidness[RequestViewBlockEnum.TypeOfTransport] = false;
+                    }
+                }
+
+                if (Data.TypeOfRest.IsActive && (Data.TypeOfRest.ParentId ?? -1) == (long) TypeOfRestEnum.ChildRest)
+                {
+                    if (Data.TypeOfCampId == null)
+                    {
+                        TypeOfCampEm =
+                            "Не указан приоритетный тип лагеря";
+                        IsValid = false;
+                        FormBlocksValidness[RequestViewBlockEnum.TypeOfCamp] = false;
+                    }
+                    if (Data.TypeOfCampAddonId == null)
+                    {
+                        TypeOfCampAddonEm =
+                            "Не указан дополнительный тип лагеря";
+                        IsValid = false;
+                        FormBlocksValidness[RequestViewBlockEnum.TypeOfCamp] = false;
+                    }
+                }
+
             }
 
             return IsValid.Value;
@@ -1356,6 +1440,16 @@ namespace RestChild.Web.Models
         /// <summary>
         ///     Сведения о погашенном сертификате
         /// </summary>
-        Certificate
+        Certificate,
+
+        /// <summary>
+        ///     Тип транспорта
+        /// </summary>
+        TypeOfTransport,
+
+        /// <summary>
+        ///     Тип лагеря
+        /// </summary>
+        TypeOfCamp
     }
 }

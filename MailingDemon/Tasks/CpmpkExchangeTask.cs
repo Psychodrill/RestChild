@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.ServiceModel.Description;
 using System.Text;
 using System.Web;
 using System.Xml.Serialization;
@@ -112,7 +113,8 @@ namespace MailingDemon.Tasks
 
                     foreach (var request in requests)
                     {
-                        var children = request.Child.Where(c => c.TypeOfRestrictionId == Config.TypeOfRestrictionId).ToList();
+                        var children = request.Child.Where(c => c.TypeOfRestrictionId == Config.TypeOfRestrictionId)
+                            .ToList();
 
                         if (children.Any())
                         {
@@ -126,11 +128,11 @@ namespace MailingDemon.Tasks
 
                                 var requestText =
                                     $"/app/document/do?fullName={HttpUtility.UrlEncode($"{child.LastName} {child.FirstName} {child.MiddleName}")}&dob={child.DateOfBirth.XmlToString()}";
-                                using (var requestMessage = new HttpRequestMessage(HttpMethod.Get, new Uri(Config.Url + requestText)))
+                                using (var requestMessage =
+                                    new HttpRequestMessage(HttpMethod.Get, new Uri(Config.Url + requestText)))
                                 {
-                                    requestMessage.Headers.Authorization =
-                                        new AuthenticationHeaderValue("Bearer", accessToken);
-                                    requestMessage.Headers.Add("X-API-KEY", Config.ApiKey);
+                                    SetAuthentication(requestMessage, accessToken);
+
                                     using (var response = httpClient.SendAsync(requestMessage).Result)
                                     {
                                         var responseData = response.Content.ReadAsStringAsync().Result;
@@ -138,7 +140,7 @@ namespace MailingDemon.Tasks
 
                                         foreach (var bi in child.BaseRegistryInfo.Where(b =>
                                             !b.NotActual && b.ExchangeBaseRegistryTypeId ==
-                                            (long)ExchangeBaseRegistryTypeEnum.CpmpkExchange).ToList())
+                                            (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange).ToList())
                                         {
                                             bi.NotActual = true;
                                         }
@@ -155,7 +157,8 @@ namespace MailingDemon.Tasks
                                             IsIncoming = false,
                                             OperationType = "cpmpkrequest",
                                             Success = dto.Available && (dto.Aoop ?? false),
-                                            ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.CpmpkExchange,
+                                            ExchangeBaseRegistryTypeId =
+                                                (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange,
                                             ServiceNumber = "б/н",
                                             ResponseGuid = "б/н"
                                         });
@@ -169,10 +172,51 @@ namespace MailingDemon.Tasks
                         request.NeedSendForCPMPK = false;
                         unitOfWork.SaveChanges();
                     }
+
+                    // нужно для формирования ответа для тех сущностей, которые были созданы в результате ручной проверки
+                    var ebrsWithNullResponseText = unitOfWork.GetSet<RestChild.Domain.ExchangeBaseRegistry>()
+                        .Where(x => x.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange &&
+                                    string.IsNullOrEmpty(x.ResponseText))
+                        .ToList();
+
+                    foreach (var ebr in ebrsWithNullResponseText)
+                    {
+                        var requestText = ebr.RequestText;
+                        using (var requestMessage =
+                            new HttpRequestMessage(HttpMethod.Get, new Uri(Config.Url + requestText)))
+                        {
+                            SetAuthentication(requestMessage, accessToken);
+
+                            using (var response = httpClient.SendAsync(requestMessage).Result)
+                            {
+                                var responseData = response.Content.ReadAsStringAsync().Result;
+                                var dto = JsonConvert.DeserializeObject<CpmpkResponseDto>(responseData);
+
+                                if (!ebr.NotActual && ebr.ExchangeBaseRegistryTypeId ==
+                                    (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange)
+                                {
+                                    ebr.NotActual = true;
+                                }
+
+                                ebr.ResponseText = responseData;
+                                unitOfWork.SaveChanges();
+                            }
+                        }
+                    }
                 }
 
                 Logger.Info("CpmpkExchangeTask finished");
             }
+        }
+
+        /// <summary>
+        ///     Установить данные для аутентификации
+        /// </summary>
+        private void SetAuthentication(HttpRequestMessage requestMessage, string accessToken)
+        {
+            requestMessage.Headers.Authorization =
+                new AuthenticationHeaderValue("Bearer", accessToken);
+            requestMessage.Headers.Add("X-API-KEY", Config.ApiKey);
         }
     }
 }

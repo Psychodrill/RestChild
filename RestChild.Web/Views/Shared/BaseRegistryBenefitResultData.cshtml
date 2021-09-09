@@ -298,5 +298,27 @@
             <div style="font-style: italic; font-weight: bold">Заключение отсутствует</div>
         }
     }
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.FRIExchange)
+    {
+        if (Model.FRIResponse != null)
+        {
+            bool isInvalid = Model.FRIResponse.Number != null;
+            if (isInvalid)
+            {
+                <div style="font-style: italic; font-weight: bold">Обнаружена справка об инвалидности</div>
+                <ul>
+                    <li>Гражданин:<b> @(Model.FRIResponse.LastName) @(Model.FRIResponse.FirstName) @(Model.FRIResponse.SecondName)</b></li>
+                    <li>Серия:<b>@(Model.FRIResponse.Series)</b></li>
+                    <li>Номер: <b>@(Model.FRIResponse.Number)</b></li>
+                    <li>Выдана: <b>@(Model.FRIResponse.BuroFullName)</b></li>
+                    <li>Дата выдачи: <b>@(Model.FRIResponse.ActDate)</b></li>
+                </ul>
+            }
+            else
+            {
+                <div style="font-style: italic; font-weight: bold">Информация об инвалидности отсутствует</div>
+            }
+        }
+    }
     </div>
 }

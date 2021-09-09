@@ -17,9 +17,9 @@ namespace RestChild.Web.Controllers
 			ApiController.SetUnitOfWorkInRefClass(unitOfWork);
 		}
 
-		public ActionResult Index()
+		public override ActionResult Index()
 		{
-			SetUnitOfWorkInRefClass(UnitOfWork); 
+			SetUnitOfWorkInRefClass(UnitOfWork);
 			return View(new AnalyticsViewModel
 			{
 				Rows = ApiController.GetRowsForMainPage(),

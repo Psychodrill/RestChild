@@ -83,6 +83,11 @@
         RegistrationDecline = 1030,
 
         /// <summary>
+        ///     Отказ в регистрации по причине дубликата
+        /// </summary>
+        RegistrationDeclineBecauseDuplicate = 1035,
+
+        /// <summary>
         ///     Ранжирование
         /// </summary>
         Ranging = 1051,

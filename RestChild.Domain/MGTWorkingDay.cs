@@ -52,6 +52,20 @@ namespace RestChild.Domain
       [DataMember(Name = "isDeleted", EmitDefaultValue = false)]
       public virtual bool IsDeleted { get; set; }
       
+      /// <summary>
+      /// Интервал до приёма
+      /// </summary>
+      [Display(Description = "Интервал до приёма")]
+      [DataMember(Name = "suoVisitTooEarly", EmitDefaultValue = false)]
+      public virtual long? SuoVisitTooEarly { get; set; }
+      
+      /// <summary>
+      /// Интервал после приёма
+      /// </summary>
+      [Display(Description = "Интервал после приёма")]
+      [DataMember(Name = "suoVisitTooLate", EmitDefaultValue = false)]
+      public virtual long? SuoVisitTooLate { get; set; }
+      
       
       /// <summary>
       /// Связь рабочего дня с приёмными окнами

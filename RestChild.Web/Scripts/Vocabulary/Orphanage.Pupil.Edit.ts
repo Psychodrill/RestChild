@@ -16,6 +16,14 @@ $(() => {
         $("#OrphanagePupilForm").submit();
     });
 
+    $(".OrphanagePupilFormDeleteSave").click((e) => {
+        return confirmStateButton("#OrphanagePupilForm", "#Data_Child_IsDeleted", "true", "Удалить", "Удалить воспитанника?", null);
+    });
+
+    $(".OrphanagePupilFormRestoreSave").click((e) => {
+        return confirmStateButton("#OrphanagePupilForm", "#Data_Child_IsDeleted", "false", "Восстановить", "Восстановить воспитанника?", null);
+    });
+
     $(".restriction-block").each((i, e) => {
         initTypeOfSubrestrtiction($(e));
     });
@@ -169,7 +177,7 @@ $(() => {
             $(".restrictionPeriod").addClass("hidden");
             $(".restrictionPeriod").find(".request-period-start").val("");
         }
-        
+
     });
 
     function setStreetAR(element) {

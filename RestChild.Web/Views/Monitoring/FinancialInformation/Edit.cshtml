@@ -121,27 +121,27 @@
                                     @Html.HiddenFor(m => m.FinancialData[fds.Key].MonitoringFinancialSourceId)
                                     <label class="col-sm-6 control-label text-right">@Model.FinancialData[fds.Key].MonitoringFinancialSource.Name</label>
                                     <div class="col-md-1">
-                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Plan, new { @class = "form-control decimal" }).DisableIf(() => !isEditable)
+                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Plan, new { @class = "form-control decimal" }).DisableIf(!isEditable)
                                     </div>
 
                                     <div class="col-md-1">
-                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Jun, new { @class = "form-control decimal" }).DisableIf(() => !isEditable)
+                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Jun, new { @class = "form-control decimal" }).DisableIf(!isEditable)
                                     </div>
 
                                     <div class="col-md-1">
-                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Jul, new { @class = "form-control decimal" }).DisableIf(() => !isEditable)
+                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Jul, new { @class = "form-control decimal" }).DisableIf(!isEditable)
                                     </div>
 
                                     <div class="col-md-1">
-                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Aug, new { @class = "form-control decimal" }).DisableIf(() => !isEditable)
+                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Aug, new { @class = "form-control decimal" }).DisableIf(!isEditable)
                                     </div>
 
                                     <div class="col-md-1">
-                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Sep, new { @class = "form-control decimal" }).DisableIf(() => !isEditable)
+                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Sep, new { @class = "form-control decimal" }).DisableIf(!isEditable)
                                     </div>
 
                                     <div class="col-md-1">
-                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Oct, new { @class = "form-control decimal" }).DisableIf(() => !isEditable)
+                                        @Html.TextBoxFor(item => Model.FinancialData[fds.Key].Oct, new { @class = "form-control decimal" }).DisableIf(!isEditable)
                                     </div>
                                 </div>
                             }

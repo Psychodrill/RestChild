@@ -658,6 +658,11 @@
             ///     Удалена
             /// </summary>
             public const long Deleted = 126;
+
+            /// <summary>
+            ///     Редактирование (из утверждённого) 
+            /// </summary>
+            public const long EditForMGT = 154;
         }
 
         /// <summary>
@@ -759,7 +764,7 @@
             }
 
             /// <summary>
-            ///     Cведения о финансировании оздоровительной кампании
+            ///     Сведения о финансировании оздоровительной кампании
             /// </summary>
             public static class FinanceInformation
             {
@@ -790,7 +795,7 @@
             }
 
             /// <summary>
-            ///     Cведения о финансировании оздоровительной кампании
+            ///     Сведения о финансировании оздоровительной кампании
             /// </summary>
             public static class SmallLeisureInfoData
             {
@@ -814,6 +819,8 @@
                 /// </summary>
                 public const long Approved = 153;
             }
+
+            // последний индекс 154
         }
     }
 }

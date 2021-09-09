@@ -167,5 +167,12 @@ namespace RestChild.Mobile.Domain
         [Display(Description = "Дата синхронизации")]
         [DataMember(Name = "eidSyncDate", EmitDefaultValue = false)]
         public virtual DateTime? EidSyncDate { get; set; }
+
+        /// <summary>
+        /// Дата резервирования подарка
+        /// </summary>
+        [Display(Description = "Дата резервирования подарка")]
+        [DataMember(Name = "dateReserved", EmitDefaultValue = false)]
+        public virtual DateTime? DateReserved { get; set; }
     }
 }

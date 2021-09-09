@@ -73,6 +73,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Context.tt</DependentUpon>
     </Compile>
+    <Compile Include="Enum\HotelTypeEnum.cs" />
     <Compile Include="Enum\PersonalTypeEnum.cs" />
     <Compile Include="Enum\StateEnum.cs" />
     <Compile Include="Enum\StateMachineEnum.cs" />

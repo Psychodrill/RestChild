@@ -108,6 +108,14 @@
                                 {
                                     <i class="glyphicon glyphicon-paperclip"></i>
                                 }
+                                @if ((request.TypeOfRest.Id == (long)TypeOfRestEnum.Money || request.TypeOfRest.ParentId == (long)TypeOfRestEnum.Money) && ( request.Attendant.Any(x => !x.IsDeleted) || (request.Applicant != null && !request.Applicant.IsDeleted && request.Applicant.IsAccomp)))
+                                {
+                                    <img src="~/Content/images/people.svg" alt="people"/>
+                                }
+                                @if (request.Certificates != null && request.Certificates.Any(ss => ss.StateMachineStateId != RestChild.Comon.Enumeration.StateMachineStateEnum.Deleted))
+                                {
+                                    <img src="~/Content/images/patch-check.svg" alt="check"/>
+                                }
 
                             </td>
                             <td>@request.DateRequest.FormatEx()</td>

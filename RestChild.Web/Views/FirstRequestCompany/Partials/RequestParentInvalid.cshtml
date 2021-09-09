@@ -2,7 +2,7 @@
 @using RestChild.Comon.Enumeration
 @using RestChild.Domain
 @using RestChild.Extensions.Extensions
-@using RestChild.Web.App_Code
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.RequestViewModel
 @{
    var needParentInvalid = Model.Child.Any(c => c.Data.BenefitTypeId == (long) BenefitTypeEnum.ParentsInvalid || (c.Data.BenefitType != null && c.Data.BenefitType.SameBenefitId == (long) BenefitTypeEnum.ParentsInvalid));
@@ -56,7 +56,7 @@
             <label class="col-md-3 control-label">Отчество</label>
 
             <div class="col-md-9">
-               @Html.TextBoxFor(r => r.ParentInvalid.Data.MiddleName, new {@class = "form-control name-input middlename", autocomplete = "off", Value = Model.NullSafe(m => m.ParentInvalid.HasNotMiddlename) ? string.Empty : Model.NullSafe(m => m.ParentInvalid.Data.MiddleName)}).DisableIf(() => Model.NullSafe(m => m.ParentInvalid.HasNotMiddlename))
+               @Html.TextBoxFor(r => r.ParentInvalid.Data.MiddleName, new {@class = "form-control name-input middlename", autocomplete = "off", Value = Model.NullSafe(m => m.ParentInvalid.HasNotMiddlename) ? string.Empty : Model.NullSafe(m => m.ParentInvalid.Data.MiddleName)}).DisableIf(Model.NullSafe(m => m.ParentInvalid.HasNotMiddlename))
                <span class="field-validation-error">@Model.ParentInvalid.MiddleNameEm.FormatEx(string.Empty)</span>
             </div>
          </div>
@@ -64,11 +64,11 @@
             <label class="col-md-3 control-label">Пол<span class="requared">*</span></label>
             <div class="col-md-9">
                <label>
-                  @Html.RadioButtonFor(r => r.ParentInvalid.Data.Male, true).DisableIf(() => Model.ParentInvalid.Data.IsDeleted)
+                  @Html.RadioButtonFor(r => r.ParentInvalid.Data.Male, true).DisableIf(Model.ParentInvalid.Data.IsDeleted)
                   Мужской
                </label>&nbsp;
                <label>
-                  @Html.RadioButtonFor(r => r.ParentInvalid.Data.Male, false).DisableIf(() => Model.ParentInvalid.Data.IsDeleted)
+                  @Html.RadioButtonFor(r => r.ParentInvalid.Data.Male, false).DisableIf(Model.ParentInvalid.Data.IsDeleted)
                   Женский
                </label>
                <span class="field-validation-error">@Model.ParentInvalid.MaleEm.FormatEx(string.Empty)</span>

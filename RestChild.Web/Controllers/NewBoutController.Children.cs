@@ -122,6 +122,10 @@ namespace RestChild.Web.Controllers
                     Width = 35
                 },
                 new ExcelColumn<Account>
+                    {Title = "E-mail", Func = t => t.Email, Width = 30},
+                new ExcelColumn<Account>
+                    {Title = "Телефон", Func = t => t.Phone, Width = 15},
+                new ExcelColumn<Account>
                     {Title = "Заданий выполнено", Func = t => t.TaskCount, Width = 10},
                 new ExcelColumn<Account>
                     {Title = "Сумма баллов всего", Func = t => t.Points.ToString("0"), Width = 10},

@@ -1,6 +1,4 @@
-﻿@using RestChild.Comon
-@using RestChild.Web.App_Code
-@model RestChild.Web.Models.BoutModel
+﻿@model RestChild.Web.Models.BoutModel
 <div id="Result" role="tabpanel" class="tab-pane @(Model.ActiveTab == "Result" ? "active" : string.Empty)">
 	<h3>Комментарии к заезду</h3>
 	@Html.HiddenFor(m => m.Comment)

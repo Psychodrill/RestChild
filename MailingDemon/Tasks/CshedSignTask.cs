@@ -39,7 +39,7 @@ namespace MailingDemon.Tasks
                     var errorServiceNumbers = new HashSet<string>();
                     var statuses = new HashSet<long>(GetMPGUStatusesToIntegrateWithCSHED(unitOfWork));
                     var query = unitOfWork.GetSet<ExchangeUTS>().Where(e => !e.Incoming && !e.Processed
-                                                                                        && !e.IsSigned);
+                                                                                        && !e.IsSigned).AsQueryable();
 
                     if (Config != null && Config.CountNodes > 0)
                     {
@@ -57,7 +57,8 @@ namespace MailingDemon.Tasks
                     var requestStatus = ConfigurationManager.AppSettings["MqRequestStatus"];
 
                     query = query.Where(q =>
-                        !q.ToState.HasValue || !notSendStatusesToMpgu.Contains(q.ToState) ||
+                        !q.ToState.HasValue ||
+                        !notSendStatusesToMpgu.Contains(q.ToState) ||
                         q.QueueName != requestStatus);
 
                     var messages = query.OrderBy(s => s.Id).Take(NumberOfMessages).ToArray();
@@ -85,15 +86,6 @@ namespace MailingDemon.Tasks
                         if (message.RequestId.HasValue && message.ToState.HasValue &&
                             notSendStatusesToMpgu.Contains(message.ToState))
                         {
-                            continue;
-                        }
-
-                        if (message.Message.Contains("http://asguf.mos.ru/rkis_gu/coordinate/v6_1/") ||
-                            message.Request?.SourceId == (long) SourceEnum.Operator)
-                        {
-                            // подпорка для отправки статусов
-                            message.IsSigned = true;
-                            unitOfWork.SaveChanges();
                             continue;
                         }
 
@@ -223,7 +215,7 @@ namespace MailingDemon.Tasks
                         }
                         else
                         {
-                            if (message.Request != null)
+                            if (message.Request != null && string.Equals(message.QueueName, requestStatus, StringComparison.OrdinalIgnoreCase))
                             {
                                 var outMessage = Serialization.Deserialize<StatusMessage>(message.Message);
                                 if (outMessage.ResponseDate < dateStatus)

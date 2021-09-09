@@ -9,7 +9,7 @@ namespace RestChild.Web.Controllers
     public class HelpPageController : BaseController
     {
         // GET: HelpPage
-        public ActionResult Index()
+        public override ActionResult Index()
         {
             return View();
         }

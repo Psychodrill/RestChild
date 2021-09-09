@@ -3,6 +3,11 @@
     public enum StatusInteragencyRequestEnum
     {
         /// <summary>
+        ///     Удален
+        /// </summary>
+        Deleted = -1,
+
+        /// <summary>
         ///     Черновик
         /// </summary>
         Draft = 1,

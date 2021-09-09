@@ -133,6 +133,23 @@ namespace RestChild.Web.Controllers.WebApi
         }
 
         /// <summary>
+        ///     список префектур
+        /// </summary>
+        [Route("api/Prefectures")]
+        public IEnumerable<BaseResponse> GetPrefectures(string query)
+        {
+            var q = UnitOfWork.GetSet<Organization>().Where(ss => !ss.IsDeleted && ss.IsVedOrganization == true && ss.IsLast).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                q = q.Where(ss =>
+                    ss.Name.ToLower().Contains(query.ToLower()) || ss.ShortName.ToLower().Contains(query.ToLower()));
+            }
+
+            return q.Select(ss => new BaseResponse { Name = ss.Name, Id = ss.Id }).ToList();
+        }
+
+        /// <summary>
         ///     список организаций ОИВ
         /// </summary>
         [Route("api/Vedomstvo/Childs")]
@@ -575,6 +592,15 @@ namespace RestChild.Web.Controllers.WebApi
                 sb.AppendLine($"<li>Изменён признак указывающий что организации является участником мониторинга, старое значение:'{persisted.IsInMonitoring.FormatEx()}', новое значение:'{entity.IsInMonitoring.FormatEx()}'</li>");
             }
 
+            if (persisted.NullSafe(r => r.OKATO) != entity.NullSafe(r => r.OKATO))
+            {
+                sb.AppendLine($"<li>Изменён ОКАТО региона по местонахождению лагеря, старое значение:'{persisted.NullSafe(r => r.OKATO).FormatEx(string.Empty)}', новое значение:'{entity.NullSafe(r => r.OKATO).FormatEx(string.Empty)}'</li>");
+            }
+
+            if (persisted.NullSafe(r => r.ESNSIType) != entity.NullSafe(r => r.ESNSIType))
+            {
+                sb.AppendLine($"<li>Изменён ЕСНСИ тип лагеря, старое значение:'{persisted.NullSafe(r => r.ESNSIType).FormatEx(string.Empty)}', новое значение:'{entity.NullSafe(r => r.ESNSIType).FormatEx(string.Empty)}'</li>");
+            }
 
             var res = sb.ToString();
             if (string.IsNullOrWhiteSpace(res))

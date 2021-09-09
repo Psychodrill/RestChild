@@ -29,6 +29,8 @@ $(function () {
             }
         });
     });
+    CollaboratorsNumberCount();
+    PupilsNumberCount();
     $(document).on("click", ".pupil-add", function () {
         var pupilId = $(event.target).closest("tr").find(".pupilId").val();
         var values = $("#listForm .pupils input.pkey").map(function () { return $(this).val(); }).get();
@@ -114,6 +116,24 @@ $(function () {
                 }
             });
             cur.closest("tr").find('.CountPeople').val(cur_count + '');
+        });
+        CollaboratorsNumberCount();
+        PupilsNumberCount();
+    }
+    function PupilsNumberCount() {
+        var pc = $(".pupils tr").length - 1;
+        $(".pupilsCount").html('(' + pc + ')');
+        var count = 0;
+        $('.pupils tr').each(function () {
+            $(this).find('.numerator').html('(' + (count++) + ')');
+        });
+    }
+    function CollaboratorsNumberCount() {
+        var cc = $(".collaborators tr").length - 1;
+        $(".collaboratorsCount").html('(' + cc + ')');
+        var count = 0;
+        $('.collaborators tr').each(function () {
+            $(this).find('.numerator').html('(' + (count++) + ')');
         });
     }
 });

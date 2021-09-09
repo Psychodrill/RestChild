@@ -39,7 +39,7 @@ namespace RestChild.Web.Controllers
         private static byte[] file;
 
         /// <summary>
-        ///     процесс 
+        ///     процесс
         /// </summary>
         public static bool InProgress =>
             inProgress && status != null && status.LastUpdate > DateTime.Now.AddSeconds(-40);
@@ -412,7 +412,7 @@ namespace RestChild.Web.Controllers
         }
 
         /// <summary>
-        ///     компоратор для результирующих данных из загруженнного файла 
+        ///     компоратор для результирующих данных из загруженнного файла
         /// </summary>
         private class DistinctItemComparer : IEqualityComparer<REQS>
         {
@@ -437,7 +437,7 @@ namespace RestChild.Web.Controllers
         /// <summary>
         ///     Главная страница
         /// </summary>
-        public ActionResult Index()
+        public override ActionResult Index()
         {
             return View();
         }

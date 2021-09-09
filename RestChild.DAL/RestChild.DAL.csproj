@@ -99,8 +99,10 @@
     <Compile Include="Configurations\Configuration.StatusAction.cs" />
     <Compile Include="Configurations\Configuration.StatusByChild.cs" />
     <Compile Include="Configurations\Configuration.TieColor.cs" />
+    <Compile Include="Configurations\Configuration.TradeUnionCamperPrivilegePart.cs" />
     <Compile Include="Configurations\Configuration.TradeUnionStatusByChild.cs" />
     <Compile Include="Configurations\Configuration.TypeOfCalculation.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfCamp.cs" />
     <Compile Include="Configurations\Configuration.TypeOfDrug.cs" />
     <Compile Include="Configurations\Configuration.TypeOfGroupCheck.cs" />
     <Compile Include="Configurations\Configuration.TypeOfLimitList.cs" />
@@ -112,6 +114,7 @@
     <Compile Include="Configurations\Configuration.TypeOfService.cs" />
     <Compile Include="Configurations\Configuration.TypeOfTransfer.cs" />
     <Compile Include="Configurations\Configuration.TypeOfTransport.cs" />
+    <Compile Include="Configurations\Configuration.TypeOfTransportInRequest.cs" />
     <Compile Include="Configurations\Configuration.TypeRequestInformationVoucher.cs" />
     <Compile Include="Configurations\Configuration.TypeViolation.cs" />
     <Compile Include="Context.cs">
@@ -1232,6 +1235,50 @@
     <Compile Include="Migrations\201701231414277_Lok201703Migration.Designer.cs">
       <DependentUpon>201701231414277_Lok201703Migration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202104151245433_Task126938_Migration.cs" />
+    <Compile Include="Migrations\202104151245433_Task126938_Migration.Designer.cs">
+      <DependentUpon>202104151245433_Task126938_Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202105180818267_Task134589Migration.cs" />
+    <Compile Include="Migrations\202105180818267_Task134589Migration.Designer.cs">
+      <DependentUpon>202105180818267_Task134589Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202106091520592_Task137275Migration.cs" />
+    <Compile Include="Migrations\202106091520592_Task137275Migration.Designer.cs">
+      <DependentUpon>202106091520592_Task137275Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202106101015124_Task137275_2Migration.cs" />
+    <Compile Include="Migrations\202106101015124_Task137275_2Migration.Designer.cs">
+      <DependentUpon>202106101015124_Task137275_2Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202106181504146_Task126894Migration.cs" />
+    <Compile Include="Migrations\202106181504146_Task126894Migration.Designer.cs">
+      <DependentUpon>202106181504146_Task126894Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107061430143_Task139443Migration.cs" />
+    <Compile Include="Migrations\202107061430143_Task139443Migration.Designer.cs">
+      <DependentUpon>202107061430143_Task139443Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107091330055_Task139451Migration.cs" />
+    <Compile Include="Migrations\202107091330055_Task139451Migration.Designer.cs">
+      <DependentUpon>202107091330055_Task139451Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107120850561_Task139451_2Migration.cs" />
+    <Compile Include="Migrations\202107120850561_Task139451_2Migration.Designer.cs">
+      <DependentUpon>202107120850561_Task139451_2Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107191310508_Task139763Migration.cs" />
+    <Compile Include="Migrations\202107191310508_Task139763Migration.Designer.cs">
+      <DependentUpon>202107191310508_Task139763Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202107191603324_Task140565Migration.cs" />
+    <Compile Include="Migrations\202107191603324_Task140565Migration.Designer.cs">
+      <DependentUpon>202107191603324_Task140565Migration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202108251158089_Task144666Migration.cs" />
+    <Compile Include="Migrations\202108251158089_Task144666Migration.Designer.cs">
+      <DependentUpon>202108251158089_Task144666Migration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="RepositoryExtensions\Repository.cs" />
     <Compile Include="UnitOfWork.cs" />
@@ -2088,6 +2135,39 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202012171552243_Task118961Migration.resx">
       <DependentUpon>202012171552243_Task118961Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202104151245433_Task126938_Migration.resx">
+      <DependentUpon>202104151245433_Task126938_Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202105180818267_Task134589Migration.resx">
+      <DependentUpon>202105180818267_Task134589Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202106091520592_Task137275Migration.resx">
+      <DependentUpon>202106091520592_Task137275Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202106101015124_Task137275_2Migration.resx">
+      <DependentUpon>202106101015124_Task137275_2Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202106181504146_Task126894Migration.resx">
+      <DependentUpon>202106181504146_Task126894Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107061430143_Task139443Migration.resx">
+      <DependentUpon>202107061430143_Task139443Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107091330055_Task139451Migration.resx">
+      <DependentUpon>202107091330055_Task139451Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107120850561_Task139451_2Migration.resx">
+      <DependentUpon>202107120850561_Task139451_2Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107191310508_Task139763Migration.resx">
+      <DependentUpon>202107191310508_Task139763Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107191603324_Task140565Migration.resx">
+      <DependentUpon>202107191603324_Task140565Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202108251158089_Task144666Migration.resx">
+      <DependentUpon>202108251158089_Task144666Migration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

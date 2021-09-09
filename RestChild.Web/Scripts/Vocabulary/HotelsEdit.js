@@ -26,7 +26,12 @@ $(function () {
     });
     $('#Data_addTypeOfRoomBasePlaces').inputmask('integer', { allowMinus: false, rightAlign: false });
     $('#Data_addTypeOfRoomAddonPlaces').inputmask('integer', { allowMinus: false, rightAlign: false });
-    $('#Data_addTypeOfRoomRoomSizePerPerson').inputmask('decimal', { allowMinus: false, rightAlign: false, digits: 2, radixPoint: ',' });
+    $('#Data_addTypeOfRoomRoomSizePerPerson').inputmask('decimal', {
+        allowMinus: false,
+        rightAlign: false,
+        digits: 2,
+        radixPoint: ','
+    });
     $('#Data_NumberHousing').inputmask('integer', { allowMinus: false, rightAlign: false });
     $('#Data_addTypeOfRoomMaximumCount').inputmask('integer', { allowMinus: false, rightAlign: false });
     $('#Data_Squere').inputmask('decimal', { allowMinus: false, rightAlign: false, digits: 2, radixPoint: ',' });
@@ -201,6 +206,17 @@ $(function () {
                     $(hidden).attr('name', 'Data.TypeOfRooms[' + i + '].Files[' + photoCnt + '].' + name);
                 });
             });
+        }
+        if ($(".isCampingCheck.visibleCheckbox").prop("disabled")) {
+            $(".isCampingCheck.hidden").prop("checked", false);
+        }
+        else {
+            if ($(".isCampingCheck.visibleCheckbox").prop("checked")) {
+                $(".isCampingCheck.hidden").prop("checked", true);
+            }
+            else {
+                $(".isCampingCheck.hidden").prop("checked", false);
+            }
         }
         $('#hotelsForm').unbind();
         $('#hotelsForm').submit();
@@ -493,6 +509,20 @@ $(function () {
             tbody.closest('table').addClass('hidden');
         }
         fixDiningTable();
+    });
+    function IsCampingCheck() {
+        if ($("select.hotelType").select2("val") == hotelTypeId_Hotel) {
+            $(".isCampingCheckContainer").addClass("hidden");
+            $(".isCampingCheck.hidden").prop("checked", false);
+            $(".isCampingCheck.visibleCheckbox").prop("checked", false);
+        }
+        else {
+            $(".isCampingCheckContainer").removeClass("hidden");
+        }
+    }
+    IsCampingCheck();
+    $("select.hotelType").on("change", function () {
+        IsCampingCheck();
     });
     $('.age, .count').inputmask("integer", { allowMinus: false, rightAlign: false });
 });

@@ -7,16 +7,14 @@ namespace RestChild.Web.Models.Orphans
     /// <summary>
     ///     Модель фильтра поиска группы/потребности
     /// </summary>
-    public class OrphanageGroupsFilterModel
+    public class OrphanageGroupsFilterModel : BaseFilterModel<OrphanageGroupsResultListModel>
     {
-        public OrphanageGroupsFilterModel()
+        public OrphanageGroupsFilterModel() : base()
         {
-            PageNumber = 1;
-            Result = new CommonPagedList<OrphanageGroupsResultListModel>(new List<OrphanageGroupsResultListModel>(0),
-                PageNumber, Settings.Default.TablePageSize, 0);
+
         }
 
-        public OrphanageGroupsFilterModel(long orphanageId) : this()
+        public OrphanageGroupsFilterModel(long orphanageId) : base()
         {
             OrphanageId = orphanageId;
         }
@@ -58,11 +56,6 @@ namespace RestChild.Web.Models.Orphans
         public long? VacationPeriod { get; set; }
 
         /// <summary>
-        ///     Группы/потребности
-        /// </summary>
-        public CommonPagedList<OrphanageGroupsResultListModel> Result { get; set; }
-
-        /// <summary>
         ///     Идентификатор детского дома
         /// </summary>
         public long? OrphanageId { get; set; }
@@ -88,7 +81,7 @@ namespace RestChild.Web.Models.Orphans
         public IDictionary<long, string> RegionsOfRest { get; set; }
 
         /// <summary>
-        ///     Список стаусов
+        ///     Список статусов
         /// </summary>
         public IDictionary<long, string> States { get; set; }
 
@@ -101,7 +94,5 @@ namespace RestChild.Web.Models.Orphans
         ///     Каникулярные периоды
         /// </summary>
         public IDictionary<long, string> VacationPeriods { get; set; }
-
-        public int PageNumber { get; set; }
     }
 }

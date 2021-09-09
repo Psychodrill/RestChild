@@ -2,6 +2,10 @@ $(function () {
     var getSnilsAction = '0DC806DA-6C5C-4B56-B410-3F2E1765AAFB';
     var getRelativesAction = '4AFEE4AC-9251-45F7-ADC1-17F0AC41345A';
     var getPassportBySnilsInBr = 'C1C55BEA-A6D9-4AE4-A5FD-03190E4A2B86';
+    //  Проверка ЦПМПК
+    var getCPMPK = 'EDC78633-AC2A-41E6-BD7E-5E6FFF695346';
+    //  Проверка адреса регистрации
+    var getRegistrationAddress = '38D6E2D8-CE98-4916-A267-D4469FDE6295';
     $('select').select2();
     $('.date input, input.date').inputmask("d.m.y", {
         placeholder: "дд.мм.гггг",
@@ -40,6 +44,8 @@ $(function () {
     var $parent = $('#parent');
     var $otherBlock = $('#otherBlock');
     var $addonSnils = $('#addonSnils');
+    var $CPMPK = $('#CPMPK');
+    var $registrationAddress = $('#registrationAddress');
     $sendButton.click(function () {
         var errorMsg = '';
         var uid = $sendButton.attr('uid');
@@ -70,10 +76,10 @@ $(function () {
             }
         }
         else {
-            if (!$('#dialogNumber').val()) {
+            if (!$('#dialogNumber').val() && uid !== getCPMPK) {
                 errorMsg = errorMsg + '<li>Не заполнен номер документа</li>';
             }
-            if (!$('#snils').val() && getSnilsAction !== uid) {
+            if (!$('#snils').val() && getSnilsAction !== uid && uid !== getCPMPK) {
                 errorMsg = errorMsg + '<li>Не заполнен СНИЛС</li>';
             }
         }
@@ -95,6 +101,7 @@ $(function () {
         documentInputType($sendDialog.find('select'));
         var uid = $t.attr('uid');
         $parent.addClass('hidden');
+        $registrationAddress.addClass('hidden');
         $otherBlock.removeClass('hidden');
         if (uid === getSnilsAction) {
             // это запрос СНИЛС
@@ -111,6 +118,19 @@ $(function () {
         else if (uid == getPassportBySnilsInBr) {
             $otherBlock.addClass('hidden');
             $addonSnils.addClass('hidden');
+        }
+        else if (uid == getCPMPK) {
+            // ЦПМПК
+            $otherBlock.addClass('hidden');
+            $snilsBlock.addClass('hidden');
+            $addonSnils.addClass('hidden');
+            $otherBlock.addClass('hidden');
+        }
+        else if (uid == getRegistrationAddress) {
+            // Получить адрес регистрации
+            $snilsBlock.addClass('hidden');
+            $addonSnils.addClass('hidden');
+            $registrationAddress.removeClass('hidden');
         }
         else {
             $snilsBlock.removeClass('hidden');

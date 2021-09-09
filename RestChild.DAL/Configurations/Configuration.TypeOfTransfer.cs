@@ -15,12 +15,12 @@ namespace RestChild.DAL.Configurations
             context.TypeOfTransfer.AddOrUpdate(r => r.Id,
                 new TypeOfTransfer
                 {
-                    Id = 1,
+                    Id = (long)TypeOfTransferEnum.AsGroupMemberByMoscowBudget,
                     Name = "В составе организованной группы за счет средств бюджета города Москвы"
                 },
                 new TypeOfTransfer
                 {
-                    Id = 2,
+                    Id = (long)TypeOfTransferEnum.OwnExpenses,
                     Name = "Самостоятельный проезд за счет собственных средств"
                 }
             );

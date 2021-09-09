@@ -45,7 +45,7 @@ namespace MailingDemon.Tasks
         /// <summary>
         ///     скорректировать данные
         /// </summary>
-        private static void FixUniqeInfo(UnitOfWork uw)
+        private static void FixUniqeInfo(IUnitOfWork uw)
         {
             var childrenToRemove = uw.GetSet<ChildUniqe>().Where(c => !c.Children.Any()).Take(1000).ToList();
 
@@ -100,7 +100,7 @@ namespace MailingDemon.Tasks
         /// <summary>
         ///     включить родственников в связку
         /// </summary>
-        private static void Include(UnitOfWork uw)
+        private static void Include(IUnitOfWork uw)
         {
             var children = uw.GetSet<Child>().Where(c =>
                     !c.ChildUniqeId.HasValue && !string.IsNullOrEmpty(c.Snils) &&
@@ -224,7 +224,7 @@ namespace MailingDemon.Tasks
         /// <summary>
         ///     исключить уникальные значения
         /// </summary>
-        private static void Exclude(UnitOfWork uw)
+        private static void Exclude(IUnitOfWork uw)
         {
             var childrenExclude = uw.GetSet<Child>().Where(c =>
                     c.ChildUniqeId.HasValue &&

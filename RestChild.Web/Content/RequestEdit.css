@@ -1,3 +1,11 @@
 ﻿.panel-operation-button>.btn {
 	margin-bottom: 5px;
 }
+
+#mainList > li {
+    list-style-type: none;
+}
+
+#mainList > li ul li {
+    list-style-type: none;
+}

@@ -4,7 +4,6 @@
 @using RestChild.Domain
 @using RestChild.Comon.Enumeration
 @using RestChild.Extensions.Extensions
-@using RestChild.Web.App_Code
 @using RestChild.Web.Controllers
 
 @model RestChild.Web.Models.Orphans.OrphanagePupilModel
@@ -16,16 +15,20 @@
     var documentTypes = new SelectList(((List<DocumentType>)ViewBag.DocumentTypes ?? new List<DocumentType>(0)).Select(o => new { Id = (long?)o.Id, o.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name");
     var restrictionTypes = new SelectList(((List<TypeOfRestriction>)ViewBag.RestrictionTypes ?? new List<TypeOfRestriction>(0)).Select(o => new { Id = (long?)o.Id, o.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name");
 
+    var ViolationsInformationEnteringEnable = Security.HasRight(AccessRightEnum.Orphans.MainViolationsInformationEntering);
+
     if (Model.Data.Id > 0)
     {
         if (Model.Data.LinkToFiles != null)
         {
             if (Model.Data.LinkToFiles.Files != null)
             {
-                Model.Files = Model.Data.LinkToFiles.Files.ToDictionary(ss => ss.FileName, ss => ss);
+                Model.Files = Model.Data.LinkToFiles.Files.ToDictionary(ss => ss.Id.ToString(), ss => ss);
             }
         }
     }
+
+
 }
 
 @section styles{
@@ -54,6 +57,7 @@
 
     @Scripts.Render("~/Scripts/doT.js")
     @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Scripts.Render("~/Scripts/StateScript.js")
     @Html.Partial("Assets/HistoryLinkTemplate")
 
     @Scripts.Render("~/Scripts/Vocabulary/Orphanage.Pupil.Edit.js")
@@ -87,6 +91,8 @@
 
             @Html.HiddenFor(m => m.Data.Child.AddressId)
 
+            @Html.HiddenFor(m => m.Data.Child.IsDeleted)
+
             @Html.HiddenFor(m => m.OrphanageId)
 
             <div class="form-group row">
@@ -101,6 +107,22 @@
                                 {
                                     <a data-id="@Model.Data.Id" class="btn btn-default btn-primary btn-snils-check-link" href="#">Отправить СНИЛС на проверку</a>
                                 }
+                                @if (Model.Data.Id > 0 && Security.HasRight(AccessRightEnum.Orphans.MainRemoveRestorePupil))
+                                {
+                                    if (Model.Data.Child.IsDeleted)
+                                    {
+                                        <button type="button" class="btn btn-success btn-primary OrphanagePupilFormRestoreSave" role="button">
+                                            Восстановить
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-danger btn-primary OrphanagePupilFormDeleteSave" role="button">
+                                            Удалить
+                                        </button>
+                                    }
+                                }
+
                                 @if (Model.Data.HistoryLinkId.HasValue)
                                 {
                                     <a data-history-id="@Model.Data.HistoryLinkId" class="btn btn-default btn-hystory-link" href="#">История</a>
@@ -142,7 +164,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Отчество <span class="requared">*</span></label>
                         <div class="col-md-9">
-                            @Html.TextBoxFor(r => r.Data.Child.MiddleName, new { @class = "form-control Middle-Name", tabindex = "3", autocomplete = "off" }).ReadOnlyIf(() => Model.NoMiddleName)
+                            @Html.TextBoxFor(r => r.Data.Child.MiddleName, new { @class = "form-control Middle-Name", tabindex = "3", autocomplete = "off" }).ReadOnlyIf(Model.NoMiddleName)
                         </div>
                     </div>
                     <div class="form-group">
@@ -187,13 +209,21 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-9 col-md-offset-3" style="height: 34px; line-height: 34px;">
-                            @Html.CheckBoxFor(m => m.Data.Foul, new { tabindex = "10", autocomplete = "off", style = "vertical-align: text-bottom;" })
+                            @Html.CheckBoxFor(m => m.Data.Foul, new { tabindex = "10", autocomplete = "off", style = "vertical-align: text-bottom;" }).DisableIf(!ViolationsInformationEnteringEnable)
+                            @if (!ViolationsInformationEnteringEnable)
+                            {
+                                @Html.HiddenFor(m => m.Data.Foul)
+                            }
                             <span>Нарушение Правил</span>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-9 col-md-offset-3" style="height: 34px; line-height: 34px;">
-                            @Html.CheckBoxFor(m => m.Data.FoulRegionRestriction, new { tabindex = "10", autocomplete = "off", @class = "Foul-Region-Restriction", style = "vertical-align: text-bottom;" })
+                            @Html.CheckBoxFor(m => m.Data.FoulRegionRestriction, new { tabindex = "10", autocomplete = "off", @class = "Foul-Region-Restriction", style = "vertical-align: text-bottom;" }).DisableIf(!ViolationsInformationEnteringEnable)
+                            @if (!ViolationsInformationEnteringEnable)
+                            {
+                                @Html.HiddenFor(m => m.Data.FoulRegionRestriction)
+                            }
                             <span>Нарушение Правил с ограничением региона</span>
                         </div>
                     </div>
@@ -201,7 +231,7 @@
                         <label class="col-sm-3 control-label">Ограничение с</label>
                         <div class="col-md-4">
                             <div class='input-group date datepicker-anytime'>
-                                @Html.TextBoxFor(r => r.Data.FoulRegionRestrictionFrom, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.Data.FoulRegionRestrictionFrom).FormatEx(string.Empty, string.Empty) })
+                                @Html.TextBoxFor(r => r.Data.FoulRegionRestrictionFrom, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.Data.FoulRegionRestrictionFrom).FormatEx(string.Empty, string.Empty) }).ReadOnlyIf(!ViolationsInformationEnteringEnable)
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
@@ -210,13 +240,12 @@
                         <label class="col-sm-1 control-label">по</label>
                         <div class="col-md-4">
                             <div class='input-group date datepicker-anytime'>
-                                @Html.TextBoxFor(r => r.Data.FoulRegionRestrictionTo, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.Data.FoulRegionRestrictionTo).FormatEx(string.Empty, string.Empty) })
+                                @Html.TextBoxFor(r => r.Data.FoulRegionRestrictionTo, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.Data.FoulRegionRestrictionTo).FormatEx(string.Empty, string.Empty) }).ReadOnlyIf(!ViolationsInformationEnteringEnable)
                                 <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
                             </div>
                         </div>
-
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -309,11 +338,11 @@
                     </div>
                     <label class="col-sm-1 control-label">Округ</label>
                     <div class="col-md-3">
-                        @Html.TextBoxFor(m => m.Data.Child.Address.Region, new { @class = "form-control", tabindex = "19", autocomplete = "off" }).ReadOnlyIf(() => true)
+                        @Html.TextBoxFor(m => m.Data.Child.Address.Region, new { @class = "form-control", tabindex = "19", autocomplete = "off" }).ReadOnlyIf(true)
                     </div>
                     <label class="col-sm-1 control-label">Район</label>
                     <div class="col-md-3">
-                        @Html.TextBoxFor(m => m.Data.Child.Address.District, new { @class = "form-control", tabindex = "20", autocomplete = "off" }).ReadOnlyIf(() => true)
+                        @Html.TextBoxFor(m => m.Data.Child.Address.District, new { @class = "form-control", tabindex = "20", autocomplete = "off" }).ReadOnlyIf(true)
                     </div>
                 </div>
             </fieldset>
@@ -499,3 +528,16 @@
         }
     </div>
 </div>
+
+
+<script type="template-dot" id="stateDialogBody">
+	<div>
+		<div class="form-group">
+			{{=it.name}}
+		</div>
+		{{? it.needComment }}
+		<label class="control-label">Комментарий:</label>
+		<input type="text" class="form-control stateDialogComment" maxlength="500" />
+		{{?}}
+	</div>
+</script>

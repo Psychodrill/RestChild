@@ -26,9 +26,9 @@ namespace RestChild.Web.Controllers
 			ApiController.SetUnitOfWorkInRefClass(unitOfWork);
 		}
 
-		public ActionResult Index()
+		public override ActionResult Index()
 		{
-			return RedirectToAction("Search");
+			return RedirectToAction(nameof(Search));
 		}
 
 		public ActionResult Search(string name = "", long? classId = 0, int pageNumber = 1)

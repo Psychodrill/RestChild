@@ -15,6 +15,14 @@
             }
         });
 
+    $(".OrphanageCollaboratorFormDeleteSave").click((e) => {
+        return confirmStateButton("#OrphanageCollaboratorForm", "#Data_Applicant_IsDeleted", "true", "Удалить", "Удалить сотрудника?", null);
+    });
+
+    $(".OrphanageCollaboratorFormRestoreSave").click((e) => {
+        return confirmStateButton("#OrphanageCollaboratorForm", "#Data_Applicant_IsDeleted", "false", "Восстановить", "Восстановить сотрудника?", null);
+    });
+
     const $sendDialog = $(".sendDialog");
     $sendDialog.find("select").change((e) => {
         documentInputType($(e.target));

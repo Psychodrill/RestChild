@@ -16,7 +16,7 @@ namespace RestChild.DAL.Configurations
             var chainId = 0;
             var eventIds = 1;
 
-            var year2021 = context.YearOfRest.Where(ss => ss.Year == 2021).Select(ss => (long?) ss.Id).FirstOrDefault();
+            var year2020 = context.YearOfRest.Where(ss => ss.Year == 2020).Select(ss => (long?) ss.Id).FirstOrDefault();
 
             #region 1050 зарегистрировано
 
@@ -43,7 +43,7 @@ namespace RestChild.DAL.Configurations
                 Status = 1050,
                 Name = "заявление зарегистрировано",
                 Commentary =
-                    "Ваше заявление зарегистрировано.\n\rУведомление о результате рассмотрения заявления будет направлено в ваш Личный кабинет на Портале в период с 17 января по 22 февраля 2021 г.",
+                    "Ваше заявление зарегистрировано.\n\rУведомление о результате рассмотрения заявления будет направлено в ваш Личный кабинет на Портале в период с 17 января по 22 февраля 2022 г.",
                 OrderField = id,
                 SendEmail = true
             });
@@ -69,7 +69,7 @@ namespace RestChild.DAL.Configurations
 
             #endregion
 
-            #region 1035 отказ в регистрации
+            #region 1035.1 отказ в регистрации (ЛОК 2022)
 
             context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
             {
@@ -92,13 +92,21 @@ namespace RestChild.DAL.Configurations
                 Id = ++id,
                 ChainId = (long) StatusEnum.RegistrationDecline,
                 Status = 1035,
-                ReasonCode = null,
+                ReasonCode = "1",
                 Name = "отказ в регистрации заявления",
                 Commentary =
                     "Заявление является повторным. \n\r Вы уже подали заявление о предоставлении услуг отдыха и оздоровления.",
                 OrderField = id,
                 SendEmail = true
             });
+
+            context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+                new RequestStatusCshedSendAndSignDocument
+                {
+                    MpguStatusId = id,
+                    SignNeed = true,
+                    DocumentPath = DocumentGenerationEnum.NotificationRegistration
+                });
 
             #endregion
 
@@ -698,8 +706,7 @@ namespace RestChild.DAL.Configurations
                 Id = (long) StatusEnum.IncludedInList + 10000,
                 RequestOnMoney = true,
                 StatusActionId = (long) StatusEnum.IncludedInList + 10000,
-                IsFirstCompany = true,
-                YearOfRestId = year2021,
+                IsFirstCompany = true
             });
 
             context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
@@ -1082,19 +1089,8 @@ namespace RestChild.DAL.Configurations
                 Status = 1060,
                 Name = "Ожидание прихода заявителя",
                 Commentary =
-                    @"Для подтверждения сведений, указанных в заявлении, вам необходимо явиться в течение 10 рабочих дней с момента направления этого уведомления по адресу: г. Москва, пер. Огородная Слобода, д. 9 стр. 1, с 8:00 до 20:00 ежедневно (кроме государственных праздников). Предварительно необходимо <a href='https://www.mos.ru/pgu/ru/services/link/3109/?onsite_from=67532'>записаться на приём</a>.
-При себе необходимо иметь:
-- документ, удостоверяющий личность ребёнка;
-- документ, удостоверяющий личность заявителя;
-- документ, удостоверяющий личность сопровождающего;
-- документ, содержащий сведения о месте жительства ребёнка в городе Москве;
-- документ, подтверждающий полномочия заявителя как родителя (законного представителя);
-- документ, подтверждающий льготную категорию ребёнка;
-- документ, подтверждающий льготную категорию лица из числа детей-сирот и детей оставшихся без попечения родителей;
-- документ, содержащий сведения о месте жительства лица из числа детей-сирот и детей оставшихся без попечения родителей в городе Москве;
-- документ, подтверждающий полномочия сопровождающего лица для совместного отдыха, в том числе для сопровождающего по доверенности;
-- документ, подтверждающий полномочия на подачу заявления (для заявителя по доверенности);
-- документ, подтверждающий смену ФИО лиц, указанных в заявлении (только в случае изменения).",
+                    @"Для подтверждения сведений, указанных в заявлении, вам необходимо явиться в течение 10 рабочих дней с момента направления этого уведомления по адресу: г. Москва, Малый Харитоньевский переулок д. 6 стр. 1, с 8:00 до 20:00 ежедневно (кроме государственных праздников). Предварительно необходимо <a href='https://www.mos.ru/pgu/ru/services/link/3109/?onsite_from=67532'>записаться на приём</a>.
+С перечнем документов, которые необходимо иметь при себе, можно ознакомиться во вложении.",
                 OrderField = id,
                 SendEmail = true
             });
@@ -1589,7 +1585,8 @@ namespace RestChild.DAL.Configurations
                 Id = (long) StatusEnum.Reject + 50000,
                 IsFirstCompany = true,
                 StatusId = (long) StatusEnum.Reject,
-                DeclineReasonId = 201705
+                DeclineReasonId = 201705,
+                YearOfRestId = year2020
             });
 
             context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
@@ -1601,7 +1598,7 @@ namespace RestChild.DAL.Configurations
                 Name = "Результат рассмотрения заявления",
                 Commentary = "Ваше заявление рассмотрено.",
                 OrderField = id,
-                SendEmail = true
+                SendEmail = true,
             }, new RequestStatusForMpgu
             {
                 Id = ++id,
@@ -2417,6 +2414,108 @@ namespace RestChild.DAL.Configurations
                     SignNeed = true,
                     DocumentPath = DocumentGenerationEnum.NotificationRefuse
                 });
+
+            #endregion
+
+            #region Лок 2022 1035.2 отказ в регистрации
+
+            context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            {
+                Id = (long) StatusEnum.RegistrationDecline + 202100000,
+                StatusId = (long) StatusEnum.RegistrationDecline,
+                StatusActionId = (long) StatusEnum.RegistrationDecline + 202200000,
+                IsFirstCompany = true
+            });
+
+            context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long) StatusEnum.RegistrationDecline + 202100000,
+                Status = 1040,
+                Name = "заявление доставлено в ведомство",
+                Commentary = string.Empty,
+                OrderField = id,
+                SendEmail = false
+            }, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long) StatusEnum.RegistrationDecline + 202100000,
+                Status = 1035,
+                ReasonCode = "2",
+                Name = "отказ в регистрации заявления",
+                Commentary =
+                    "Заявление является повторным. \n\r На указанного ребёнка уже подано заявление о предоставлении услуг отдыха и оздоровления.",
+                OrderField = id,
+                SendEmail = true
+            });
+
+            context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+                new RequestStatusCshedSendAndSignDocument
+                {
+                    MpguStatusId = id,
+                    SignNeed = true,
+                    DocumentPath = DocumentGenerationEnum.NotificationRegistration
+                });
+
+            #endregion
+
+            #region Лок 2022 7704 Сбор сведений общий
+
+            context.RequestEvent.AddOrUpdate(e => e.Id, new RequestEvent
+            {
+                Id = ++eventIds,
+                Name = "7704 Сбор сведений",
+                EventCode = RequestEventEnum.SendRequestBase
+            });
+
+            context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            {
+                Id = --chainId,
+                RequestEventId = eventIds,
+                IsFirstCompany = true
+            });
+
+            context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = chainId,
+                Status = 7704,
+                ReasonCode = null,
+                Name = "Сбор сведений",
+                Commentary = "1. Получение документов из Базового Регистра (проверка льготной категории и получения ежемесячного пособия на ребёнка в ДТСЗН).\n2. Получение документов из Базового Регистра (проверка родства в ФЗАГС).\n3. Получение документов из Базового Регистра Пенсионного фонда РФ (проверка СНИЛС).\n4. Получение документов из АИС «ЦПМПК» (проверка льготной категории дети с ограниченными возможностями здоровья в ЦПМПК).\n5. Получение документов из Федеральной государственной информационной системы «Федеральный реестр инвалидов» (проверка льготной категории дети-инвалиды в ПФР).\n6. Получение документов из Базового Регистра АС УР (проверка паспорта в МВД).\n7. Получение документов из Базового Регистра АС УР (проверка адреса регистрации в МВД детей всех льготных категорий и лиц из числа детей-сирот и детей, оставшихся без попечения родителей).\n8. Получение документов из Базового Регистра ДТСЗН (проверка полномочий законного представителя ребёнка для льготной категории дети-сироты и дети, оставшиеся без попечения родителей, находящиеся под опекой, попечительством, в том числе приемной или патронатной семье в ДТСЗН).",
+                OrderField = id,
+                SendEmail = false
+            });
+
+            #endregion
+
+            #region Лок 2022 7705 Сведения получены общий
+
+            context.RequestEvent.AddOrUpdate(e => e.Id, new RequestEvent
+            {
+                Id = ++eventIds,
+                Name = "7705 Сведения получены",
+                EventCode = RequestEventEnum.GetResponseBase
+            });
+
+            context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            {
+                Id = --chainId,
+                RequestEventId = eventIds,
+                IsFirstCompany = true
+            });
+
+            context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = chainId,
+                Status = 7705,
+                ReasonCode = null,
+                Name = "Сбор сведений",
+                Commentary = "1. Документы из Базового Регистра получены (проверка льготной категории и получения ежемесячного пособия на ребёнка в ДТСЗН).\n2. Документы из Базового Регистра получены (проверка родства в ФЗАГС).\n3. Документы из Базового Регистра Пенсионного фонда РФ получены (проверка СНИЛС).\n4. Документы из Базового Регистра получены в АИС «ЦПМПК» (проверка льготной категории дети с ограниченными возможностями здоровья в ЦПМПК).\n5. Документы из Федеральной государственной информационной системы «Федеральный реестр инвалидов» получены (проверка льготной категории дети-инвалиды в ПФР).\n6. Документы из Базового Регистра АС УР получены (проверка паспорта в МВД).\n7. Документы из Базового Регистра АС УР получены (проверка адреса регистрации в МВД детей всех льготных категорий и лиц из числа детей-сирот и детей, оставшихся без попечения родителей).\n8. Документы из Базового Регистра получены (проверка законного представительства в ДТСЗН).",
+                OrderField = id,
+                SendEmail = false
+            });
 
             #endregion
         }

@@ -1,4 +1,6 @@
-﻿using RestChild.Extensions.Filter;
+﻿using System;
+using System.Collections.Generic;
+using RestChild.Extensions.Filter;
 using RestChild.Mobile.Domain;
 
 namespace RestChild.Web.Models.GiftReserved
@@ -46,8 +48,29 @@ namespace RestChild.Web.Models.GiftReserved
         public decimal? PriceTo { get; set; }
 
         /// <summary>
+        ///     Зарезервировано с
+        /// </summary>
+        public DateTime? ReservedFrom { get; set; }
+
+        /// <summary>
+        ///     Зарезервировано по
+        /// </summary>
+        public DateTime? ReservedTo { get; set; }
+
+        /// <summary>
         ///     результаты
         /// </summary>
         public CommonPagedList<Mobile.Domain.GiftReserved> Result { get; set; }
+
+        /// <summary>
+        ///     Лагерь/смена
+        /// </summary>
+        public long? BoutId { get; set; }
+
+        /// <summary>
+        ///     Лагерь/смена (наименование)
+        /// </summary>
+        public string BName { get; set; }
+
     }
 }

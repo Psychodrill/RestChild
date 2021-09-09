@@ -1,29 +1,20 @@
-﻿@using DocumentFormat.OpenXml.Wordprocessing
-@using RestChild.Comon
+﻿@using RestChild.Comon
 @using RestChild.Comon.Enumeration
-@using RestChild.DAL.Migrations
 @using RestChild.Extensions.Extensions
 @using RestChild.Web.App_Code
 @using RestChild.Web.Controllers
-@using RestChild.Web.Models
 @using Styles = System.Web.Optimization.Styles
 @model RestChild.Web.Models.TransportInfoModel
 
 @{
-	ViewBag.Title = "Транспорт";
-	Layout = "~/Views/Shared/_Layout.cshtml";
-	var isTransportFormed = Model.Data.StateId == StateMachineStateEnum.Transport.Formed;
-	var canChangeNeedTicket = Security.HasRight(AccessRightEnum.Transport.SetNotNeedTicket);
-	var toTransport = Model.Data.Bout != null && Model.Data.Bout.TransportInfoToId == Model.Data.Id;
-	var boutIsClosed = Model.Data.Bout != null && Model.Data.Bout.StateId == StateMachineStateEnum.Bout.Closed;
-	var boutIsConfirmed = Model.Data.Bout != null && Model.Data.Bout.StateId == StateMachineStateEnum.Bout.Confirmed;
-	var boutIsFormed = Model.Data.Bout != null && Model.Data.Bout.StateId == StateMachineStateEnum.Bout.Formed;
+    ViewBag.Title = "Транспорт";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="row">
-	<div class="col-md-12">
-		<h2>Транспорт</h2>
-	</div>
+    <div class="col-md-12">
+        <h2>Транспорт</h2>
+    </div>
 </div>
 
 <a href="@Url.Action("Search", "TransportInfo")">Вернуться</a>
@@ -33,84 +24,83 @@
 
 
 <div class="row">
-	<div class="col-md-12">
-		@using (Html.BeginForm("Save", "TransportInfo", FormMethod.Post, new { @id = "transportForm" }))
-		{
-			@Html.AntiForgeryToken()
-			@Html.HiddenFor(m => m.Data.Id)
-			@Html.HiddenFor(m => m.Data.StateId)
-			@Html.HiddenFor(m => m.StateMachineActionString)
-			@Html.HiddenFor(m => m.Data.HistoryLinkId)
-			if (!ViewData.ModelState.IsValid)
-			{
-				<div class="alert alert-danger" role="alert">
-					@Html.ValidationSummary(false)
-				</div>
-			}
-			@Html.Partial("Partials/General")
-			<h5>Статистика распределения по рейсам:</h5>
-			<table class="table" id="flightStatus">
-				<thead>
-				<tr>
-					<th>Рейс</th>
-					<th>Дата</th>
-					<th>Количество</th>
-				</tr>
-				</thead>
-				<tbody>
-				@foreach (var i in Model.FlightStatistics)
-				{
-					<tr>
-						<td>@i.Item1</td>
-						<td>@i.Item2.FormatEx()</td>
-						<td>@i.Item3.FormatEx()</td>
-					</tr>
-				}
-				</tbody>
-			</table>
+    <div class="col-md-12">
+        @using (Html.BeginForm("Save", "TransportInfo", FormMethod.Post, new {@id = "transportForm"}))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Data.Id)
+            @Html.HiddenFor(m => m.Data.StateId)
+            @Html.HiddenFor(m => m.StateMachineActionString)
+            @Html.HiddenFor(m => m.Data.HistoryLinkId)
+            if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @Html.ValidationSummary(false)
+                </div>
+            }
+            @Html.Partial("Partials/General")
+            <h5>Статистика распределения по рейсам:</h5>
+            <table class="table" id="flightStatus">
+                <thead>
+                <tr>
+                    <th>Рейс</th>
+                    <th>Дата</th>
+                    <th>Количество</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var i in Model.FlightStatistics)
+                {
+                    <tr>
+                        <td>@i.Item1</td>
+                        <td>@i.Item2.FormatEx()</td>
+                        <td>@i.Item3.FormatEx()</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
 
-			<fieldset class="form-horizontal row form-group">
-				<label class="col-md-1 control-label text-right">Поиск:</label>
-				<div class="col-md-5">
-					<input type="text" class="form-control" id="searchTextInput" />
-				</div>
-				@if (Model.IsEditable)
-				{
+            <fieldset class="form-horizontal row form-group">
+                <label class="col-md-1 control-label text-right">Поиск:</label>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="searchTextInput"/>
+                </div>
+                @if (Model.IsEditable)
+                {
+                    <div class="col-md-6  pull-right">
+                        <div class="col-md-5" style="padding-right: 5px; padding-left: 5px;">
+                            <div class="input-group date datepicker-anytime">
+                                @Html.TextBox("DepartureDateForAll", string.Empty, new {@class = "form-control input-mask-date-anytime", autocomplete = "off", Id = "DepartureDateForAll"})
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="padding-right: 5px;">
+                            @Html.DropDownList("DirectoryFlightSelectForAll", SelectListHelper.Create(Model.DirectoryFlights, f => new SelectListItem() {Value = f.Id.ToString(), Text = f.GetName()}), new {@class = "form-control", autocomplete = "off", Id = "DirectoryFlightSelectForAll"})
+                        </div>
 
-					<div class="col-md-6  pull-right">
-						<div class="col-md-5" style="padding-right: 5px; padding-left: 5px;">
-							<div class="input-group date datepicker-anytime">
-								@Html.TextBox("DepartureDateForAll", string.Empty, new { @class = "form-control input-mask-date-anytime", autocomplete = "off", Id = "DepartureDateForAll" })
-								<span class="input-group-addon">
-									<span class="glyphicon glyphicon-calendar"></span>
-								</span>
-							</div>
-						</div>
-						<div class="col-md-6" style="padding-right: 5px;">
-							@Html.DropDownList("DirectoryFlightSelectForAll", SelectListHelper.Create(Model.DirectoryFlights, f => new SelectListItem() { Value = f.Id.ToString(), Text = f.GetName() }), new { @class = "form-control", autocomplete = "off", Id = "DirectoryFlightSelectForAll" })
-						</div>
-
-						<div class="col-md-1" style="padding-left: 5px;">
-							<button class="btn btn-default" id="DirectoryFlightButtonForAll" type="button">
-								<i class="glyphicon glyphicon-ok"></i>
-							</button>
-						</div>
-					</div>
-				}
-			</fieldset>
-			@Html.Partial("Partials/TransportToCamps")
-			@Html.Partial("Partials/TransportToHotels")
-		}
-	</div>
+                        <div class="col-md-1" style="padding-left: 5px;">
+                            <button class="btn btn-default" id="DirectoryFlightButtonForAll" type="button">
+                                <i class="glyphicon glyphicon-ok"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </fieldset>
+            @Html.Partial("Partials/TransportToCamps")
+            @Html.Partial("Partials/TransportToHotels")
+        }
+    </div>
 </div>
 
 
 @section styles{
-	@Styles.Render("~/Content/css/select2.css")
-	@Styles.Render("~/Content/css/select2-bootstrap.css")
-	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
-	@Styles.Render("~/Content/Vocabulary/TransportInfo.css")
-	<style type="text/css">
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/Vocabulary/TransportInfo.css")
+    <style type="text/css">
 		.datetime {
 			width: 200px !important;
 		}
@@ -122,24 +112,24 @@
 }
 
 @section Scripts {
-	<script type="text/javascript">
+    <script type="text/javascript">
 		var formActionString = '@AccessRightEnum.Transport.Form';
 	</script>
 
-	@Scripts.Render("~/Scripts/jquery.validate.min.js")
-	@Scripts.Render("~/Scripts/select2.min.js")
-	@Scripts.Render("~/Scripts/select2_locale_ru.js")
-	<script type="text/javascript" src="~/Scripts/moment.js"></script>
-	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
-	<script type="text/javascript">
+    @Scripts.Render("~/Scripts/jquery.validate.min.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
 		moment.locale("ru");
 	</script>
-	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
-	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
-	@Scripts.Render("~/Scripts/doT.js")
-	@Scripts.Render("~/Scripts/Vocabulary/TransportEdit.js")
-	@Scripts.Render("~/Scripts/StateScript.js")
-	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
-	@Scripts.Render("~/Scripts/assets/NotNeedTicketSelect.js")
-	@Html.Partial("Assets/HistoryLinkTemplate")
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/Vocabulary/TransportEdit.js")
+    @Scripts.Render("~/Scripts/StateScript.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Scripts.Render("~/Scripts/assets/NotNeedTicketSelect.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
 }

@@ -233,6 +233,33 @@ namespace RestChild.Web.Models
          //	}
          //}
 
+         if (Data.ApplicantTypeId == (long) ApplicantTypeEnum.Confidant && (request.TypeOfRestId != (long) TypeOfRestEnum.Compensation && request.TypeOfRestId != (long) TypeOfRestEnum.CompensationYouthRest))
+         {
+             if (!Data.ProxyDateOfIssure.HasValue)
+             {
+                 IsValid = false;
+                 ProxyDateOfIssureEm = RequaredField;
+             }
+
+             if (!Data.ProxyEndDate.HasValue)
+             {
+                 IsValid = false;
+                 ProxyEndDateEm = RequaredField;
+             }
+
+             if (string.IsNullOrWhiteSpace(Data.NotaryName))
+             {
+                 IsValid = false;
+                 NotaryNameEm = RequaredField;
+             }
+
+             if (string.IsNullOrWhiteSpace(Data.ProxyNumber))
+             {
+                 IsValid = false;
+                 ProxyNumberEm = RequaredField;
+             }
+         }
+
          if (request != null && request.SourceId == (long) SourceEnum.Mpgu)
          {
             if (string.IsNullOrWhiteSpace(Data.Email))
@@ -261,9 +288,9 @@ namespace RestChild.Web.Models
                IsValid = false;
             }
 
-            if (age < 18 && !Data.RequestId.HasValue && !(RequestModel.Data.AgentApplicant ?? false))
+            if (age < 18 && !Data.RequestId.HasValue && !(RequestModel?.Data?.AgentApplicant ?? false))
             {
-               DateOfBirthEm = "Заявителю не может быть меньше 18 лет";
+               DateOfBirthEm = "Сопровождающему не может быть меньше 18 лет";
                IsValid = false;
             }
             else if (age < 18 && Data.IsProxy)

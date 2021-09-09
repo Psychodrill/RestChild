@@ -14,7 +14,7 @@
     </div>
     <label class="control-label col-xs-2">Количество</label>
     <div class="col-xs-3">
-        @Html.TextBoxFor(r => r.Count, new {@class = "form-control integer", maxlength = "6", autocomplete = "off"}).DisableIf(() => !canEdit)
+        @Html.TextBoxFor(r => r.Count, new {@class = "form-control integer", maxlength = "6", autocomplete = "off"}).DisableIf(!canEdit)
     </div>
     <div class="col-xs-1">
         @if (canEdit && (Model.Reserved == null || !Model.Reserved.Any()))

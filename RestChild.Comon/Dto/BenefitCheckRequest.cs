@@ -67,6 +67,36 @@ namespace RestChild.Comon.Dto
         public string Settlement { get; set; }
 
         /// <summary>
+        ///     Город регистрации
+        /// </summary>
+        [DataMember(Name = "addressCity", EmitDefaultValue = false)]
+        public string AddressCity { get; set; }
+
+        /// <summary>
+        ///     I строка адреса регистрации
+        /// </summary>
+        [DataMember(Name = "addressLine1", EmitDefaultValue = false)]
+        public string AddressLine1 { get; set; }
+
+        /// <summary>
+        ///     II строка адреса регистрации
+        /// </summary>
+        [DataMember(Name = "addressLine2", EmitDefaultValue = false)]
+        public string AddressLine2 { get; set; }
+
+        /// <summary>
+        ///     III строка адреса регистрации
+        /// </summary>
+        [DataMember(Name = "addressLine3", EmitDefaultValue = false)]
+        public string AddressLine3 { get; set; }
+
+        /// <summary>
+        ///     IV строка адреса регистрации
+        /// </summary>
+        [DataMember(Name = "addressLine4", EmitDefaultValue = false)]
+        public string AddressLine4 { get; set; }
+
+        /// <summary>
         ///     ответ от ЦПМПК
         /// </summary>
         public CpmpkResponseDto CpmpkResponse { get; set; }

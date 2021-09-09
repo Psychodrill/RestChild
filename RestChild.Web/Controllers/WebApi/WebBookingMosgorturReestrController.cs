@@ -346,7 +346,9 @@ namespace RestChild.Web.Controllers.WebApi
                     !(ss.StatusId == (long) MGTVisitBookingStatuses.PrebookingRegistered ||
                       ss.StatusId == (long) MGTVisitBookingStatuses.BookingRegistered ||
                       ss.StatusId == (long) MGTVisitBookingStatuses.BookingVisited ||
-                      ss.StatusId == (long) MGTVisitBookingStatuses.BookingUnvisited)) ?? 0
+                      ss.StatusId == (long) MGTVisitBookingStatuses.BookingUnvisited)) ?? 0,
+                SuoVisitTooEarly = day.SuoVisitTooEarly ?? Properties.Settings.Default.SuoVisitTooEarly,
+                SuoVisitTooLate = day.SuoVisitTooLate ?? Properties.Settings.Default.SuoVisitTooLate,
             };
 
             if (day.Id > 0 && day.Windows != null && day.Windows.Count(ss => !ss.IsCanceled) > 0)
@@ -402,6 +404,8 @@ namespace RestChild.Web.Controllers.WebApi
                 day.Date = model.Date.Date;
                 day.WorkingInterval = model.TimeInterval;
                 day.IsDeleted = model.IsDeleted;
+                day.SuoVisitTooEarly = model.SuoVisitTooEarly;
+                day.SuoVisitTooLate = model.SuoVisitTooLate;
 
                 var currentUser = Security.GetCurrentAccount();
 

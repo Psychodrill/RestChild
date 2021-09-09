@@ -30,7 +30,7 @@ namespace RestChild.Web.Controllers
 
             ModelState.Clear();
 
-            ApiController.FillGroups(filter, Settings.Default.TablePageSize);
+            ApiController.FillGroups(filter);
 
             return PartialView("Partials/GroupList", filter);
         }
@@ -47,7 +47,7 @@ namespace RestChild.Web.Controllers
                 return RedirectToAvalibleAction();
             }
 
-            ApiController.FillGroups(filter, Settings.Default.TablePageSize);
+            ApiController.FillGroups(filter);
 
             return PartialView("OrphanageGroupSearch", filter);
         }
@@ -459,7 +459,6 @@ namespace RestChild.Web.Controllers
         ///     Поиск воспитанников в группе
         /// </summary>
         [Route("Orphanage/Groups/PupilSearch")]
-        [ValidateAntiForgeryToken]
         [HttpPost]
         public ActionResult OrphanageGroupPupilSearch(OrphanagePupilsFilterModel filter)
         {
@@ -469,7 +468,7 @@ namespace RestChild.Web.Controllers
                 return RedirectToAvalibleAction();
             }
 
-            filter.Result = ApiController.GetPupils(filter);
+            filter.Results = ApiController.GetPupils(filter);
 
             return PartialView("Partials/GroupPupilList", filter);
         }
@@ -557,7 +556,9 @@ namespace RestChild.Web.Controllers
 
             var filter = new OrphanagePupilsFilterModel(pupils)
             {
-                GroupId = groupId, ActionName = nameof(OrphanageGroupPupilsChooseSearch), IsInGroup = false
+                GroupId = groupId,
+                ActionName = nameof(OrphanageGroupPupilsChooseSearch),
+                IsInGroup = false
             };
 
             return PartialView("Partials/GroupPupilsToAdd", filter);
@@ -577,7 +578,7 @@ namespace RestChild.Web.Controllers
             }
 
             filter.IsFilled = true;
-            filter.Result = ApiController.GetPupils(filter);
+            filter.Results = ApiController.GetPupils(filter);
 
             return PartialView("Partials/GroupPupilsToAddForm", filter);
         }
@@ -695,12 +696,6 @@ namespace RestChild.Web.Controllers
             {
                 sb.AppendLine(
                     $"<li>Изменено кол-во сопровождающих от учреждения, старое значение:'{persisted.CollaboratorsCount.FormatEx(string.Empty)}', новое значение:'{entity.CollaboratorsCount.FormatEx(string.Empty)}'</li>");
-            }
-
-            if (persisted.MGTCollaboratorsCount != entity.MGTCollaboratorsCount)
-            {
-                sb.AppendLine(
-                    $"<li>Изменено кол-во сопровождающих от МГТ, старое значение:'{persisted.MGTCollaboratorsCount.FormatEx(string.Empty)}', новое значение:'{entity.MGTCollaboratorsCount.FormatEx(string.Empty)}'</li>");
             }
         }
     }

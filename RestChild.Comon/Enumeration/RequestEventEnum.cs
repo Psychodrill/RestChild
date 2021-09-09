@@ -114,14 +114,22 @@ namespace RestChild.Comon.Enumeration
         ///     7704.7 Получение документов из Базового Регистра АС УР (проверка адреса регистрации в МВД детей всех льготных
         ///     категорий и лиц из числа детей-сирот и детей, оставшихся без попечения родителей).
         /// </summary>
-        public static readonly Guid SendRequestForRegistrationByPassport =
-            new Guid("A5501A0B-80EA-4C96-B8F6-A7E9BA0C01BF");
+        public static readonly Guid SendRequestForRegistrationByPassport = new Guid("A5501A0B-80EA-4C96-B8F6-A7E9BA0C01BF");
 
         /// <summary>
         ///     7705.7 Документы из Базового Регистра АС УР получены (проверка адреса регистрации в МВД детей всех льготных
         ///     категорий и лиц из числа детей-сирот и детей, оставшихся без попечения родителей).
         /// </summary>
-        public static readonly Guid GetResponseFoRegistrationByPassport =
-            new Guid("98087B63-E659-4235-B3A4-C6E92C18CB7F");
+        public static readonly Guid GetResponseFoRegistrationByPassport = new Guid("98087B63-E659-4235-B3A4-C6E92C18CB7F");
+
+        /// <summary>
+        ///     7704 Получение документов из Базового Регистра
+        /// </summary>
+        public static readonly Guid SendRequestBase = new Guid("A645B426-E3E9-4FDD-9790-D92397C7E233");
+
+        /// <summary>
+        ///     7705 Документы из Базового Регистра АС УР получены
+        /// </summary>
+        public static readonly Guid GetResponseBase = new Guid("A7D96766-F2B2-4876-B5E4-6CCF7B16CECF");
     }
 }

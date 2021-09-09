@@ -332,7 +332,7 @@ namespace RestChild.Web.Models.TradeUnion
         [DataMember(Name = "TradeUnionOrganizationName")]
         public string TradeUnionOrganizationName { get; set; }
 
-        public TradeUnionCamper BuildEntity()
+        public virtual TradeUnionCamper BuildEntity()
         {
             var res = new TradeUnionCamper
             {

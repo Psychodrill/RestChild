@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="ServiceProperties">
+        <xs:annotation>
+            <xs:documentation xml:lang="ru">ДОК: Установление инвалидности ФМБА (СМЭВ 3)</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="birthdate" type="xs:dateTime" minOccurs="1">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="ru">Дата рождения</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="buroname" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="ru">Название бюро МСЭ</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="firstname" type="xs:string" minOccurs="1">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="ru">Имя гражданина</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ismale" type="xs:boolean" minOccurs="1">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="ru">Пол</xs:documentation>
+                        <xs:documentation xml:lang="ru">False - Женский, True - Мужской</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="issuedatefrom" type="xs:dateTime" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="ru">Начало периода выдачи справки об инвалидности</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="issuedateto" type="xs:dateTime" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="ru">Окончание периода выдачи справки об инвалидности</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="lastname" type="xs:string" minOccurs="1">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="ru">Фамилия гражданина</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="regionname" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="ru">Регион Российской Федерации</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="secondname" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="ru">Отчество гражданина</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="senderinfo" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="ru">Сведения об отправителе</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="snils" type="xs:string" minOccurs="1">
+                    <xs:annotation>
+                        <xs:documentation xml:lang="ru">СНИЛС</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="testmsg" type="Void" minOccurs="0"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="Void">
+        <xs:sequence/>
+    </xs:complexType>
+</xs:schema>

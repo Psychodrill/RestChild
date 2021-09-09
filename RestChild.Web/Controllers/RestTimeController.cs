@@ -34,9 +34,9 @@ namespace RestChild.Web.Controllers
 			ApiYearController.SetUnitOfWorkInRefClass(unitOfWork);
 		}
 
-        public ActionResult Index()
+        public override ActionResult Index()
         {
-			return RedirectToAction("Search");
+			return RedirectToAction(nameof(Search));
         }
 
         public ActionResult Search(string name = "", long? tId = null, long? yId = null, int pageNumber = 1)

@@ -291,7 +291,13 @@ namespace RestChild.Web.Controllers
 
             if(persisted.Filled != entity.Filled)
             {
-                sb.AppendLine($"<li>Изменён признак достаточной заполненности данных о сотруднике, старое значение:'{persisted.Filled.FormatEx(string.Empty)}', новое значение:'{entity.Filled.FormatEx(string.Empty)}'</li>");
+                sb.AppendLine($"<li>Изменён признак достаточной заполненности данных о сотруднике, старое значение:'{persisted.Filled.FormatEx()}', новое значение:'{entity.Filled.FormatEx()}'</li>");
+            }
+
+            if (persisted.Applicant?.IsDeleted != entity.Applicant?.IsDeleted)
+            {
+                sb.AppendLine(
+                    $"<li>Изменён признак того, что сотрудник удалён, старое значение:'{persisted.Applicant?.IsDeleted.FormatEx()}', новое значение:'{entity.Applicant?.IsDeleted.FormatEx()}'</li>");
             }
 
             var res = sb.ToString();
@@ -311,12 +317,12 @@ namespace RestChild.Web.Controllers
             ViewBag.ColloboratorTypes =
                 UnitOfWork.GetSet<OrganizationCollaboratorPostType>().Where(ss => ss.IsActive).ToList();
             ViewBag.WellnesOrganisatioColloboratorTypes =
-                UnitOfWork.GetSet<TypeOfLinkPeople>().ToList();
+                UnitOfWork.GetSet<TypeOfLinkPeople>().Where(ss => ss.Id != (long) TypeOfLinkPeopleEnum.Child).ToList();
             ViewBag.OrphanageAdresses =
                 UnitOfWork.GetSet<OrphanageAddress>()
                     .Where(ss => ss.Organisation.Id == orphanageId && ss.Organisation.Orphanage == true).ToList();
             ViewBag.DocumentTypes =
-                UnitOfWork.GetSet<DocumentType>().Where(ss => ss.ForApplicant).ToList();
+                UnitOfWork.GetSet<DocumentType>().Where(ss => ss.ForApplicant && !ss.ForAgent).ToList();
             ViewBag.Countries =
                 UnitOfWork.GetSet<Country>().ToList();
         }
@@ -340,7 +346,7 @@ namespace RestChild.Web.Controllers
                          && col.WellnessOrganisationPositionId.HasValue
                          && col.OrganisatonAddressId.HasValue
                          && (col.Applicant?.DocumentTypeId.HasValue ?? false)
-                         && (Common.DocumentTypeHelper.IsPassportOfForeignCountry(col.Applicant.DocumentTypeId.Value) || !string.IsNullOrWhiteSpace(col.Applicant?.DocumentSeria)) 
+                         && (Common.DocumentTypeHelper.IsPassportOfForeignCountry(col.Applicant?.DocumentTypeId.Value) || !string.IsNullOrWhiteSpace(col.Applicant?.DocumentSeria))
                          && !string.IsNullOrWhiteSpace(col.Applicant?.DocumentNumber)
                          && (col.Applicant?.DocumentDateOfIssue.HasValue ?? false)
                          && !string.IsNullOrWhiteSpace(col.Applicant?.DocumentSubjectIssue)

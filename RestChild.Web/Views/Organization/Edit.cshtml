@@ -9,389 +9,400 @@
 }
 
 <h2>Редактирование учреждения</h2>
-<a href="@Url.Action("List", "Organization", new { id = Model.Data.Id })">Вернуться</a>
+<a href="@Url.Action("List", "Organization", new {id = Model.Data.Id})">Вернуться</a>
 <div class="row">
-    <div class="col-md-12">
-        @using (Html.BeginForm("Save", "Organization", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(model => model.Data.Id)
-            @Html.HiddenFor(model => model.Data.ExternalUid)
-            @Html.HiddenFor(model => model.Data.IsDeleted)
-            @Html.HiddenFor(model => model.Data.IsLast)
-            @Html.HiddenFor(model => model.Data.EntityId)
-            @Html.HiddenFor(model => model.Data.LastUpdateTick)
-            @Html.HiddenFor(model => model.Data.HistoryLinkId)
-            <fieldset class="form-horizontal">
-                <div class="form-group">
-                    <div class="col-md-12">
-                        <button type="submit" class="btn btn-default btn-primary">
-                            <i class="glyphicon glyphicon-pencil"></i> Сохранить
-                        </button>
-                        @if (Model.Data.HistoryLinkId.HasValue)
-                        {
-                            <a data-history-id="@Model.Data.HistoryLinkId" class="btn btn-default btn-hystory-link" href="#">История</a>
-                        }
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Название учреждения<span class="requared">*</span></label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.Name, new { @class = "form-control", maxlength = 1000, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.Name, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Краткое название учреждения</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.ShortName, new { @class = "form-control", maxlength = 1000, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.ShortName, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Название на латинице</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.LatinName, new { @class = "form-control", maxlength = 1000, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.LatinName, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">ИНН</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.Inn, new { @class = "form-control integer", maxlength = 12, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.Inn, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">КПП</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.Kpp, new { @class = "form-control integer", maxlength = 9, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.Kpp, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">ОГРН</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.Ogrn, new { @class = "form-control integer", maxlength = 15, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.Ogrn, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Форма собственности</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.Ownership, new { @class = "form-control", maxlength = 1000, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.Ownership, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group col-md-12">
-                    <label class="col-md-3 control-label text-right">ОКВЭД</label>
-                    <div class="col-md-9">
-                        <div class="row col-md-12 @(!Model.Okveds.Any() ? "hidden" : "")" id="okvedDiv">
-                            <table class="table" id="okvedTable">
-                                <tbody>
-                                    @for (var i = 0; Model.Okveds.Count > i; i++)
-                                    {
-                                        <tr>
-                                            <td>
-                                                @Html.HiddenFor(m => m.Okveds[i].Id)
-                                                <span class="okvedtitle">
-                                                    @Model.Okveds[i].Code - @Model.Okveds[i].Name
-                                                </span>
-                                            </td>
-                                            <td style="width: 40px">
-                                                <a class="remove-okved-btn" type="button" title="Удалить" href="javascript:void(0)"><i class="glyphicon glyphicon-remove"></i></a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-11">
-                                <input type="hidden" id="okvedId" class="form-control" value="" />
-                            </div>
-                            <div class="col-md-1">
-                                <button type="button" class="btn btn-default" title="Добавить" id="okvedAdd"><i class="glyphicon glyphicon-plus"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Телефон</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.Phone, new { @class = "form-control input-mask-phone-new", maxlength = 100, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.Phone, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">E-mail</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.Email, new { @class = "form-control", maxlength = 100, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.Email, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Ген. директор</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.HeadPerson, new { @class = "form-control", maxlength = 100, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.HeadPerson, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Контактное лицо</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.ContactPerson, new { @class = "form-control", maxlength = 100, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.ContactPerson, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Куратор</label>
-                    <div class="col-md-9">
-                        @Html.HiddenFor(m => m.Data.CuratorId, new { @class = "form-control curator-main-id", accountname = Model.Data.CuratorId == null ? "-- Не указано --" : string.Format("{0} ({1})", Model.Data.Curator.Name, Model.Data.Curator.Login) })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Регион</label>
-                    <div class="col-md-9" data-toggle="tooltip" data-placement="right" title="Выбор из справочника субъектов РФ">
-                        @Html.DropDownListFor(model => model.Data.StateDistrictId, new SelectList(Model.StateDistricts.Select(t => new { Id = (long?)t.Id, Name = t.Name }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.StateDistrictId, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Фактические адрес</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.Address, new { @class = "form-control", maxlength = 100, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.Address, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Почтовый адрес</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.PostAdderss, new { @class = "form-control", maxlength = 100, autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.PostAdderss, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Ведомство</label>
-                    <div class="col-md-9" data-toggle="tooltip" data-placement="right" title="Выбор вышестоящего ОИВ">
-                        @Html.HiddenFor(model => model.Data.ParentId, new { @class = "hidden-parent-class" })
-                        @Html.Hidden("Vedomstvo",
-                            Model.Parent.NullSafe(p => p.Id),
-                            new
-                            {
-                                @class = "form-control street-autocomplete",
-                                data_default_id = Model.Parent.NullSafe(p => p.Id),
-                                data_default_text = Model.Parent.NullSafe(p => p.Name)
-                            })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Примечание</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.Comment, new { @class = "form-control", autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Data.Comment, "Заполните поле")
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Комиссия</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.Commission, new { @class = "form-control procent", autocomplete = "off", maxlength = "6" })
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-offset-3 col-md-9">
-                        <div class="checkbox">
-                            <label data-toggle="tooltip" data-placement="right" title="Указывает на принадлежность организации к государственным учреждениям">
-                                @Html.CheckBox("Data.IsVedorganization", Model.Data.IsVedOrganization ?? false)
-                                Государственные учреждения
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-offset-3 col-md-9">
-                        <div class="checkbox">
-                            <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация является ОИВ">
-                                @Html.CheckBoxFor(r => r.Data.IsVedomstvo)
-                                Является ОИВ
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-offset-3 col-md-9">
-                        <div class="checkbox">
-                            <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация не относится к государтвенным учреждениям">
-                                @Html.CheckBox("Data.IsContractor", Model.Data.IsContractor ?? false)
-                                Организация
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-offset-3 col-md-9">
-                        <div class="checkbox">
-                            <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация является профсоюзом">
-                                @Html.CheckBox("Data.IsTradeUnion", Model.Data.IsTradeUnion)
-                                Профсоюз
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-offset-3 col-md-3">
-                        <div class="checkbox">
-                            <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация является профсоюзным лагерем">
-                                @Html.CheckBox("Data.IsHotel", Model.Data.IsHotel)
-                                Профсоюзный лагерь
-                            </label>
-                        </div>
-                    </div>
-                    <label class="col-md-3 control-label text-right countTour @Html.Raw(Model.Data.IsHotel ? string.Empty : "hidden")">Количество мест в смену</label>
-                    <div class="col-md-3 countTour @Html.Raw(Model.Data.IsHotel ? string.Empty : "hidden")">
-                        @Html.TextBoxFor(model => model.Data.CountInTour, new { @class = "form-control integer", autocomplete = "off", maxlength = 4 })
-                        @Html.ValidationMessageFor(model => model.Data.CountInTour, "Заполните поле")
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-offset-3 col-md-9">
-                        <div class="checkbox">
-                            <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация предоставляет транспортные услуги в рамках ГК.">
-                                @Html.CheckBox("Data.IsTransport", Model.Data.IsTransport ?? false, new
-                           {
-                               id = "transportOrganizationCheckBox"
-                           })
-                                Транспортная организация
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div id="typeOfOrganization" class="form-group">
-                    <label class="col-md-3 control-label text-right">Вид транспорта</label>
-                    <div class="col-md-9">
-                        <input type="hidden" id="typeOfTransport" name="SelectedOrganizationTypes" style="width: 70%;">
-                        @if (Model.Data.TypeOfTransport != null)
-                        {
-                            foreach (var typeOfTransport in Model.Data.TypeOfTransport)
-                            {
-                                <div class="selectedTypeOfTransport">
-                                    @Html.Hidden("typeId", typeOfTransport.Id)
-                                    @Html.Hidden("typeName", typeOfTransport.Name)
-                                </div>
-                            }
-                        }
-                        @Html.ValidationMessageFor(model => model.Data.TypeOfTransport, "Выберите хотя бы один тип транспорта")
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-offset-3 col-md-9">
-                        <div class="checkbox">
-                            <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация является учреждением социальной защиты">
-                                @Html.CheckBox("Data.Orphanage", Model.Data.Orphanage)
-                                Учреждение социальной защиты
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-offset-3 col-md-9">
-                        <div class="checkbox">
-                            <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация является участником мониторинга">
-                                @Html.CheckBox("Data.IsInMonitoring", Model.Data.IsInMonitoring)
-                                Участник мониторинга
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <h4>
-                    Банковские реквизиты
-                    <a type="button" class="btn btn-primary addbank btn-xs" href="javascript:void(0);" title="Добавить"><i class="glyphicon glyphicon-plus"></i></a>
-                </h4>
-                <table class="table @(Model.Banks.Any() ? "" : "hidden")" id="bankTable">
-                    <thead>
-                        <tr>
-                            <th>БИК</th>
-                            <th>Банк</th>
-                            <th>Корр. счет</th>
-                            <th>Расч. счет</th>
-                            <th>Комментарий</th>
-                            <th></th>
-                        </tr>
-                    </thead>
+<div class="col-md-12">
+@using (Html.BeginForm("Save", "Organization", FormMethod.Post, new {enctype = "multipart/form-data"}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Data.Id)
+    @Html.HiddenFor(model => model.Data.ExternalUid)
+    @Html.HiddenFor(model => model.Data.IsDeleted)
+    @Html.HiddenFor(model => model.Data.IsLast)
+    @Html.HiddenFor(model => model.Data.EntityId)
+    @Html.HiddenFor(model => model.Data.LastUpdateTick)
+    @Html.HiddenFor(model => model.Data.HistoryLinkId)
+    @Html.HiddenFor(model => model.Data.OKATO)
+    @Html.HiddenFor(model => model.Data.ESNSIType)
+    <fieldset class="form-horizontal">
+    <div class="form-group">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-default btn-primary">
+                <i class="glyphicon glyphicon-pencil"></i> Сохранить
+            </button>
+            @if (Model.Data.HistoryLinkId.HasValue)
+            {
+                <a data-history-id="@Model.Data.HistoryLinkId" class="btn btn-default btn-hystory-link" href="#">История</a>
+            }
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Название учреждения<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Name, new {@class = "form-control", maxlength = 1000, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.Name, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Краткое название учреждения</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.ShortName, new {@class = "form-control", maxlength = 1000, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.ShortName, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Название на латинице</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.LatinName, new {@class = "form-control", maxlength = 1000, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.LatinName, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">ИНН</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Inn, new {@class = "form-control integer", maxlength = 12, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.Inn, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">КПП</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Kpp, new {@class = "form-control integer", maxlength = 9, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.Kpp, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">ОГРН</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Ogrn, new {@class = "form-control integer", maxlength = 15, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.Ogrn, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Форма собственности</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Ownership, new {@class = "form-control", maxlength = 1000, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.Ownership, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group col-md-12">
+        <label class="col-md-3 control-label text-right">ОКВЭД</label>
+        <div class="col-md-9">
+            <div class="row col-md-12 @(!Model.Okveds.Any() ? "hidden" : "")" id="okvedDiv">
+                <table class="table" id="okvedTable">
                     <tbody>
-                        @for (var i = 0; i < Model.Banks.Count; i++)
-                        {
-                            <tr>
-                                <td>
-                                    @Html.HiddenFor(m => m.Banks[i].Id)
-                                    @Html.HiddenFor(m => m.Banks[i].OrganizationId)
-                                    @Html.HiddenFor(m => m.Banks[i].LastUpdateTick)
-                                    @Html.TextBoxFor(m => m.Banks[i].Bik, new { @class = "form-control", maxlength = 100 })
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(m => m.Banks[i].Bank, new { @class = "form-control", maxlength = 100 })
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(m => m.Banks[i].Correspondent, new { @class = "form-control", maxlength = 100 })
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(m => m.Banks[i].Account, new { @class = "form-control", maxlength = 100 })
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(m => m.Banks[i].Comment, new { @class = "form-control" })
-                                </td>
-                                <td style="width: 40px">
-                                    <a class="remove-bank-btn" type="button" title="Удалить" href="javascript:void(0)"><i class="glyphicon glyphicon-remove"></i></a>
-                                </td>
-                            </tr>
-                        }
+                    @for (var i = 0; Model.Okveds.Count > i; i++)
+                    {
+                        <tr>
+                            <td>
+                                @Html.HiddenFor(m => m.Okveds[i].Id)
+                                <span class="okvedtitle">
+                                    @Model.Okveds[i].Code - @Model.Okveds[i].Name
+                                </span>
+                            </td>
+                            <td style="width: 40px">
+                                <a class="remove-okved-btn" type="button" title="Удалить" href="javascript:void(0)">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
                     </tbody>
                 </table>
-                @if (Model.Contracts != null && Model.Contracts.Any())
-                {
-                    <h4>
-                        Договора/контракты
-                    </h4>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Номер</th>
-                                <th>Дата</th>
-                                <th>Срок действия</th>
-                                <th>Комментарий</th>
-                                <th>Сумма руб</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (var i = 0; i < Model.Contracts.Count; i++)
-                            {
-                                <tr>
-                                    <td>
-                                        <a href="@Url.Action("Update","Contract", new {@id=Model.Contracts[i].Id})">@Html.Raw(string.IsNullOrEmpty(Model.Contracts[i].SignNumber) ? "#" + Model.Contracts[i].Id : Model.Contracts[i].SignNumber.FormatEx())</a>
-                                    </td>
-                                    <td>
-                                        @Model.Contracts[i].SignDate.FormatEx()
-                                    </td>
-                                    <td>
-                                        @Html.Raw(Model.Contracts[i].StartDate.FormatEx()) -
-                                        @Html.Raw(Model.Contracts[i].EndDate.FormatEx())
-                                    </td>
-                                    <td>
-                                        @Html.Raw(Model.Contracts[i].Comment.FormatEx())
-                                    </td>
-                                    <td>
-                                        @Html.Raw(Model.Contracts[i].Summa.FormatEx())
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                }
-            </fieldset>
-        }
+            </div>
+            <div class="row">
+                <div class="col-md-11">
+                    <input type="hidden" id="okvedId" class="form-control" value=""/>
+                </div>
+                <div class="col-md-1">
+                    <button type="button" class="btn btn-default" title="Добавить" id="okvedAdd">
+                        <i class="glyphicon glyphicon-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Телефон</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Phone, new {@class = "form-control input-mask-phone-new", maxlength = 100, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.Phone, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">E-mail</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Email, new {@class = "form-control", maxlength = 100, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.Email, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Ген. директор</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.HeadPerson, new {@class = "form-control", maxlength = 100, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.HeadPerson, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Контактное лицо</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.ContactPerson, new {@class = "form-control", maxlength = 100, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.ContactPerson, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Куратор</label>
+        <div class="col-md-9">
+            @Html.HiddenFor(m => m.Data.CuratorId, new {@class = "form-control curator-main-id", accountname = Model.Data.CuratorId == null ? "-- Не указано --" : string.Format("{0} ({1})", Model.Data.Curator.Name, Model.Data.Curator.Login)})
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Регион</label>
+        <div class="col-md-9" data-toggle="tooltip" data-placement="right" title="Выбор из справочника субъектов РФ">
+            @Html.DropDownListFor(model => model.Data.StateDistrictId, new SelectList(Model.StateDistricts.Select(t => new {Id = (long?) t.Id, Name = t.Name}).ToList().InsertAt(new {Id = (long?) null, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control", autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.StateDistrictId, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Фактические адрес</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Address, new {@class = "form-control", maxlength = 100, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.Address, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Почтовый адрес</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.PostAdderss, new {@class = "form-control", maxlength = 100, autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.PostAdderss, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Ведомство</label>
+        <div class="col-md-9" data-toggle="tooltip" data-placement="right" title="Выбор вышестоящего ОИВ">
+            @Html.HiddenFor(model => model.Data.ParentId, new {@class = "hidden-parent-class"})
+            @Html.Hidden("Vedomstvo",
+                Model.Parent.NullSafe(p => p.Id),
+                new
+                {
+                    @class = "form-control street-autocomplete",
+                    data_default_id = Model.Parent.NullSafe(p => p.Id),
+                    data_default_text = Model.Parent.NullSafe(p => p.Name)
+                })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Примечание</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Comment, new {@class = "form-control", autocomplete = "off"})
+            @Html.ValidationMessageFor(model => model.Data.Comment, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Комиссия</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Commission, new {@class = "form-control procent", autocomplete = "off", maxlength = "6"})
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-offset-3 col-md-9">
+            <div class="checkbox">
+                <label data-toggle="tooltip" data-placement="right" title="Указывает на принадлежность организации к государственным учреждениям">
+                    @Html.CheckBox("Data.IsVedorganization", Model.Data.IsVedOrganization ?? false)
+                    Государственные учреждения
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-offset-3 col-md-9">
+            <div class="checkbox">
+                <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация является ОИВ">
+                    @Html.CheckBoxFor(r => r.Data.IsVedomstvo)
+                    Является ОИВ
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-offset-3 col-md-9">
+            <div class="checkbox">
+                <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация не относится к государтвенным учреждениям">
+                    @Html.CheckBox("Data.IsContractor", Model.Data.IsContractor ?? false)
+                    Организация
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-offset-3 col-md-9">
+            <div class="checkbox">
+                <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация является профсоюзом">
+                    @Html.CheckBox("Data.IsTradeUnion", Model.Data.IsTradeUnion)
+                    Профсоюз
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-offset-3 col-md-3">
+            <div class="checkbox">
+                <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация является профсоюзным лагерем">
+                    @Html.CheckBox("Data.IsHotel", Model.Data.IsHotel)
+                    Профсоюзный лагерь
+                </label>
+            </div>
+        </div>
+        <label class="col-md-3 control-label text-right countTour @Html.Raw(Model.Data.IsHotel ? string.Empty : "hidden")">Количество мест в смену</label>
+        <div class="col-md-3 countTour @Html.Raw(Model.Data.IsHotel ? string.Empty : "hidden")">
+            @Html.TextBoxFor(model => model.Data.CountInTour, new {@class = "form-control integer", autocomplete = "off", maxlength = 4})
+            @Html.ValidationMessageFor(model => model.Data.CountInTour, "Заполните поле")
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-offset-3 col-md-9">
+            <div class="checkbox">
+                <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация предоставляет транспортные услуги в рамках ГК.">
+                    @Html.CheckBox("Data.IsTransport", Model.Data.IsTransport ?? false, new
+                    {
+                        id = "transportOrganizationCheckBox"
+                    })
+                    Транспортная организация
+                </label>
+            </div>
+        </div>
+    </div>
+    <div id="typeOfOrganization" class="form-group">
+        <label class="col-md-3 control-label text-right">Вид транспорта</label>
+        <div class="col-md-9">
+            <input type="hidden" id="typeOfTransport" name="SelectedOrganizationTypes" style="width: 70%;">
+            @if (Model.Data.TypeOfTransport != null)
+            {
+                foreach (var typeOfTransport in Model.Data.TypeOfTransport)
+                {
+                    <div class="selectedTypeOfTransport">
+                        @Html.Hidden("typeId", typeOfTransport.Id)
+                        @Html.Hidden("typeName", typeOfTransport.Name)
+                    </div>
+                }
+            }
+            @Html.ValidationMessageFor(model => model.Data.TypeOfTransport, "Выберите хотя бы один тип транспорта")
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-offset-3 col-md-9">
+            <div class="checkbox">
+                <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация является учреждением социальной защиты">
+                    @Html.CheckBox("Data.Orphanage", Model.Data.Orphanage)
+                    Учреждение социальной защиты
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-offset-3 col-md-9">
+            <div class="checkbox">
+                <label data-toggle="tooltip" data-placement="right" title="Указывает на то, что организация является участником мониторинга">
+                    @Html.CheckBox("Data.IsInMonitoring", Model.Data.IsInMonitoring)
+                    Участник мониторинга
+                </label>
+            </div>
+        </div>
+    </div>
+    <h4>
+        Банковские реквизиты
+        <a type="button" class="btn btn-primary addbank btn-xs" href="javascript:void(0);" title="Добавить">
+            <i class="glyphicon glyphicon-plus"></i>
+        </a>
+    </h4>
+    <table class="table @(Model.Banks.Any() ? "" : "hidden")" id="bankTable">
+        <thead>
+        <tr>
+            <th>БИК</th>
+            <th>Банк</th>
+            <th>Корр. счет</th>
+            <th>Расч. счет</th>
+            <th>Комментарий</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @for (var i = 0; i < Model.Banks.Count; i++)
+        {
+            <tr>
+                <td>
+                    @Html.HiddenFor(m => m.Banks[i].Id)
+                    @Html.HiddenFor(m => m.Banks[i].OrganizationId)
+                    @Html.HiddenFor(m => m.Banks[i].LastUpdateTick)
+                    @Html.TextBoxFor(m => m.Banks[i].Bik, new {@class = "form-control", maxlength = 100})
+                </td>
+                <td>
+                    @Html.TextBoxFor(m => m.Banks[i].Bank, new {@class = "form-control", maxlength = 100})
+                </td>
+                <td>
+                    @Html.TextBoxFor(m => m.Banks[i].Correspondent, new {@class = "form-control", maxlength = 100})
+                </td>
+                <td>
+                    @Html.TextBoxFor(m => m.Banks[i].Account, new {@class = "form-control", maxlength = 100})
+                </td>
+                <td>
+                    @Html.TextBoxFor(m => m.Banks[i].Comment, new {@class = "form-control"})
+                </td>
+                <td style="width: 40px">
+                    <a class="remove-bank-btn" type="button" title="Удалить" href="javascript:void(0)">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    @if (Model.Contracts != null && Model.Contracts.Any())
+    {
+        <h4>
+            Договора/контракты
+        </h4>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Номер</th>
+                <th>Дата</th>
+                <th>Срок действия</th>
+                <th>Комментарий</th>
+                <th>Сумма руб</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for (var i = 0; i < Model.Contracts.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <a href="@Url.Action("Update", "Contract", new {@id = Model.Contracts[i].Id})">@Html.Raw(string.IsNullOrEmpty(Model.Contracts[i].SignNumber) ? "#" + Model.Contracts[i].Id : Model.Contracts[i].SignNumber.FormatEx())</a>
+                    </td>
+                    <td>
+                        @Model.Contracts[i].SignDate.FormatEx()
+                    </td>
+                    <td>
+                        @Html.Raw(Model.Contracts[i].StartDate.FormatEx()) -
+                        @Html.Raw(Model.Contracts[i].EndDate.FormatEx())
+                    </td>
+                    <td>
+                        @Html.Raw(Model.Contracts[i].Comment.FormatEx())
+                    </td>
+                    <td>
+                        @Html.Raw(Model.Contracts[i].Summa.FormatEx())
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    </fieldset>
+}
 </div>
+</div>
+
 @section styles{
     @Styles.Render("~/Content/jquery.Jcrop.css")
     @Styles.Render("~/Content/Vocabulary/VocabularyEdit.css")

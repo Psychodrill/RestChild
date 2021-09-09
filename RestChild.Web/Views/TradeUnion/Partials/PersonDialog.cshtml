@@ -1,4 +1,4 @@
-﻿@using RestChild.Web.App_Code
+﻿@using RestChild.Web.Extensions
 @using RestChild.Web.Models
 @model RestChild.Web.Models.TradeUnion.TradeUnionModel
 
@@ -127,7 +127,7 @@
                             <div class="form-group">
                                 <label class="col-md-3 control-label text-right">Вид<span class="requared">*</span></label>
                                 <div class="col-md-3">
-                                    @Html.DropDownList("documentType", new SelectList(Model.DocumentTypes, "Id", "Name"), new { @class = "form-control select2 required", @id = "Child-DocumentTypeId" }).DisableIf(() => !Model.IsEditable)
+                                    @Html.DropDownList("documentType", new SelectList(Model.DocumentTypes, "Id", "Name"), new { @class = "form-control select2 required", @id = "Child-DocumentTypeId" }).DisableIf(!Model.IsEditable)
                                 </div>
                                 <label class="col-md-2 control-label text-right">Серия, номер<span class="requared">*</span></label>
                                 <div class="col-md-2">
@@ -252,7 +252,7 @@
                             <div class="form-group RelativeUnionist">
                                 <label class="col-md-3 control-label text-right">Статус по отношению к ребёнку<span class="requared">*</span></label>
                                 <div class="col-md-3">
-                                    @Html.DropDownList("statusByChild", new SelectList(Model.StatusByChild, "Id", "Name"), new { @class = "form-control select2", @id = "TradeUnionStatusByChildId" }).DisableIf(() => !Model.IsEditable)
+                                    @Html.DropDownList("statusByChild", new SelectList(Model.StatusByChild, "Id", "Name"), new { @class = "form-control select2", @id = "TradeUnionStatusByChildId" }).DisableIf(!Model.IsEditable)
                                 </div>
                             </div>
                             <h5 class="RelativeUnionist">Родственник член профсоюза</h5>

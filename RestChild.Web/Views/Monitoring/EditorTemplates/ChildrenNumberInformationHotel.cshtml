@@ -27,7 +27,7 @@
                 <div class="col-md-6">
                     @if (Model.Data.Id > 0)
                     {
-                        @Html.TextBoxFor(m => m.Data.Hotel.ShortName, new {@class = "form-control"}).DisableIf(() => true)
+                        @Html.TextBoxFor(m => m.Data.Hotel.ShortName, new {@class = "form-control"}).DisableIf(true)
                         @Html.HiddenFor(m => m.Data.HotelId)
                     }
                     else

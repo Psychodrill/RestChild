@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using iTextSharp.text.io;
 using RestChild.Domain;
 using RestChild.Extensions.Filter;
 using RestChild.Web.Properties;
@@ -9,12 +10,13 @@ namespace RestChild.Web.Models.Orphans
     /// <summary>
     ///     Модель фильтра поиска работника
     /// </summary>
-    public class OrphanageCollaboratorsFilterModel
+    public class OrphanageCollaboratorsFilterModel : BaseFilterModel<OrphanageCollaboratorsResultListModel>
     {
         public OrphanageCollaboratorsFilterModel()
         {
             Collaborators = new CommonPagedList<OrphanageCollaboratorsResultListModel>(new List<OrphanageCollaboratorsResultListModel>(), 1, Settings.Default.TablePageSize, 0);
             PageNumber = 1;
+            Deleted = false;
         }
 
         public OrphanageCollaboratorsFilterModel(ICollection<OrganisatorCollaborator> collection)
@@ -23,7 +25,8 @@ namespace RestChild.Web.Models.Orphans
             {
                 Id = ss.Id,
                 Name = ss.Applicant?.GetFio(),
-                Position = ss.Position?.Name
+                Position = ss.Position?.Name,
+                IsDeleted = ss.Applicant?.IsDeleted ?? true
             }).Take(Settings.Default.TablePageSize).ToList() ?? new List<OrphanageCollaboratorsResultListModel>(0), 1, Settings.Default.TablePageSize, collection.Count);
             OrphanageId = collection?.Select(ss => ss.OrganisatonId).FirstOrDefault();
             PageNumber = 1;
@@ -50,8 +53,8 @@ namespace RestChild.Web.Models.Orphans
         public CommonPagedList<OrphanageCollaboratorsResultListModel> Collaborators { get; set; }
 
         /// <summary>
-        ///     Номер страницы
+        ///     Включая удаленных
         /// </summary>
-        public int PageNumber { get; set; }
+        public bool Deleted { get; set; }
     }
 }

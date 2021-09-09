@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://mserus.ru/mse/disabilityExtract/1.0.0" targetNamespace="http://mserus.ru/mse/disabilityExtract/1.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:element name="DisabilityExtractResponse">
+        <xs:annotation>
+            <xs:documentation>Данные ответа</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="BuroFullName">
+                    <xs:annotation>
+                        <xs:documentation>Полное наименование бюро (экспертного состава Главного бюро, экспертного состава Федерального бюро), которое выдало гражданину справку об установлении инвалидности</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:whiteSpace value="collapse"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Series">
+                    <xs:annotation>
+                        <xs:documentation>Серия справки</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:whiteSpace value="collapse"/>
+                            <xs:maxLength value="32"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Number">
+                    <xs:annotation>
+                        <xs:documentation>Номер справки</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:whiteSpace value="collapse"/>
+                            <xs:maxLength value="32"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="ActNumber">
+                    <xs:annotation>
+                        <xs:documentation>Номер акта медико-социальной экспертизы</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:whiteSpace value="collapse"/>
+                            <xs:maxLength value="256"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="ActDate" type="xs:date">
+                    <xs:annotation>
+                        <xs:documentation>Дата акта медико-социальной экспертизы</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="LastName">
+                    <xs:annotation>
+                        <xs:documentation>Фамилия гражданина, указанная в выписке</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:whiteSpace value="collapse"/>
+                            <xs:maxLength value="90"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="FirstName">
+                    <xs:annotation>
+                        <xs:documentation>Имя гражданина, указанное в выписке</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:whiteSpace value="collapse"/>
+                            <xs:maxLength value="90"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="SecondName" nillable="true">
+                    <xs:annotation>
+                        <xs:documentation>Отчество гражданина, указанное в выписке</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:whiteSpace value="collapse"/>
+                            <xs:maxLength value="90"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="Address">
+                    <xs:annotation>
+                        <xs:documentation>Адрес места жительства, указанный в выписке</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:whiteSpace value="collapse"/>
+                            <xs:maxLength value="2000"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="IsFirstTime" type="xs:boolean">
+                    <xs:annotation>
+                        <xs:documentation>Инвалидность установлена впервые или повторно</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="DisabilityDate" type="xs:date">
+                    <xs:annotation>
+                        <xs:documentation>Дата установления инвалидности</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="DisabilityGroupId" type="xs:int">
+                    <xs:annotation>
+                        <xs:documentation>Идентификатор группы инвалидности</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="DisabilityGroupName" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Название группы инвалидности</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="DisabilityReasonId" type="xs:int" nillable="true">
+                    <xs:annotation>
+                        <xs:documentation>Идентификатор причины инвалидности</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="DisabilityReasonName" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Формулировка причины инвалидности</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="IsVisionImpaired" type="xs:boolean" nillable="true">
+                    <xs:annotation>
+                        <xs:documentation>Инвалид по зрению? (дополнительная отметка в причине инвалидности)</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="DisabilityEndDate" type="xs:date" nillable="true">
+                    <xs:annotation>
+                        <xs:documentation>Дата, до которой установлена инвалидность. Пустое значение означает бессрочно</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="NextExamDate" type="xs:date" nillable="true">
+                    <xs:annotation>
+                        <xs:documentation>Дата очередного освидетельствования. Пустое значение означает "не подлежит"</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ExaminationMissReason" nillable="true">
+                    <xs:annotation>
+                        <xs:documentation>Причина пропуска срока переосвидетельствования за прошлое время</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="DateFrom" type="xs:date" nillable="true">
+                                <xs:annotation>
+                                    <xs:documentation>с</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="DateTo" type="xs:date" nillable="true">
+                                <xs:annotation>
+                                    <xs:documentation>по</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="IsValid" type="xs:boolean" nillable="true">
+                                <xs:annotation>
+                                    <xs:documentation>Признана уважительной или нет</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="PrevDisability">
+                    <xs:annotation>
+                        <xs:documentation>Сведения об установлении инвалидности за прошлое время (при наличии)</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="DateFrom" type="xs:date" nillable="true">
+                                <xs:annotation>
+                                    <xs:documentation>с</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="DateTo" type="xs:date" nillable="true">
+                                <xs:annotation>
+                                    <xs:documentation>по</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="IsPrevDisabilitySet" type="xs:boolean" nillable="true">
+                                <xs:annotation>
+                                    <xs:documentation>Установлена ли инвалидность за предыдущий период</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="IssueDate" type="xs:date">
+                    <xs:annotation>
+                        <xs:documentation>Дата выдачи выписки</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="BuroChiefLastName">
+                    <xs:annotation>
+                        <xs:documentation>Фамилия руководителя федерального государственного учреждения медико-социальной экспертизы</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:maxLength value="90"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="BuroChiefFirstName">
+                    <xs:annotation>
+                        <xs:documentation>Имя руководителя федерального государственного учреждения медико-социальной экспертизы</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:maxLength value="90"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="BuroChiefSecondName" nillable="true">
+                    <xs:annotation>
+                        <xs:documentation>Отчество руководителя федерального государственного учреждения медико-социальной экспертизы</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:maxLength value="90"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

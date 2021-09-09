@@ -18,12 +18,15 @@ namespace RestChild.Extensions.Filter
         public string TimeOfRest { get; set; }
         public long? YearOfRestId { get; set; }
         public string YearOfRest { get; set; }
+        public bool NextYearsIncluded { get; set; }
         public ICollection<YearOfRest> YearsOfRest { get; set; }
         public ICollection<City> Cities { get; set; }
         public ICollection<TypeOfTransport> TypeOfTransports { get; set; }
         public ICollection<TypeOfRest> TypeOfRests { get; set; }
         public DateTime? DateStartBegin { get; set; }
         public DateTime? DateStartEnd { get; set; }
+        public ICollection<Status> Statuses { get; set; }
+        public long? StatusId { get; set; }
 
         /// <summary>
         ///     Дата начала формирования отчета
@@ -90,6 +93,11 @@ namespace RestChild.Extensions.Filter
         public bool TypeOfRestVisibility { get; set; }
         public bool FlightNumberVisibility { get; set; }
         public bool TypeOfTransportVisibility { get; set; }
+
+        /// <summary>
+        ///     Показывать возможность выбора опции "и последующие годы"
+        /// </summary>
+        public bool NextYearsIncludedVisibility { get; set; }
 
         /// <summary>
         ///     Показывать выбор даты формирования отчета

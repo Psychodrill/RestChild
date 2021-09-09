@@ -10,6 +10,12 @@ $(function () {
         $(e.target).prop("disabled", true);
         $("#OrphanagePupilForm").submit();
     });
+    $(".OrphanagePupilFormDeleteSave").click(function (e) {
+        return confirmStateButton("#OrphanagePupilForm", "#Data_Child_IsDeleted", "true", "Удалить", "Удалить воспитанника?", null);
+    });
+    $(".OrphanagePupilFormRestoreSave").click(function (e) {
+        return confirmStateButton("#OrphanagePupilForm", "#Data_Child_IsDeleted", "false", "Восстановить", "Восстановить воспитанника?", null);
+    });
     $(".restriction-block").each(function (i, e) {
         initTypeOfSubrestrtiction($(e));
     });

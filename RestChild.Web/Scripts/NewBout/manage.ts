@@ -54,11 +54,6 @@
         });
     });
 
-    $('.copy-tasks').on('click', (e) => {
-        $('#copyTasksModal').modal('show');
-        $("#copyTasksAccept").hide();
-    });
-
     const campsCollection = $('#campsCollection');
     const changesCollection = $('#changesCollection');
     const tasksCollection = $("#tasksCollection");
@@ -96,10 +91,8 @@
 
     function ClearArea() {
         $("#tasksBlock").hide();
-        $("#copyTasksAccept").hide();
         tasksCollection.empty();
         tasksCollection.find("input:checkbox").prop("checked", false);
-        $("#copyTasksAccept").prop("disabled", true);
         $("#selectAll").prop("checked", false);
     }
 

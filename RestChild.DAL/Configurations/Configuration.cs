@@ -52,6 +52,10 @@ namespace RestChild.DAL.Configurations
 
             TypeOfTransport(context);
 
+            TypeOfCamp(context);
+
+            TypeOfTransportInRequest(context);
+
             TypeOfLinkPeople(context);
 
             TypeOfService(context);
@@ -145,6 +149,8 @@ namespace RestChild.DAL.Configurations
             SmallLeisureSubtype(context);
 
             MonitoringFinancialSource(context);
+
+            TradeUnionCamperPrivilegePart(context);
         }
     }
 }

@@ -18,19 +18,19 @@
     <div class="row form-group type-of-restriction">
         <label class="col-md-3 control-label">Вид ограничения</label>
         <div class="col-md-9">
-            @Html.DropDownListFor(r => r.TypeOfRestrictionId, restrictionTypes, new {@class = "form-control select2 restriction-select"}).DisableIf(() => Model.Id > 0 || Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation)
+            @Html.DropDownListFor(r => r.TypeOfRestrictionId, restrictionTypes, new {@class = "form-control select2 restriction-select"}).DisableIf(Model.Id > 0 || Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation)
         </div>
     </div>
     <div class="row form-group type-of-subrestriction @(Model.TypeOfRestriction == null || !Model.TypeOfRestriction.Subs.Any() ? " hidden" : string.Empty)">
         <label class="col-md-3 control-label">Подвид ограничения</label>
         <div class="col-md-9">
-            @Html.HiddenFor(r => r.TypeOfSubRestrictionId, new {@class = "form-control subrestriction-select", titleText = Model.TypeOfSubRestriction != null ? Model.TypeOfSubRestriction.Name : "--Не указано--"}).DisableIf(() => Model.Id > 0 || Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation)
+            @Html.HiddenFor(r => r.TypeOfSubRestrictionId, new {@class = "form-control subrestriction-select", titleText = Model.TypeOfSubRestriction != null ? Model.TypeOfSubRestriction.Name : "--Не указано--"}).DisableIf(Model.Id > 0 || Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation)
         </div>
     </div>
     <div class="form-group">
         <label class="col-md-5 control-label text-right">Кол-во воспитанников с указанными ограничениями</label>
         <div class="col-md-2">
-            @Html.TextBoxFor(model => model.PupilsCount, new {@class = "form-control", maxlength = 1000, autocomplete = "off"}).DisableIf(() => Model.Id > 0 || Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation)
+            @Html.TextBoxFor(model => model.PupilsCount, new {@class = "form-control", maxlength = 1000, autocomplete = "off"}).DisableIf(Model.Id > 0 || Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation)
         </div>
         @if (!Model.PupilGroupId.HasValue || Model.PupilGroup.StateId == StateMachineStateEnum.PupilGroup.Formation)
         {

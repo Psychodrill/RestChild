@@ -106,6 +106,9 @@ namespace RestChild.Web.Models.Orphans
             res.GroupPupils = Pupils?.Values.Select(ss => ss.BuildData()).ToList() ?? new List<PupilGroupListMember>();
             res.Childs = res.GroupPupils.Select(ss => ss.Pupil?.Child).ToList();
             res.Attendants = res.GroupCollaborators.Select(ss => ss.OrganisatonCollaborator?.Applicant).ToList();
+
+            res.CountChild = res.Childs?.Count() ?? 0;
+            res.CountAttendants = res.Attendants?.Count() ?? 0;
             return res;
         }
     }

@@ -12,11 +12,13 @@
 			//Database.SetInitializer(new MigrateDatabaseToLatestVersion<Context, Configuration>());
 		}
 
-		public Context() : base("RestChild")
+		public Context()
+			: base("RestChild")
 		{
 		}
 
-		public Context(string connString) : base(connString)
+		public Context(string connString)
+			: base(connString)
 		{
 		}
 
@@ -801,261 +803,6 @@
         public DbSet<ResponsibilityForTask> ResponsibilityForTask { get; set; }
 
         /// <summary>
-        ///     RestChild.Domain.RestrictionGroup
-        /// </summary>
-        public DbSet<RestrictionGroup> RestrictionGroup { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.RoomRates
-        /// </summary>
-        public DbSet<RoomRates> RoomRates { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.ScheduleMessage
-        /// </summary>
-        public DbSet<ScheduleMessage> ScheduleMessage { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.SearchFormSetting
-        /// </summary>
-        public DbSet<SearchFormSetting> SearchFormSetting { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.SecurityJournal
-        /// </summary>
-        public DbSet<SecurityJournal> SecurityJournal { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.SecurityJournalType
-        /// </summary>
-        public DbSet<SecurityJournalType> SecurityJournalType { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.SecuritySetting
-        /// </summary>
-        public DbSet<SecuritySetting> SecuritySetting { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.SendEmailAndSmsAttachment
-        /// </summary>
-        public DbSet<SendEmailAndSmsAttachment> SendEmailAndSmsAttachment { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.ServiceBlock
-        /// </summary>
-        public DbSet<ServiceBlock> ServiceBlock { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.ServiceBlockDate
-        /// </summary>
-        public DbSet<ServiceBlockDate> ServiceBlockDate { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.Skill
-        /// </summary>
-        public DbSet<Skill> Skill { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.SkillsGroup
-        /// </summary>
-        public DbSet<SkillsGroup> SkillsGroup { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.SkillVocabulary
-        /// </summary>
-        public DbSet<SkillVocabulary> SkillVocabulary { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.SmallLeisureSubtype
-        /// </summary>
-        public DbSet<SmallLeisureSubtype> SmallLeisureSubtype { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.SmallLeisureType
-        /// </summary>
-        public DbSet<SmallLeisureType> SmallLeisureType { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.StateDistrict
-        /// </summary>
-        public DbSet<StateDistrict> StateDistrict { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.SubjectOfRestClassification
-        /// </summary>
-        public DbSet<SubjectOfRestClassification> SubjectOfRestClassification { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.Tag
-        /// </summary>
-        public DbSet<Tag> Tag { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.Ticket
-        /// </summary>
-        public DbSet<Ticket> Ticket { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TicketLink
-        /// </summary>
-        public DbSet<TicketLink> TicketLink { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TieColor
-        /// </summary>
-        public DbSet<TieColor> TieColor { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.Tour
-        /// </summary>
-        public DbSet<Tour> Tour { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.ListOfChildsCategory
-        /// </summary>
-        public DbSet<ListOfChildsCategory> ListOfChildsCategory { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TourAccommodation
-        /// </summary>
-        public DbSet<TourAccommodation> TourAccommodation { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TourCountry
-        /// </summary>
-        public DbSet<TourCountry> TourCountry { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TourPrice
-        /// </summary>
-        public DbSet<TourPrice> TourPrice { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TourTransport
-        /// </summary>
-        public DbSet<TourTransport> TourTransport { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TourTransportPrice
-        /// </summary>
-        public DbSet<TourTransportPrice> TourTransportPrice { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TourVolume
-        /// </summary>
-        public DbSet<TourVolume> TourVolume { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TradeUnionCamper
-        /// </summary>
-        public DbSet<TradeUnionCamper> TradeUnionCamper { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TradeUnionList
-        /// </summary>
-        public DbSet<TradeUnionList> TradeUnionList { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TradeUnionPersonCheck
-        /// </summary>
-        public DbSet<TradeUnionPersonCheck> TradeUnionPersonCheck { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TradeUnionStatusByChild
-        /// </summary>
-        public DbSet<TradeUnionStatusByChild> TradeUnionStatusByChild { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TrainingCounselors
-        /// </summary>
-        public DbSet<TrainingCounselors> TrainingCounselors { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TrainingCounselorsGroupTest
-        /// </summary>
-        public DbSet<TrainingCounselorsGroupTest> TrainingCounselorsGroupTest { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TrainingCounselorsPlace
-        /// </summary>
-        public DbSet<TrainingCounselorsPlace> TrainingCounselorsPlace { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TrainingCounselorsResult
-        /// </summary>
-        public DbSet<TrainingCounselorsResult> TrainingCounselorsResult { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TrainingCounselorsResultStatus
-        /// </summary>
-        public DbSet<TrainingCounselorsResultStatus> TrainingCounselorsResultStatus { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TrainingCounselorsTest
-        /// </summary>
-        public DbSet<TrainingCounselorsTest> TrainingCounselorsTest { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TrainingCounselorsTime
-        /// </summary>
-        public DbSet<TrainingCounselorsTime> TrainingCounselorsTime { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TrainingCounselorsType
-        /// </summary>
-        public DbSet<TrainingCounselorsType> TrainingCounselorsType { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TransportInfo
-        /// </summary>
-        public DbSet<TransportInfo> TransportInfo { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TypeOfCalculation
-        /// </summary>
-        public DbSet<TypeOfCalculation> TypeOfCalculation { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TypeOfDrug
-        /// </summary>
-        public DbSet<TypeOfDrug> TypeOfDrug { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TypeOfEducation
-        /// </summary>
-        public DbSet<TypeOfEducation> TypeOfEducation { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TypeOfGroupCheck
-        /// </summary>
-        public DbSet<TypeOfGroupCheck> TypeOfGroupCheck { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TypeOfLimitList
-        /// </summary>
-        public DbSet<TypeOfLimitList> TypeOfLimitList { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TypeOfLinkPeople
-        /// </summary>
-        public DbSet<TypeOfLinkPeople> TypeOfLinkPeople { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TypeOfRestERL
-        /// </summary>
-        public DbSet<TypeOfRestERL> TypeOfRestERL { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TypeOfRestSubtype
-        /// </summary>
-        public DbSet<TypeOfRestSubtype> TypeOfRestSubtype { get; set; }
-
-        /// <summary>
-        ///     RestChild.Domain.TypeOfRooms
-        /// </summary>
-        public DbSet<TypeOfRooms> TypeOfRooms { get; set; }
-
-        /// <summary>
         ///     RestChild.Domain.Agent
         /// </summary>
         public DbSet<Agent> Agent { get; set; }
@@ -1211,6 +958,11 @@
         public DbSet<ListOfChilds> ListOfChilds { get; set; }
 
         /// <summary>
+        ///     RestChild.Domain.ListOfChildsCategory
+        /// </summary>
+        public DbSet<ListOfChildsCategory> ListOfChildsCategory { get; set; }
+
+        /// <summary>
         ///     RestChild.Domain.Organization
         /// </summary>
         public DbSet<Organization> Organization { get; set; }
@@ -1221,9 +973,24 @@
         public DbSet<Request> Request { get; set; }
 
         /// <summary>
+        ///     RestChild.Domain.RestrictionGroup
+        /// </summary>
+        public DbSet<RestrictionGroup> RestrictionGroup { get; set; }
+
+        /// <summary>
         ///     RestChild.Domain.Role
         /// </summary>
         public DbSet<Role> Role { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.RoomRates
+        /// </summary>
+        public DbSet<RoomRates> RoomRates { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.ScheduleMessage
+        /// </summary>
+        public DbSet<ScheduleMessage> ScheduleMessage { get; set; }
 
         /// <summary>
         ///     RestChild.Domain.School
@@ -1231,9 +998,44 @@
         public DbSet<School> School { get; set; }
 
         /// <summary>
+        ///     RestChild.Domain.SearchFormSetting
+        /// </summary>
+        public DbSet<SearchFormSetting> SearchFormSetting { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.SecurityJournal
+        /// </summary>
+        public DbSet<SecurityJournal> SecurityJournal { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.SecurityJournalType
+        /// </summary>
+        public DbSet<SecurityJournalType> SecurityJournalType { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.SecuritySetting
+        /// </summary>
+        public DbSet<SecuritySetting> SecuritySetting { get; set; }
+
+        /// <summary>
         ///     RestChild.Domain.SendEmailAndSms
         /// </summary>
         public DbSet<SendEmailAndSms> SendEmailAndSms { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.SendEmailAndSmsAttachment
+        /// </summary>
+        public DbSet<SendEmailAndSmsAttachment> SendEmailAndSmsAttachment { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.ServiceBlock
+        /// </summary>
+        public DbSet<ServiceBlock> ServiceBlock { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.ServiceBlockDate
+        /// </summary>
+        public DbSet<ServiceBlockDate> ServiceBlockDate { get; set; }
 
         /// <summary>
         ///     RestChild.Domain.SignInfo
@@ -1241,9 +1043,39 @@
         public DbSet<SignInfo> SignInfo { get; set; }
 
         /// <summary>
+        ///     RestChild.Domain.Skill
+        /// </summary>
+        public DbSet<Skill> Skill { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.SkillsGroup
+        /// </summary>
+        public DbSet<SkillsGroup> SkillsGroup { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.SkillVocabulary
+        /// </summary>
+        public DbSet<SkillVocabulary> SkillVocabulary { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.SmallLeisureSubtype
+        /// </summary>
+        public DbSet<SmallLeisureSubtype> SmallLeisureSubtype { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.SmallLeisureType
+        /// </summary>
+        public DbSet<SmallLeisureType> SmallLeisureType { get; set; }
+
+        /// <summary>
         ///     RestChild.Domain.Source
         /// </summary>
         public DbSet<Source> Source { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.StateDistrict
+        /// </summary>
+        public DbSet<StateDistrict> StateDistrict { get; set; }
 
         /// <summary>
         ///     RestChild.Domain.StateMachine
@@ -1296,9 +1128,174 @@
         public DbSet<SubjectOfRest> SubjectOfRest { get; set; }
 
         /// <summary>
+        ///     RestChild.Domain.SubjectOfRestClassification
+        /// </summary>
+        public DbSet<SubjectOfRestClassification> SubjectOfRestClassification { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.Tag
+        /// </summary>
+        public DbSet<Tag> Tag { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.Ticket
+        /// </summary>
+        public DbSet<Ticket> Ticket { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TicketLink
+        /// </summary>
+        public DbSet<TicketLink> TicketLink { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TieColor
+        /// </summary>
+        public DbSet<TieColor> TieColor { get; set; }
+
+        /// <summary>
         ///     RestChild.Domain.TimeOfRest
         /// </summary>
         public DbSet<TimeOfRest> TimeOfRest { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.Tour
+        /// </summary>
+        public DbSet<Tour> Tour { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TourAccommodation
+        /// </summary>
+        public DbSet<TourAccommodation> TourAccommodation { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TourCountry
+        /// </summary>
+        public DbSet<TourCountry> TourCountry { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TourPrice
+        /// </summary>
+        public DbSet<TourPrice> TourPrice { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TourTransport
+        /// </summary>
+        public DbSet<TourTransport> TourTransport { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TourTransportPrice
+        /// </summary>
+        public DbSet<TourTransportPrice> TourTransportPrice { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TourVolume
+        /// </summary>
+        public DbSet<TourVolume> TourVolume { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TradeUnionCamper
+        /// </summary>
+        public DbSet<TradeUnionCamper> TradeUnionCamper { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TradeUnionCamperPrivilegePart
+        /// </summary>
+        public DbSet<TradeUnionCamperPrivilegePart> TradeUnionCamperPrivilegePart { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TradeUnionList
+        /// </summary>
+        public DbSet<TradeUnionList> TradeUnionList { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TradeUnionPersonCheck
+        /// </summary>
+        public DbSet<TradeUnionPersonCheck> TradeUnionPersonCheck { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TradeUnionStatusByChild
+        /// </summary>
+        public DbSet<TradeUnionStatusByChild> TradeUnionStatusByChild { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TrainingCounselors
+        /// </summary>
+        public DbSet<TrainingCounselors> TrainingCounselors { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TrainingCounselorsGroupTest
+        /// </summary>
+        public DbSet<TrainingCounselorsGroupTest> TrainingCounselorsGroupTest { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TrainingCounselorsPlace
+        /// </summary>
+        public DbSet<TrainingCounselorsPlace> TrainingCounselorsPlace { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TrainingCounselorsResult
+        /// </summary>
+        public DbSet<TrainingCounselorsResult> TrainingCounselorsResult { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TrainingCounselorsResultStatus
+        /// </summary>
+        public DbSet<TrainingCounselorsResultStatus> TrainingCounselorsResultStatus { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TrainingCounselorsTest
+        /// </summary>
+        public DbSet<TrainingCounselorsTest> TrainingCounselorsTest { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TrainingCounselorsTime
+        /// </summary>
+        public DbSet<TrainingCounselorsTime> TrainingCounselorsTime { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TrainingCounselorsType
+        /// </summary>
+        public DbSet<TrainingCounselorsType> TrainingCounselorsType { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TransportInfo
+        /// </summary>
+        public DbSet<TransportInfo> TransportInfo { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TypeOfCalculation
+        /// </summary>
+        public DbSet<TypeOfCalculation> TypeOfCalculation { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TypeOfCamp
+        /// </summary>
+        public DbSet<TypeOfCamp> TypeOfCamp { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TypeOfDrug
+        /// </summary>
+        public DbSet<TypeOfDrug> TypeOfDrug { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TypeOfEducation
+        /// </summary>
+        public DbSet<TypeOfEducation> TypeOfEducation { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TypeOfGroupCheck
+        /// </summary>
+        public DbSet<TypeOfGroupCheck> TypeOfGroupCheck { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TypeOfLimitList
+        /// </summary>
+        public DbSet<TypeOfLimitList> TypeOfLimitList { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TypeOfLinkPeople
+        /// </summary>
+        public DbSet<TypeOfLinkPeople> TypeOfLinkPeople { get; set; }
 
         /// <summary>
         ///     RestChild.Domain.TypeOfRest
@@ -1311,9 +1308,24 @@
         public DbSet<TypeOfRestBenefitRestriction> TypeOfRestBenefitRestriction { get; set; }
 
         /// <summary>
+        ///     RestChild.Domain.TypeOfRestERL
+        /// </summary>
+        public DbSet<TypeOfRestERL> TypeOfRestERL { get; set; }
+
+        /// <summary>
         ///     RestChild.Domain.TypeOfRestriction
         /// </summary>
         public DbSet<TypeOfRestriction> TypeOfRestriction { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TypeOfRestSubtype
+        /// </summary>
+        public DbSet<TypeOfRestSubtype> TypeOfRestSubtype { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TypeOfRooms
+        /// </summary>
+        public DbSet<TypeOfRooms> TypeOfRooms { get; set; }
 
         /// <summary>
         ///     RestChild.Domain.TypeOfService
@@ -1334,6 +1346,11 @@
         ///     RestChild.Domain.TypeOfTransport
         /// </summary>
         public DbSet<TypeOfTransport> TypeOfTransport { get; set; }
+
+        /// <summary>
+        ///     RestChild.Domain.TypeOfTransportInRequest
+        /// </summary>
+        public DbSet<TypeOfTransportInRequest> TypeOfTransportInRequest { get; set; }
 
         /// <summary>
         ///     RestChild.Domain.TypePriceCalculation

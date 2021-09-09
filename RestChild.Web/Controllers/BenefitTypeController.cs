@@ -19,9 +19,9 @@ namespace RestChild.Web.Controllers
 			ApiVocabularyController.SetUnitOfWorkInRefClass(unitOfWork);
 		}
 
-		public ActionResult Index()
+		public override ActionResult Index()
 		{
-			return RedirectToAction("Search");
+			return RedirectToAction(nameof(Search));
 		}
 
 		public ActionResult Search(string name = "", int pageNumber = 1)

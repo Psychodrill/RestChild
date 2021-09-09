@@ -63,9 +63,9 @@ namespace RestChild.Web.Controllers
         }
 
         // GET: Tours
-        public ActionResult Index()
+        public override ActionResult Index()
         {
-            return RedirectToAction("Search");
+            return RedirectToAction(nameof(Search));
         }
 
         public ActionResult Search(ToursFilterModel filter)

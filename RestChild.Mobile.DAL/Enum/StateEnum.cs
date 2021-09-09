@@ -290,7 +290,7 @@
             public const long Reserved = 22001;
 
             /// <summary>
-            ///     Отказ
+            ///     Отклонено
             /// </summary>
             public const long Refusal = 22002;
 

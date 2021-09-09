@@ -510,6 +510,14 @@ namespace RestChild.Domain
       [DataMember(Name = "isProxy", EmitDefaultValue = false)]
       public virtual bool IsProxy { get; set; }
       
+      /// <summary>
+      /// Признак что имеется заключение ЦПМПК города Москвы
+      /// </summary>
+      [Display(Description = "Признак что имеется заключение ЦПМПК города Москвы")]
+      [Required(ErrorMessage = "\"Признак что имеется заключение ЦПМПК города Москвы\" должно быть заполнено")]
+      [DataMember(Name = "isCPMPK", EmitDefaultValue = false)]
+      public virtual bool IsCPMPK { get; set; }
+      
       
       /// <summary>
       /// Сопровождающий ребенка

@@ -11,6 +11,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using MimeTypes;
+using Org.BouncyCastle.Ocsp;
 using RestChild.Booking.Logic.Extensions;
 using RestChild.Comon;
 using RestChild.Comon.Dto.Booking;
@@ -187,7 +188,7 @@ namespace RestChild.Web.Controllers.WebApi
                 var currentApplicant = applicant;
                 applicant.Id = 0;
                 if (data.TypeOfRestId != (long) TypeOfRestEnum.YouthRestOrphanCamps &&
-                    data.TypeOfRestId != (long) TypeOfRestEnum.YouthRestCamps&&
+                    data.TypeOfRestId != (long) TypeOfRestEnum.YouthRestCamps &&
                     data.TypeOfRestId != (long) TypeOfRestEnum.MoneyOn18)
                 {
                     applicant.Address = null;
@@ -196,7 +197,6 @@ namespace RestChild.Web.Controllers.WebApi
 
                 UnitOfWork.Context.Set<Applicant>().Add(applicant);
                 UnitOfWork.SaveChanges();
-
 
                 data.Applicant = applicant;
                 data.ApplicantId = applicant.Id;
@@ -351,8 +351,10 @@ namespace RestChild.Web.Controllers.WebApi
                     Attendant = entity.Attendant?.Select(a => new Applicant(a)).ToList(),
                     Files = entity.Files?.Select(f => new RequestFile(f)).ToList(),
                     AddonServicesLinks = entity.AddonServicesLinks?.Select(l => new AddonServicesLink(l, 1)).ToList(),
-                    InformationVouchers = entity.InformationVouchers?.Select(v => new RequestInformationVoucher(v, 1) {
-                        AttendantsPrice = v.AttendantsPrice?.Select(a => new RequestInformationVoucherAttendant(a, 1)).ToList()
+                    InformationVouchers = entity.InformationVouchers?.Select(v => new RequestInformationVoucher(v, 1)
+                    {
+                        AttendantsPrice = v.AttendantsPrice?.Select(a => new RequestInformationVoucherAttendant(a, 1))
+                            .ToList()
                     }).ToList(),
                     PlacesOfRest = entity.PlacesOfRest?.Select(p => new RequestPlaceOfRest(p)).ToList(),
                     TimesOfRest = entity.TimesOfRest?.Select(t => new RequestsTimeOfRest(t)).ToList(),
@@ -443,7 +445,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                     UnitOfWork.SaveChanges();
 
-                    var keysAttendant = entity.Attendant.ToDictionary(c => c.IndexField, c => c.Id);
+                    var keysAttendant = entity.Attendant.Where(a => !a.IsDeleted).ToDictionary(c => c.IndexField, c => c.Id);
 
                     foreach (var voucher in vouchersPrice.Where(vp => vp.ApplicantId < 0).ToList())
                     {
@@ -1336,7 +1338,10 @@ namespace RestChild.Web.Controllers.WebApi
             UnitOfWork.RequestChangeStatusInternal(actionCode, request, decline, false);
         }
 
-        private void WriteHistory(long id, ICollection<RequestDiff> diffCollection)
+        /// <summary>
+        ///     Запись в историю изменений по заявлению
+        /// </summary>
+        private void WriteHistory(long id, string operation)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
 
@@ -1344,8 +1349,19 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 AccountId = Security.GetCurrentAccountId(),
                 OperationDate = DateTime.Now,
-                RequestId = id
+                RequestId = id,
+                LastUpdateTick = DateTime.Now.Ticks,
+                Operation = operation
             };
+
+            UnitOfWork.AddEntity(history);
+        }
+
+        /// <summary>
+        ///     Запись в историю изменений по заявлению
+        /// </summary>
+        private void WriteHistory(long id, ICollection<RequestDiff> diffCollection)
+        {
             var diffHtml = new StringBuilder();
             if (diffCollection != null && diffCollection.Any())
             {
@@ -1396,10 +1412,8 @@ namespace RestChild.Web.Controllers.WebApi
                 diffHtml.Append("Изменений нет");
             }
 
-            history.Operation = diffHtml.ToString();
-            UnitOfWork.AddEntity(history);
+            WriteHistory(id, diffHtml.ToString());
         }
-
 
         [ActionName("RequestEdit")]
         [HttpGet]
@@ -1820,7 +1834,8 @@ namespace RestChild.Web.Controllers.WebApi
 
             if (search.CertificateRepaid)
             {
-                query = query.Where(ss => ss.Certificates.Any(c=>c.StateMachineStateId != StateMachineStateEnum.Deleted));
+                query = query.Where(ss =>
+                    ss.Certificates.Any(c => c.StateMachineStateId != StateMachineStateEnum.Deleted));
             }
 
             if (search.DeclineReasonId.HasValue && search.DeclineReasonId.Value > 0)
@@ -1985,11 +2000,12 @@ namespace RestChild.Web.Controllers.WebApi
 
             var reqs = UnitOfWork.GetSet<Request>().Where(ss =>
                 ss.YearOfRestId == currentPeriodId && !ss.IsDraft &&
-                ss.StatusId == (long)StatusEnum.DecisionMakingCovid).ToList();
+                ss.StatusId == (long) StatusEnum.DecisionMakingCovid).ToList();
 
             foreach (var req in reqs)
             {
-                UnitOfWork.RequestChangeStatusInternal(AccessRightEnum.Status.ToReject, req, (long)DeclineReasonEnum.RefuseAllVariantsCovid2020, true, Security.GetCurrentAccountId());
+                UnitOfWork.RequestChangeStatusInternal(AccessRightEnum.Status.ToReject, req,
+                    (long) DeclineReasonEnum.RefuseAllVariantsCovid2020, true, Security.GetCurrentAccountId());
             }
 
             return true;
@@ -2593,6 +2609,10 @@ namespace RestChild.Web.Controllers.WebApi
             target.TransferFromId = source.TransferFromId;
             target.TransferToId = source.TransferToId;
             target.InternalCommentary = source.InternalCommentary;
+            target.PriorityTypeOfTransportInRequestId = source.PriorityTypeOfTransportInRequestId == -1 ? null : source.PriorityTypeOfTransportInRequestId;
+            target.AdditionalTypeOfTransportInRequestId = source.AdditionalTypeOfTransportInRequestId == -1 ? null : source.AdditionalTypeOfTransportInRequestId;
+            target.TypeOfCampId = source.TypeOfCampId == -1 ? null : source.TypeOfCampId;
+            target.TypeOfCampAddonId = source.TypeOfCampAddonId == -1 ? null : source.TypeOfCampAddonId;
 
             if (target.IsFirstCompany)
             {
@@ -2692,6 +2712,7 @@ namespace RestChild.Web.Controllers.WebApi
                 t.ProxyEndDate = s.ProxyEndDate;
                 t.NotaryName = s.NotaryName;
                 t.ProxyNumber = s.ProxyNumber;
+                t.IsCPMPK = s.IsCPMPK;
 
                 if (source.TypeOfRestId == (long) TypeOfRestEnum.YouthRestOrphanCamps ||
                     source.TypeOfRestId == (long) TypeOfRestEnum.YouthRestOrphanCamps ||
@@ -2898,6 +2919,8 @@ namespace RestChild.Web.Controllers.WebApi
                     t.ForeginLastName = s.ForeginLastName;
                     t.ForeginName = s.ForeginName;
                     t.DocumentTypeCertOfBirthId = s.DocumentTypeCertOfBirthId;
+                    t.IsCPMPK = s.IsCPMPK;
+
                     if (Security.HasRight(AccessRightEnum.RequestEditTypeViolation))
                     {
                         t.TypeViolationId = s.TypeViolationId;
@@ -2945,35 +2968,25 @@ namespace RestChild.Web.Controllers.WebApi
 
             if (!target.BookingGuid.HasValue)
             {
-                DAL.UnitOfWork.MergeCollectionStatic(source.TimesOfRest, target.TimesOfRest, (s, t) =>
-                {
-                    t.TimeOfRestId = s.TimeOfRestId;
-                }, (s) =>
-                {
-                    if (s.TimeOfRestId.HasValue)
+                DAL.UnitOfWork.MergeCollectionStatic(source.TimesOfRest, target.TimesOfRest,
+                    (s, t) => { t.TimeOfRestId = s.TimeOfRestId; }, (s) =>
                     {
-                        s.RequestId = target.Id;
-                        UnitOfWork.AddEntity(s);
-                    }
-                }, (s) =>
-                {
-                    UnitOfWork.Delete(s);
-                });
+                        if (s.TimeOfRestId.HasValue)
+                        {
+                            s.RequestId = target.Id;
+                            UnitOfWork.AddEntity(s);
+                        }
+                    }, (s) => { UnitOfWork.Delete(s); });
 
-                DAL.UnitOfWork.MergeCollectionStatic(source.PlacesOfRest, target.PlacesOfRest, (s, t) =>
-                {
-                    t.PlaceOfRestId = s.PlaceOfRestId;
-                }, (s) =>
-                {
-                    if (s.PlaceOfRestId.HasValue)
+                DAL.UnitOfWork.MergeCollectionStatic(source.PlacesOfRest, target.PlacesOfRest,
+                    (s, t) => { t.PlaceOfRestId = s.PlaceOfRestId; }, (s) =>
                     {
-                        s.RequestId = target.Id;
-                        UnitOfWork.AddEntity(s);
-                    }
-                }, (s) =>
-                {
-                    UnitOfWork.Delete(s);
-                });
+                        if (s.PlaceOfRestId.HasValue)
+                        {
+                            s.RequestId = target.Id;
+                            UnitOfWork.AddEntity(s);
+                        }
+                    }, (s) => { UnitOfWork.Delete(s); });
             }
         }
 

@@ -9,12 +9,12 @@
    <div class="form-group">
       <label class="col-md-2 control-label text-right">Режим работы с</label>
       <div class="col-md-2">
-          @Html.HiddenFor(r => r.TimeFromString, new { @class = "form-control select2 time-selection-interval", autocomplete = "off" }).DisableIf(() => _dis)
+          @Html.HiddenFor(r => r.TimeFromString, new { @class = "form-control select2 time-selection-interval", autocomplete = "off" }).DisableIf(_dis)
           @Html.ValidationMessageFor(m => m.TimeFromString)
       </div>
       <label class="col-md-2 control-label text-right">по</label>
       <div class="col-md-2">
-         @Html.HiddenFor(r => r.TimeToString, new { @class = "form-control select2 time-selection-interval", autocomplete = "off" }).DisableIf(() => _dis)
+         @Html.HiddenFor(r => r.TimeToString, new { @class = "form-control select2 time-selection-interval", autocomplete = "off" }).DisableIf(_dis)
          @Html.ValidationMessageFor(m => m.TimeToString)
       </div>
       @if (!_dis)

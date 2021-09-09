@@ -113,5 +113,10 @@ namespace RestChild.Comon.Dto
         /// статус разбора сообщения
         /// </summary>
         public int Status { get; set; }
+
+        /// <summary>
+        ///     Результат проверки в ФРИ
+        /// </summary>
+        public DisabilityExtractResponse FRIResponse { get; set; }
     }
 }

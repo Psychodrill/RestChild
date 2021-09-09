@@ -2,9 +2,9 @@
 @using RestChild.Comon
 @using RestChild.Comon.Enumeration
 @using RestChild.Domain
-@using RestChild.Web.App_Code
 @using RestChild.Web.Common
 @using RestChild.Web.Controllers
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.RequestViewModel
 @{
     var typeOfRest = Model.Data.TypeOfRest ?? new TypeOfRest();
@@ -60,7 +60,7 @@
                 <input id="manualTypeOfRest" value="1" type="hidden"/>
                 @{
                     var items = Model.TypeOfRests.Where(t=>t != null).ToList();
-                    @Html.DropDownList("typeOfRest-select2", new SelectList(items.Select(x => new {Val = x.Id == 0 ? string.Empty : x.Id.ToString(), Text = x.Name, x.Parent}), "Val", "Text", "Parent.Name", Model.Data.TypeOfRestId, new object[0]), new {@class = "form-control type-of-rest select2"}).DisableIf(() => Model.Data.Id > 0)
+                    @Html.DropDownList("typeOfRest-select2", new SelectList(items.Select(x => new {Val = x.Id == 0 ? string.Empty : x.Id.ToString(), Text = x.Name, x.Parent}), "Val", "Text", "Parent.Name", Model.Data.TypeOfRestId, new object[0]), new {@class = "form-control type-of-rest select2"}).DisableIf(Model.Data.Id > 0)
                 }
                 @Html.HiddenFor(r => r.Data.TypeOfRestId, new {@class = "TypeOfRestId"})
                 <span class="field-validation-error">@Model.TypeOfRestEm.FormatEx(string.Empty)</span>
@@ -69,7 +69,7 @@
         <div class="row form-group" id="YearDiv">
             <label class="col-md-3 control-label">Год кампании<span class="requared">*</span></label>
             <div class="col-md-9">
-                @Html.HiddenFor(r => r.Data.YearOfRestId, new {@class = "YearOfRestId form-control", id = "YearOfRestId", YearName = Model.Data.YearOfRest != null ? Model.Data.YearOfRest.Name : string.Empty}).ReadonlyIf(() => Model.Data.Id > 0)
+                @Html.HiddenFor(r => r.Data.YearOfRestId, new {@class = "YearOfRestId form-control", id = "YearOfRestId", YearName = Model.Data.YearOfRest != null ? Model.Data.YearOfRest.Name : string.Empty}).ReadOnlyIf(Model.Data.Id > 0)
             </div>
         </div>
 
@@ -113,14 +113,14 @@
     <div class="row form-group transfers @(Model.Data.TypeOfRest.NullSafe(v => v.NeedPlace) ? string.Empty : "hidden")">
         <label class="col-md-3 control-label">Проезд из города Москвы к месту отдыха<span class="requared">*</span></label>
         <div class="col-md-9">
-            @Html.DropDownListFor(r => r.Data.TransferToId, new SelectList(transfer.Select(ss => new {ss.Id, @Name = ss.Name.Replace("Самостоятельно", "Отказываюсь от бесплатного проезда в составе организованной группы отдыхающих. Проезд в организацию отдыха и оздоровления будет осуществлен самостоятельно за счет собственных средств, не позднее 3 дней с начала периода отдыха и оздоровления (ознакомлен, что компенсация затраченных средств не предусмотрена)")}), "Id", "Name"), new {@class = "form-control select2"})
+            @Html.DropDownListFor(r => r.Data.TransferToId, new SelectList(transfer.Select(ss => new {ss.Id, @Name = ss.Name.Replace("Самостоятельно", "Отказываюсь от бесплатного проезда в составе организованной группы отдыхающих. Проезд в организацию отдыха и оздоровления будет осуществлен самостоятельно за счет собственных средств, не позднее 3 дней с начала периода отдыха и оздоровления (ознакомлен, что компенсация затраченных средств не предусмотрена)")}), "Id", "Name"), new {@class = "form-control select2 transferTo"})
             <span class="field-validation-error">@Model.TransferToEm.FormatEx(string.Empty)</span>
         </div>
     </div>
     <div class="row form-group transfers @(Model.Data.TypeOfRest.NullSafe(v => v.NeedPlace) ? string.Empty : "hidden")">
         <label class="col-md-3 control-label">Проезд из места отдыха в город Москву<span class="requared">*</span></label>
         <div class="col-md-9">
-            @Html.DropDownListFor(r => r.Data.TransferFromId, new SelectList(transfer.Select(ss => new {ss.Id, @Name = ss.Name.Replace("Самостоятельно", "Отказываюсь от бесплатного проезда в составе организованной группы отдыхающих. Проезд из организации отдыха и оздоровления будет осуществлен самостоятельно за счет собственных средств, не позднее дня окончания периода отдыха и оздоровления (ознакомлен, что компенсация затраченных средств не предусмотрена)")}), "Id", "Name"), new {@class = "form-control select2"})
+            @Html.DropDownListFor(r => r.Data.TransferFromId, new SelectList(transfer.Select(ss => new {ss.Id, @Name = ss.Name.Replace("Самостоятельно", "Отказываюсь от бесплатного проезда в составе организованной группы отдыхающих. Проезд из организации отдыха и оздоровления будет осуществлен самостоятельно за счет собственных средств, не позднее дня окончания периода отдыха и оздоровления (ознакомлен, что компенсация затраченных средств не предусмотрена)")}), "Id", "Name"), new {@class = "form-control select2 transferFrom"})
             <span class="field-validation-error">@Model.TransferFromEm.FormatEx(string.Empty)</span>
         </div>
     </div>

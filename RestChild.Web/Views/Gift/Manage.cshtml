@@ -1,7 +1,7 @@
 ﻿@using RestChild.Comon
 @using RestChild.Mobile.DAL.Enum
 @using RestChild.Mobile.Domain
-@using RestChild.Web.App_Code
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.Gift.ManageModel
 @{
     ViewBag.Title = "Подарок";
@@ -33,7 +33,7 @@
             .SelectMany(p => p.Reserved ?? new List<GiftReserved>())
             .Count(r => r.StateId == StateEnum.GiftReserved.Reserved);
         rating = Model.Data.GiftParameters
-            .SelectMany(p => p.Reserved ?? new List<GiftReserved>()).Select(v=>v.Rating).DefaultIfEmpty()
+            .SelectMany(p => p.Reserved ?? new List<GiftReserved>()).Select(v => v.Rating).DefaultIfEmpty()
             .Average(r => r);
     }
 }
@@ -72,27 +72,27 @@
                         <div class="col-md-7">
                             <div class="form-group">
                                 <h4>Основные параметры</h4>
-                                <label class="control-label">Название подарка</label>
+                                <label class="control-label">Наименование подарка в номенклатуре сувенирной продукции</label>
                                 <div>
-                                    @Html.TextBoxFor(r => r.Data.Name, new {@class = "form-control", maxlength = "600", autocomplete = "off"}).DisableIf(() => !Model.CanEdit)
+                                    @Html.TextBoxFor(r => r.Data.Name, new {@class = "form-control", maxlength = "600", autocomplete = "off"}).DisableIf(!Model.CanEdit)
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label">Название для магазина</label>
+                                <label class="control-label">Название подарка</label>
                                 <div>
-                                    @Html.TextBoxFor(r => r.Data.NameForShop, new {@class = "form-control", maxlength = "40", autocomplete = "off"}).DisableIf(() => !Model.CanEdit)
+                                    @Html.TextBoxFor(r => r.Data.NameForShop, new {@class = "form-control", maxlength = "40", autocomplete = "off"}).DisableIf(!Model.CanEdit)
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Описание подарка</label>
                                 <div>
-                                    @Html.TextAreaFor(r => r.Data.Description, new {@class = "form-control", autocomplete = "off"}).DisableIf(() => !Model.CanEdit)
+                                    @Html.TextAreaFor(r => r.Data.Description, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.CanEdit)
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label">Стоимость</label>
+                                <label class="control-label">Стоимость в баллах</label>
                                 <div>
-                                    @Html.TextBoxFor(r => r.Data.Price, new {@class = "form-control price", maxlength = "20", autocomplete = "off"}).DisableIf(() => !Model.CanEdit)
+                                    @Html.TextBoxFor(r => r.Data.Price, new {@class = "form-control price", maxlength = "20", autocomplete = "off"}).DisableIf(!Model.CanEdit)
                                 </div>
                             </div>
                             <div class="form-group">
@@ -105,9 +105,9 @@
                                 <label class="control-label">Рейтинг: @(rating.FormatEx())</label>
                             </div>
                             <div class="form-group">
-                                <label class="control-label text-right input-label">Дата начала использования после утверждения</label>
+                                <label class="control-label text-right input-label">Дата начала бронирования после утверждения</label>
                                 <div class='input-group date datepicker-anytime' style="max-width: 150px">
-                                    @Html.TextBoxFor(r => r.Data.DateStartUsing, new {@class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", Value = Model.NullSafe(m => m.Data.DateStartUsing).FormatEx(string.Empty, string.Empty)}).DisableIf(() => !Model.CanEdit)
+                                    @Html.TextBoxFor(r => r.Data.DateStartUsing, new {@class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", Value = Model.NullSafe(m => m.Data.DateStartUsing).FormatEx(string.Empty, string.Empty)}).DisableIf(!Model.CanEdit)
                                     <span class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </span>
@@ -115,7 +115,7 @@
                             </div>
                             <div class="form-group">
                                 <h4>Характеристики и количество</h4>
-                                <label class="control-label">Параметр подарка</label>
+                                <label class="control-label">Ассортимент</label>
                                 @if (Model.CanEdit)
                                 {
                                     <div class="input-group">

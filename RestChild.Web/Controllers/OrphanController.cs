@@ -169,7 +169,7 @@ namespace RestChild.Web.Controllers
             }
 
             result.Groups = new OrphanageGroupsFilterModel(organizationId.Value);
-            ApiController.FillGroups(result.Groups, Settings.Default.TablePageSize);
+            ApiController.FillGroups(result.Groups);
 
             result.Lists = new OrphanagePupilGroupListFilterModel(organizationId.Value);
             ApiController.FillPupilGroupList(result.Lists, Settings.Default.TablePageSize);

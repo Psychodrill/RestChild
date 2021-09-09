@@ -67,15 +67,6 @@
 			</div>
 		</div>
 	</div>
-	if (Model.Sign != null)
-	{
-		<div class="form-group">
-			<div class="well well-sm">
-				<span class="text-info">Пользователь: </span><strong>@Html.Raw(Model.Sign.NullSafe(s => s.Account.Name))</strong>, ЭП: @Model.NullSafe(s => s.Sign.SignDate).FormatEx()<br />
-				Файл: <a href="@Url.Action("GetSignInfo", "Sign", new { id = Model.Sign.Id, url = Esep.FullReturnUrl(Request.RawUrl) })" target="_blank">Карточка, подписанная ЭП</a>
-			</div>
-		</div>
-	}
 }
 <script type="template-dot" id="stateDialogBody">
 	<div>

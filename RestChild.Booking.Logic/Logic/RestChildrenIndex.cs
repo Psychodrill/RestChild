@@ -697,6 +697,9 @@ namespace RestChild.Booking.Logic.Logic
                             i.Request.StatusId == (int) StatusEnum.CertificateIssued &&
                             !i.Request.IsDeleted && !i.IsDeleted && !i.Request.TypeOfRest.Commercial)
                     .Include(t => t.Address)
+                    .Include(t => t.Address.BtiAddress)
+                    .Include(t => t.Address.BtiAddress.BtiStreet)
+                    .Include(t => t.Address.BtiRegion)
                     .Include(t => t.BenefitType)
                     .Include(t => t.DocumentType)
                     .Include(t => t.TypeOfRestriction)
@@ -707,7 +710,29 @@ namespace RestChild.Booking.Logic.Logic
                     .Include(t => t.Request.TypeOfRest)
                     .Include(t => t.Request.Hotels)
                     .Include(t => t.Request.Tour)
-                    .Include(t => t.Request.TimeOfRest).OrderBy(i => i.Id);
+                    .Include(t => t.Request.TimeOfRest)
+                    .OrderBy(i => i.Id).Select(t => new Child(t)
+                    {
+                        Address = t.Address != null
+                            ? new Address(t.Address)
+                            {
+                                BtiAddress = t.Address.BtiAddress != null
+                                    ? new BtiAddress(t.Address.BtiAddress)
+                                    {
+                                        BtiStreet = t.Address.BtiAddress.BtiStreet != null
+                                            ? new BtiStreet(t.Address.BtiAddress.BtiStreet)
+                                            : null,
+                                        BtiRegion = t.Address.BtiAddress.BtiRegion != null
+                                            ? new BtiRegion(t.Address.BtiAddress.BtiRegion)
+                                            : null
+                                    }
+                                    : null,
+                                BtiRegion = t.Address.BtiRegion != null
+                                    ? new BtiRegion(t.Address.BtiRegion)
+                                    : null
+                            }
+                            : null,
+                    });
 
                 var departments = uw.GetSet<Organization>()
                     .Where(i => !i.ParentId.HasValue).ToArray().ToDictionary(i => i.Id);
@@ -869,6 +894,9 @@ namespace RestChild.Booking.Logic.Logic
                             }.Contains(
                                 i.ChildList.LimitOnOrganization.Tour.StateId))
                     .Include(t => t.Address)
+                    .Include(t => t.Address.BtiAddress)
+                    .Include(t => t.Address.BtiAddress.BtiStreet)
+                    .Include(t => t.Address.BtiRegion)
                     .Include(t => t.BenefitType)
                     .Include(t => t.DocumentType)
                     .Include(t => t.TypeOfRestriction)
@@ -877,7 +905,28 @@ namespace RestChild.Booking.Logic.Logic
                     .Include(t => t.ChildList.LimitOnOrganization.Organization.Vedomstvo)
                     .Include(t => t.ChildList.LimitOnOrganization.Tour.Hotels.PlaceOfRest)
                     .Include(t => t.ChildList.LimitOnOrganization.Tour.TimeOfRest)
-                    .OrderBy(c => c.Id);
+                    .OrderBy(i => i.Id).Select(t => new Child(t)
+                    {
+                        Address = t.Address != null
+                            ? new Address(t.Address)
+                            {
+                                BtiAddress = t.Address.BtiAddress != null
+                                    ? new BtiAddress(t.Address.BtiAddress)
+                                    {
+                                        BtiStreet = t.Address.BtiAddress.BtiStreet != null
+                                            ? new BtiStreet(t.Address.BtiAddress.BtiStreet)
+                                            : null,
+                                        BtiRegion = t.Address.BtiAddress.BtiRegion != null
+                                            ? new BtiRegion(t.Address.BtiAddress.BtiRegion)
+                                            : null
+                                    }
+                                    : null,
+                                BtiRegion = t.Address.BtiRegion != null
+                                    ? new BtiRegion(t.Address.BtiRegion)
+                                    : null
+                            }
+                            : null,
+                    });
 
                 _logger.Info("Started Lists");
                 j = 0;

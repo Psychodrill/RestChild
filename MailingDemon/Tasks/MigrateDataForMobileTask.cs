@@ -424,7 +424,7 @@ namespace MailingDemon.Tasks
                     var ids = campers.Select(a => a.ChildExtMgtUid).ToArray();
                     var presentCampers = mobile.GetSet<Camper>().Where(b => ids.Contains(b.ChildExtMgtUid)).ToList();
 
-                    foreach (var camper in campers)
+                    foreach (var camper in campers.OrderBy(ss => ss.LastUpdateTick).ToList())
                     {
                         var present = presentCampers.FirstOrDefault(p => p.ChildExtMgtUid == camper.ChildExtMgtUid);
 
@@ -466,7 +466,7 @@ namespace MailingDemon.Tasks
 
                         mobile.SaveChanges();
                         process = true;
-                        param.Id = camper.ChildExtMgtUid ?? camper.AttendantExtMgrUid ?? param.Id;
+                        param.LastUpdateTick = camper.LastUpdateTick;
                     }
 
                     mobile.DetachAllEntitys();
@@ -513,7 +513,7 @@ namespace MailingDemon.Tasks
                     var ids = camps.Select(a => a.Id).ToArray();
                     var presentCamps = mobile.GetSet<Camp>().Where(b => ids.Contains(b.Id)).ToList();
 
-                    foreach (var camp in camps)
+                    foreach (var camp in camps.OrderBy(ss => ss.LastUpdateTick).ToList())
                     {
                         camp.StateId = camp.StateId ?? StateMachineStateEnum.Deleted;
 
@@ -531,6 +531,7 @@ namespace MailingDemon.Tasks
                         else
                         {
                             present.Name = camp.Name;
+                            present.HotelTypeId = camp.HotelTypeId;
                             present.Address = camp.Address;
                             present.NearestCity = camp.NearestCity;
                             present.LastUpdateTick = camp.LastUpdateTick;
@@ -539,7 +540,7 @@ namespace MailingDemon.Tasks
                         }
 
                         mobile.SaveChanges();
-                        param.Id = camp.Id;
+                        param.LastUpdateTick = camp.LastUpdateTick;
                         process = true;
                     }
 

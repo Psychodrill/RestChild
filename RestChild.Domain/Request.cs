@@ -499,6 +499,14 @@ namespace RestChild.Domain
       [DataMember(Name = "needSendForAisoLegalRepresentation", EmitDefaultValue = false)]
       public virtual bool NeedSendForAisoLegalRepresentation { get; set; }
       
+      /// <summary>
+      /// Нужно отправить на проверку сведений об инвалидности в ФРИ
+      /// </summary>
+      [Display(Description = "Нужно отправить на проверку сведений об инвалидности в ФРИ")]
+      [Required(ErrorMessage = "\"Нужно отправить на проверку сведений об инвалидности в ФРИ\" должно быть заполнено")]
+      [DataMember(Name = "needSendForFRI", EmitDefaultValue = false)]
+      public virtual bool NeedSendForFRI { get; set; }
+      
       
       /// <summary>
       /// Дети
@@ -869,6 +877,70 @@ namespace RestChild.Domain
       [Display(Description = "В место отдыха")]
       [DataMember(Name = "transferTo", EmitDefaultValue = false)]
       public virtual TypeOfTransfer TransferTo { get; set; }
+      
+      /// <summary>
+      /// Приоритетный вид транспорта
+      /// </summary>
+      [ForeignKey("PriorityTypeOfTransportInRequest")]
+      [DataMember(Name = "priorityTypeOfTransportInRequestId")]
+      [Display(Description = "Приоритетный вид транспорта")]
+      public virtual long? PriorityTypeOfTransportInRequestId { get; set; }
+      
+      
+      /// <summary>
+      /// Приоритетный вид транспорта
+      /// </summary>
+      [Display(Description = "Приоритетный вид транспорта")]
+      [DataMember(Name = "priorityTypeOfTransportInRequest", EmitDefaultValue = false)]
+      public virtual TypeOfTransportInRequest PriorityTypeOfTransportInRequest { get; set; }
+      
+      /// <summary>
+      /// Дополнительный вид транспорта
+      /// </summary>
+      [ForeignKey("AdditionalTypeOfTransportInRequest")]
+      [DataMember(Name = "additionalTypeOfTransportInRequestId")]
+      [Display(Description = "Дополнительный вид транспорта")]
+      public virtual long? AdditionalTypeOfTransportInRequestId { get; set; }
+      
+      
+      /// <summary>
+      /// Дополнительный вид транспорта
+      /// </summary>
+      [Display(Description = "Дополнительный вид транспорта")]
+      [DataMember(Name = "additionalTypeOfTransportInRequest", EmitDefaultValue = false)]
+      public virtual TypeOfTransportInRequest AdditionalTypeOfTransportInRequest { get; set; }
+      
+      /// <summary>
+      /// Приоритетный тип лагеря
+      /// </summary>
+      [ForeignKey("TypeOfCamp")]
+      [DataMember(Name = "typeOfCampId")]
+      [Display(Description = "Приоритетный тип лагеря")]
+      public virtual long? TypeOfCampId { get; set; }
+      
+      
+      /// <summary>
+      /// Приоритетный тип лагеря
+      /// </summary>
+      [Display(Description = "Приоритетный тип лагеря")]
+      [DataMember(Name = "typeOfCamp", EmitDefaultValue = false)]
+      public virtual TypeOfCamp TypeOfCamp { get; set; }
+      
+      /// <summary>
+      /// Дополнительный тип лагеря
+      /// </summary>
+      [ForeignKey("TypeOfCampAddon")]
+      [DataMember(Name = "typeOfCampAddonId")]
+      [Display(Description = "Дополнительный тип лагеря")]
+      public virtual long? TypeOfCampAddonId { get; set; }
+      
+      
+      /// <summary>
+      /// Дополнительный тип лагеря
+      /// </summary>
+      [Display(Description = "Дополнительный тип лагеря")]
+      [DataMember(Name = "typeOfCampAddon", EmitDefaultValue = false)]
+      public virtual TypeOfCamp TypeOfCampAddon { get; set; }
       
       /// <summary>
       /// Автор

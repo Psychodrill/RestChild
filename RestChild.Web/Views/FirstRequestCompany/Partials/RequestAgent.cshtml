@@ -4,174 +4,179 @@
 @using RestChild.Extensions.Extensions
 @using RestChild.Web.Controllers;
 @using RestChild.Web.App_Code
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.RequestViewModel
 @{
-   var canExclude = Security.HasRight(AccessRightEnum.ExcludeChild);
-   var typeOfRestId = Model.Data.TypeOfRestId ?? 0;
-   if (Model.Data.CountAttendants <= 1)
-   {
-      canExclude = false;
-   }
+    var canExclude = Security.HasRight(AccessRightEnum.ExcludeChild);
+    var typeOfRestId = Model.Data.TypeOfRestId ?? 0;
+    if (Model.Data.CountAttendants <= 1)
+    {
+        canExclude = false;
+    }
+
+    var choose = new List<object> {new {Val = "zzz", Name = "-- Не выбрано --"}, new {Val = "true", Name = "Да"}, new {Val = "false", Name = "Нет"}};
+
+
 }
 
 <fieldset class="bs-callout bs-callout-info request-block @((Model.Data.AgentApplicant ?? false) ? string.Empty : " hidden")">
 <h3 id="Agent" class="anchor bs-callout-info">Сведения о представителе заявителя</h3>
 <span class="field-validation-error">@Model.AgentEm.FormatEx(string.Empty)</span>
 @Html.HiddenFor(r => r.Agent.Data.Id)
-@Html.HiddenFor(r => r.Agent.DataApplicant.Id)
+@Html.HiddenFor(r => r.Agent.DataApplicant.Id, new {@class = "id"})
 @Html.HiddenFor(r => r.Agent.DataApplicant.BoutId)
 @Html.HiddenFor(r => r.Agent.DataApplicant.RequestId)
-@Html.HiddenFor(r => r.Agent.DataApplicant.Id)
 @Html.HiddenFor(r => r.Agent.Guid, new {@class = "guid agent-guid"})
 @if (Model.Data != null && !Model.Data.RequestOnMoney &&
-     (new []
+     (new[]
      {
-        (long) StatusEnum.DecisionMaking, (long) StatusEnum.DecisionMakingCovid
+         (long) StatusEnum.DecisionMaking, (long) StatusEnum.DecisionMakingCovid
      }.Contains(Model.Data.StatusId ?? 0) || (Model.Agent.DataApplicant != null && Model.Agent.DataApplicant.IsDeleted))
      &&
-     new[] {
-        (long) TypeOfRestEnum.RestWithParents,
-        (long) TypeOfRestEnum.RestWithParentsPoor,
-        (long) TypeOfRestEnum.RestWithParentsOther,
-        (long) TypeOfRestEnum.RestWithParentsOrphan,
-        (long) TypeOfRestEnum.RestWithParentsComplex,
-        (long) TypeOfRestEnum.RestWithParentsInvalid,
-        (long) TypeOfRestEnum.RestWithParentsInvalidOrphanComplex
+     new[]
+     {
+         (long) TypeOfRestEnum.RestWithParents,
+         (long) TypeOfRestEnum.RestWithParentsPoor,
+         (long) TypeOfRestEnum.RestWithParentsOther,
+         (long) TypeOfRestEnum.RestWithParentsOrphan,
+         (long) TypeOfRestEnum.RestWithParentsComplex,
+         (long) TypeOfRestEnum.RestWithParentsInvalid,
+         (long) TypeOfRestEnum.RestWithParentsInvalidOrphanComplex
      }.Contains(typeOfRestId)
      && (Model.Agent.DataApplicant != null && Model.Agent.DataApplicant.IsAccomp)
-   )
+    )
 {
-   <div class="row form-group">
-      <div class="pull-right col-md-3">
-         <div class="checkbox">
-            <label>
-               @Html.CheckBoxFor(m => m.Agent.DataApplicant.IsDeleted, new {@class = "exclude-from-request-a exclude-attendant"}).DisableIf(() => Model.Agent.DataApplicant.IsDeleted || !canExclude) Исключен из заезда
-               @Html.Hidden("ExcludeFromRequestHidden001", Model.Agent.DataApplicant.IsDeleted, new {@class = "exclude-from-request-hidden-a"})
-            </label>
-         </div>
-      </div>
-   </div>
+    <div class="row form-group">
+        <div class="pull-right col-md-3">
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(m => m.Agent.DataApplicant.IsDeleted, new {@class = "exclude-from-request-a exclude-attendant"}).DisableIf(Model.Agent.DataApplicant.IsDeleted || !canExclude) Исключен из заезда
+                    @Html.Hidden("ExcludeFromRequestHidden001", Model.Agent.DataApplicant.IsDeleted, new {@class = "exclude-from-request-hidden-a"})
+                </label>
+            </div>
+        </div>
+    </div>
 }
 
 
 <div class="row form-group">
-	<label class="col-md-3 control-label">Фамилия<span class="requared">*</span></label>
-	<div class="col-md-9">
-		@Html.TextBoxFor(r => r.Agent.Data.LastName, new {@class = "form-control required agent-firstname info-lastname"})
-		<span class="field-validation-error">@Model.Agent.LastNameEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">Фамилия<span class="requared">*</span></label>
+    <div class="col-md-9">
+        @Html.TextBoxFor(r => r.Agent.Data.LastName, new {@class = "form-control required agent-firstname info-lastname"})
+        <span class="field-validation-error">@Model.Agent.LastNameEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 control-label">Имя<span class="requared">*</span></label>
-	<div class="col-md-9">
-		@Html.TextBoxFor(r => r.Agent.Data.FirstName, new {@class = "form-control required agent-lastname info-firstname"})
-		<span class="field-validation-error">@Model.Agent.FirstNameEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">Имя<span class="requared">*</span></label>
+    <div class="col-md-9">
+        @Html.TextBoxFor(r => r.Agent.Data.FirstName, new {@class = "form-control required agent-lastname info-firstname"})
+        <span class="field-validation-error">@Model.Agent.FirstNameEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <div class="row form-group">
-	<div class="col-md-offset-3 col-md-9">
-		<div class="checkbox">
-			<label>
-				@Html.CheckBoxFor(r => r.Agent.Data.HaveMiddleName, new {@class = "middlename-havenot"})
-				Нет отчества
-			</label>
-		</div>
-	</div>
+    <div class="col-md-offset-3 col-md-9">
+        <div class="checkbox">
+            <label>
+                @Html.CheckBoxFor(r => r.Agent.Data.HaveMiddleName, new {@class = "middlename-havenot"})
+                Нет отчества
+            </label>
+        </div>
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 control-label">Отчество</label>
-	<div class="col-md-9">
-		@Html.TextBoxFor(r => r.Agent.Data.MiddleName, new {@class = "form-control  required middlename agent-middlename  info-middlename"}).DisableIf(() => Model.NullSafe(m => m.Agent.Data.HaveMiddleName))
-		<span class="field-validation-error">@Model.Agent.MiddleNameEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">Отчество</label>
+    <div class="col-md-9">
+        @Html.TextBoxFor(r => r.Agent.Data.MiddleName, new {@class = "form-control  required middlename agent-middlename  info-middlename"}).DisableIf(Model.NullSafe(m => m.Agent.Data.HaveMiddleName))
+        <span class="field-validation-error">@Model.Agent.MiddleNameEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 control-label">Пол<span class="requared">*</span></label>
-	<div class="col-md-9">
-		<label>
-			@Html.RadioButtonFor(r => r.Agent.Data.Male, true)
-			Мужской
-		</label>&nbsp;
-		<label>
-			@Html.RadioButtonFor(r => r.Agent.Data.Male, false)
-			Женский
-		</label>
-	</div>
+    <label class="col-md-3 control-label">Пол<span class="requared">*</span></label>
+    <div class="col-md-9">
+        <label>
+            @Html.RadioButtonFor(r => r.Agent.Data.Male, true)
+            Мужской
+        </label>&nbsp;
+        <label>
+            @Html.RadioButtonFor(r => r.Agent.Data.Male, false)
+            Женский
+        </label>
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 control-label">СНИЛС<span class="requared">*</span></label>
-	<div class="col-md-9">
-		@Html.TextBoxFor(r => r.Agent.Data.Snils, new {@class = "form-control required snils", maxlength = "100"})
+    <label class="col-md-3 control-label">СНИЛС<span class="requared">*</span></label>
+    <div class="col-md-9">
+        @Html.TextBoxFor(r => r.Agent.Data.Snils, new {@class = "form-control required snils", maxlength = "100"})
         <span class="field-validation-error">@Model.Agent.SnilsEm.FormatEx(string.Empty)</span>
-	</div>
+    </div>
 </div>
 <div class="row form-group applicant-birth-date">
-	<label class="col-md-3 control-label">Дата рождения<span class="requared">*</span></label>
-	<div class="col-md-9">
-		<div class='input-group datepicker-my datepicker'>
-			@Html.TextBoxFor(r => r.Agent.Data.DateOfBirth, new {@class = "form-control  required input-mask-date", placeholder = "", @Value = Model.Agent.Data != null ? Model.Agent.Data.DateOfBirth.FormatEx(string.Empty, string.Empty) : string.Empty, autocomplete = "off"})
-			<span class="input-group-addon">
-				<span class="glyphicon glyphicon-calendar"></span>
-			</span>
-		</div>
-	</div>
+    <label class="col-md-3 control-label">Дата рождения<span class="requared">*</span></label>
+    <div class="col-md-9">
+        <div class='input-group datepicker-my datepicker'>
+            @Html.TextBoxFor(r => r.Agent.Data.DateOfBirth, new {@class = "form-control  required input-mask-date", placeholder = "", @Value = Model.Agent.Data != null ? Model.Agent.Data.DateOfBirth.FormatEx(string.Empty, string.Empty) : string.Empty, autocomplete = "off"})
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
+    </div>
 </div>
 <div class="row form-group applicant-birth-place @(Model.NullSafe(m => m.Data.Applicant.IsAccomp) ? string.Empty : " hidden")">
-	<label class="col-md-3 control-label">Место рождения</label>
-	<div class="col-md-9">
-		@Html.TextBoxFor(r => r.Agent.Data.PlaceOfBirth, new {@class = "form-control required", placeholder = "", autocomplete = "off"})
-	</div>
+    <label class="col-md-3 control-label">Место рождения</label>
+    <div class="col-md-9">
+        @Html.TextBoxFor(r => r.Agent.Data.PlaceOfBirth, new {@class = "form-control required", placeholder = "", autocomplete = "off"})
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 control-label">Телефон<span class="requared">*</span></label>
-	<div class="col-md-9">
-		@Html.TextBoxFor(r => r.Agent.Data.Phone, new {@class = "form-control required input-mask-phone"})
-		<span class="field-validation-error">@Model.Agent.PhoneEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">Телефон<span class="requared">*</span></label>
+    <div class="col-md-9">
+        @Html.TextBoxFor(r => r.Agent.Data.Phone, new {@class = "form-control required input-mask-phone"})
+        <span class="field-validation-error">@Model.Agent.PhoneEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 control-label">Email</label>
-	<div class="col-md-9">
-		@Html.TextBoxFor(r => r.Agent.Data.Email, new {@class = "form-control  required input-mask-email"})
-		<span class="field-validation-error">@Model.Agent.EmailEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">Email</label>
+    <div class="col-md-9">
+        @Html.TextBoxFor(r => r.Agent.Data.Email, new {@class = "form-control  required input-mask-email"})
+        <span class="field-validation-error">@Model.Agent.EmailEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 control-label">Тип документа удостоверяющего личность<span class="requared">*</span></label>
-	<div class="col-md-9">
-		@Html.DropDownListFor(r => r.Agent.Data.DocumentTypeId, new SelectList(ViewBag.DocumentsTypeAgent, "Id", "Name", Model.NullSafe(a => a.Agent.Data.DocumentTypeId)), new {@class = "form-control select2  document-dropdown"})
-		<span class="field-validation-error">@Model.Agent.DocumentTypeEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">Тип документа удостоверяющего личность<span class="requared">*</span></label>
+    <div class="col-md-9">
+        @Html.DropDownListFor(r => r.Agent.Data.DocumentTypeId, new SelectList(ViewBag.DocumentsTypeAgent, "Id", "Name", Model.NullSafe(a => a.Agent.Data.DocumentTypeId)), new {@class = "form-control select2  document-dropdown"})
+        <span class="field-validation-error">@Model.Agent.DocumentTypeEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 col-xs-12 col-sm-12 control-label">Серия и номер<span class="requared">*</span></label>
-	<div class="col-md-3 col-xs-4 col-sm-4">
-		@Html.TextBoxFor(r => r.Agent.Data.DocumentSeria, new {@class = "form-control  required input-mask-passport-series"})
-		<span class="field-validation-error">@Model.Agent.DocumentSeriaEm.FormatEx(string.Empty)</span>
-	</div>
-	<div class="col-xs-8 col-md-6 col-sm-8">
-		@Html.TextBoxFor(r => r.Agent.Data.DocumentNumber, new {@class = "form-control  required input-mask-passport-number"})
-		<span class="field-validation-error">@Model.Agent.DocumentNumberEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 col-xs-12 col-sm-12 control-label">Серия и номер<span class="requared">*</span></label>
+    <div class="col-md-3 col-xs-4 col-sm-4">
+        @Html.TextBoxFor(r => r.Agent.Data.DocumentSeria, new {@class = "form-control  required input-mask-passport-series"})
+        <span class="field-validation-error">@Model.Agent.DocumentSeriaEm.FormatEx(string.Empty)</span>
+    </div>
+    <div class="col-xs-8 col-md-6 col-sm-8">
+        @Html.TextBoxFor(r => r.Agent.Data.DocumentNumber, new {@class = "form-control  required input-mask-passport-number"})
+        <span class="field-validation-error">@Model.Agent.DocumentNumberEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 control-label">Когда выдан документ<span class="requared">*</span></label>
-	<div class="col-md-9">
-		<div class='input-group datepicker-my datepicker'>
-			@Html.TextBoxFor(model => Model.Agent.Data.DocumentDateOfIssue, new {@class = "form-control required input-mask-date", placeholder = "", @Value = Model.NullSafe(m => m.Agent.Data.DocumentDateOfIssue).FormatEx(string.Empty, string.Empty)})
-			<span class="input-group-addon">
-				<span class="glyphicon glyphicon-calendar"></span>
-			</span>
-		</div>
-		<span class="field-validation-error">@Model.Agent.DocumentDateOfIssueEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">Когда выдан документ<span class="requared">*</span></label>
+    <div class="col-md-9">
+        <div class='input-group datepicker-my datepicker'>
+            @Html.TextBoxFor(model => Model.Agent.Data.DocumentDateOfIssue, new {@class = "form-control required input-mask-date", placeholder = "", @Value = Model.NullSafe(m => m.Agent.Data.DocumentDateOfIssue).FormatEx(string.Empty, string.Empty)})
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
+        <span class="field-validation-error">@Model.Agent.DocumentDateOfIssueEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 control-label">Кем выдан документ<span class="requared">*</span></label>
-	<div class="col-md-9">
-		@Html.TextBoxFor(r => r.Agent.Data.DocumentSubjectIssue, new {@class = "form-control  required"})
-		<span class="field-validation-error">@Model.Agent.DocumentSubjectIssueEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">Кем выдан документ<span class="requared">*</span></label>
+    <div class="col-md-9">
+        @Html.TextBoxFor(r => r.Agent.Data.DocumentSubjectIssue, new {@class = "form-control  required"})
+        <span class="field-validation-error">@Model.Agent.DocumentSubjectIssueEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <div class="row form-group">
     <label class="col-md-3 control-label">Код подразделения</label>
@@ -188,120 +193,128 @@
     }
 }
 <div class="row form-group">
-	<label class="col-md-3 control-label">Представляет интересы</label>
-	<div class="col-md-9">
-		@Html.HiddenFor(r => r.Data.RepresentInterestId, new {@class = "form-control", @id = "representInterest", titleText = Model.Data.RepresentInterest != null ? Model.Data.RepresentInterest.Name : "-- Не выбрано --"})
-		<span class="field-validation-error">@Model.Agent.RepresentInterestEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">Представляет интересы</label>
+    <div class="col-md-9">
+        @Html.HiddenFor(r => r.Data.RepresentInterestId, new {@class = "form-control", @id = "representInterest", titleText = Model.Data.RepresentInterest != null ? Model.Data.RepresentInterest.Name : "-- Не выбрано --"})
+        <span class="field-validation-error">@Model.Agent.RepresentInterestEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <h4>Сведения о доверенности на подачу заявления</h4>
 <div class="row form-group">
-	<label class="col-md-3 control-label">Дата выдачи доверенности<span class="requared">*</span></label>
-	<div class="col-md-9">
-		<div class='input-group datepicker-my datepicker'>
-			@Html.TextBoxFor(r => r.Agent.Data.ProxyDateOfIssure, new {@class = "form-control required input-mask-date", @Value = Model.NullSafe(m => m.Agent.Data.ProxyDateOfIssure).FormatEx(string.Empty, string.Empty)})
-			<span class="input-group-addon">
-				<span class="glyphicon glyphicon-calendar"></span>
-			</span>
-		</div>
-		<span class="field-validation-error">@Model.Agent.ProxyDateOfIssureEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">Дата выдачи доверенности<span class="requared">*</span></label>
+    <div class="col-md-9">
+        <div class='input-group datepicker-my datepicker'>
+            @Html.TextBoxFor(r => r.Agent.Data.ProxyDateOfIssure, new {@class = "form-control required input-mask-date", @Value = Model.NullSafe(m => m.Agent.Data.ProxyDateOfIssure).FormatEx(string.Empty, string.Empty)})
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
+        <span class="field-validation-error">@Model.Agent.ProxyDateOfIssureEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 control-label">Дата окончания срока действия доверенности<span class="requared">*</span></label>
-	<div class="col-md-9">
-		<div class='input-group datepicker-general datepicker'>
-			@Html.TextBoxFor(r => r.Agent.Data.ProxyEndDate, new {@class = "form-control input-mask-date-anytime required", @Value = Model.NullSafe(m => m.Agent.Data.ProxyEndDate).FormatEx(string.Empty, string.Empty)})
-			<span class="input-group-addon">
-				<span class="glyphicon glyphicon-calendar"></span>
-			</span>
-		</div>
-		<span class="field-validation-error">@Model.Agent.ProxyEndDateEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">Дата окончания срока действия доверенности<span class="requared">*</span></label>
+    <div class="col-md-9">
+        <div class='input-group datepicker-general datepicker'>
+            @Html.TextBoxFor(r => r.Agent.Data.ProxyEndDate, new {@class = "form-control input-mask-date-anytime required", @Value = Model.NullSafe(m => m.Agent.Data.ProxyEndDate).FormatEx(string.Empty, string.Empty)})
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+        </div>
+        <span class="field-validation-error">@Model.Agent.ProxyEndDateEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 control-label">ФИО нотариуса<span class="requared">*</span></label>
-	<div class="col-md-9">
-		@Html.TextBoxFor(r => r.Agent.Data.NotaryName, new {@class = "form-control  required", autocomplete = "off"})
-		<span class="field-validation-error">@Model.Agent.NotaryNameEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">ФИО нотариуса<span class="requared">*</span></label>
+    <div class="col-md-9">
+        @Html.TextBoxFor(r => r.Agent.Data.NotaryName, new {@class = "form-control  required", autocomplete = "off"})
+        <span class="field-validation-error">@Model.Agent.NotaryNameEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 <div class="row form-group">
-	<label class="col-md-3 control-label">Номер доверенности<span class="requared">*</span></label>
-	<div class="col-md-9">
-		@Html.TextBoxFor(r => r.Agent.Data.ProxyNumber, new {@class = "form-control  required", autocomplete = "off"})
-		<span class="field-validation-error">@Model.Agent.ProxyNumberEm.FormatEx(string.Empty)</span>
-	</div>
+    <label class="col-md-3 control-label">Номер доверенности<span class="requared">*</span></label>
+    <div class="col-md-9">
+        @Html.TextBoxFor(r => r.Agent.Data.ProxyNumber, new {@class = "form-control  required", autocomplete = "off"})
+        <span class="field-validation-error">@Model.Agent.ProxyNumberEm.FormatEx(string.Empty)</span>
+    </div>
 </div>
 
 <div class="row form-group @(Model.Data.TypeOfRest.NullSafe(x => x.NeedPlacment) && Model.Data.IsFirstCompany ? string.Empty : " hidden")" id="NeedPlacmentAgent">
-	<label class="col-md-3 control-label">Доверенное лицо является сопровождающим<span class="requared">*</span></label>
-	<div class="col-md-9">
-      @if (Model.Data.StatusId == (long) StatusEnum.Draft)
-      {
-         <select name="@Html.NameFor(r => r.Agent.DataApplicant.IsAccomp)" class="form-control select2 is-agent-accomp select-must-selected" id="is-agent-accomp">
-            @if (Model.Agent == null || Model.Data.Agent == null || Model.Agent.Data.Id == 0)
-            {
-               <option selected="selected" value="">-- Не выбрано --</option>
-            }
-            <option value="False" @Html.Raw(Model.Agent != null && Model.Agent.DataApplicant != null && Model.Agent.DataApplicant.IsAccomp == false && Model.Agent.DataApplicant.Id != 0 ? "selected=\"selected\"" : "")>Нет</option>
-            <option value="True" @Html.Raw(Model.Agent != null && Model.Agent.DataApplicant != null && Model.Agent.DataApplicant.IsAccomp == true && Model.Agent.DataApplicant.Id != 0 ? "selected=\"selected\"" : "")>Да</option>
-         </select>
-      }
-      else
-      {
-         @Html.HiddenFor(m=>m.Agent.DataApplicant.IsAccomp)
-         <select name="@Html.NameFor(r => r.Agent.DataApplicant.IsAccomp)" class="form-control select2 is-agent-accomp select-must-selected" id="is-agent-accomp" disabled="disabled">
-            @if (Model.Agent == null || Model.Data.Agent == null || Model.Agent.Data.Id == 0)
-            {
-               <option selected="selected" value="">-- Не выбрано --</option>
-            }
-            <option value="False" @Html.Raw(Model.Agent != null && Model.Agent.DataApplicant != null && Model.Agent.DataApplicant.IsAccomp == false && Model.Agent.DataApplicant.Id != 0 ? "selected=\"selected\"" : "")>Нет</option>
-            <option value="True" @Html.Raw(Model.Agent != null && Model.Agent.DataApplicant != null && Model.Agent.DataApplicant.IsAccomp == true && Model.Agent.DataApplicant.Id != 0 ? "selected=\"selected\"" : "")>Да</option>
-         </select>
-      }
-   </div>
-
+    <label class="col-md-3 control-label">Доверенное лицо является сопровождающим<span class="requared">*</span></label>
+    <div class="col-md-5">
+        @if (Model.Data.StatusId == (long) StatusEnum.Draft)
+        {
+            <select name="@Html.NameFor(r => r.Agent.DataApplicant.IsAccomp)" class="form-control select2 is-agent-accomp select-must-selected" id="is-agent-accomp">
+                @if (Model.Agent == null || Model.Data.Agent == null || Model.Agent.Data.Id == 0)
+                {
+                    <option selected="selected" value="">-- Не выбрано --</option>
+                }
+                <option value="False" @Html.Raw(Model.Agent != null && Model.Agent.DataApplicant != null && Model.Agent.DataApplicant.IsAccomp == false && Model.Agent.DataApplicant.Id != 0 ? "selected=\"selected\"" : "")>Нет</option>
+                <option value="True" @Html.Raw(Model.Agent != null && Model.Agent.DataApplicant != null && Model.Agent.DataApplicant.IsAccomp == true && Model.Agent.DataApplicant.Id != 0 ? "selected=\"selected\"" : "")>Да</option>
+            </select>
+        }
+        else
+        {
+            @Html.HiddenFor(m => m.Agent.DataApplicant.IsAccomp)
+            <select name="@Html.NameFor(r => r.Agent.DataApplicant.IsAccomp)" class="form-control select2 is-agent-accomp select-must-selected" id="is-agent-accomp" disabled="disabled">
+                @if (Model.Agent == null || Model.Data.Agent == null || Model.Agent.Data.Id == 0)
+                {
+                    <option selected="selected" value="">-- Не выбрано --</option>
+                }
+                <option value="False" @Html.Raw(Model.Agent != null && Model.Agent.DataApplicant != null && Model.Agent.DataApplicant.IsAccomp == false && Model.Agent.DataApplicant.Id != 0 ? "selected=\"selected\"" : "")>Нет</option>
+                <option value="True" @Html.Raw(Model.Agent != null && Model.Agent.DataApplicant != null && Model.Agent.DataApplicant.IsAccomp == true && Model.Agent.DataApplicant.Id != 0 ? "selected=\"selected\"" : "")>Да</option>
+            </select>
+        }
+    </div>
+    @if (Model.Agent.DataApplicant != null && Model.Agent.DataApplicant.IsAccomp && Model.Agent.DataApplicant.Id != 0 && Model.Data.StatusId == (long) StatusEnum.CertificateIssued && Model.Data.DeclineReasonId == null)
+    {
+        if (Security.HasRight(AccessRightEnum.ReplacingAccompanying))
+        {
+            <div class="col-md-4">
+                <button type="button" class="btn btn-default btn-primary pull-right AttendantChange">Заменить сопровождающего</button>
+            </div>
+        }
+    }
 </div>
 <div class="proxy-block @Html.Raw(Model.Agent.NullSafe(x => x.DataApplicant.IsAccomp) ? "" : "hidden")" id="agentProxyBlock">
-	<h4>Сведения о доверенности на сопровождение</h4>
-	<div class="row form-group">
-		<label class="col-md-3 control-label">Дата выдачи доверенности<span class="requared">*</span></label>
-		<div class="col-md-9">
-			<div class='input-group datepicker-my datepicker'>
-				@Html.TextBoxFor(r => r.Agent.DataApplicant.ProxyDateOfIssure, new {@class = "form-control required input-mask-date", @Value = Model.NullSafe(m => m.Agent.DataApplicant.ProxyDateOfIssure).FormatEx(string.Empty, string.Empty)})
-				<span class="input-group-addon">
-					<span class="glyphicon glyphicon-calendar"></span>
-				</span>
-			</div>
-			<span class="field-validation-error">@Model.Agent.ApplicantProxyDateOfIssureEm.FormatEx(string.Empty)</span>
-		</div>
-	</div>
-	<div class="row form-group">
-		<label class="col-md-3 control-label">Дата окончания срока действия доверенности<span class="requared">*</span></label>
-		<div class="col-md-9">
-			<div class='input-group datepicker datepicker-general'>
-				@Html.TextBoxFor(r => r.Agent.DataApplicant.ProxyEndDate, new {@class = "form-control input-mask-date-anytime required", @Value = Model.NullSafe(m => m.Agent.DataApplicant.ProxyEndDate).FormatEx(string.Empty, string.Empty)})
-				<span class="input-group-addon">
-					<span class="glyphicon glyphicon-calendar"></span>
-				</span>
-			</div>
-			<span class="field-validation-error">@Model.Agent.ApplicantProxyEndDateEm.FormatEx(string.Empty)</span>
-		</div>
-	</div>
-	<div class="row form-group">
-		<label class="col-md-3 control-label">ФИО нотариуса<span class="requared">*</span></label>
-		<div class="col-md-9">
-			@Html.TextBoxFor(r => r.Agent.DataApplicant.NotaryName, new {@class = "form-control  required", autocomplete = "off"})
-			<span class="field-validation-error">@Model.Agent.ApplicantNotaryNameEm.FormatEx(string.Empty)</span>
-		</div>
-	</div>
-	<div class="row form-group">
-		<label class="col-md-3 control-label">Номер доверенности<span class="requared">*</span></label>
-		<div class="col-md-9">
-			@Html.TextBoxFor(r => r.Agent.DataApplicant.ProxyNumber, new {@class = "form-control  required", autocomplete = "off"})
-			<span class="field-validation-error">@Model.Agent.ApplicantProxyNumberEm.FormatEx(string.Empty)</span>
-		</div>
-	</div>
+    <h4>Сведения о доверенности на сопровождение</h4>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Дата выдачи доверенности<span class="requared">*</span></label>
+        <div class="col-md-9">
+            <div class='input-group datepicker-my datepicker'>
+                @Html.TextBoxFor(r => r.Agent.DataApplicant.ProxyDateOfIssure, new {@class = "form-control required input-mask-date", @Value = Model.NullSafe(m => m.Agent.DataApplicant.ProxyDateOfIssure).FormatEx(string.Empty, string.Empty)})
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            <span class="field-validation-error">@Model.Agent.ApplicantProxyDateOfIssureEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Дата окончания срока действия доверенности<span class="requared">*</span></label>
+        <div class="col-md-9">
+            <div class='input-group datepicker datepicker-general'>
+                @Html.TextBoxFor(r => r.Agent.DataApplicant.ProxyEndDate, new {@class = "form-control input-mask-date-anytime required", @Value = Model.NullSafe(m => m.Agent.DataApplicant.ProxyEndDate).FormatEx(string.Empty, string.Empty)})
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            <span class="field-validation-error">@Model.Agent.ApplicantProxyEndDateEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">ФИО нотариуса<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r.Agent.DataApplicant.NotaryName, new {@class = "form-control  required", autocomplete = "off"})
+            <span class="field-validation-error">@Model.Agent.ApplicantNotaryNameEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Номер доверенности<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(r => r.Agent.DataApplicant.ProxyNumber, new {@class = "form-control  required", autocomplete = "off"})
+            <span class="field-validation-error">@Model.Agent.ApplicantProxyNumberEm.FormatEx(string.Empty)</span>
+        </div>
+    </div>
 </div>
 </fieldset>

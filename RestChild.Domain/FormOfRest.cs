@@ -45,6 +45,22 @@ namespace RestChild.Domain
       [DataMember(Name = "isDeleted", EmitDefaultValue = false)]
       public virtual bool IsDeleted { get; set; }
       
+      /// <summary>
+      /// Возраст От
+      /// </summary>
+      [Display(Description = "Возраст От")]
+      [Required(ErrorMessage = "\"Возраст От\" должно быть заполнено")]
+      [DataMember(Name = "ageFrom", EmitDefaultValue = false)]
+      public virtual int AgeFrom { get; set; }
+      
+      /// <summary>
+      /// Возраст До
+      /// </summary>
+      [Display(Description = "Возраст До")]
+      [Required(ErrorMessage = "\"Возраст До\" должно быть заполнено")]
+      [DataMember(Name = "ageTo", EmitDefaultValue = false)]
+      public virtual int AgeTo { get; set; }
+      
       
       /// <summary>
       /// Группа (потребность) -> Форма отдыха и оздоровления

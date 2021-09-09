@@ -2,6 +2,7 @@
 using System.Linq;
 using Newtonsoft.Json;
 using RestChild.Domain;
+using RestChild.Web.Models.TradeUnionCashback;
 using RestChild.Web.Properties;
 
 namespace RestChild.Web.Models.TradeUnion
@@ -105,6 +106,7 @@ namespace RestChild.Web.Models.TradeUnion
         {
             if (Data.Id > 0)
             {
+                Data.IsCashbackUse = false;
                 Data.Campers = (Campers?.Values.ToList()
                                     .Select(c => c?.BuildEntity())
                                     .Where(o => o != null)
@@ -112,6 +114,7 @@ namespace RestChild.Web.Models.TradeUnion
             }
             else
             {
+                Data.IsCashbackUse = false;
                 Data.Campers = (CampersJson?.Values.ToList()
                     .Select(c => JsonConvert.DeserializeObject<TradeUnionCamperModel>(c)?.BuildEntity())
                     .Where(o => o != null)

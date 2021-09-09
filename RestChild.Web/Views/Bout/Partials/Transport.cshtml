@@ -1,274 +1,278 @@
 ﻿@using RestChild.Comon
 @using RestChild.Comon.Enumeration
-@using RestChild.Web.App_Code
 @using RestChild.Web.Controllers
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.BoutModel
 @{
-	var canTransportTo = Security.HasRight(AccessRightEnum.BoutManage) && (Model.Data.StateId == StateMachineStateEnum.Bout.Editing || Model.Data.StateId == StateMachineStateEnum.Bout.Formed);
-	var canTransportFrom = Security.HasRight(AccessRightEnum.BoutManage) && (Model.Data.StateId == StateMachineStateEnum.Bout.Editing || Model.Data.StateId == StateMachineStateEnum.Bout.Formed || Model.Data.StateId == StateMachineStateEnum.Bout.Confirmed);
+    var canTransportTo = Security.HasRight(AccessRightEnum.BoutManage) && (Model.Data.StateId == StateMachineStateEnum.Bout.Editing || Model.Data.StateId == StateMachineStateEnum.Bout.Formed);
+    var canTransportFrom = Security.HasRight(AccessRightEnum.BoutManage) && (Model.Data.StateId == StateMachineStateEnum.Bout.Editing || Model.Data.StateId == StateMachineStateEnum.Bout.Formed || Model.Data.StateId == StateMachineStateEnum.Bout.Confirmed);
 }
 <div id="Transport" class="tab-pane @(Model.ActiveTab == "Transport" ? "active" : string.Empty)">
-	<div class="panel panel-default">
-		<div class="panel-body bg-info">
-			Для того, чтобы памятка была опубликована на сайте необходимо заполнить поля "Место сбора" и "Время сбора".
-		</div>
-	</div>
-	<div class="form-group row">
-		<div class="col-md-9 col-md-offset-3">
-			<label>
-				@Html.CheckBoxFor(m => m.Data.IsPublishOnSite).DisableIf(() => !canTransportTo) Опубликовано на сайте
-			</label>
-		</div>
-	</div>
+<div class="panel panel-default">
+    <div class="panel-body bg-info">
+        Для того, чтобы памятка была опубликована на сайте необходимо заполнить поля "Место сбора" и "Время сбора".
+    </div>
+</div>
+<div class="form-group row">
+    <div class="col-md-9 col-md-offset-3">
+        <label>
+            @Html.CheckBoxFor(m => m.Data.IsPublishOnSite).DisableIf(!canTransportTo) Опубликовано на сайте
+        </label>
+    </div>
+</div>
 
-	<h4>В место отдыха</h4>
-	<fieldset class="form-horizontal">
-		<div class="form-group row">
-			<label class="col-md-3 control-label text-right">Отправление в место отдыха</label>
-			<div class="col-md-9">
-				<p class="line-height35">
-					@if (Model.TransportInfoTo != null && Model.Data.TransportInfoTo != null)
-			{
-				var transportName = string.Format("{0} - {1} {2}", Model.NullSafe(m => m.Data.TransportInfoTo.Departure.Name).FormatEx("не определено"), Model.NullSafe(m => m.Data.TransportInfoTo.Arrival.Name).FormatEx("не определено"), Model.Data.TransportInfoTo.DateOfDeparture.FormatEx());
-						@Html.ActionLink(transportName, "Update", "TransportInfo", new { id = Model.Data.TransportInfoTo.Id }, null)
-			}
-			else
-			{
-						<text>Не определено</text>
-			}
-				</p>
+<h4>В место отдыха</h4>
+<fieldset class="form-horizontal">
+<div class="form-group row">
+    <label class="col-md-3 control-label text-right">Отправление в место отдыха</label>
+    <div class="col-md-9">
+        <p class="line-height35">
+            @if (Model.TransportInfoTo != null && Model.Data.TransportInfoTo != null)
+            {
+                var transportName = string.Format("{0} - {1} {2}", Model.NullSafe(m => m.Data.TransportInfoTo.Departure.Name).FormatEx("не определено"), Model.NullSafe(m => m.Data.TransportInfoTo.Arrival.Name).FormatEx("не определено"), Model.Data.TransportInfoTo.DateOfDeparture.FormatEx());
+                @Html.ActionLink(transportName, "Update", "TransportInfo", new {id = Model.Data.TransportInfoTo.Id}, null)
+            }
+            else
+            {
+                <text>Не определено</text>
+            }
+        </p>
 
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-md-3 control-label text-right">Место сбора</label>
-			<div class="col-md-9">
-				@if (Model.TransportInfoTo != null && Model.TransportInfoTo.Data != null)
-				{
-					@Html.TextBoxFor(m => m.TransportInfoTo.Data.Venue, new { @class = "form-control" }).DisableIf(() => !canTransportTo)
-				}
-				else
-				{
-					<p class="line-height35">Не определено</p>
-				}
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-md-3 control-label text-right">Дата сбора</label>
-			<div class="col-md-3 col-lg-2">
-				@if (Model.TransportInfoTo != null)
-				{
-					<div class="input-group date datepicker-anytime">
-						@Html.TextBoxFor(m => m.TransportInfoTo.Data.DateCollection, new { @class = "form-control datetime", @Value = Model.NullSafe(m => m.TransportInfoTo.Data.DateCollection).FormatEx("dd.MM.yyyy HH:mm") }).DisableIf(() => !canTransportTo)
-						<span class="input-group-addon">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-					</div>
-				}
-				else
-				{
-					<p class="line-height35">Не определено</p>
-				}
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-md-3 control-label text-right">Дата отправления<span class="requared">*</span></label>
-			<div class="col-md-3 col-lg-2">
-				@if (Model.TransportInfoTo != null && Model.TransportInfoTo.Data != null)
-				{
-					<div class="input-group date datepicker-anytime">
-						@Html.TextBoxFor(m => m.TransportInfoTo.Data.DateOfDeparture, new { @class = "form-control datetime requared-date-to", @Value = Model.NullSafe(m => m.TransportInfoTo.Data.DateOfDeparture).FormatEx("dd.MM.yyyy HH:mm") }).DisableIf(() => !canTransportTo)
-						<span class="input-group-addon">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-					</div>
-				}
-				else
-				{
-					<p class="line-height35">Не определено</p>
-				}
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-md-3 control-label text-right">Дата прибытия</label>
-			<div class="col-md-3 col-lg-2">
-				@if (Model.TransportInfoTo != null && Model.TransportInfoTo.Data != null)
-				{
-					<div class="input-group date datepicker-anytime">
-						@Html.TextBoxFor(m => m.TransportInfoTo.Data.DateArrival, new { @class = "form-control datetime", @Value = Model.NullSafe(m => m.TransportInfoTo.Data.DateArrival).FormatEx("dd.MM.yyyy HH:mm") }).DisableIf(() => !canTransportTo)
-						<span class="input-group-addon">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-					</div>
-				}
-				else
-				{
-					<p class="line-height35">Не определено</p>
-				}
-			</div>
-		</div>
-		<div class="form-group col-md-12">
-			<label class="col-md-3 control-label text-right">Памятка</label>
-			<div class="col-md-9 ">
-				@if (Model.TransportInfoTo != null && Model.TransportInfoTo != null)
-				{
-					@Html.HiddenFor(m => m.TransportInfoTo.Memo)
-					<div class="" id="memoTo" @Html.Raw(canTransportTo ? string.Empty : "readonly=\"readonly\"")>
-					</div>
-				}
-				else
-				{
-					<p class="line-height35">Не определено</p>
-				}
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-md-3 control-label text-right">Памятка файлом</label>
-			<div class="col-md-9 line-height35">
-				@if (Model.TransportInfoTo != null)
-				{
-					var rulesFileExt = !string.IsNullOrEmpty(Model.TransportInfoTo.Data.MemoLink) ? Model.TransportInfoTo.Data.MemoLink.Substring(Model.TransportInfoTo.Data.MemoLink.LastIndexOf('.')) : string.Empty;
-					<a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.TransportInfoTo.Data.MemoLink) ? "hidden" : string.Empty)" href="/UploadHotelFile.ashx?f=@Url.Encode(Model.TransportInfoTo.Data.MemoLink)&t=@Url.Encode("Памятка" + rulesFileExt)">Памятка</a>
-					@Html.HiddenFor(r => r.TransportInfoTo.Data.MemoLink, new { @class = "memolink" })
-					if (canTransportTo)
-					{
-						<span class="btn btn-sm btn-default fileinput-button fileinput-memo-button @(!string.IsNullOrEmpty(Model.TransportInfoTo.Data.MemoLink) ? "hidden" : string.Empty)">
-							Прикрепить
-							<input type="file" name="files[]" multiple>
-						</span>
-						<a title="Удалить" class="remove-memo btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.TransportInfoTo.Data.MemoLink) ? "hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
-					}
-				}
-				else
-				{
-					<p class="line-height35">Не определено</p>
-				}
-			</div>
-		</div>
-		<h4>Из места отдыха</h4>
-		<div class="form-group row">
-			<label class="col-md-3 control-label text-right">Отправление из места отдыха</label>
-			<div class="col-md-9">
-				<p class="line-height35">
-					@if (Model.TransportInfoFrom != null && Model.Data.TransportInfoFrom != null)
-			{
-				var transportName = string.Format("{0} - {1} {2}", Model.NullSafe(m => m.Data.TransportInfoFrom.Departure.Name).FormatEx("не определено"), Model.NullSafe(m => m.Data.TransportInfoFrom.Arrival.Name).FormatEx("не определено"), Model.Data.TransportInfoFrom.DateOfDeparture.FormatEx());
-						@Html.ActionLink(transportName, "Update", "TransportInfo", new { id = Model.Data.TransportInfoFrom.Id }, null)
-			}
-			else
-			{
-						<text>Не определено</text>
-			}
-				</p>
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-md-3 control-label text-right">Место сбора</label>
+    <div class="col-md-9">
+        @if (Model.TransportInfoTo != null && Model.TransportInfoTo.Data != null)
+        {
+            @Html.TextBoxFor(m => m.TransportInfoTo.Data.Venue, new {@class = "form-control"}).DisableIf(!canTransportTo)
+        }
+        else
+        {
+            <p class="line-height35">Не определено</p>
+        }
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-md-3 control-label text-right">Дата сбора</label>
+    <div class="col-md-3 col-lg-2">
+        @if (Model.TransportInfoTo != null)
+        {
+            <div class="input-group date datepicker-anytime">
+                @Html.TextBoxFor(m => m.TransportInfoTo.Data.DateCollection, new {@class = "form-control datetime", @Value = Model.NullSafe(m => m.TransportInfoTo.Data.DateCollection).FormatEx("dd.MM.yyyy HH:mm")}).DisableIf(!canTransportTo)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        }
+        else
+        {
+            <p class="line-height35">Не определено</p>
+        }
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-md-3 control-label text-right">Дата отправления<span class="requared">*</span></label>
+    <div class="col-md-3 col-lg-2">
+        @if (Model.TransportInfoTo != null && Model.TransportInfoTo.Data != null)
+        {
+            <div class="input-group date datepicker-anytime">
+                @Html.TextBoxFor(m => m.TransportInfoTo.Data.DateOfDeparture, new {@class = "form-control datetime requared-date-to", @Value = Model.NullSafe(m => m.TransportInfoTo.Data.DateOfDeparture).FormatEx("dd.MM.yyyy HH:mm")}).DisableIf(!canTransportTo)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        }
+        else
+        {
+            <p class="line-height35">Не определено</p>
+        }
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-md-3 control-label text-right">Дата прибытия</label>
+    <div class="col-md-3 col-lg-2">
+        @if (Model.TransportInfoTo != null && Model.TransportInfoTo.Data != null)
+        {
+            <div class="input-group date datepicker-anytime">
+                @Html.TextBoxFor(m => m.TransportInfoTo.Data.DateArrival, new {@class = "form-control datetime", @Value = Model.NullSafe(m => m.TransportInfoTo.Data.DateArrival).FormatEx("dd.MM.yyyy HH:mm")}).DisableIf(!canTransportTo)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        }
+        else
+        {
+            <p class="line-height35">Не определено</p>
+        }
+    </div>
+</div>
+<div class="form-group col-md-12">
+    <label class="col-md-3 control-label text-right">Памятка</label>
+    <div class="col-md-9 ">
+        @if (Model.TransportInfoTo != null && Model.TransportInfoTo != null)
+        {
+            @Html.HiddenFor(m => m.TransportInfoTo.Memo)
+            <div class="" id="memoTo" @Html.Raw(canTransportTo ? string.Empty : "readonly=\"readonly\"")>
+            </div>
+        }
+        else
+        {
+            <p class="line-height35">Не определено</p>
+        }
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-md-3 control-label text-right">Памятка файлом</label>
+    <div class="col-md-9 line-height35">
+        @if (Model.TransportInfoTo != null)
+        {
+            var rulesFileExt = !string.IsNullOrEmpty(Model.TransportInfoTo.Data.MemoLink) ? Model.TransportInfoTo.Data.MemoLink.Substring(Model.TransportInfoTo.Data.MemoLink.LastIndexOf('.')) : string.Empty;
+            <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.TransportInfoTo.Data.MemoLink) ? "hidden" : string.Empty)" href="/UploadHotelFile.ashx?f=@Url.Encode(Model.TransportInfoTo.Data.MemoLink)&t=@Url.Encode("Памятка" + rulesFileExt)">Памятка</a>
+            @Html.HiddenFor(r => r.TransportInfoTo.Data.MemoLink, new {@class = "memolink"})
+            if (canTransportTo)
+            {
+                <span class="btn btn-sm btn-default fileinput-button fileinput-memo-button @(!string.IsNullOrEmpty(Model.TransportInfoTo.Data.MemoLink) ? "hidden" : string.Empty)">
+                    Прикрепить
+                    <input type="file" name="files[]" multiple>
+                </span>
+                <a title="Удалить" class="remove-memo btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.TransportInfoTo.Data.MemoLink) ? "hidden" : string.Empty)">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </a>
+            }
+        }
+        else
+        {
+            <p class="line-height35">Не определено</p>
+        }
+    </div>
+</div>
+<h4>Из места отдыха</h4>
+<div class="form-group row">
+    <label class="col-md-3 control-label text-right">Отправление из места отдыха</label>
+    <div class="col-md-9">
+        <p class="line-height35">
+            @if (Model.TransportInfoFrom != null && Model.Data.TransportInfoFrom != null)
+            {
+                var transportName = string.Format("{0} - {1} {2}", Model.NullSafe(m => m.Data.TransportInfoFrom.Departure.Name).FormatEx("не определено"), Model.NullSafe(m => m.Data.TransportInfoFrom.Arrival.Name).FormatEx("не определено"), Model.Data.TransportInfoFrom.DateOfDeparture.FormatEx());
+                @Html.ActionLink(transportName, "Update", "TransportInfo", new {id = Model.Data.TransportInfoFrom.Id}, null)
+            }
+            else
+            {
+                <text>Не определено</text>
+            }
+        </p>
 
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-md-3 control-label text-right">Дата отправления<span class="requared">*</span></label>
-			<div class="col-md-3 col-lg-2">
-				@if (Model.TransportInfoFrom != null && Model.TransportInfoFrom.Data != null)
-				{
-					<div class="input-group date datepicker-anytime">
-						@Html.TextBoxFor(m => m.TransportInfoFrom.Data.DateOfDeparture, new { @class = "form-control datetime requared-date-from", @Value = Model.NullSafe(m => m.TransportInfoFrom.Data.DateOfDeparture).FormatEx("dd.MM.yyyy HH:mm") }).DisableIf(() => !canTransportFrom)
-						<span class="input-group-addon">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-					</div>
-				}
-				else
-				{
-					<p class="line-height35">Не определено</p>
-				}
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-md-3 control-label text-right">Дата прибытия</label>
-			<div class="col-md-3 col-lg-2">
-				@if (Model.TransportInfoFrom != null)
-				{
-					<div class="input-group date datepicker-anytime">
-						@Html.TextBoxFor(m => m.TransportInfoFrom.Data.DateArrival, new { @class = "form-control datetime", @Value = Model.NullSafe(m => m.TransportInfoFrom.Data.DateArrival).FormatEx("dd.MM.yyyy HH:mm") }).DisableIf(() => !canTransportFrom)
-						<span class="input-group-addon">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-					</div>
-				}
-				else
-				{
-					<p class="line-height35">Не определено</p>
-				}
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-md-3 control-label text-right">Место встречи детей</label>
-			<div class="col-md-9">
-				@if (Model.TransportInfoFrom != null && Model.TransportInfoFrom.Data != null)
-				{
-					@Html.TextBoxFor(m => m.TransportInfoFrom.Data.Venue, new { @class = "form-control" }).DisableIf(() => !canTransportFrom)
-				}
-				else
-				{
-					<p class="line-height35">Не определено</p>
-				}
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-md-3 control-label text-right">Дата встречи детей</label>
-			<div class="col-md-3 col-lg-2">
-				@if (Model.TransportInfoFrom != null && Model.TransportInfoFrom.Data != null)
-				{
-					<div class="input-group datepicker-anytime">
-						@Html.TextBoxFor(m => m.TransportInfoFrom.Data.DateCollection, new { @class = "form-control datetime", @Value = Model.NullSafe(m => m.TransportInfoFrom.Data.DateCollection).FormatEx("dd.MM.yyyy HH:mm") }).DisableIf(() => !canTransportFrom)
-						<span class="input-group-addon">
-							<span class="glyphicon glyphicon-calendar"></span>
-						</span>
-					</div>
-				}
-				else
-				{
-					<p class="line-height35">Не определено</p>
-				}
-			</div>
-		</div>
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-md-3 control-label text-right">Дата отправления<span class="requared">*</span></label>
+    <div class="col-md-3 col-lg-2">
+        @if (Model.TransportInfoFrom != null && Model.TransportInfoFrom.Data != null)
+        {
+            <div class="input-group date datepicker-anytime">
+                @Html.TextBoxFor(m => m.TransportInfoFrom.Data.DateOfDeparture, new {@class = "form-control datetime requared-date-from", @Value = Model.NullSafe(m => m.TransportInfoFrom.Data.DateOfDeparture).FormatEx("dd.MM.yyyy HH:mm")}).DisableIf(!canTransportFrom)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        }
+        else
+        {
+            <p class="line-height35">Не определено</p>
+        }
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-md-3 control-label text-right">Дата прибытия</label>
+    <div class="col-md-3 col-lg-2">
+        @if (Model.TransportInfoFrom != null)
+        {
+            <div class="input-group date datepicker-anytime">
+                @Html.TextBoxFor(m => m.TransportInfoFrom.Data.DateArrival, new {@class = "form-control datetime", @Value = Model.NullSafe(m => m.TransportInfoFrom.Data.DateArrival).FormatEx("dd.MM.yyyy HH:mm")}).DisableIf(!canTransportFrom)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        }
+        else
+        {
+            <p class="line-height35">Не определено</p>
+        }
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-md-3 control-label text-right">Место встречи детей</label>
+    <div class="col-md-9">
+        @if (Model.TransportInfoFrom != null && Model.TransportInfoFrom.Data != null)
+        {
+            @Html.TextBoxFor(m => m.TransportInfoFrom.Data.Venue, new {@class = "form-control"}).DisableIf(!canTransportFrom)
+        }
+        else
+        {
+            <p class="line-height35">Не определено</p>
+        }
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-md-3 control-label text-right">Дата встречи детей</label>
+    <div class="col-md-3 col-lg-2">
+        @if (Model.TransportInfoFrom != null && Model.TransportInfoFrom.Data != null)
+        {
+            <div class="input-group datepicker-anytime">
+                @Html.TextBoxFor(m => m.TransportInfoFrom.Data.DateCollection, new {@class = "form-control datetime", @Value = Model.NullSafe(m => m.TransportInfoFrom.Data.DateCollection).FormatEx("dd.MM.yyyy HH:mm")}).DisableIf(!canTransportFrom)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        }
+        else
+        {
+            <p class="line-height35">Не определено</p>
+        }
+    </div>
+</div>
 
-		<div class="form-group col-md-12">
-			<label class="col-md-3 control-label text-right">Памятка</label>
-			<div class="col-md-9 ">
-				@if (Model.TransportInfoFrom != null)
-				{
-					@Html.HiddenFor(m => m.TransportInfoFrom.Memo)
-					<div class="" id="memoFrom" @Html.Raw(canTransportFrom ? string.Empty : "readonly=\"readonly\"")>
-					</div>
-				}
-				else
-				{
-					<p class="line-height35">Не определено</p>
-				}
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-md-3 control-label text-right">Памятка файлом</label>
-			<div class="col-md-9 line-height35">
-				@if (Model.TransportInfoFrom != null)
-				{
-					var rulesFileExt = !string.IsNullOrEmpty(Model.TransportInfoFrom.Data.MemoLink) ? Model.TransportInfoFrom.Data.MemoLink.Substring(Model.TransportInfoFrom.Data.MemoLink.LastIndexOf('.')) : string.Empty;
-					<a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.TransportInfoFrom.Data.MemoLink) ? "hidden" : string.Empty)" href="/UploadHotelFile.ashx?f=@Url.Encode(Model.TransportInfoFrom.Data.MemoLink)&t=@Url.Encode("Памятка" + rulesFileExt)">Памятка</a>
-					@Html.HiddenFor(r => r.TransportInfoFrom.Data.MemoLink, new { @class = "memolink" })
-					if (canTransportFrom)
-					{
-						<span class="btn btn-sm btn-default fileinput-button fileinput-memo-button @(!string.IsNullOrEmpty(Model.TransportInfoFrom.Data.MemoLink) ? "hidden" : string.Empty)">
-							Прикрепить
-							<input type="file" name="files[]" multiple>
-						</span>
-						<a title="Удалить" class="remove-memo btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.TransportInfoFrom.Data.MemoLink) ? "hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
-					}
-				}
-				else
-				{
-					<p class="line-height35">Не определено</p>
-				}
-			</div>
-		</div>
-	</fieldset>
+<div class="form-group col-md-12">
+    <label class="col-md-3 control-label text-right">Памятка</label>
+    <div class="col-md-9 ">
+        @if (Model.TransportInfoFrom != null)
+        {
+            @Html.HiddenFor(m => m.TransportInfoFrom.Memo)
+            <div class="" id="memoFrom" @Html.Raw(canTransportFrom ? string.Empty : "readonly=\"readonly\"")>
+            </div>
+        }
+        else
+        {
+            <p class="line-height35">Не определено</p>
+        }
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-md-3 control-label text-right">Памятка файлом</label>
+    <div class="col-md-9 line-height35">
+        @if (Model.TransportInfoFrom != null)
+        {
+            var rulesFileExt = !string.IsNullOrEmpty(Model.TransportInfoFrom.Data.MemoLink) ? Model.TransportInfoFrom.Data.MemoLink.Substring(Model.TransportInfoFrom.Data.MemoLink.LastIndexOf('.')) : string.Empty;
+            <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.TransportInfoFrom.Data.MemoLink) ? "hidden" : string.Empty)" href="/UploadHotelFile.ashx?f=@Url.Encode(Model.TransportInfoFrom.Data.MemoLink)&t=@Url.Encode("Памятка" + rulesFileExt)">Памятка</a>
+            @Html.HiddenFor(r => r.TransportInfoFrom.Data.MemoLink, new {@class = "memolink"})
+            if (canTransportFrom)
+            {
+                <span class="btn btn-sm btn-default fileinput-button fileinput-memo-button @(!string.IsNullOrEmpty(Model.TransportInfoFrom.Data.MemoLink) ? "hidden" : string.Empty)">
+                    Прикрепить
+                    <input type="file" name="files[]" multiple>
+                </span>
+                <a title="Удалить" class="remove-memo btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.TransportInfoFrom.Data.MemoLink) ? "hidden" : string.Empty)">
+                    <i class="glyphicon glyphicon-remove"></i>
+                </a>
+            }
+        }
+        else
+        {
+            <p class="line-height35">Не определено</p>
+        }
+    </div>
+</div>
+</fieldset>
 
 </div>

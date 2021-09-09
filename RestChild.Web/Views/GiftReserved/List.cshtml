@@ -1,8 +1,11 @@
 ﻿@model RestChild.Web.Models.GiftReserved.ListModel
 @using PagedList.Mvc
 @using RestChild.Comon
+@using RestChild.Comon.Enumeration
 @using RestChild.Mobile.DAL.Enum
 @using RestChild.Web.Models.GiftReserved
+@using RestChild.Web.Controllers
+
 @{
     ViewBag.Title = "Реестр выдачи подарков";
     Layout = "~/Views/Shared/_SearchLayout.cshtml";
@@ -13,6 +16,16 @@
     ViewBag.NeedInsertButton = false;
     var states = new List<SelectListItem> {new SelectListItem {Value = string.Empty, Text = @"-- Не выбрано --"}};
     states.AddRange(Model.Statuses.Select(v => new SelectListItem {Value = v.Id.ToString(), Text = v.Name}));
+}
+
+@section additionalInserts
+{
+    @if (Security.HasRight(AccessRightEnum.GiftReserved.MassCancel))
+    {
+        <a class="btn btn-primary btn-danger massCancel">
+            Отмена всех подарков
+        </a>
+    }
 }
 
 @section searchForm
@@ -48,6 +61,23 @@
         <div class="col-md-4">
             @Html.DropDownListFor(m => m.StatusId, states, new {@class = "form-control select2", autocomplete = "off"})
         </div>
+        <label class="col-md-2 control-label text-right">Дата бронирования с</label>
+        <div class="col-md-4 form-inline">
+            <div class='input-group' style="width: 35%">
+                @Html.TextBoxFor(r => r.ReservedFrom, new {@class = "form-control datetimepicker input-mask-date-anytime", autocomplete = "off"})
+            </div>
+            <label class="text-right input-label">по</label>
+            <div class='input-group' style="width: 35%">
+                @Html.TextBoxFor(r => r.ReservedTo, new {@class = "form-control datetimepicker input-mask-date-anytime", autocomplete = "off"})
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Лагерь/смена</label>
+        <div class="col-md-10">
+            @Html.HiddenFor(m => m.BoutId, new {@class = "form-control Bouts"})
+            @Html.Hidden("BoutName", Model.BName, new {@class = "BoutName"})
+        </div>
     </div>
 }
 
@@ -72,7 +102,7 @@
                 <th>Цена</th>
                 <th>Параметр</th>
                 <th>Кол-во</th>
-                <th>Статус</th>
+                <th class="text-center">Статус</th>
                 <th></th>
             </tr>
             </thead>
@@ -82,7 +112,7 @@
             {
                 var camper = giftReserved.Owner.Campers.OrderByDescending(c => c.LastUpdateTick).FirstOrDefault();
                 var fio = camper != null ? camper.Name : giftReserved.Owner.Name;
-                var bout = camper != null && camper.Bout != null ? camper.Bout.Name : "-";
+                var bout = camper != null && (camper.Bout != null && camper.Bout.DateIncome <= DateTime.Now && camper.Bout.DateOutcome >= DateTime.Now) ? camper.Bout.Name : "Не в лагере";
                 var db = camper != null ? camper.DateOfBirth.FormatEx() : giftReserved.Owner.DateOfBirth.FormatEx();
                 <tr>
                     <td class="text-center">@(rowNumber++)</td>
@@ -112,6 +142,14 @@
                     </td>
                     <td class="text-right">
                         @(giftReserved.State != null ? giftReserved.State.Name : "-")
+                        @if (giftReserved.StateId == StateEnum.GiftReserved.Reserved || giftReserved.StateId == StateEnum.GiftReserved.Issued)
+                        {
+                            <div>
+                                <i>
+                                    <small style="color: #666; white-space: nowrap">Забронированно: @(string.Format("{0:dd.MM.yyyy HH:mm:ss}", giftReserved.DateReserved))</small>
+                                </i>
+                            </div>
+                        }
                     </td>
                     <td>
                         @if (giftReserved.StateId == StateEnum.GiftReserved.Reserved)
@@ -140,7 +178,8 @@
                         PriceTo = Model.PriceTo,
                         Child = Model.Child,
                         Parameter = Model.Parameter,
-                        StatusId = Model.StatusId
+                        StatusId = Model.StatusId,
+                        BoutId = Model.BoutId
                     };
                     return Url.Action("List", item);
                 }, new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
@@ -161,6 +200,7 @@
 {
     @Styles.Render("~/Content/css/select2.css")
     @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
 }
 
 @section scripts
@@ -168,6 +208,10 @@
     @Scripts.Render("~/Scripts/select2.min.js")
     @Scripts.Render("~/Scripts/select2_locale_ru.js")
     @Scripts.Render("~/Scripts/GiftReserved/List.js")
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale('ru');
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
 }
-
-

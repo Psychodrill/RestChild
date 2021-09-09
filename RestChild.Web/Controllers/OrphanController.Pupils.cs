@@ -30,8 +30,7 @@ namespace RestChild.Web.Controllers
                 return RedirectToAvalibleAction();
             }
 
-
-            filter.Result = ApiController.GetPupils(filter);
+            filter.Results = ApiController.GetPupils(filter);
 
             return PartialView("Partials/PupilList", filter);
         }
@@ -77,7 +76,6 @@ namespace RestChild.Web.Controllers
             {
                 return RedirectToAvalibleAction();
             }
-
 
             ViewbagPupilsSet(res.OrphanageAddress.OrganisationId);
             return View("OrphanagePupilEdit", new OrphanagePupilModel(res));
@@ -230,7 +228,7 @@ namespace RestChild.Web.Controllers
         /// <summary>
         ///     Разница в воспитаннике приюта
         /// </summary>
-        private string GetDiff(Pupil entity, Pupil persisted)
+        private static string GetDiff(Pupil entity, Pupil persisted)
         {
             var sb = new StringBuilder();
 
@@ -399,6 +397,12 @@ namespace RestChild.Web.Controllers
                     $"<li>Изменён признак достаточной заполненности данных о воспитаннике, старое значение:'{persisted.Filled.FormatEx(string.Empty)}', новое значение:'{entity.Filled.FormatEx(string.Empty)}'</li>");
             }
 
+            if (persisted.Child?.IsDeleted != entity.Child?.IsDeleted)
+            {
+                sb.AppendLine(
+                    $"<li>Изменён признак того, что воспитанник удалён, старое значение:'{persisted.Child?.IsDeleted.FormatEx()}', новое значение:'{entity.Child?.IsDeleted.FormatEx()}'</li>");
+            }
+
             var res = sb.ToString();
             if (string.IsNullOrWhiteSpace(res))
             {
@@ -512,8 +516,11 @@ namespace RestChild.Web.Controllers
             var subsValid = true;
             if ((pupil.Child?.IsInvalid ?? false) && (pupil.Child?.TypeOfRestrictionId.HasValue ?? false))
             {
-                subsValid = UnitOfWork.GetById<TypeOfRestriction>(pupil.Child?.TypeOfRestrictionId.Value).Subs.Any() &&
-                            (pupil.Child?.TypeOfSubRestrictionId.HasValue ?? false);
+                var subIds = UnitOfWork.GetSet<TypeOfRestriction>().Where(ss => ss.Id == pupil.Child.TypeOfRestrictionId.Value).SelectMany(ss => ss.Subs).Select(ss => ss.Id).ToList();
+                if (subIds.Count > 0 && !subIds.Contains(pupil.Child?.TypeOfSubRestrictionId ?? 0))
+                {
+                    subsValid = false;
+                }
             }
 
             pupil.Filled = !string.IsNullOrWhiteSpace(pupil.Child?.LastName)
@@ -523,18 +530,14 @@ namespace RestChild.Web.Controllers
                            && (pupil.Child?.DateOfBirth.HasValue ?? false)
                            && !string.IsNullOrWhiteSpace(pupil.Child?.Snils)
                            && !string.IsNullOrWhiteSpace(pupil.Child?.PlaceOfBirth)
-                           && ((!pupil.Child?.IsInvalid ?? false) ||
-                               (pupil.Child?.IsInvalid ?? false) &&
-                               (pupil.Child?.TypeOfRestrictionId.HasValue ?? false) &&
-                               subsValid)
+                           && ((!pupil.Child?.IsInvalid ?? false) || ((pupil.Child?.IsInvalid ?? false) && (pupil.Child?.TypeOfRestrictionId.HasValue ?? false) && subsValid))
                            && pupil.OrphanageAddressId.HasValue
                            && (pupil.Child?.DocumentTypeId.HasValue ?? false)
-                           && (DocumentTypeHelper.IsForeignBirthCert(pupil.Child?.DocumentTypeId) ||
-                               DocumentTypeHelper.IsPassportOfForeignCountry(pupil.Child?.DocumentTypeId) ||
-                               !string.IsNullOrWhiteSpace(pupil.Child?.DocumentSeria))
+                           && (DocumentTypeHelper.IsForeignBirthCert(pupil.Child?.DocumentTypeId) || DocumentTypeHelper.IsPassportOfForeignCountry(pupil.Child?.DocumentTypeId) || !string.IsNullOrWhiteSpace(pupil.Child?.DocumentSeria))
                            && !string.IsNullOrWhiteSpace(pupil.Child?.DocumentNumber)
                            && (pupil.Child?.DocumentDateOfIssue.HasValue ?? false)
-                           && !string.IsNullOrWhiteSpace(pupil.Child?.DocumentSubjectIssue);
+                           && !string.IsNullOrWhiteSpace(pupil.Child?.DocumentSubjectIssue)
+                           && (!pupil.Child?.IsDeleted ?? false);
 
             if (pupil.FoulRegionRestriction &&
                 (!pupil.FoulRegionRestrictionFrom.HasValue || !pupil.FoulRegionRestrictionTo.HasValue))

@@ -7,36 +7,36 @@
    <div class="form-group">
       <label class="col-sm-2 control-label">Фамилия <span class="requared">*</span></label>
       <div class="col-md-4">
-         @Html.TextBoxFor(r => r.LastName, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => ViewBag.MDisable == true)
+         @Html.TextBoxFor(r => r.LastName, new { @class = "form-control", autocomplete = "off" }).DisableIf((bool)ViewBag.MDisable == true)
          @Html.ValidationMessageFor(m => m.LastName)
       </div>
       <label class="col-sm-2 control-label">Имя <span class="requared">*</span></label>
       <div class="col-md-4">
-         @Html.TextBoxFor(r => r.FirstName, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => ViewBag.MDisable == true)
+         @Html.TextBoxFor(r => r.FirstName, new { @class = "form-control", autocomplete = "off" }).DisableIf((bool)ViewBag.MDisable == true)
          @Html.ValidationMessageFor(m => m.FirstName)
       </div>
    </div>
    <div class="form-group">
       <label class="col-sm-2 control-label">Отчество <span class="requared">*</span></label>
       <div class="col-md-4">
-         @Html.TextBoxFor(r => r.MiddleName, new { @class = "form-control Middle-Name", autocomplete = "off" }).DisableIf(() => ViewBag.MDisable == true).ReadOnlyIf(() => Model.NoMiddleName)
+         @Html.TextBoxFor(r => r.MiddleName, new { @class = "form-control Middle-Name", autocomplete = "off" }).DisableIf((bool)ViewBag.MDisable == true).ReadOnlyIf(Model.NoMiddleName)
          @Html.ValidationMessageFor(m => m.MiddleName)
       </div>
       <div class="col-md-4 col-md-offset-2" style="height: 34px; line-height: 34px;">
-         @Html.CheckBoxFor(m => m.NoMiddleName, new { @tabindex = "7", autocomplete = "off", @class = "No-Middle-Name", @style = "vertical-align: text-bottom;" }).DisableIf(() => ViewBag.MDisable == true)
+         @Html.CheckBoxFor(m => m.NoMiddleName, new { @tabindex = "7", autocomplete = "off", @class = "No-Middle-Name", @style = "vertical-align: text-bottom;" }).DisableIf((bool)ViewBag.MDisable == true)
          <span>Нет отчества</span>
       </div>
    </div>
    <div class="form-group">
       <label class="col-sm-2 control-label">Категория льготы <span class="requared">*</span></label>
       <div class="col-md-4">
-         @Html.DropDownListFor(m => m.BenefitType, new SelectList(((ICollection<RestChild.Domain.BenefitType>)ViewBag.Benefits).Select(ss => new { Val = ss.Name, Txt = ss.Name }).InsertAt(new { Val = string.Empty, Txt = "-- Не выбрано -- " }), "Val", "Txt"), new { @class = "form-control select2" }).DisableIf(() => ViewBag.MDisable == true)
+         @Html.DropDownListFor(m => m.BenefitType, new SelectList(((ICollection<RestChild.Domain.BenefitType>)ViewBag.Benefits).Select(ss => new { Val = ss.Name, Txt = ss.Name }).InsertAt(new { Val = string.Empty, Txt = "-- Не выбрано -- " }), "Val", "Txt"), new { @class = "form-control select2" }).DisableIf((bool)ViewBag.MDisable == true)
          @Html.ValidationMessageFor(m => m.BenefitType)
       </div>
       <label class="col-sm-2 control-label">Дата рождения <span class="requared">*</span></label>
       <div class="col-md-4">
          <div class='input-group date datepicker-anytime'>
-            @Html.TextBoxFor(r => r.DateOfBirth, new { @class = "form-control input-mask-date-anytime request-period-start", @tabindex = "12", autocomplete = "off", @Value = Model.NullSafe(m => m.DateOfBirth).FormatEx(string.Empty, string.Empty) }).DisableIf(() => ViewBag.MDisable == true)
+            @Html.TextBoxFor(r => r.DateOfBirth, new { @class = "form-control input-mask-date-anytime request-period-start", @tabindex = "12", autocomplete = "off", @Value = Model.NullSafe(m => m.DateOfBirth).FormatEx(string.Empty, string.Empty) }).DisableIf((bool)ViewBag.MDisable == true)
             <span class="input-group-addon">
                <span class="glyphicon glyphicon-calendar"></span>
             </span>

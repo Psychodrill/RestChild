@@ -318,6 +318,14 @@ namespace RestChild.Domain
       [DataMember(Name = "descriptionHtml", EmitDefaultValue = false)]
       public virtual String DescriptionHtml { get; set; }
       
+      /// <summary>
+      /// Является палаточным лагерем
+      /// </summary>
+      [Display(Description = "Является палаточным лагерем")]
+      [Required(ErrorMessage = "\"Является палаточным лагерем\" должно быть заполнено")]
+      [DataMember(Name = "isCamping", EmitDefaultValue = false)]
+      public virtual bool IsCamping { get; set; }
+      
       
       /// <summary>
       /// История

@@ -375,6 +375,7 @@
             $table.find('tbody tr').each(function(i, item) {
                 $(item).find('input').each(function(j, element) {
                     var $item = $(element);
+
                     var name = $item.attr('saved-name');
                     if (!name) {
                         name = $item.attr('name');
@@ -774,6 +775,7 @@
                         return;
                     }
                     row.find('input').each(function(e, item) {
+
                         var cls = $(item).attr('class');
                         if (cls) {
                             cls = cls.replace(new RegExp("-h", 'g'), "");
@@ -842,7 +844,9 @@
                                     $(item).val(selectedData.text);
                                 }
                             } else {
-                                $(item).val($(selectorDialog + ' .' + cls).val());
+                                if (cls !== 'attendant-id'){
+                                              $(item).val($(selectorDialog + ' .' + cls).val());
+                                }
                             }
                         }
                     });
@@ -1074,10 +1078,10 @@
     @Scripts.Render("~/Scripts/ListOfChildsEdit.js")
 
     <script id="childRow" type="text/template">
-        @Html.Partial("ChildRow", new Child { IsLast = true, Id = 0 })
+        @Html.Partial("ChildRow", new Child {IsLast = true, Id = 0})
     </script>
     <script id="attendantRow" type="text/template">
-        @Html.Partial("AttendantRow", new Applicant { IsLast = true, Id = 0, CountryId = 643, Country = new Country { FullName = "Российская Федерация" } })
+        @Html.Partial("AttendantRow", new Applicant {IsLast = true, Id = 0, CountryId = 643, Country = new Country {FullName = "Российская Федерация"}})
     </script>
 
     @Html.Partial("Assets/HistoryLinkTemplate")

@@ -26,7 +26,7 @@ namespace MailingDemon.Tasks
 
             using (var unitOfWork = new UnitOfWork())
             {
-                
+
 
                 var exec = unitOfWork.GetSet<TradeUnionPersonCheck>().Where(ss =>
                         !ss.NotActual &&
@@ -44,6 +44,7 @@ namespace MailingDemon.Tasks
                         var personDoubls = unitOfWork.GetSet<TradeUnionList>().Where(ss => ss.Id != tradeUnion.Id &&
                                                                                               ss.YearOfRestId ==
                                                                                               tradeUnion.YearOfRestId &&
+                                                                                              !ss.IsCashbackUse &&
                                                                                               (ss.StateId == StateMachineStateEnum.TradeUnion.Finish ||
                                                                                                ss.StateId == StateMachineStateEnum.TradeUnion.OnAproving ||
                                                                                                ss.StateId == StateMachineStateEnum.TradeUnion.Approved ||

@@ -34,7 +34,7 @@ namespace MailingDemon.Tasks
                                                                               !s.Child.Request
                                                                                   .NeedSendForAisoLegalRepresentation &&
                                                                               !s.Child.Request
-                                                                                  .NeedSendForRegistrationByPassport));
+                                                                                  .NeedSendForRegistrationByPassport)).AsQueryable();
 
 				if (Config != null)
 				{
@@ -50,8 +50,7 @@ namespace MailingDemon.Tasks
 				{
 					try
 					{
-						WebRequest req =
-							WebRequest.Create(ConfigurationManager.AppSettings["sendAcknowledgementUrl"] + id);
+						var req = WebRequest.Create(ConfigurationManager.AppSettings["sendAcknowledgementUrl"] + id);
 						using (var res = req.GetResponse())
 						{
 							res.Close();

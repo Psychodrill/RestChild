@@ -1,8 +1,4 @@
-﻿@using RestChild.Domain
-@using Newtonsoft.Json
-@using RestChild.Comon
-@using RestChild.Comon.Enumeration
-@using RestChild.Web.App_Code
+﻿@using RestChild.Web.Extensions
 
 @model RestChild.Web.Models.Orphans.OrphanagePupilGroupListModel
 @{
@@ -100,18 +96,14 @@
             <div class="col-md-9" style="padding-top: 7px;">@(Model.CollaboratorsCount)</div>
         </div>
         <div class="form-group">
-            <label class="col-md-3 control-label text-right">Плановое кол-во сопровождающих от МГТ</label>
-            <div class="col-md-9" style="padding-top: 7px;">@(Model.MGTCollaboratorsCount)</div>
-        </div>
-        <div class="form-group">
             <div class="col-md-9 col-md-offset-3" style="height: 34px; line-height: 34px;">
-                @Html.CheckBoxFor(m => m.Data.RulesAgreement, new { tabindex = "10", autocomplete = "off", style = "vertical-align: text-bottom;" }).ReadonlyIf(() => !isEditable)
-                <span>Подтверждаю, что ознакомлен и согласен с Правилами</span>
+                @Html.CheckBoxFor(m => m.Data.RulesAgreement, new { tabindex = "10", autocomplete = "off", style = "vertical-align: text-bottom;" }).ReadOnlyIf(!isEditable)
+                <span>Подтверждаю, что ознакомлен и согласен с <a target="_blank" href="@Url.Content("~/Help/Правила отдыха и оздоровления (дети-сироты).pdf")">Правилами</a></span>
             </div>
         </div>
         <div class="form-group">
             <div class="col-md-9 col-md-offset-3" style="height: 34px; line-height: 34px;">
-                @Html.CheckBoxFor(m => m.Data.PupilsRulesAgreement, new { tabindex = "10", autocomplete = "off", style = "vertical-align: text-bottom;" }).ReadonlyIf(() => !isEditable)
+                @Html.CheckBoxFor(m => m.Data.PupilsRulesAgreement, new { tabindex = "10", autocomplete = "off", style = "vertical-align: text-bottom;" }).ReadOnlyIf(!isEditable)
                 <span>Воспитанники с Правилами ознакомлены</span>
             </div>
         </div>
@@ -120,7 +112,7 @@
     <h3><hr /></h3>
     <div class="row">
         <div class="col-md-12">
-            <h3>Воспитанники</h3>
+            <h3>Воспитанники <span class="pupilsCount"></span></h3>
         </div>
     </div>
     if (isEditable)
@@ -157,7 +149,7 @@
     <h3><hr /></h3>
     <div class="row">
         <div class="col-md-12">
-            <h3>Сопровождающие</h3>
+            <h3>Сопровождающие <span class="collaboratorsCount"></span></h3>
         </div>
     </div>
     if (isEditable)
@@ -219,10 +211,10 @@
                                 @Model.Transfers[key].Address.Address.Name
                             </td>
                             <td>
-                                @Html.TextBoxFor(m => m.Transfers[key].CountPeople, new { @class = "form-control CountPeople" }).ReadonlyIf(() => true)
+                                @Html.TextBoxFor(m => m.Transfers[key].CountPeople, new { @class = "form-control CountPeople" }).ReadOnlyIf(true)
                             </td>
                             <td style="text-align: center;">
-                                @Html.CheckBoxFor(m => m.Transfers[key].BoardingHelp).DisableIf(() => !isEditable)
+                                @Html.CheckBoxFor(m => m.Transfers[key].BoardingHelp).DisableIf(!isEditable)
                             </td>
                             <td>
                                 @if (Model.Transfers[key].Address.FencedArea)
@@ -236,9 +228,9 @@
                             </td>
                             <td>
                                 При отсутствии возможности разворота ТС, где можно осуществить парковку<br />
-                                @Html.TextBoxFor(m => m.Transfers[key].LargeParkingReAddress, new { @class = "form-control" }).DisableIf(() => !isEditable)<br />
+                                @Html.TextBoxFor(m => m.Transfers[key].LargeParkingReAddress, new { @class = "form-control" }).DisableIf(!isEditable)<br />
                                 Примечание<br />
-                                @Html.TextBoxFor(m => m.Transfers[key].Note, new { @class = "form-control" }).DisableIf(() => !isEditable)
+                                @Html.TextBoxFor(m => m.Transfers[key].Note, new { @class = "form-control" }).DisableIf(!isEditable)
                             </td>
                         </tr>
                     }

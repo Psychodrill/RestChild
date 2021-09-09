@@ -1,9 +1,7 @@
-﻿@using System.Collections
-@using RestChild.Comon
-@using RestChild.Domain
-@using RestChild.Web.App_Code
+﻿@using RestChild.Comon
 @using RestChild.Comon.Enumeration
 @using RestChild.Web.Controllers
+@using RestChild.Web.Extensions
 
 
 @model RestChild.Web.Models.Monitoring.SmallLeisureInfoModel
@@ -49,11 +47,13 @@
             <div class="modal-dialog big-dialog ">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                         <h4 class="modal-title">Отчет о загрузке</h4>
                     </div>
                     <div class="modal-body modal-body-autosize" style="max-height: 600px">
-                        <div class="text-center">Загрузка данных <img class="text-center" width="20" height="20" src="/Content/images/spinner.gif" /> </div>
+                        <div class="text-center">Загрузка данных <img class="text-center" width="20" height="20" src="/Content/images/spinner.gif"/> </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
@@ -103,27 +103,29 @@
         <div class="form-group">
             <label class="col-sm-4 control-label">Год формы: </label>
             <div class="col-md-4">
-                @Html.DropDownListFor(m => m.Data.YearOfRestId, new SelectList(Model.YearsOfRest, "Id", "Name"), new { @class = "form-control select2" })
+                @Html.DropDownListFor(m => m.Data.YearOfRestId, new SelectList(Model.YearsOfRest, "Id", "Name"), new {@class = "form-control select2"})
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-4 control-label">Месяц: </label>
             <div class="col-md-4">
-                @Html.DropDownListFor(m => m.Data.Month, new SelectList(Model.Months, "Key", "Value"), new { @class = "form-control select2" })
+                @Html.DropDownListFor(m => m.Data.Month, new SelectList(Model.Months, "Key", "Value"), new {@class = "form-control select2"})
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-4 control-label">Участник мониторинга: </label>
             <div class="col-md-8">
-                @Html.DropDownListFor(m => m.Data.OrganisationId, new SelectList(Model.Organisations, "Id", "Name"), new { @class = "form-control select2" })
+                @Html.DropDownListFor(m => m.Data.OrganisationId, new SelectList(Model.Organisations, "Id", "Name"), new {@class = "form-control select2"})
             </div>
         </div>
     </fieldset>
 </div>
-<h3><hr /></h3>
+<h3>
+    <hr/>
+</h3>
 
 @Html.Partial("Assets/_StatePanel", Model.State)
-<input type="file" style='display:none' id="fileUploader" multiple accept=".xlsx" />
+<input type="file" style='display:none' id="fileUploader" multiple accept=".xlsx"/>
 
 
 @if (!(Model.IsValid ?? true))
@@ -137,7 +139,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        @using (Html.BeginForm("SmallLeisureInfoSave", "Monitoring", new { organisationId = Model.Data.OrganisationId, yearOfRestId = Model.Data.YearOfRestId, month = Model.Data.Month }, FormMethod.Post, new { enctype = "multipart/form-data", id = "smallLeisureInfoForm", autocomplete = "off" }))
+        @using (Html.BeginForm("SmallLeisureInfoSave", "Monitoring", new {organisationId = Model.Data.OrganisationId, yearOfRestId = Model.Data.YearOfRestId, month = Model.Data.Month}, FormMethod.Post, new {enctype = "multipart/form-data", id = "smallLeisureInfoForm", autocomplete = "off"}))
         {
             @Html.AntiForgeryToken()
             @Html.HiddenFor(m => m.Data.LastUpdateTick)
@@ -150,7 +152,9 @@
             @Html.HiddenFor(m => m.StateMachineActionString)
 
 
-            <h3><hr /></h3>
+            <h3>
+                <hr/>
+            </h3>
             <div class="row">
                 <div class="col-md-10">
                     <h3>Список ГБУ для заполнения формы</h3>
@@ -160,14 +164,16 @@
             {
                 <div class="row">
                     <div class="col-md-6 form-group">
-                        @Html.DropDownList("GBUs", new SelectList(Model.GBUs.Select(t => new { Id = (long?)t.Id, Name = t.ShortName }).ToList().InsertAt(new { Id = (long?)-1, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" }).DisableIf(() => !isEditable)
+                        @Html.DropDownList("GBUs", new SelectList(Model.GBUs.Select(t => new {Id = (long?) t.Id, Name = t.ShortName}).ToList().InsertAt(new {Id = (long?) -1, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control select2", autocomplete = "off"}).DisableIf(!isEditable)
                     </div>
                     <div class="col-md-2 form-group">
                         <button type="button" class="btn btn-success btn-primary add-slid" role="button">Добавить</button>
                     </div>
                 </div>
             }
-            <h3><hr /></h3>
+            <h3>
+                <hr/>
+            </h3>
             <div class="row">
                 <label class="col-md-4 text-center">
                     Наименование
@@ -181,20 +187,20 @@
                 {
                     foreach (var key in Model.SmallLeisureInfoGBUs.Keys)
                     {
-                        @Html.EditorFor(m => m.SmallLeisureInfoGBUs[key], "SmallLeisureInfoGBU", new { isEditable })
+                        @Html.EditorFor(m => m.SmallLeisureInfoGBUs[key], "SmallLeisureInfoGBU", new {isEditable})
                     }
                 }
             </div>
             if (Model.Data.Id > 0 && Model.Files != null)
             {
-                <h3><hr /></h3>
+                <h3>
+                    <hr/>
+                </h3>
                 <fieldset class="form-horizontal">
                     @Html.HiddenFor(m => m.Data.LinkToFilesId)
-                    @Html.EditorFor(m => m.Files, "Files", new { isEditable })
+                    @Html.EditorFor(m => m.Files, "Files", new {isEditable})
                 </fieldset>
             }
         }
     </div>
 </div>
-
-

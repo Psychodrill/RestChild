@@ -4,12 +4,23 @@ declare var benefitType;
 declare var typeOfRestrictionSubs;
 declare var BootstrapDialog: IBootstrapDialog;
 
+declare var attendantModalSaveUrl;
+declare var moneyAttendants;
+declare var certificateTypeOFRests;
+
+declare var typeOfTransferRequiringTransportSelection;
+declare var typesOfRestRequiringTransportSelection;
+declare var placesOfRestRequiringTransportSelection;
+
+declare var typeOfRestRequiringCampTypeSelection;
+declare var isCamping;
+var typeOfCampOptions=[];
+
 let inited = false;
 let attendantFn = doT.template($('#attendantTemplate').html());
 
 const CompensationEnum = -2;
 const CompensationYouthRestEnum = 19;
-const moneyAttendants = [24, 17];
 
 function containsInArray(a, obj) {
     for (let i = 0; i < a.length; i++) {
@@ -319,6 +330,7 @@ function configDropdowns() {
                 let result = [{id: '', text: '-- Не выбрано --'}];
                 let guids = $('.guid');
                 guids.each((i) => {
+
                     let guid = $(guids[i]);
                     if (guid.hasClass('applicant-guid') && $('#NeedPlacmentApplicant').find('.is-accomp').select2('val') !== 'True') {
                         return;
@@ -450,6 +462,75 @@ function getBenefitType(id) {
     return undefined;
 }
 
+window.onload = () => {
+    $("#statusApplicant").select2().trigger('change'); // необходимо для того чтобы отобразился раздел "Сведения о представителе заявителя"
+
+    $.each($(".benefit-type-id"), function (i, el) { // необходимо для того чтобы корректно отобразилась категория льготы ребенка
+        var hiddenValue = $(el).val();
+        if (hiddenValue.length > 0) {
+            $(el).siblings("select.benefit-type-dropdown").select2().val(hiddenValue);
+            $(el).siblings("select.benefit-type-dropdown").select2().trigger("change");
+        } else {
+            $(el).val("0");
+        }
+    })
+
+    $("select.typeOfCamp").select2().find("option").each(function (i, option){
+        var campId = $(option).val();
+        var campName = $(option).text() ;
+        typeOfCampOptions.push({id: campId, text: campName})
+    })
+
+    ToggleTypeOfTransportBlock();
+    ToggleTypeOfCampBlock();
+};
+
+function attendantChangeProxy($e) {
+    let pb = $e.closest('fieldset.attendant-panel').find('.proxy-block');
+    if ($e.prop('checked') && $('.TypeOfRestId').val() != CompensationEnum.toString()) {
+        pb.removeClass('hidden');
+    } else {
+        pb.addClass('hidden');
+        pb.find('input').val('');
+    }
+}
+
+// Отображать или скрывать блок с приоритетныи и дополнительным видом транспорта в зависимости от цели обращения, направления отдыха и способа проезда
+function ToggleTypeOfTransportBlock() {
+    let typeOfRestId = parseInt($('select.type-of-rest').select2('val'));
+    let placeOfRestId = parseInt($('.placeOfRestId').select2('val'));
+    let transferFromVal = parseInt($('select.transferFrom').select2('val'));
+    let transferToVal = parseInt($('select.transferTo').select2('val'));
+
+    if (typesOfRestRequiringTransportSelection.indexOf(typeOfRestId) != -1
+        && placesOfRestRequiringTransportSelection.indexOf(placeOfRestId) != -1
+        && (transferFromVal == typeOfTransferRequiringTransportSelection || transferToVal == typeOfTransferRequiringTransportSelection)) {
+        $("#TypeOfTransport").parent().removeClass('hidden');
+        $("#TypeOfTransportLink").removeClass('hidden');
+        $('#TypeOfTransportLink').html('<a href="#TypeOfTransport">Тип транспорта</a>');
+    } else {
+        $("#TypeOfTransport").parent().addClass('hidden');
+        $('#TypeOfTransportLink').html('');
+        $('.priorityTypeOfTransport').select2('val', null)
+        $('.additionalTypeOfTransport').select2('val', null)
+    }
+}
+
+// Отображать или скрывать блок с приоритетныи и дополнительным типом лагеря в зависимости от цели обращения
+function ToggleTypeOfCampBlock() {
+    let typeOfRestId = parseInt($('select.type-of-rest').select2('val'));
+    var typeOfRest = getTypeOfRest(typeOfRestId);
+    if (typeOfRestRequiringCampTypeSelection == typeOfRest?.ParentId) {
+        $("#TypeOfCamp").parent().removeClass('hidden');
+        $("#TypeOfCampLink").removeClass('hidden');
+        $('#TypeOfCampLink').html('<a href="#TypeOfCamp">Тип лагеря</a>');
+    } else {
+        $("#TypeOfCamp").parent().addClass('hidden');
+        $('#TypeOfCampLink').html('');
+        $('.typeOfCamp').select2('val', '-1')
+        $('.typeOfCampAddon').select2('val', '-1')
+    }
+}
 
 $(() => {
     let childFn = doT.template($('#childTemplate').html());
@@ -462,15 +543,6 @@ $(() => {
     $('.datepicker-future').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY', minDate: new Date()});
     $('.datetimepicker').datetimepicker({showTodayButton: true, maxDate: new Date()});
 
-    function attendantChangeProxy($e) {
-        let pb = $e.closest('fieldset.attendant-panel').find('.proxy-block');
-        if ($e.prop('checked') && $('.TypeOfRestId').val() != CompensationEnum.toString()) {
-            pb.removeClass('hidden');
-        } else {
-            pb.addClass('hidden');
-            pb.find('input').val('');
-        }
-    }
 
     $('#Attendants').on('change',
         'input.is-proxy',
@@ -520,7 +592,7 @@ $(() => {
                 if ($("#is-agent-accomp option[value='']").length !== 0) {
                     $('#is-agent-accomp').select2('val', null);
                 } else {
-                    $('#is-agent-accomp').select2('val', 'False');
+                    $('#is-agent-accomp').select2('val', $("#is-agent-accomp").select2().val());
                 }
             }
 
@@ -652,7 +724,7 @@ $(() => {
         $restriction.on('change', () => {
             let val = $restriction.select2('val');
             $subres.select2('data', {id: '', text: '-- Не выбрано --'});
-            if (containsInArray(typeOfRestrictionSubs, val)) {
+            if (containsInArray(typeOfRestrictionSubs, parseInt(val))) {
                 $div.removeClass('hidden');
             } else {
                 $div.addClass('hidden');
@@ -968,7 +1040,7 @@ $(() => {
             if (val.NeedPlacment || ($('#hasBooking').val() === 'False'
                 && val.Id !== CompensationEnum
                 && val.Id !== CompensationYouthRestEnum
-                && val.Id !== 17 && val.Id !== 18 && val.Id !== 20 && val.Id !== 24)) {
+                && val.Id !== 20 && !(containsInArray(certificateTypeOFRests, val.Id)))) {
                 $('#Placements').removeClass('hidden');
                 $('#PlacesLink').html('<a href="#Places">Размещение</a>');
                 $('#PlacesLink').show();
@@ -979,7 +1051,6 @@ $(() => {
                     }
                 } else {
                     $('#PlacesAttendants').addClass('hidden');
-                    $('#Data_CountAttendants').select2('val', null);
                     $('#Data_CountAttendants').select2('val', null);
                     if (inited) {
                         if ($("select.is-accomp option[value='']").length !== 0) {
@@ -997,9 +1068,18 @@ $(() => {
                     $('#PlacesLink').html('');
                 }
             } else {
-                $('#Placements').addClass('hidden');
-                $('#PlacesLink').html('');
-                $('#mainPlaces').select2('val', "1");
+                if (containsInArray(certificateTypeOFRests, val.Id)) {
+                    $('#Placements').removeClass('hidden');
+                    if (containsInArray(moneyAttendants, val.Id)) {
+                        $("#PlacesAttendants").removeClass("hidden")
+                    } else {
+                        $("#PlacesAttendants").addClass("hidden")
+                    }
+                } else {
+                    $('#Placements').addClass('hidden');
+                    $('#PlacesLink').html('');
+                    $('#mainPlaces').select2('val', "1");
+                }
                 if (containsInArray(moneyAttendants, val.Id)) {
                     $('#NeedPlacmentApplicant').removeClass('hidden');
                 } else {
@@ -1023,9 +1103,7 @@ $(() => {
                         $('#is-agent-accomp').select2('val', 'False');
                     }
                 }
-
             }
-
             changeCountChildren();
             lockAttendantAddButton();
         }
@@ -1104,7 +1182,7 @@ $(() => {
                 $('.remove-child-button').addClass('hidden');
                 $('#NeedPlacmentApplicant').addClass('hidden');
             }
-        } else if (val.Id === 17 || val.Id === 18 || val.Id === 21 || val.Id === 24) {
+        } else if (containsInArray(certificateTypeOFRests, val.Id)) {
             $('#TypeAndTime').html('Цель обращения');
             $('#TypeAndTimeLinkA').html('Цель обращения');
             $('#InformationVoucherLink').html('');
@@ -1205,6 +1283,7 @@ $(() => {
 
 
     $(document).on('change', 'select.benefit-type-dropdown', (event) => {
+
         let val = getBenefitType($(event.target).val());
         if (inited) {
             $('.benefit-type-id').val(val.Id);
@@ -1260,6 +1339,7 @@ $(() => {
             fieldset.find('.registered-in-Moscow').trigger('change');
         } else {
             fieldset.find('.registered-in-Moscow').removeAttr('disabled');
+            fieldset.find('.registered-in-Moscow').trigger('change');
         }
 
     });
@@ -1271,11 +1351,6 @@ $(() => {
         let $restriction = $e.find('.restriction-select');
         let $subres = $e.find('.subrestriction-select');
         let $div = $e.find('.type-of-subrestriction');
-
-        if (inited) {
-            $restriction.select2('data', {id: '', text: '-- Не выбрано--'});
-            $subres.select2('data', {id: '', text: '-- Не выбрано--'});
-        }
 
         if ($target.is(':checked')) {
             $e.find('.type-of-restriction, .benefit-group-invalid').removeClass('hidden');
@@ -1431,7 +1506,6 @@ $(() => {
         }
     }
 
-
     $(document).on('change', 'select.document-dropdown', (e) => {
         documentInputType($(e.target));
     });
@@ -1444,6 +1518,33 @@ $(() => {
         documentInputType($(val));
     });
 
+    $('select.type-of-rest')
+        .add('.placeOfRestId')
+        .add('select.transferFrom')
+        .add('select.transferTo')
+        .on('change', ToggleTypeOfTransportBlock);
+
+    $('select.type-of-rest').on('change', ToggleTypeOfCampBlock);
+
+    var $typeOfCamp = $("select.typeOfCamp")
+    var $typeOfCampAddon = $("select.typeOfCampAddon")
+
+    $typeOfCamp.on("change", function () {
+
+        if($(this).select2('val') == isCamping){
+            $typeOfCampAddon.select2().find("option[value=" + isCamping + "]").remove()
+            $typeOfCampAddon.select2("val","-1")
+        }
+        else{
+            if($typeOfCampAddon.find("option[value=" + isCamping + "]").length == 0){
+                var optionToAdd = typeOfCampOptions.filter(obj => obj.id == isCamping)[0];
+                if (optionToAdd){
+                    $typeOfCampAddon.append(new Option(optionToAdd.text, optionToAdd.id, false, false))
+                }
+                $typeOfCampAddon.select2("val","-1")
+            }
+        }
+    });
 
     $('body').on('change', '.middlename-havenot', (e) => {
         let isChecked = $(e.target).is(':checked');
@@ -1458,9 +1559,9 @@ $(() => {
 
     let isExcludeChildConfirmed = false;
     $('#mainForm').submit(() => {
-        if ( $('input.exclude-attendant:not(:checked)').length === 0
-            &&  $('input.exclude-attendant').length > 0
-            &&  $('#Applicant_Data_IsAccomp').val().toLowerCase() == 'false') {
+        if ($('input.exclude-attendant:not(:checked)').length === 0
+            && $('input.exclude-attendant').length > 0
+            && $('#Applicant_Data_IsAccomp').val().toLowerCase() == 'false') {
             ShowAlert('Нельзя исключать всех сопровождающих', "alert-danger", "glyphicon-ok", true);
             return false;
         }
@@ -1571,7 +1672,123 @@ $(() => {
         });
     });
 
+    $(".ApplicantAttendantChange").click(() => {
+        let $item = $('#AttendantModal .ReplacingAccompanyBody');
+
+        $(".ReplacingAccompanyErr").html('');
+
+        AddAttendantPopup($item);
+
+        $('#AttendantModal').modal();
+    });
+
+    $(".AttendantChange").click((event) => {
+        let $item = $('#AttendantModal .ReplacingAccompanyBody');
+
+        let aVal = $(event.target).closest("fieldset").find(".id").val();
+
+        $(".ReplacingAccompanyErr").html('');
+
+        AddAttendantPopup($item);
+
+        $('#ReplacingAccompanyId').val(aVal);
+
+        $('#AttendantModal').modal();
+    });
+
+    $(".attendantmodalsave").click(() => {
+        $(".attendantmodalsave").prop("disabled", true)
+        let $item = $('#AttendantModal #AttendantModalForm');
+
+        let data = getFormData($item);
+
+        data['HasNotMiddlename'] = $($item.find("input[name='HasNotMiddlename']")).is(':checked');
+        //$("input[name='HasNotMiddlename']").is(':checked')
+
+        $.ajax({
+            method: "POST",
+            url: attendantModalSaveUrl + '?RequestId=' + $("#Data_Id").val() + '&ReplacingAccompanyId=' + $("#ReplacingAccompanyId").val(),
+            data: data
+        })
+            .done((msg) => {
+                if (msg.IsError) {
+                    $(".ReplacingAccompanyErr").html(msg.ErrorText);
+                    $(".attendantmodalsave").prop("disabled", false)
+                } else {
+                    location.reload();
+                }
+            }).fail((msg) => {
+            $(".ReplacingAccompanyErr").html("Ошибка при выполнении запроса");
+            $(".attendantmodalsave").prop("disabled", false)
+        });
+    });
 });
+
+function getFormData($form) {
+    let unindexedArray = $form.serializeArray();
+    let indexed_array = {};
+
+    $.map(unindexedArray, function (n, i) {
+        indexed_array[n['name']] = n['value'];
+    });
+
+    return indexed_array;
+}
+
+function AddAttendantPopup($item) {
+    $($item).html('');
+    let model = $(attendantFn({}));
+
+    $($item).append(model);
+
+    $($item.find(".remove-attendant-button")).closest(".row").remove();
+    $($item.find(".exclude-attendant")).closest(".row").remove();
+    $($item.find("fieldset")).removeClass("bs-callout-info bs-callout");
+    $($item.find(".type-violation")).closest(".row").remove();
+    $($item.find(".AttendantChange")).closest(".row").remove();
+
+    //applicantType
+
+    $('#ReplacingAccompanyId').val('');
+
+    let regExp = new RegExp("(.*\[[0-9]+\].)", "g");
+    $($item.find("*")).each(function () {
+        if ($(this).attr('name')) {
+            $(this).attr('name', $(this).attr('name').replace(regExp, ''));
+        }
+    });
+
+    try {
+        $('.datepicker-my').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY', maxDate: new Date()});
+
+    } catch (e) {
+    }
+
+    try {
+        $('.datepicker-future').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY', minDate: new Date()});
+    } catch (e) {
+    }
+
+    try {
+        $('.datepicker-general').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY'});
+    } catch (e) {
+    }
+
+    inputMaskConfig($item);
+
+    $($item.find(".select2")).select2();
+
+    $item.on('change',
+        'select.applicantType',
+        (e) => {
+            let $e = $(e.target);
+            let $cbx = $e.closest('.form-group').find('input.is-proxy');
+            $cbx.prop('checked', $e.select2('val') === '3');
+            attendantChangeProxy($cbx);
+        });
+
+
+}
 
 function changeIndexInNames(parent, name) {
     let childs = parent.children();
@@ -1613,7 +1830,6 @@ function changeGuids(parent, name) {
         });
     }
 }
-
 
 function confirmButton(buttonName, actionCode, statusId = undefined) {
     if (statusId == '1050') {
@@ -1694,4 +1910,66 @@ function confirmButtonWithDecline(buttonName, actionCode, statusId) {
             }
         ]
     });
+}
+
+
+var arr;
+
+function CheckHandler(event, isParentNode) {
+    var src = event.target;
+    var cond = $(src).prop("checked");
+    if (isParentNode) {
+        if (cond) {
+            $.each($(src).siblings("ul").find("[type='checkbox']"), function (i, val) {
+                $(val).prop("checked", true);
+            })
+        } else {
+            $.each($(src).siblings("ul").find("[type='checkbox']"), function (i, val) {
+                $(val).prop("checked", false);
+            })
+        }
+    } else {
+        var total = $(src).parents("ul").first().find("[type='checkbox']").length;
+        var checked = $(src).parents("ul").first().find("[type='checkbox']:checked").length;
+        if (checked == total) {
+            $(src).parents("ul").first().siblings("input[type='checkbox']").prop("checked", true);
+        } else {
+            $(src).parents("ul").first().siblings("input[type='checkbox']").prop("checked", false);
+        }
+    }
+}
+
+function SelectAll() {
+    var cond = $("[name='selectAll']").prop("checked");
+    if (cond) {
+        $.each($("#mainList").find("[type='checkbox']").not(":disabled"), function (i, val) {
+            $(val).prop("checked", true);
+        })
+    } else {
+        $.each($("#mainList").find("[type='checkbox']").not(":disabled"), function (i, val) {
+            $(val).prop("checked", false);
+        })
+    }
+
+}
+
+const mapperDict = {
+    "#GeneralInfo": {text: "Общие сведения", prop: "TransferGeneralData"},
+    "#TypeAndTime": {text: "Цель обращения и время отдыха", prop: "TransferTargetAndTimeOfRestData"},
+    "#PlaceRest": {text: "Место отдыха", blocked: "true"},
+    "#Places": {text: "Размещение", blocked: "true"},
+    "#Applicant": {text: "Сведения о заявителе", prop: "TransferApplicantData"},
+    "#Agent": {text: "Сведения о представителе заявителя", prop: "TransferAgentData"},
+    "#AttendantsReference": {text: "Сведения о сопровождающих", prop: "TransferAttendantData", list: "AttendantsIds"},
+    "#InformationVoucher": {text: "Путевки", blocked: "true"},
+    "#ChildsReference": {text: "Сведения о детях", prop: "TransferChildData", list: "ChildrenIds"},
+    "#parentIvalid": {text: "Сведения о родителе-инвалиде", blocked: "true"},
+    "#Bank": {text: "Банковские реквизиты", prop: "TransferBankData"},
+    "#ChildrenRequests": {text: "Сведения о созданных заявлениях", blocked: "true"},
+    "#ParentRequest": {text: "Сведения о заявлении на основе которого выдано текущее", blocked: "true"},
+    "#RequestCertificates": {text: "Сведения о погашенном сертификате", blocked: "true"},
+    "#FileReference": {text: "Документы", prop: "TransferFilesData"},
+    "#TypeOfTransport": {text: "Тип транспорта", prop: "TransferTypeOfTransportData", blocked: "true"},
+    "#TypeOfCamp": {text: "Тип лагеря", prop: "TransferTypeOfCampData"},
+
 }

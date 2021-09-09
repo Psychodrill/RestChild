@@ -8,6 +8,8 @@ namespace RestChild.DAL.Configurations
 {
     internal static partial class Configuration
     {
+        private static long startIndex = 290;
+
         /// <summary>
         ///     Права
         /// </summary>
@@ -37,84 +39,101 @@ namespace RestChild.DAL.Configurations
                     Id = 4,
                     Code = AccessRightEnum.RequestManage,
                     Name = "Управление заявления на первую заявочную кампанию"
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 5,
                     Code = AccessRightEnum.Status.ToSend,
                     Name = "Заявление. Перевод в статус Подано. Заявка находится на рассмотрении"
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 6,
                     Code = AccessRightEnum.Status.ToReject,
                     Name = "Заявление. Перевод в статус Услуга оказана. Отказ в предоставлении услуги"
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 7,
                     Code = AccessRightEnum.Status.ToRejectNormal,
-                    Name = "Заявление. Перевод в статус Услуга оказана. Отказ в предоставлении услуги из статуса ожидания прихода заявителя"
-                }, new AccessRight
+                    Name =
+                        "Заявление. Перевод в статус Услуга оказана. Отказ в предоставлении услуги из статуса ожидания прихода заявителя"
+                },
+                new AccessRight
                 {
                     Id = 8,
                     Code = AccessRightEnum.Status.ToStoped,
                     Name = "Заявление. Перевод в статус Приостановлено. Запрос на отзыв по инициативе заявителя"
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 9,
                     Code = AccessRightEnum.Status.CertificateIssued,
                     Name = "Перевод в статус Включить в реестр"
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 10,
                     Code = AccessRightEnum.Status.ApplicantCome,
                     Name =
                         "Заявление. Перевод в статус Формирование результата предоставления услуги"
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 11,
                     Code = AccessRightEnum.Status.ToWaitApplicant,
                     Name = "Заявление. Перевод в статус Приостановлено. Ожидание прихода заявителя"
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 12,
                     Code = AccessRightEnum.Status.EditInWaitApplicant,
                     Name = "Заявление. Перевод в статус Сведения предоставлены заявителем"
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 13,
                     Code = AccessRightEnum.RequestView,
                     Name = "Заявление. Просмотр заявлений"
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 14,
                     Code = AccessRightEnum.InteragencyRequestManage,
-                    Name = "Работа с межведомственным запросом"
-                }, new AccessRight
+                    Name = "Работа с межведомственным запросом. Управление"
+                },
+                new AccessRight
                 {
                     Id = 15,
                     Code = AccessRightEnum.EditAfterRegistration,
                     Name = "Редактирование заявления после регистрации"
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 16,
                     Code = AccessRightEnum.Organization.View,
-                    Name = "Просмотр списка организаций"
-                }, new AccessRight
+                    Name = "Организации. Просмотр списка"
+                },
+                new AccessRight
                 {
                     Id = 17,
                     Code = AccessRightEnum.Organization.Edit,
-                    Name = "Редактирование организаций"
-                }, new AccessRight
+                    Name = "Организации. Редактирование"
+                },
+                new AccessRight
                 {
                     Id = 18,
                     Code = AccessRightEnum.Limits.LimitToOiv,
                     Name = "Назначение и согласование квот ОИВ"
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 19,
                     Code = AccessRightEnum.Limits.LimitByOrganization,
                     Name = "Назначение и согласование квот организациям",
                     ForOrganization = true
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 20,
                     Code = AccessRightEnum.Limits.LimitChildInOrganization,
@@ -621,7 +640,8 @@ namespace RestChild.DAL.Configurations
                     Id = 105,
                     Code = AccessRightEnum.CounselorTask.ViewAll,
                     Name = "Задачи вожатым. Просмотр всех задач (оператор Мосгортур)"
-                }, new AccessRight
+                },
+                new AccessRight
                 {
                     Id = 106,
                     Code = AccessRightEnum.Tour.ToFormationFromFormed,
@@ -1717,21 +1737,122 @@ namespace RestChild.DAL.Configurations
                 },
                 new AccessRight
                 {
-                    Id = 290,
+                    Id = startIndex,
                     Code = AccessRightEnum.Monitoring.ReestrWork,
                     Name = "Мониторинг. Работа с реестрами",
                 },
                 new AccessRight
                 {
-                    Id = 291,
+                    Id = ++startIndex,
                     Code = AccessRightEnum.Monitoring.EventSent,
                     Name = "Мониторинг. Отправка уведомлений",
                 },
                 new AccessRight
                 {
-                    Id = 292,
+                    Id = ++startIndex,
                     Code = AccessRightEnum.Monitoring.CompleteFormDownload,
                     Name = "Мониторинг. Выгрузка сводных форм",
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.ReplacingAccompanying,
+                    Name = "Заявление. Замена сопровождающего",
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.Organization.GBUView,
+                    Name = "Организации. Просмотр списка ГБУ",
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.Organization.GBUEdit,
+                    Name = "Организации. Редактирование ГБУ",
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.Organization.CampView,
+                    Name = "Организации. Просмотр списка лагерей всех регионов РФ",
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.Organization.CampEdit,
+                    Name = "Организации. Редактирование лагеря",
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.AnalyticReports.RoomsFund,
+                    Name = "Отчет. Номерной фонд"
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.Orphans.PupilGroupEditFromApprove,
+                    Name = "(Сироты) Редактировать группу (потребность) приюта (из статуса утверждено)"
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.Orphans.MainRemoveRestorePupil,
+                    Name = "(Сироты) Удаление/восстановление воспитанников учреждения социальной защиты"
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.Orphans.MainRemoveRestoreCollaborator,
+                    Name = "(Сироты) Удаление/восстановление сотрудников учреждения социальной защиты"
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.Orphans.MainViolationsInformationEntering,
+                    Name = "(Сироты) Внесение сведений о нарушениях"
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.TradeUnionCashback.ListView,
+                    Name = "(Кэшбек) Списки претендентов на получение кэшбэка. Просмотр",
+                    ForOrganization = true
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.TradeUnionCashback.ListEdit,
+                    Name = "(Кэшбек) Списки претендентов на получение кэшбэка. Редактирование",
+                    ForOrganization = true
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.TradeUnionCashback.RegistryView,
+                    Name = "(Кэшбек) Реестр претендентов на получение кэшбэка. Просмотр",
+                    ForOrganization = true
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.TradeUnionCashback.RegistryExportCSV,
+                    Name = "(Кэшбек) Реестр претендентов на получение кэшбэка. Экспорт CSV",
+                    ForOrganization = true
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.GiftReserved.MassCancel,
+                    Name = "Мобильное приложение. Сброс подарков",
+                    ForOrganization = true
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.InteragencyRequestDelete,
+                    Name = "Работа с межведомственным запросом. Удаление"
                 }
             );
 

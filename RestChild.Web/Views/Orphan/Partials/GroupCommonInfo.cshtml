@@ -1,6 +1,6 @@
 ﻿@using RestChild.Comon
 @using RestChild.Comon.Enumeration
-@using RestChild.Web.App_Code
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.Orphans.OrphanageGroupModel
 
 <div role="tabpanel" class="tab-pane @(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)" id="CommonInfo">
@@ -22,21 +22,21 @@
             <div class="form-group">
                 <label class="col-md-3 control-label text-right">Год потребности</label>
                 <div class="col-md-9">
-                    @Html.DropDownListFor(r => r.YearOfRestId, new SelectList(Model.YearsOfRest.Select(o => new { Id = o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (string)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" }).DisableIf(() => Model.Data.Id > 0)
+                    @Html.DropDownListFor(r => r.YearOfRestId, new SelectList(Model.YearsOfRest.Select(o => new { Id = o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (string)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" }).DisableIf(Model.Data.Id > 0)
                     @Html.ValidationMessageFor(r => r.YearOfRestId, "Необходимо заполнить поле")
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label text-right">Каникулярный период</label>
                 <div class="col-md-9">
-                    @Html.DropDownListFor(r => r.Data.VacationPeriodId, new SelectList(Model.VacationPeriods.Select(o => new { Id = o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (string)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" }).DisableIf(() => Model.Data.Id > 0)
+                    @Html.DropDownListFor(r => r.Data.VacationPeriodId, new SelectList(Model.VacationPeriods.Select(o => new { Id = o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (string)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" }).DisableIf(Model.Data.Id > 0)
                     @Html.ValidationMessageFor(r => r.Data.VacationPeriodId, "Необходимо заполнить поле")
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label text-right">Порядковый номер группы</label>
                 <div class="col-md-9">
-                    @Html.TextBoxFor(model => model.Data.Name, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).DisableIf(() => Model.Data.StateId != StateMachineStateEnum.PupilGroup.Formation)
+                    @Html.TextBoxFor(model => model.Data.Name, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).DisableIf(Model.Data.StateId != StateMachineStateEnum.PupilGroup.Formation)
                     @Html.ValidationMessageFor(model => model.Data.Name, "Необходимо заполнить поле")
                 </div>
             </div>
@@ -46,26 +46,20 @@
             <div class="form-group">
                 <label class="col-md-3 control-label text-right">Форма отдыха и оздоровления</label>
                 <div class="col-md-9">
-                    @Html.DropDownListFor(r => r.FormOfRestId, new SelectList(Model.FormsOfRest.Select(o => new { Id = o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (string)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" }).DisableIf(() => Model.Data.Id > 0)
+                    @Html.DropDownListFor(r => r.FormOfRestId, new SelectList(Model.FormsOfRest.Select(o => new { Id = o.Key, Name = o.Value }).ToList().InsertAt(new { Id = (string)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control" }).DisableIf(Model.Data.Id > 0)
                     @Html.ValidationMessageFor(r => r.FormOfRestId, "Необходимо заполнить поле")
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label text-right">Общее кол-во мест для воспитанников</label>
                 <div class="col-md-9">
-                    @Html.TextBoxFor(model => model.Data.PupilsCount, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).ReadonlyIf(() => true)
+                    @Html.TextBoxFor(model => model.Data.PupilsCount, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).ReadOnlyIf(true)
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label text-right">Общее кол-во мест для работников</label>
                 <div class="col-md-9">
-                    @Html.TextBoxFor(model => model.Data.CollaboratorsCount, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).ReadonlyIf(() => true)
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-3 control-label text-right">Общее кол-во сопровождающих от МГТ</label>
-                <div class="col-md-9">
-                    @Html.TextBoxFor(model => model.Data.MGTCollaboratorsCount, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).ReadonlyIf(() => true)
+                    @Html.TextBoxFor(model => model.Data.CollaboratorsCount, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).ReadOnlyIf(true)
                 </div>
             </div>
         </fieldset>

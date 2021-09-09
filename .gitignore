@@ -42,7 +42,6 @@ TestResults/
 *.sdf
 [Pp]ackages/
 *.orig
-.nuget/
 */Logs/*
 LuceneIndex/
 

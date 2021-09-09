@@ -92,6 +92,7 @@ namespace MailingDemon.Tasks
                     if (b.StatusId == (long)MGTVisitBookingStatuses.BookingRegistered)
                     {
                         eMessage.Processed = true;
+                        eMessage.IsSigned = true;
                         unitOfWork.SaveChanges();
                         continue;
                     }

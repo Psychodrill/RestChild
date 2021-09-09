@@ -259,6 +259,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\ILogic.cs" />
+    <Compile Include="Controllers\BaseMobileController.cs" />
+    <Compile Include="Controllers\GiftCancelСontroller.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LogAspect.cs" />
     <Compile Include="Controllers\RoleController.cs" />
@@ -268,6 +270,8 @@
     <Compile Include="Controllers\WebApi\OrganizationController.cs" />
     <Compile Include="Controllers\WebApi\SecurityJournalApiController.cs" />
     <Compile Include="Controllers\WebApi\WebGenericRestController.cs" />
+    <Compile Include="Models\FilterBase.cs" />
+    <Compile Include="Models\GiftCancelHistoryFilter.cs" />
     <Compile Include="Models\SecurityJournalActiveSessionsFilterModel.cs" />
     <Compile Include="Models\SecurityJournalDefaultFilterModel.cs" />
     <Compile Include="Models\SecurityJournalEntranceFilterModel.cs" />
@@ -1427,6 +1431,7 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\GiftCancel\History.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1620,9 +1625,13 @@
       <Project>{b7b0418c-522e-45d4-bc36-99e70984a1ad}</Project>
       <Name>RestChild.Extensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RestChild.Extensions\RestChild.Extensions.csproj">
-      <Project>{b7b0418c-522e-45d4-bc36-99e70984a1ad}</Project>
-      <Name>RestChild.Extensions</Name>
+    <ProjectReference Include="..\RestChild.Mobile.DAL\RestChild.Mobile.DAL.csproj">
+      <Project>{85329ae0-8e45-43e8-8567-9fa3abf9146a}</Project>
+      <Name>RestChild.Mobile.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RestChild.Mobile.Domain\RestChild.Mobile.Domain.csproj">
+      <Project>{9ebf576c-2aed-439d-b110-804faeb18f93}</Project>
+      <Name>RestChild.Mobile.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\RestChild.Security\RestChild.Security.csproj">
       <Project>{d4e6dad9-febe-473a-8a13-538b387ad617}</Project>

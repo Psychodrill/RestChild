@@ -1,20 +1,18 @@
-﻿@using System.Collections
-@using RestChild.Comon
+﻿@using RestChild.Comon
 @using RestChild.Comon.Enumeration
-@using RestChild.Domain
 @using RestChild.Extensions.Extensions
-@using RestChild.Web.App_Code
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.ContractModel
 
 @{
-	ViewBag.Title = "Договор/контракт";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Договор/контракт";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="row">
-	<div class="col-md-12">
-		<h2>Договор/контракт</h2>
-	</div>
+    <div class="col-md-12">
+        <h2>Договор/контракт</h2>
+    </div>
 </div>
 
 <a href="@Url.Action("Search", "Contract")">Вернуться</a>
@@ -23,312 +21,316 @@
 @Html.Partial("Assets/_StatePanel", Model.State)
 
 <div class="row">
-	<div class="col-md-12">
-		@using (Html.BeginForm("Save", "Contract", FormMethod.Post, new { enctype = "multipart/form-data", @id = "contractForm" }))
-		{
-			@Html.AntiForgeryToken()
-			@Html.HiddenFor(m => m.Data.Id)
-			@Html.HiddenFor(m => m.Data.StateId)
-			@Html.HiddenFor(m => m.StateMachineActionString)
-			@Html.HiddenFor(m => m.Data.HistoryLinkId)
-			if (!ViewData.ModelState.IsValid)
-			{
-				<div class="alert alert-danger" role="alert">
-					@Html.ValidationSummary(false)
-				</div>
-			}
+<div class="col-md-12">
+@using (Html.BeginForm("Save", "Contract", FormMethod.Post, new {enctype = "multipart/form-data", @id = "contractForm"}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Data.Id)
+    @Html.HiddenFor(m => m.Data.StateId)
+    @Html.HiddenFor(m => m.StateMachineActionString)
+    @Html.HiddenFor(m => m.Data.HistoryLinkId)
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger" role="alert">
+            @Html.ValidationSummary(false)
+        </div>
+    }
 
-			<ul class="nav nav-tabs">
-				<li role="presentation" class="active">
-					<a href="#common" aria-controls="common" role="tab" data-toggle="tab">Общая информация</a>
-				</li>
-				@if (Model.State.State.Id == StateMachineStateEnum.Contract.Active)
-				{
-					if (Model.Data.OnRest)
-					{
-						<li role="presentation">
-							<a href="#places" aria-controls="places" role="tab" data-toggle="tab">Список размещений</a>
-						</li>
-					}
-					if (Model.Data.OnTransport)
-					{
-						<li role="presentation">
-							<a href="#transport" aria-controls="transport" role="tab" data-toggle="tab">Список рейсов</a>
-						</li>
-					}
-				}
-			</ul>
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active">
+            <a href="#common" aria-controls="common" role="tab" data-toggle="tab">Общая информация</a>
+        </li>
+        @if (Model.State.State.Id == StateMachineStateEnum.Contract.Active)
+        {
+            if (Model.Data.OnRest)
+            {
+                <li role="presentation">
+                    <a href="#places" aria-controls="places" role="tab" data-toggle="tab">Список размещений</a>
+                </li>
+            }
+            if (Model.Data.OnTransport)
+            {
+                <li role="presentation">
+                    <a href="#transport" aria-controls="transport" role="tab" data-toggle="tab">Список рейсов</a>
+                </li>
+            }
+        }
+    </ul>
 
-			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane active" id="common">
-					<fieldset class="form-horizontal">
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Номер<span class="requared">*</span></label>
-							<div class="col-md-9">
-								@Html.TextBoxFor(model => model.Data.SignNumber, new { @class = "form-control", autocomplete = "off", maxlength = "100" }).DisableIf(() => !Model.IsEditable)
-								@Html.ValidationMessageFor(model => model.Data.SignNumber, "Заполните поле")
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Дата заключения<span class="requared">*</span></label>
-							<div class="col-md-3">
-								<div class='input-group date datepicker-anytime'>
-									@Html.TextBoxFor(r => r.Data.SignDate, new { @class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Data.SignDate).FormatEx(string.Empty, string.Empty) }).DisableIf(() => !Model.IsEditable)
-									<span class="input-group-addon">
-										<span class="glyphicon glyphicon-calendar"></span>
-									</span>
-								</div>
-								@Html.ValidationMessageFor(model => model.Data.SignDate, "Заполните поле")
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Название</label>
-							<div class="col-md-9">
-								@Html.TextBoxFor(model => model.Data.Name, new { @class = "form-control", autocomplete = "off", maxlength = "1000" }).DisableIf(() => !Model.IsEditable)
-								@Html.ValidationMessageFor(model => model.Data.Name, "Заполните поле")
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Сумма контракта</label>
-							<div class="col-md-9">
-								@Html.TextBoxFor(model => model.Data.Summa, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-								@Html.ValidationMessageFor(model => model.Data.Summa, "Заполните поле")
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Срок действия</label>
-							<div class="col-md-9">
-								<label class="pull-left control-label text-right">с</label>
-								<div class="col-md-3">
-									<div class='input-group date datepicker-anytime'>
-										@Html.TextBoxFor(r => r.Data.StartDate, new { @class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Data.StartDate).FormatEx(string.Empty, string.Empty) }).DisableIf(() => !Model.IsEditable)
-										<span class="input-group-addon">
-											<span class="glyphicon glyphicon-calendar"></span>
-										</span>
-									</div>
+    <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="common">
+    <fieldset class="form-horizontal">
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Номер<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.SignNumber, new {@class = "form-control", autocomplete = "off", maxlength = "100"}).DisableIf(!Model.IsEditable)
+            @Html.ValidationMessageFor(model => model.Data.SignNumber, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Дата заключения<span class="requared">*</span></label>
+        <div class="col-md-3">
+            <div class='input-group date datepicker-anytime'>
+                @Html.TextBoxFor(r => r.Data.SignDate, new {@class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Data.SignDate).FormatEx(string.Empty, string.Empty)}).DisableIf(!Model.IsEditable)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            @Html.ValidationMessageFor(model => model.Data.SignDate, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Название</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Name, new {@class = "form-control", autocomplete = "off", maxlength = "1000"}).DisableIf(!Model.IsEditable)
+            @Html.ValidationMessageFor(model => model.Data.Name, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Сумма контракта</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Summa, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+            @Html.ValidationMessageFor(model => model.Data.Summa, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Срок действия</label>
+        <div class="col-md-9">
+            <label class="pull-left control-label text-right">с</label>
+            <div class="col-md-3">
+                <div class='input-group date datepicker-anytime'>
+                    @Html.TextBoxFor(r => r.Data.StartDate, new {@class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Data.StartDate).FormatEx(string.Empty, string.Empty)}).DisableIf(!Model.IsEditable)
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
 
-								</div>
-								<label class="pull-left control-label text-right">по</label>
-								<div class="col-md-3">
-									<div class='input-group date datepicker-anytime'>
-										@Html.TextBoxFor(r => r.Data.EndDate, new { @class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Data.EndDate).FormatEx(string.Empty, string.Empty) }).DisableIf(() => !Model.IsEditable)
-										<span class="input-group-addon">
-											<span class="glyphicon glyphicon-calendar"></span>
-										</span>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Описание контракта</label>
-							<div class="col-md-9">
-								@Html.TextAreaFor(model => model.Data.ContractDescription, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-								@Html.ValidationMessageFor(model => model.Data.ContractDescription, "Заполните поле")
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Ведомство</label>
-							<div class="col-md-9">
-								@Html.DropDownListFor(model => model.Data.OrganizationId, new SelectList(Model.Oivs.Select(o => new { Id = (long?)o.Id, Name = o.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-								@Html.ValidationMessageFor(model => model.Data.ContractDescription, "Заполните поле")
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Год</label>
-							<div class="col-md-9">
-								@Html.DropDownListFor(model => model.Data.YearOfRestId, new SelectList(Model.Years.Select(o => new { Id = (long?)o.Id, Name = o.Name }).InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-								@Html.ValidationMessageFor(model => model.Data.ContractDescription, "Заполните поле")
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Плановое количество мест</label>
-							<div class="col-md-9">
-								@Html.TextBoxFor(model => model.Data.PlanCount, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-								@Html.ValidationMessageFor(model => model.Data.PlanCount, "Заполните поле")
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Куратор</label>
-							<div class="col-md-9">
-								@Html.HiddenFor(m => m.Data.CuratorId, new { @class = "form-control curator-main-id", accountname = Model.Data.CuratorId == null ? "-- Не указано --" : string.Format("{0} ({1})", Model.Data.Curator.Name, Model.Data.Curator.Login) }).DisableIf(() => !Model.IsEditable)
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Комиссия(%)</label>
-							<div class="col-md-9">
-								@Html.TextBoxFor(model => model.Data.Commission, new { @class = "form-control procent", autocomplete = "off", maxlength = "6" }).DisableIf(() => !Model.IsEditable)
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Исполнитель</label>
-							<div class="col-md-9">
-								@Html.TextBoxFor(model => model.Data.SupplierId, new {@class = "form-control", autocomplete = "off"}).DisableIf(() => !Model.IsEditable)
-								@Html.ValidationMessageFor(model => model.Data.SupplierId, "Заполните поле")
-								<input type="hidden" id="_SupplierId" class="form-control required" value="@Model.Data.SupplierId"/>
-								<input type="hidden" id="_SupplierName" class="form-control required" value="@Model.Data.NullSafe(m => m.Supplier.Name)"/>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Банковские реквизиты исполнителя</label>
-							<div class="col-md-9">
-								@Html.HiddenFor(m => m.Data.OrganizationBankId, new { @class = "form-control organization-bank-id", accountname = Model.Data.OrganizationBankId == null ? "-- Не указано --" : Model.Data.OrganizationBank.GetInfo() }).DisableIf(() => !Model.IsEditable)
-							</div>
-						</div>
+            </div>
+            <label class="pull-left control-label text-right">по</label>
+            <div class="col-md-3">
+                <div class='input-group date datepicker-anytime'>
+                    @Html.TextBoxFor(r => r.Data.EndDate, new {@class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Data.EndDate).FormatEx(string.Empty, string.Empty)}).DisableIf(!Model.IsEditable)
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Описание контракта</label>
+        <div class="col-md-9">
+            @Html.TextAreaFor(model => model.Data.ContractDescription, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+            @Html.ValidationMessageFor(model => model.Data.ContractDescription, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Ведомство</label>
+        <div class="col-md-9">
+            @Html.DropDownListFor(model => model.Data.OrganizationId, new SelectList(Model.Oivs.Select(o => new {Id = (long?) o.Id, Name = o.Name}).InsertAt(new {Id = (long?) null, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+            @Html.ValidationMessageFor(model => model.Data.ContractDescription, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Год</label>
+        <div class="col-md-9">
+            @Html.DropDownListFor(model => model.Data.YearOfRestId, new SelectList(Model.Years.Select(o => new {Id = (long?) o.Id, Name = o.Name}).InsertAt(new {Id = (long?) null, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+            @Html.ValidationMessageFor(model => model.Data.ContractDescription, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Плановое количество мест</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.PlanCount, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+            @Html.ValidationMessageFor(model => model.Data.PlanCount, "Заполните поле")
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Куратор</label>
+        <div class="col-md-9">
+            @Html.HiddenFor(m => m.Data.CuratorId, new {@class = "form-control curator-main-id", accountname = Model.Data.CuratorId == null ? "-- Не указано --" : string.Format("{0} ({1})", Model.Data.Curator.Name, Model.Data.Curator.Login)}).DisableIf(!Model.IsEditable)
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Комиссия(%)</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Commission, new {@class = "form-control procent", autocomplete = "off", maxlength = "6"}).DisableIf(!Model.IsEditable)
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Исполнитель</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.SupplierId, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+            @Html.ValidationMessageFor(model => model.Data.SupplierId, "Заполните поле")
+            <input type="hidden" id="_SupplierId" class="form-control required" value="@Model.Data.SupplierId"/>
+            <input type="hidden" id="_SupplierName" class="form-control required" value="@Model.Data.NullSafe(m => m.Supplier.Name)"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Банковские реквизиты исполнителя</label>
+        <div class="col-md-9">
+            @Html.HiddenFor(m => m.Data.OrganizationBankId, new {@class = "form-control organization-bank-id", accountname = Model.Data.OrganizationBankId == null ? "-- Не указано --" : Model.Data.OrganizationBank.GetInfo()}).DisableIf(!Model.IsEditable)
+        </div>
+    </div>
 
-						<div class="form-group">
-							<label class="col-md-3 control-label text-right">Примечание</label>
-							<div class="col-md-9">
-								@Html.TextBoxFor(model => model.Data.Comment, new { @class = "form-control", autocomplete = "off", maxlength = "1000" }).DisableIf(() => !Model.IsEditable)
-								@Html.ValidationMessageFor(model => model.Data.Comment, "Заполните поле")
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-md-offset-3 col-md-9 inline-block">
-								<div class="checkbox">
-									<label>
-										@Html.CheckBoxFor(r => r.Data.OnRest).DisableIf(() => !Model.IsEditable)
-										Проживание
-										<i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="Необходимо указать либо услуги на проживание, либо на транспорт"></i>
-									</label>
-								</div>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-md-offset-3 col-md-9 inline-block">
-								<div class="checkbox">
-									<label>
-										@Html.CheckBoxFor(r => r.Data.OnTransport).DisableIf(() => !Model.IsEditable)
-										Транспорт
-										<i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="Необходимо указать либо услуги на проживание, либо на транспорт"></i>
-									</label>
-								</div>
-							</div>
-						</div>
-						<div class="row form-group">
-							<div class="col-md-offset-3 col-md-9">
-								<div class="checkbox">
-									<label>
-										@Html.CheckBoxFor(r => r.Data.OnService).DisableIf(() => !Model.IsEditable)
-										Услуги
-									</label>
-								</div>
-							</div>
-						</div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Примечание</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Data.Comment, new {@class = "form-control", autocomplete = "off", maxlength = "1000"}).DisableIf(!Model.IsEditable)
+            @Html.ValidationMessageFor(model => model.Data.Comment, "Заполните поле")
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-offset-3 col-md-9 inline-block">
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(r => r.Data.OnRest).DisableIf(!Model.IsEditable)
+                    Проживание
+                    <i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="Необходимо указать либо услуги на проживание, либо на транспорт"></i>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-offset-3 col-md-9 inline-block">
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(r => r.Data.OnTransport).DisableIf(!Model.IsEditable)
+                    Транспорт
+                    <i class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="Необходимо указать либо услуги на проживание, либо на транспорт"></i>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-md-offset-3 col-md-9">
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(r => r.Data.OnService).DisableIf(!Model.IsEditable)
+                    Услуги
+                </label>
+            </div>
+        </div>
+    </div>
 
-						<h4>
-							Дополнительные соглашения
-							@if (Model.IsEditable)
-							{
-								<a type="button" class="btn btn-primary addagreement btn-xs" href="javascript:void(0);" title="Добавить"><i class="glyphicon glyphicon-plus"></i></a>
-							}
-						</h4>
-						<table class="table @(Model.Agreements.Any() ? "" : "hidden")" id="agreementsTable">
-							<thead>
-								<tr>
-									<th>Номер</th>
-									<th>Дата</th>
-									<th>Срок</th>
-									<th>Описание</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								@for (var i = 0; i < Model.Agreements.Count; i++)
-				{
-									<tr>
-										<td style="width: 100px">
-											@Html.HiddenFor(m => m.Agreements[i].Id)
-											@Html.HiddenFor(m => m.Agreements[i].ContractId)
-											@Html.HiddenFor(m => m.Agreements[i].LastUpdateTick)
-											@Html.TextBoxFor(m => m.Agreements[i].SignNumber, new { @class = "form-control", maxlength = 100 }).DisableIf(() => !Model.IsEditable)
-										</td>
-										<td style="width: 200px">
-											<div class='input-group date datepicker-anytime'>
-												@Html.TextBoxFor(r => r.Agreements[i].SignDate, new { @class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Agreements[i].SignDate).FormatEx(string.Empty, string.Empty) }).DisableIf(() => !Model.IsEditable)
-												<span class="input-group-addon">
-													<span class="glyphicon glyphicon-calendar"></span>
-												</span>
-											</div>
-										</td>
-										<td style="width: 400px">
-											<label class="pull-left control-label text-right">с</label>
-											<div class="col-md-5">
-												<div class='input-group date datepicker-anytime'>
-													@Html.TextBoxFor(r => r.Agreements[i].DateFrom, new { @class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Agreements[i].DateFrom).FormatEx(string.Empty, string.Empty) }).DisableIf(() => !Model.IsEditable)
-													<span class="input-group-addon">
-														<span class="glyphicon glyphicon-calendar"></span>
-													</span>
-												</div>
-											</div>
-											<label class="pull-left control-label text-right">по</label>
-											<div class="col-md-5">
-												<div class='input-group date datepicker-anytime'>
-													@Html.TextBoxFor(r => r.Agreements[i].DateTo, new { @class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Agreements[i].DateTo).FormatEx(string.Empty, string.Empty) }).DisableIf(() => !Model.IsEditable)
-													<span class="input-group-addon">
-														<span class="glyphicon glyphicon-calendar"></span>
-													</span>
-												</div>
-											</div>
-										</td>
-										<td>
-											@Html.TextBoxFor(m => m.Agreements[i].Description, new { @class = "form-control" }).DisableIf(() => !Model.IsEditable)
-										</td>
-										<td style="width: 40px">
-											@if (Model.IsEditable)
-											{
-												<a class="remove-agreement-btn" type="button" title="Удалить" href="javascript:void(0)"><i class="glyphicon glyphicon-remove"></i></a>
-											}
-										</td>
-									</tr>
-								}
-							</tbody>
-						</table>
-					</fieldset>
-				</div>
-				@if (Model.State.State.Id == StateMachineStateEnum.Contract.Active)
-				{
-					if (Model.Data.OnRest)
-					{
-						<div role="tabpanel" class="tab-pane" id="places">
-							@Html.Partial("ToursSearchResult", Model.ToursFilterModel, new ViewDataDictionary())
-						</div>
-					}
+    <h4>
+        Дополнительные соглашения
+        @if (Model.IsEditable)
+        {
+            <a type="button" class="btn btn-primary addagreement btn-xs" href="javascript:void(0);" title="Добавить">
+                <i class="glyphicon glyphicon-plus"></i>
+            </a>
+        }
+    </h4>
+    <table class="table @(Model.Agreements.Any() ? "" : "hidden")" id="agreementsTable">
+        <thead>
+        <tr>
+            <th>Номер</th>
+            <th>Дата</th>
+            <th>Срок</th>
+            <th>Описание</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @for (var i = 0; i < Model.Agreements.Count; i++)
+        {
+            <tr>
+                <td style="width: 100px">
+                    @Html.HiddenFor(m => m.Agreements[i].Id)
+                    @Html.HiddenFor(m => m.Agreements[i].ContractId)
+                    @Html.HiddenFor(m => m.Agreements[i].LastUpdateTick)
+                    @Html.TextBoxFor(m => m.Agreements[i].SignNumber, new {@class = "form-control", maxlength = 100}).DisableIf(!Model.IsEditable)
+                </td>
+                <td style="width: 200px">
+                    <div class='input-group date datepicker-anytime'>
+                        @Html.TextBoxFor(r => r.Agreements[i].SignDate, new {@class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Agreements[i].SignDate).FormatEx(string.Empty, string.Empty)}).DisableIf(!Model.IsEditable)
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </td>
+                <td style="width: 400px">
+                    <label class="pull-left control-label text-right">с</label>
+                    <div class="col-md-5">
+                        <div class='input-group date datepicker-anytime'>
+                            @Html.TextBoxFor(r => r.Agreements[i].DateFrom, new {@class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Agreements[i].DateFrom).FormatEx(string.Empty, string.Empty)}).DisableIf(!Model.IsEditable)
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                    <label class="pull-left control-label text-right">по</label>
+                    <div class="col-md-5">
+                        <div class='input-group date datepicker-anytime'>
+                            @Html.TextBoxFor(r => r.Agreements[i].DateTo, new {@class = "form-control input-mask-date-anytime datepicker-anytime", autocomplete = "off", @Value = Model.NullSafe(m => m.Agreements[i].DateTo).FormatEx(string.Empty, string.Empty)}).DisableIf(!Model.IsEditable)
+                            <span class="input-group-addon">
+                                <span class="glyphicon glyphicon-calendar"></span>
+                            </span>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    @Html.TextBoxFor(m => m.Agreements[i].Description, new {@class = "form-control"}).DisableIf(!Model.IsEditable)
+                </td>
+                <td style="width: 40px">
+                    @if (Model.IsEditable)
+                    {
+                        <a class="remove-agreement-btn" type="button" title="Удалить" href="javascript:void(0)">
+                            <i class="glyphicon glyphicon-remove"></i>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    </fieldset>
+    </div>
+    @if (Model.State.State.Id == StateMachineStateEnum.Contract.Active)
+    {
+        if (Model.Data.OnRest)
+        {
+            <div role="tabpanel" class="tab-pane" id="places">
+                @Html.Partial("ToursSearchResult", Model.ToursFilterModel, new ViewDataDictionary())
+            </div>
+        }
 
-					if (Model.Data.OnTransport)
-					{
-						<div role="tabpanel" class="tab-pane" id="transport">
-							@Html.Partial("DirectoryFlightSearchResult", Model.DirectoryFlightsFilterModel, new ViewDataDictionary())
-						</div>
-					}
-				}
-			</div>
-		}
+        if (Model.Data.OnTransport)
+        {
+            <div role="tabpanel" class="tab-pane" id="transport">
+                @Html.Partial("DirectoryFlightSearchResult", Model.DirectoryFlightsFilterModel, new ViewDataDictionary())
+            </div>
+        }
+    }
+    </div>
+}
 
-	</div>
+</div>
 </div>
 
 @section styles{
-	@Styles.Render("~/Content/css/select2.css")
-	@Styles.Render("~/Content/css/select2-bootstrap.css")
-	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
-	<link href="~/Content/Vocabulary/VocabularyEdit.css" rel="stylesheet" />
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    <link href="~/Content/Vocabulary/VocabularyEdit.css" rel="stylesheet"/>
 }
 
 @section Scripts {
-	@Scripts.Render("~/Scripts/jquery.validate.min.js")
-	@Scripts.Render("~/Scripts/select2.min.js")
-	@Scripts.Render("~/Scripts/select2_locale_ru.js")
-	<script type="text/javascript" src="~/Scripts/moment.js"></script>
-	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
-	<script type="text/javascript">
+    @Scripts.Render("~/Scripts/jquery.validate.min.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
 		moment.locale('ru');
 		$(function () {
 			$('[data-toggle="tooltip"]').tooltip();
 		});
 	</script>
-	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
-	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
-	<script type="text/template" id="contractTemplate">
+    <script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/template" id="contractTemplate">
 		<tr>
 			<td style="width: 100px">
 				<input class="form-control" data-val="true" data-val-maxlength="&quot;Номер&quot; не может быть больше 1000 символов" data-val-maxlength-max="1000" id="Agreements_0__SignNumber" maxlength="100" name="Agreements[0].SignNumber" type="text" autocomplete="off">
@@ -369,9 +371,9 @@
 			</td>
 		</tr>
 	</script>
-	@Scripts.Render("~/Scripts/doT.js")
-	@Scripts.Render("~/Scripts/Vocabulary/ContractEdit.js")
-	@Scripts.Render("~/Scripts/StateScript.js")
-	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
-	@Html.Partial("Assets/HistoryLinkTemplate")
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/Vocabulary/ContractEdit.js")
+    @Scripts.Render("~/Scripts/StateScript.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
 }

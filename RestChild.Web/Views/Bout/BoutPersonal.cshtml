@@ -1,8 +1,8 @@
 ﻿@using RestChild.Comon
 @using RestChild.Comon.Enumeration
 @using RestChild.Domain
-@using RestChild.Web.App_Code
 @using RestChild.Web.Controllers
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.BoutModel
 @{
 	Layout = null;
@@ -49,7 +49,7 @@
 						@if (canChangeNeedTicket)
 						{
 							<td class="text-center">@(forwardTransport != null ? Html.CheckBox("AdministratorNeedTicketForward" + administratorNum, !forwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = forwardTransport.Id }).DisableIf(()=> disableNeedTicket) : new MvcHtmlString("Нет информации по транспорту"))</td>
-							<td class="text-center">@(backwardTransport != null ? Html.CheckBox("AdministratorNeedTicketBackward" + administratorNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(() => disableAll) : new MvcHtmlString("Нет информации по транспорту"))</td>
+							<td class="text-center">@(backwardTransport != null ? Html.CheckBox("AdministratorNeedTicketBackward" + administratorNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(disableAll) : new MvcHtmlString("Нет информации по транспорту"))</td>
 						}
 						else
 						{
@@ -116,8 +116,8 @@
 						<td class="camper-name">@counselor.LastName @counselor.FirstName @counselor.MiddleName</td>
 						@if (canChangeNeedTicket)
 						{
-							<td class="text-center">@(forwardTransport != null ? Html.CheckBox("SeniorCounselorNeedTicketForward" + seniorCounselorNum, !forwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = forwardTransport.Id }).DisableIf(() => disableNeedTicket) : new MvcHtmlString("Нет информации по транспорту"))</td>
-							<td class="text-center">@(backwardTransport != null ? Html.CheckBox("SeniorCounselorNeedTicketBackward" + seniorCounselorNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(() => disableAll) : new MvcHtmlString("Нет информации по транспорту"))</td>
+							<td class="text-center">@(forwardTransport != null ? Html.CheckBox("SeniorCounselorNeedTicketForward" + seniorCounselorNum, !forwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = forwardTransport.Id }).DisableIf(disableNeedTicket) : new MvcHtmlString("Нет информации по транспорту"))</td>
+							<td class="text-center">@(backwardTransport != null ? Html.CheckBox("SeniorCounselorNeedTicketBackward" + seniorCounselorNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(disableAll) : new MvcHtmlString("Нет информации по транспорту"))</td>
 
 						}
 						else
@@ -177,8 +177,8 @@
 						<td class="camper-name">@counselor.LastName @counselor.FirstName @counselor.MiddleName</td>
 						@if (canChangeNeedTicket)
 						{
-							<td class="text-center">@(forwardTransport != null ? Html.CheckBox("SwingCounselorNeedTicketForward" + swingCounselorNum, !forwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = forwardTransport.Id }).DisableIf(() => disableNeedTicket) : new MvcHtmlString("Нет информации по транспорту"))</td>
-							<td class="text-center">@(backwardTransport != null ? Html.CheckBox("SwingCounselorNeedTicketBackward" + swingCounselorNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(() => disableAll) : new MvcHtmlString("Нет информации по транспорту"))</td>
+							<td class="text-center">@(forwardTransport != null ? Html.CheckBox("SwingCounselorNeedTicketForward" + swingCounselorNum, !forwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = forwardTransport.Id }).DisableIf(disableNeedTicket) : new MvcHtmlString("Нет информации по транспорту"))</td>
+							<td class="text-center">@(backwardTransport != null ? Html.CheckBox("SwingCounselorNeedTicketBackward" + swingCounselorNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(disableAll) : new MvcHtmlString("Нет информации по транспорту"))</td>
 
 						}
 						else
@@ -236,8 +236,8 @@
 					<tr>
 						<td class="camper-name">@applicant.LastName @applicant.FirstName @applicant.MiddleName</td>@if (canChangeNeedTicket)
 						{
-							<td class="text-center">@(forwardTransport != null ? Html.CheckBox("ApplicantNeedTicketForward" + applicantNum, !forwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = forwardTransport.Id }).DisableIf(() => disableNeedTicket) : new MvcHtmlString("Нет информации по транспорту"))</td>
-							<td class="text-center">@(backwardTransport != null ? Html.CheckBox("ApplicantNeedTicketBackward" + applicantNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(() => disableAll) : new MvcHtmlString("Нет информации по транспорту"))</td>
+							<td class="text-center">@(forwardTransport != null ? Html.CheckBox("ApplicantNeedTicketForward" + applicantNum, !forwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = forwardTransport.Id }).DisableIf(disableNeedTicket) : new MvcHtmlString("Нет информации по транспорту"))</td>
+							<td class="text-center">@(backwardTransport != null ? Html.CheckBox("ApplicantNeedTicketBackward" + applicantNum, !backwardTransport.NeedTicket, new { @class = "not-need-ticket", data_id = backwardTransport.Id }).DisableIf(disableAll) : new MvcHtmlString("Нет информации по транспорту"))</td>
 
 						}
 						else

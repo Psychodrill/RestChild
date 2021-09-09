@@ -135,6 +135,56 @@ namespace RestChild.Domain
       [DataMember(Name = "tradeUnionOrganizationOther", EmitDefaultValue = false)]
       public virtual string TradeUnionOrganizationOther { get; set; }
       
+      /// <summary>
+      /// Расчетная сумма кэшбека
+      /// </summary>
+      [Display(Description = "Расчетная сумма кэшбека")]
+      [DataMember(Name = "cashbackEstimatedAmount", EmitDefaultValue = false)]
+      public virtual decimal? CashbackEstimatedAmount { get; set; }
+      
+      /// <summary>
+      /// База для расчета суммы кэшбека
+      /// </summary>
+      [Display(Description = "База для расчета суммы кэшбека")]
+      [DataMember(Name = "cashbackBaseEstimatedAmount", EmitDefaultValue = false)]
+      public virtual decimal? CashbackBaseEstimatedAmount { get; set; }
+      
+      /// <summary>
+      /// Дата заключения договора
+      /// </summary>
+      [Display(Description = "Дата заключения договора")]
+      [DataMember(Name = "contractDate", EmitDefaultValue = false)]
+      public virtual DateTime? ContractDate { get; set; }
+      
+      /// <summary>
+      /// Номер договора
+      /// </summary>
+      [Display(Description = "Номер договора")]
+      [MaxLength(1000, ErrorMessage = "\"Номер договора\" не может быть больше 1000 символов")]
+      [DataMember(Name = "contractNumber", EmitDefaultValue = false)]
+      public virtual string ContractNumber { get; set; }
+      
+      /// <summary>
+      /// Фактическая дата заезда
+      /// </summary>
+      [Display(Description = "Фактическая дата заезда")]
+      [DataMember(Name = "factDateIn", EmitDefaultValue = false)]
+      public virtual DateTime? FactDateIn { get; set; }
+      
+      /// <summary>
+      /// Фактическая дата выезда
+      /// </summary>
+      [Display(Description = "Фактическая дата выезда")]
+      [DataMember(Name = "factDateOut", EmitDefaultValue = false)]
+      public virtual DateTime? FactDateOut { get; set; }
+      
+      /// <summary>
+      /// Кэшбек запрашивался
+      /// </summary>
+      [Display(Description = "Кэшбек запрашивался")]
+      [DataMember(Name = "cashbackRequested", EmitDefaultValue = false)]
+      public virtual bool? CashbackRequested { get; set; }
+      
       
       /// <summary>
       /// Список отдыхающих
@@ -265,6 +315,23 @@ namespace RestChild.Domain
       [Display(Description = "Профсоюз")]
       [DataMember(Name = "tradeUnionOrganization", EmitDefaultValue = false)]
       public virtual Organization TradeUnionOrganization { get; set; }
+      
+      /// <summary>
+      /// Признак льготы
+      /// </summary>
+      [ForeignKey("PrivilegePart")]
+      [DataMember(Name = "privilegePartId")]
+      [Display(Description = "Признак льготы")]
+      public virtual long? PrivilegePartId { get; set; }
+      
+      
+      /// <summary>
+      /// Признак льготы
+      /// </summary>
+      [InverseProperty("Campers")]
+      [Display(Description = "Признак льготы")]
+      [DataMember(Name = "privilegePart", EmitDefaultValue = false)]
+      public virtual TradeUnionCamperPrivilegePart PrivilegePart { get; set; }
 
       /// <summary>
       /// Последнее сохранение

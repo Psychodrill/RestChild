@@ -1,5 +1,6 @@
 $(function () {
     $('select').select2({ dropdownAutoWidth: true });
+    $('.datetimepicker').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY', maxDate: new Date() });
     $('.refused').on('click', function (e) {
         var $t = $(e.target).closest('button');
         BootstrapDialog.show({
@@ -89,9 +90,88 @@ $(function () {
                     ]
                 });
             },
-            error: function () {
-                ShowAlert('Ошибка формирования кода для выдачи подарка', "alert-danger", "glyphicon-remove", true);
+            error: function (xhr, ajaxOptions, thrownError) {
+                if (xhr.status == 405) {
+                    ShowAlert('Ошибка. Формат номера телефона получателя указан не верно', "alert-danger", "glyphicon-remove", true);
+                }
+                else {
+                    ShowAlert('Ошибка формирования кода для выдачи подарка', "alert-danger", "glyphicon-remove", true);
+                }
             }
+        });
+    });
+    $('.Bouts').select2({
+        minimumInputLength: 1,
+        allowClear: true,
+        language: "ru",
+        initSelection: function (element, callback) {
+            if (element.val() == '')
+                callback({ id: '', text: '-- Не выбрано --' });
+            else
+                callback({ id: element.val(), text: GetBoutName() });
+        },
+        ajax: {
+            url: rootPath + '/api/WebMobileVocabulary/GetBouts',
+            dataType: 'json',
+            quietMillis: 250,
+            data: function (term, page) {
+                return {
+                    query: term,
+                };
+            },
+            results: function (data, page) {
+                var res = [];
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].id) {
+                        res.push({ id: data[i].id, text: data[i].name });
+                    }
+                }
+                return {
+                    results: res
+                };
+            },
+            cache: true
+        }
+    });
+    function GetBoutName() {
+        return $('#BoutName').val();
+    }
+    $(".massCancel").on("click", function () {
+        BootstrapDialog.show({
+            title: "Подтвердить действие",
+            message: "Вы действительно хотите сбросить все подарки?",
+            buttons: [
+                {
+                    label: "Сбросить",
+                    cssClass: "btn-danger",
+                    action: function (dialogItself) {
+                        $.ajax({
+                            type: "get",
+                            url: rootPath + "/GiftReserved/GiftMassCancel",
+                        })
+                            .done(function (result) {
+                            if (result.HasError) {
+                                BootstrapDialog.show({
+                                    title: "Ошибка",
+                                    message: result.ErrorMessage
+                                });
+                            }
+                        })
+                            .fail(function () {
+                            BootstrapDialog.show({
+                                title: "",
+                                message: "Ошибка"
+                            });
+                        });
+                        dialogItself.close();
+                    }
+                }, {
+                    label: "Отмена",
+                    action: function (dialogItself) {
+                        dialogItself.close();
+                    }
+                }
+            ]
         });
     });
 });

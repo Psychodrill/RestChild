@@ -6,6 +6,8 @@ using OfficeOpenXml.Style;
 using RestChild.Comon.Enumeration;
 using RestChild.Comon.ToExcel;
 using RestChild.Extensions.Filter;
+using RestChild.Mobile.DAL.Enum;
+using RestChild.Mobile.DAL.RepositoryExtensions;
 using RestChild.Mobile.Domain;
 using RestChild.Web.Models.GiftReserved;
 using RestChild.Web.Properties;
@@ -24,6 +26,8 @@ namespace RestChild.Web.Controllers
             {
                 return RedirectToAvailableAction();
             }
+
+            OutOfDateGiftMassCancel();
 
             model = model ?? new ListModel();
 
@@ -70,11 +74,27 @@ namespace RestChild.Web.Controllers
                                 t.Owner?.DateOfBirth,
                     Width = 19
                 },
+                new ExcelColumn<GiftReserved>
+                {
+                    Title = "Лагерь/смена",
+                    Func = t => t.Owner?.Campers?.OrderByDescending(c => c.Id).FirstOrDefault()?.Bout?.Name ?? "Не в лагере",
+                    Width = 60
+                },
                 new ExcelColumn<GiftReserved> {Title = "Название подарка", Func = t => t.Gift?.Gift?.Name, Width = 60},
-                new ExcelColumn<GiftReserved> {Title = "Описание подарка", Func = t => t.Gift?.Gift?.Description, Width = 80},
+                new ExcelColumn<GiftReserved>
+                    {Title = "Описание подарка", Func = t => t.Gift?.Gift?.Description, Width = 80},
                 new ExcelColumn<GiftReserved> {Title = "Цена", Func = t => t.Gift?.Gift?.Price, Width = 25},
                 new ExcelColumn<GiftReserved> {Title = "Параметр", Func = t => t.Gift?.Name, Width = 33},
                 new ExcelColumn<GiftReserved> {Title = "Кол-во", Func = t => t.Count, Width = 10},
+                new ExcelColumn<GiftReserved>
+                {
+                    Title = "Дата бронирования",
+                    Func = t => ((t.StateId == StateEnum.GiftReserved.Reserved ||
+                                  t.StateId == StateEnum.GiftReserved.Issued) && t.DateReserved != null)
+                        ? t.DateReserved
+                        : null,
+                    Width = 25
+                },
                 new ExcelColumn<GiftReserved> {Title = "Статус", Func = t => t.State?.Name, Width = 30}
             };
 
@@ -99,6 +119,7 @@ namespace RestChild.Web.Controllers
                 {
                     price += $" от {model?.PriceFrom}";
                 }
+
                 if (model?.PriceTo != null)
                 {
                     price += $" до {model?.PriceTo}";
@@ -110,7 +131,8 @@ namespace RestChild.Web.Controllers
                         new Tuple<string, string>("Цена подарка:", price),
                         new Tuple<string, string>("Название подарка:", model?.Name),
                         new Tuple<string, string>("Параметр подарка:", model?.Parameter),
-                        new Tuple<string, string>("Статус:", model.Statuses?.Where(s => s.Id == model?.StatusId).Select(x => x.Name).FirstOrDefault()),
+                        new Tuple<string, string>("Статус:",
+                            model.Statuses?.Where(s => s.Id == model?.StatusId).Select(x => x.Name).FirstOrDefault()),
                     }
                     .Where(i => !String.IsNullOrWhiteSpace(i.Item2))
                     .ToList();
@@ -153,6 +175,17 @@ namespace RestChild.Web.Controllers
                 query = query.Where(q => q.Price <= model.PriceTo);
             }
 
+            if (model.ReservedFrom.HasValue)
+            {
+                query = query.Where(q => q.DateReserved >= model.ReservedFrom.Value);
+            }
+
+            if (model.ReservedTo.HasValue)
+            {
+                var d1 = model.ReservedTo.Value.Date.AddDays(1);
+                query = query.Where(q => q.DateReserved < d1);
+            }
+
             if (!string.IsNullOrWhiteSpace(model.Child))
             {
                 var t = model.Child.ToLower().Trim();
@@ -171,7 +204,78 @@ namespace RestChild.Web.Controllers
                 query = query.Where(q => q.Gift.Name.Contains(t));
             }
 
+            if (model.BoutId != null && model.BoutId > 0)
+            {
+                query = query.Where(q => q.Owner.Campers.Any(c => c.BoutId == model.BoutId));
+                model.BName = MobileUw.GetSet<Bout>().GetById(model.BoutId.Value).Name;
+            }
+
             return query;
+        }
+
+        /// <summary>
+        ///     Сброс всех подарков
+        /// </summary>
+        public ActionResult GiftMassCancel()
+        {
+            if (!Security.HasRight(AccessRightEnum.GiftReserved.MassCancel))
+            {
+                return RedirectToAvailableAction();
+            }
+
+            var gr = MobileUw.GetSet<GiftReserved>().Where(b =>
+                b.StateId == StateEnum.GiftReserved.Reserved).ToList();
+
+            gr.ForEach(ss =>
+            {
+                var description = $"Отмена выдачи подарка: {ss?.Gift?.Gift?.Name} {ss?.Gift?.Name} для ребенка: {ss?.Owner?.Name}";
+                ss.StateId = StateEnum.GiftReserved.Refusal;
+
+                var link = MobileUw.WriteHistory(ss.Link, "Массовая отмена выдачи подарков", description,
+                    Security.GetCurrentAccountId());
+                if (ss.Link == null)
+                {
+                    ss.LinkId = link.Id;
+                }
+
+            });
+            MobileUw.SaveChanges();
+
+
+            return RedirectToAction(nameof(List));
+        }
+
+        /// <summary>
+        ///     Сброс всех зарезервированных подарков 20 декабря в 0:00
+        /// </summary>
+        public void OutOfDateGiftMassCancel()
+        {
+            var today = DateTime.Now;
+
+            var dayX = new DateTime(today.Year, 12, 20);
+
+            if (today <= dayX)
+            {
+                dayX = dayX.AddYears(-1);
+            }
+
+            var gr = MobileUw.GetSet<GiftReserved>().Where(b =>
+                b.StateId == StateEnum.GiftReserved.Reserved && b.DateReserved <= dayX).ToList();
+
+            gr.ForEach(ss =>
+            {
+                ss.StateId = StateEnum.GiftReserved.Refusal;
+
+                var description = $"Отмена выдачи подарка: {ss?.Gift?.Gift?.Name} {ss?.Gift?.Name} для ребенка: {ss?.Owner?.Name}";
+                var link = MobileUw.WriteHistory(ss.Link, "Автоматическая отмена выдачи подарков", description,
+                    Security.GetCurrentAccountId());
+                if (ss.Link == null)
+                {
+                    ss.LinkId = link.Id;
+                }
+
+            });
+            MobileUw.SaveChanges();
         }
     }
 }

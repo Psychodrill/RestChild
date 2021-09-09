@@ -128,5 +128,10 @@ namespace RestChild.Web.Logic
         {
             EGISO
         };
+
+        public HashSet<string> NextYearsIncludedFilter => new HashSet<string>
+        {
+            RoomsFund
+        };
     }
 }

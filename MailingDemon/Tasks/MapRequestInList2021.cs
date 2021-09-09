@@ -51,7 +51,7 @@ namespace MailingDemon.Tasks
                             FirstRequestCompanyExtension.LiveRequestStatuses.Contains(c.Request.StatusId)
                             && !c.Request.IsDeleted
                             && c.Request.IsLast
-                            && c.Request.TypeOfRestId != (long) TypeOfRestEnum.ChildRestFederalCamps);
+                            && c.Request.TypeOfRestId != (long) TypeOfRestEnum.ChildRestFederalCamps).AsQueryable();
 
             var yearOfRest = child.YearOfCompany > 0 ? child.YearOfCompany : child.Request?.YearOfRest?.Year;
             childrenQueue =
@@ -63,17 +63,17 @@ namespace MailingDemon.Tasks
                 childrenQueue = childrenQueue.Where(c => (c.EntityId ?? c.Id) != entityId);
             }
 
-            var snils = child.Snils.Replace(" ", "").Replace("-", "");
+            var snils = child.Snils.Replace(" ", string.Empty).Replace("-", string.Empty);
 
             var items = new List<Child>();
 
             if (!string.IsNullOrWhiteSpace(snils))
             {
                 items.AddRange(childrenQueue.Where(c =>
-                    !string.IsNullOrEmpty(c.Snils) && c.Snils.Replace(" ", "").Replace("-", "") == snils).ToList());
+                    !string.IsNullOrEmpty(c.Snils) && c.Snils.Replace(" ", string.Empty).Replace("-", string.Empty) == snils).ToList());
 
                 childrenQueue = childrenQueue.Where(c =>
-                    string.IsNullOrEmpty(c.Snils) || c.Snils.Replace(" ", "").Replace("-", "") != snils);
+                    string.IsNullOrEmpty(c.Snils) || c.Snils.Replace(" ", string.Empty).Replace("-", string.Empty) != snils);
             }
 
             var lastName = PrepareString(child.LastName);
@@ -89,6 +89,7 @@ namespace MailingDemon.Tasks
                 childrenQueue.Where(c =>
                     c.FirstName.ToLower().Replace("ё", "е").Replace("й", "и").Replace(" ", "").Replace("-", "") ==
                     firstName);
+
             if (!string.IsNullOrWhiteSpace(middleName))
             {
                 childrenQueue =

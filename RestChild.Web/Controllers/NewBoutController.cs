@@ -146,8 +146,8 @@ namespace RestChild.Web.Controllers
             model.Camp = MobileUw.GetById<Camp>(model.CampId);
 
             var query = MobileUw.GetSet<Bout>().Where(b =>
-                b.StateId != StateMachineStateEnum.Deleted && b.GroupedTimeId.HasValue && b.DateIncome != default &&
-                b.DateOutcome != default);
+                b.StateId != StateMachineStateEnum.Deleted && b.DateIncome != default &&
+                b.DateOutcome != default && b.Camp.HotelTypeId == (long)Comon.Enumeration.HotelTypeEnum.Camp);
 
             query = query.Where(q => q.Campers.Any() || q.Personals.Any());
 

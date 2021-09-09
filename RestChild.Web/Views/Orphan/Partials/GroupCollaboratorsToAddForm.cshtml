@@ -1,4 +1,5 @@
 ﻿@using RestChild.Comon
+@using PagedList.Mvc
 @model RestChild.Web.Models.Orphans.OrphanageCollaboratorsFilterModel
 
 
@@ -36,7 +37,7 @@
             </tr>
         </thead>
         <tbody>
-            @{ var rowNumber = 1; }
+            @{ var rowNumber = 1 + ((Model.PageNumber - 1) * Model.PageSize); }
             @foreach (var c in Model.Collaborators.ToList())
             {
                 <tr>
@@ -53,6 +54,21 @@
             }
         </tbody>
     </table>
+
+
+    <div>
+        @Html.PagedListPager(Model.Collaborators, page =>
+        {
+            var m = Model;
+            m.PageNumber = page;
+            return Url.Action("OrphanagePupilGroupListCollaboratorsChooseSearch", "Orphan", m);
+        }, PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new AjaxOptions
+        {
+            HttpMethod = "POST",
+            UpdateTargetId = "CollaboratorsToAdd",
+            InsertionMode = InsertionMode.Replace
+        }))
+    </div>
 }
 else
 {

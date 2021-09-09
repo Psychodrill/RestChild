@@ -40,7 +40,7 @@ namespace RestChild.Comon.Enumeration
         public const string MosgorturScheduleBookingCancel = "4FF5F092-DB8A-4C78-B247-E31D31B93C20";
 
         /// <summary>
-        ///     Реестр записи на приём (Создание)
+        ///     Реестр записи на приём (создание)
         /// </summary>
         public const string MosgorturScheduleBookingCreate = "4D6BFBC1-16F2-42DB-A02E-54991AA390B3";
 
@@ -105,9 +105,14 @@ namespace RestChild.Comon.Enumeration
         public const string RequestWithoutBookingDate = "39320CB5-1D19-43A1-A436-DA218D982604";
 
         /// <summary>
-        ///     работа с межвед запросами.
+        ///     Работа с межведомственным запросом. Управление
         /// </summary>
         public const string InteragencyRequestManage = "03665FC3-6AFB-4E98-AA91-2ADC2211D6D4";
+
+        /// <summary>
+        ///     Работа с межведомственным запросом. Удаление
+        /// </summary>
+        public const string InteragencyRequestDelete = "AF330F0A-4EA8-41D3-9E50-B06286F155AF";
 
         /// <summary>
         ///     управление справочниками.
@@ -184,6 +189,10 @@ namespace RestChild.Comon.Enumeration
         /// </summary>
         public const string RequestTo10753 = "B1056F0D-F0F7-43D9-81AE-3EB21826C637";
 
+        /// <summary>
+        ///     Заявление. Замена сопровождающего
+        /// </summary>
+        public const string ReplacingAccompanying = "54FFFBEA-5DCC-474A-8E6B-8250B92B2620";
 
         /// <summary>
         ///     платежи
@@ -290,19 +299,39 @@ namespace RestChild.Comon.Enumeration
         }
 
         /// <summary>
-        ///     работа с организациями
+        ///     Работа с организациями
         /// </summary>
         public static class Organization
         {
             /// <summary>
-            ///     редактирование
+            ///     Просмотр
             /// </summary>
             public const string View = "836e67f7-423e-4a51-968b-44092837a843";
 
             /// <summary>
-            ///     редактирование
+            ///     Редактирование
             /// </summary>
             public const string Edit = "aa737696-fab9-4d02-a42a-fb465e425886";
+
+            /// <summary>
+            ///     Просмотр ГБУ
+            /// </summary>
+            public const string GBUView = "9F8E694F-33F3-4AEE-8913-99733265107A";
+
+            /// <summary>
+            ///     Редактирование ГБУ
+            /// </summary>
+            public const string GBUEdit = "DAA1398F-34ED-4071-BD12-6C9D8450649C";
+
+            /// <summary>
+            ///     Просмотр лагеря
+            /// </summary>
+            public const string CampView = "B8DECBFF-B41E-4CDA-AF5F-1FC7E174FD7E";
+
+            /// <summary>
+            ///     Редактирование лагеря
+            /// </summary>
+            public const string CampEdit = "6603F442-17D2-4F2D-82BD-AF27EE94E092";
         }
 
         /// <summary>
@@ -435,7 +464,7 @@ namespace RestChild.Comon.Enumeration
         }
 
         /// <summary>
-        ///     Транспорт
+        ///     транспорт
         /// </summary>
         public static class Transport
         {
@@ -589,7 +618,7 @@ namespace RestChild.Comon.Enumeration
         }
 
         /// <summary>
-        ///     комерческие путевки
+        ///     коммерческие путевки
         /// </summary>
         public static class CommercialTour
         {
@@ -677,6 +706,8 @@ namespace RestChild.Comon.Enumeration
 
             [Display(Name = "Востребованность номеров в совместном отдыхе")]
             public const string RestWithChildTypeOfRooms = "38B38DC8-B0DB-4A24-8758-A90A7D36BD68";
+
+            [Display(Name = "Номерной фонд")] public const string RoomsFund = "B09DFB1D-3CA9-43C1-9616-47883F9CD652";
 
             [Display(Name = "ЕГИССО")] public const string EGISO = "9F94888C-43F9-4422-A7A2-E013EE35849A";
         }
@@ -785,7 +816,7 @@ namespace RestChild.Comon.Enumeration
         }
 
         /// <summary>
-        ///     Иинформационная Безопасность (ИБ)
+        ///     Информационная Безопасность (ИБ)
         /// </summary>
         public static class Security
         {
@@ -846,12 +877,12 @@ namespace RestChild.Comon.Enumeration
         public static class Orphans
         {
             /// <summary>
-            ///     Основопологающее право на блок сирот
+            ///     Основополагающее право на блок сирот
             /// </summary>
             public const string Main = "33483762-F31A-49F4-8C3D-8DA44AC138EE";
 
             /// <summary>
-            ///     Работа с групами (потребностями) приютов
+            ///     Работа с группами (потребностями) приютов
             /// </summary>
             public const string PupilGroup = "E678D361-CF4D-4734-9C61-CEB3871E3631";
 
@@ -886,6 +917,11 @@ namespace RestChild.Comon.Enumeration
             public const string PupilGroupDelete = "C7A263B0-6EE0-49BF-9824-70B18CF7248E";
 
             /// <summary>
+            ///     Редактировать группу (потребность) приюта (из статуса утверждено)
+            /// </summary>
+            public const string PupilGroupEditFromApprove = "C8C0CC1A-7F61-4FDA-87AB-7DFF969356E0";
+
+            /// <summary>
             ///     Работа со списками (группы отправки) приюта
             /// </summary>
             public const string PupilGroupList = "4E5B3F3C-6C1E-43DA-B3DE-3CDA1E9FB97E";
@@ -909,8 +945,22 @@ namespace RestChild.Comon.Enumeration
             ///     Удалить список (группу отправки) приюта
             /// </summary>
             public const string PupilGroupListDelete = "8C060CA7-87EF-45F1-ACF7-1D8FD6D6794C";
-        }
 
+            /// <summary>
+            ///     Удаление/восстановление воспитанников учреждения социальной защиты
+            /// </summary>
+            public const string MainRemoveRestorePupil = "9569BE5B-14BA-4F52-B305-D73C08418CE4";
+
+            /// <summary>
+            ///     Удаление/восстановление сотрудников учреждения социальной защиты
+            /// </summary>
+            public const string MainRemoveRestoreCollaborator = "A3B4E5B7-ACBA-442F-AB80-945355179447";
+
+            /// <summary>
+            ///     Внесение сведений о нарушениях
+            /// </summary>
+            public const string MainViolationsInformationEntering = "90BBC817-B792-4368-A564-E45B1C35BA8C";
+        }
 
         /// <summary>
         ///     Заезды (мобильное приложение)
@@ -931,9 +981,8 @@ namespace RestChild.Comon.Enumeration
             /// <summary>
             ///     просмотр заданий
             /// </summary>
-            public const string View = "17A54463-B26E-4328-8760-39AB42199344";
+            public const string View = "EC1C8501-1464-4B27-8E1D-2C696FEE0119";
         }
-
 
         /// <summary>
         ///     Подарки
@@ -943,9 +992,10 @@ namespace RestChild.Comon.Enumeration
             /// <summary>
             ///     просмотр
             /// </summary>
-            public const string View = "17A54463-B26E-4328-8760-39AB42199344";
-        }
+            public const string View = "F3920D6A-D736-41D1-BD30-874E1424B2F7";
 
+
+        }
 
         /// <summary>
         ///     Зарезервированные подарки
@@ -955,7 +1005,12 @@ namespace RestChild.Comon.Enumeration
             /// <summary>
             ///     просмотр
             /// </summary>
-            public const string View = "17A54463-B26E-4328-8760-39AB42199344";
+            public const string View = "947A17A6-D9ED-4F3F-B707-7E38B066A36E";
+
+            /// <summary>
+            ///     сброс подарков
+            /// </summary>
+            public const string MassCancel = "E517A097-60E6-4AA8-A0CF-F552FF585296";
         }
 
         #region Перевод в статусы
@@ -982,6 +1037,11 @@ namespace RestChild.Comon.Enumeration
             ///     В отказ в регистрации (по сопровождению)
             /// </summary>
             public const string ToRegistrationDeclineAttendant = "EBEAD29E-5136-43CE-B7AD-44E3F7F9A49E";
+
+            /// <summary>
+            ///     В отказ в регистрации (по дублю ребёнка с другого SSOId)
+            /// </summary>
+            public const string ToRegistrationDeclineChildDiffSSOId = "041E4FB1-7C75-4100-841D-6D17E7A98DC3";
 
             #endregion
 
@@ -1622,5 +1682,31 @@ namespace RestChild.Comon.Enumeration
         }
 
         #endregion
+
+        /// <summary>
+        ///     Кэшбек
+        /// </summary>
+        public static class TradeUnionCashback
+        {
+            /// <summary>
+            ///     просмотр
+            /// </summary>
+            public const string ListView = "D75717EA-5F07-4933-A25F-7D6982DB1D80";
+
+            /// <summary>
+            ///     редактирование
+            /// </summary>
+            public const string ListEdit = "2C7B7026-DC90-45F0-913C-04250D10E196";
+
+            /// <summary>
+            ///     Реестр претендентов на кэшбэк. Просмотр
+            /// </summary>
+            public const string RegistryView = "0408C20A-3FD1-463D-B71C-23C94ACC18FC";
+
+            /// <summary>
+            ///     Реестр претендентов на кэшбэк. Экспорт CSV
+            /// </summary>
+            public const string RegistryExportCSV = "21F30F3C-CBD3-46B0-A73F-48EE6C6B15EB";
+        }
     }
 }

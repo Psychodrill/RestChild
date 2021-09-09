@@ -31,7 +31,7 @@ namespace RestChild.Web.Common
             else if (oldRequest == null)
             {
                 diff.Action = "Добавление";
-                diff.Append("Кем подается заявление", string.Empty, StatusApplicantList.Data.FirstOrDefault(x => x.Value == newRequest.StatusApplicant).Text.FormatEx(val: string.Empty));
+                diff.Append("Заявление подает", string.Empty, StatusApplicantList.Data.FirstOrDefault(x => x.Value == newRequest.StatusApplicant).Text.FormatEx(val: string.Empty));
                 diff.Append("Номер заявления", string.Empty, newRequest.RequestNumber.FormatEx(val: string.Empty));
                 diff.Append("Количество основных мест", string.Empty, newRequest.MainPlaces.FormatEx(val: string.Empty));
                 diff.Append("Количество дополнительных мест", string.Empty, newRequest.AdditionalPlaces.FormatEx(val: string.Empty));
@@ -54,11 +54,27 @@ namespace RestChild.Web.Common
                 diff.Append("Кор. счет", string.Empty, newRequest.BankCorr.FormatEx(val: string.Empty));
                 diff.Append("Номер карты", string.Empty, newRequest.BankCardNumber.FormatEx(val: string.Empty));
                 diff.Append("Комментарий скрытый", string.Empty, newRequest.InternalCommentary.FormatEx(val: string.Empty));
+                if (newRequest.PriorityTypeOfTransportInRequestId != null)
+                {
+                    diff.Append("Приоритетный тип транспорта", string.Empty, newRequest.PriorityTypeOfTransportInRequest?.Name.FormatEx(val: string.Empty));
+                }
+                if (newRequest.AdditionalTypeOfTransportInRequestId != null)
+                {
+                    diff.Append("Дополнительный тип транспорта", string.Empty, newRequest.AdditionalTypeOfTransportInRequest?.Name.FormatEx(val: string.Empty));
+                }
+                if (newRequest.TypeOfCampId != null)
+                {
+                    diff.Append("Приоритетный тип лагеря", string.Empty, newRequest.TypeOfCamp?.Name.FormatEx(val: string.Empty));
+                }
+                if (newRequest.TypeOfCampAddonId != null)
+                {
+                    diff.Append("Дополнительный тип лагеря", string.Empty, newRequest.TypeOfCampAddon?.Name.FormatEx(val: string.Empty));
+                }
             }
             else if (newRequest == null)
             {
                 diff.Action = "Удаление";
-                diff.Append("Кем подается заявление", StatusApplicantList.Data.FirstOrDefault(x => x.Value == oldRequest.StatusApplicant).Text.FormatEx(val: string.Empty), string.Empty);
+                diff.Append("Заявление подает", StatusApplicantList.Data.FirstOrDefault(x => x.Value == oldRequest.StatusApplicant).Text.FormatEx(val: string.Empty), string.Empty);
                 diff.Append("Номер заявления", oldRequest.RequestNumber.FormatEx(val: string.Empty), string.Empty);
                 diff.Append("Количество основных мест", oldRequest.MainPlaces.FormatEx(val: string.Empty), string.Empty);
                 diff.Append("Количество дополнительных мест", oldRequest.AdditionalPlaces.FormatEx(val: string.Empty), string.Empty);
@@ -81,13 +97,29 @@ namespace RestChild.Web.Common
                 diff.Append("Кор. счет", oldRequest.BankCorr.FormatEx(val: string.Empty), string.Empty);
                 diff.Append("Номер карты", oldRequest.BankCardNumber.FormatEx(val: string.Empty), string.Empty);
                 diff.Append("Комментарий скрытый", oldRequest.InternalCommentary.FormatEx(val: string.Empty), string.Empty);
+                if (oldRequest.PriorityTypeOfTransportInRequestId != null)
+                {
+                    diff.Append("Приоритетный тип транспорта", string.Empty, oldRequest.PriorityTypeOfTransportInRequest?.Name.FormatEx(val: string.Empty));
+                }
+                if (oldRequest.AdditionalTypeOfTransportInRequestId != null)
+                {
+                    diff.Append("Дополнительный тип транспорта", string.Empty, oldRequest.AdditionalTypeOfTransportInRequest?.Name.FormatEx(val: string.Empty));
+                }
+                if (oldRequest.TypeOfCampId != null)
+                {
+                    diff.Append("Приоритетный тип лагеря", string.Empty, oldRequest.TypeOfCamp?.Name.FormatEx(val: string.Empty));
+                }
+                if (oldRequest.TypeOfCampAddonId != null)
+                {
+                    diff.Append("Дополнительный тип лагеря", string.Empty, oldRequest.TypeOfCampAddon?.Name.FormatEx(val: string.Empty));
+                }
             }
             else
             {
                 diff.Action = "Изменение";
                 if (oldRequest.StatusApplicant != newRequest.StatusApplicant)
                 {
-                    diff.Append("Кем подается заявление", StatusApplicantList.Data.FirstOrDefault(x => x.Value == oldRequest.StatusApplicant).Text.FormatEx(val: string.Empty),
+                    diff.Append("Заявление подает", StatusApplicantList.Data.FirstOrDefault(x => x.Value == oldRequest.StatusApplicant).Text.FormatEx(val: string.Empty),
                         StatusApplicantList.Data.FirstOrDefault(x => x.Value == newRequest.StatusApplicant).Text.FormatEx(val: string.Empty));
                 }
 
@@ -342,6 +374,30 @@ namespace RestChild.Web.Common
                     newRequest.NullSafe(r => r.RepresentInterest.Name).FormatEx(val: string.Empty));
             }
 
+            if (oldRequest.NullSafe(r => r.PriorityTypeOfTransportInRequestId) != newRequest.NullSafe(r => r.PriorityTypeOfTransportInRequestId))
+            {
+                diff.Append("Приоритетный тип транспорта", oldRequest.NullSafe(r => r.PriorityTypeOfTransportInRequest.Name).FormatEx(val: string.Empty),
+                    newRequest.NullSafe(r => r.PriorityTypeOfTransportInRequest.Name).FormatEx(val: string.Empty));
+            }
+
+            if (oldRequest.NullSafe(r => r.AdditionalTypeOfTransportInRequestId) != newRequest.NullSafe(r => r.AdditionalTypeOfTransportInRequestId))
+            {
+                diff.Append("Дополнительный тип транспорта", oldRequest.NullSafe(r => r.AdditionalTypeOfTransportInRequest.Name).FormatEx(val: string.Empty),
+                    newRequest.NullSafe(r => r.AdditionalTypeOfTransportInRequest.Name).FormatEx(val: string.Empty));
+            }
+
+            if (oldRequest.NullSafe(r => r.TypeOfCampId) != newRequest.NullSafe(r => r.TypeOfCampId))
+            {
+                diff.Append("Приоритетный тип лагеря", oldRequest.NullSafe(r => r.TypeOfCamp.Name).FormatEx(val: string.Empty),
+                    newRequest.NullSafe(r => r.TypeOfCamp.Name).FormatEx(val: string.Empty));
+            }
+
+            if (oldRequest.NullSafe(r => r.TypeOfCampAddonId) != newRequest.NullSafe(r => r.TypeOfCampAddonId))
+            {
+                diff.Append("Дополнительный тип лагеря", oldRequest.NullSafe(r => r.TypeOfCampAddon.Name).FormatEx(val: string.Empty),
+                    newRequest.NullSafe(r => r.TypeOfCampAddon.Name).FormatEx(val: string.Empty));
+            }
+
             var oldRequestFiles = oldRequest.NullSafe(r => r.Files) ?? new List<RequestFile>();
             var newRequestFiles = newRequest.NullSafe(r => r.Files) ?? new List<RequestFile>();
             var addFiles = newRequestFiles.Where(n => oldRequestFiles.All(o => o.Id != n.Id)).ToList();
@@ -412,7 +468,6 @@ namespace RestChild.Web.Common
                 diff.Append("Квитанция об оплате имя", string.Empty,
                     newApplicant.PaymentFileTitle.FormatEx(val: string.Empty));
                 diff.Append("Место рождения", string.Empty, newApplicant.PlaceOfBirth.FormatEx(val: string.Empty));
-                diff.Append("Не явился в место отдыха", string.Empty, newApplicant.NotComeInPlaceOfRest.FormatEx());
                 diff.Append("Серия свидетельства о рождении", string.Empty,
                     newApplicant.DocumentSeriaCertOfBirth.FormatEx(val: string.Empty));
                 diff.Append("Номер свидетельтсва о рождении", string.Empty,
@@ -424,7 +479,7 @@ namespace RestChild.Web.Common
                     newApplicant.ForeginLastName.FormatEx(val: string.Empty));
                 diff.Append("Дата выдачи доверенности", string.Empty,
                     newApplicant.ProxyDateOfIssure.FormatEx(val: string.Empty));
-                diff.Append("Имя натариуса", string.Empty, newApplicant.NotaryName.FormatEx(val: string.Empty));
+                diff.Append("ФИО нотариуса", string.Empty, newApplicant.NotaryName.FormatEx(val: string.Empty));
                 diff.Append("Дата окончания действия доверенности", string.Empty,
                     newApplicant.ProxyEndDate.FormatEx(val: string.Empty));
                 diff.Append("Номер доверенности", string.Empty, newApplicant.ProxyNumber.FormatEx(val: string.Empty));
@@ -462,7 +517,6 @@ namespace RestChild.Web.Common
                 diff.Append("Квитанция об оплате имя", oldApplicant.PaymentFileTitle.FormatEx(val: string.Empty),
                     string.Empty);
                 diff.Append("Место рождения", oldApplicant.PlaceOfBirth.FormatEx(val: string.Empty), string.Empty);
-                diff.Append("Не явился в место отдыха", oldApplicant.NotComeInPlaceOfRest.FormatEx(), string.Empty);
                 diff.Append("Серия свидетельства о рождении",
                     oldApplicant.DocumentSeriaCertOfBirth.FormatEx(val: string.Empty), string.Empty);
                 diff.Append("Номер свидетельтсва о рождении",
@@ -474,7 +528,7 @@ namespace RestChild.Web.Common
                     string.Empty);
                 diff.Append("Дата выдачи доверенности", oldApplicant.ProxyDateOfIssure.FormatEx(val: string.Empty),
                     string.Empty);
-                diff.Append("Имя натариуса", oldApplicant.NotaryName.FormatEx(val: string.Empty), string.Empty);
+                diff.Append("ФИО нотариуса", oldApplicant.NotaryName.FormatEx(val: string.Empty), string.Empty);
                 diff.Append("Дата окончания действия доверенности", oldApplicant.ProxyEndDate.FormatEx(val: string.Empty),
                     string.Empty);
                 diff.Append("Номер доверенности", oldApplicant.ProxyNumber.FormatEx(val: string.Empty), string.Empty);
@@ -630,12 +684,6 @@ namespace RestChild.Web.Common
                         newApplicant.PlaceOfBirth.FormatEx(val: string.Empty));
                 }
 
-                if (oldApplicant.NotComeInPlaceOfRest != newApplicant.NotComeInPlaceOfRest)
-                {
-                    diff.Append("Не явился в место отдыха", oldApplicant.NotComeInPlaceOfRest.FormatEx(),
-                        newApplicant.NotComeInPlaceOfRest.FormatEx());
-                }
-
                 if (oldApplicant.DocumentSeriaCertOfBirth != newApplicant.DocumentSeriaCertOfBirth)
                 {
                     diff.Append("Серия свидетельства о рождении",
@@ -676,7 +724,7 @@ namespace RestChild.Web.Common
 
                 if (oldApplicant.NotaryName != newApplicant.NotaryName)
                 {
-                    diff.Append("Имя натариуса", oldApplicant.NotaryName.FormatEx(val: string.Empty),
+                    diff.Append("ФИО нотариуса", oldApplicant.NotaryName.FormatEx(val: string.Empty),
                         newApplicant.NotaryName.FormatEx(val: string.Empty));
                 }
 
@@ -771,7 +819,7 @@ namespace RestChild.Web.Common
                 diff.Append("Электронная почта", string.Empty, newAgent.Email.FormatEx(val: string.Empty));
                 diff.Append("Дата выдачи доверенности", string.Empty,
                     newAgent.ProxyDateOfIssure.FormatEx(val: string.Empty));
-                diff.Append("Имя натариуса", string.Empty, newAgent.NotaryName.FormatEx(val: string.Empty));
+                diff.Append("ФИО нотариуса", string.Empty, newAgent.NotaryName.FormatEx(val: string.Empty));
                 diff.Append("Дата окончания действия доверенности", string.Empty,
                     newAgent.ProxyEndDate.FormatEx(val: string.Empty));
                 diff.Append("Номер доверенности", string.Empty, newAgent.ProxyNumber.FormatEx(val: string.Empty));
@@ -796,7 +844,7 @@ namespace RestChild.Web.Common
                 diff.Append("Электронная почта", oldAgent.Email.FormatEx(val: string.Empty), string.Empty);
                 diff.Append("Дата выдачи доверенности", oldAgent.ProxyDateOfIssure.FormatEx(val: string.Empty),
                     string.Empty);
-                diff.Append("Имя натариуса", oldAgent.NotaryName.FormatEx(val: string.Empty), string.Empty);
+                diff.Append("ФИО нотариуса", oldAgent.NotaryName.FormatEx(val: string.Empty), string.Empty);
                 diff.Append("Дата окончания действия доверенности", oldAgent.ProxyEndDate.FormatEx(val: string.Empty),
                     string.Empty);
                 diff.Append("Номер доверенности", oldAgent.ProxyNumber.FormatEx(val: string.Empty), string.Empty);
@@ -875,7 +923,7 @@ namespace RestChild.Web.Common
 
                 if (oldAgent.NotaryName != newAgent.NotaryName)
                 {
-                    diff.Append("Имя натариуса", oldAgent.NotaryName.FormatEx(val: string.Empty),
+                    diff.Append("ФИО нотариуса", oldAgent.NotaryName.FormatEx(val: string.Empty),
                         newAgent.NotaryName.FormatEx(val: string.Empty));
                 }
 
@@ -982,6 +1030,7 @@ namespace RestChild.Web.Common
                 diff.Append("Стоимость проезда ребёнка", string.Empty, newChild.CostOfRide.FormatEx(val: string.Empty));
                 diff.Append("Стоимость путевки", string.Empty, newChild.CostOfTour.FormatEx(val: string.Empty));
                 diff.Append("Код подразделения", string.Empty, newChild.DocumentCode.FormatEx(val: string.Empty));
+                diff.Append("Ребёнок имеет заключение ЦПМПК города Москвы", string.Empty, newChild.IsCPMPK.FormatEx());
             }
             else if (newChild == null)
             {
@@ -1034,6 +1083,7 @@ namespace RestChild.Web.Common
                 diff.Append("Стоимость проезда ребёнка", oldChild.CostOfRide.FormatEx(val: string.Empty), string.Empty);
                 diff.Append("Стоимость путевки", oldChild.CostOfTour.FormatEx(val: string.Empty), string.Empty);
                 diff.Append("Код подразделения", oldChild.DocumentCode.FormatEx(val: string.Empty), string.Empty);
+                diff.Append("Ребёнок имеет заключение ЦПМПК города Москвы", oldChild.IsCPMPK.FormatEx(), string.Empty);
             }
             else
             {
@@ -1160,8 +1210,11 @@ namespace RestChild.Web.Common
 
                 if (oldChild.RegisteredInMoscow != newChild.RegisteredInMoscow)
                 {
-                    diff.Append("Ребёнок зарегистрирован по месту жительства в Москве",
-                        oldChild.RegisteredInMoscow.FormatEx(), newChild.RegisteredInMoscow.FormatEx());
+                    if (!(oldChild.BenefitTypeId != null || newChild.BenefitTypeId != null))
+                    {
+                        diff.Append("Ребёнок зарегистрирован по месту жительства в Москве",
+                            oldChild.RegisteredInMoscow.FormatEx(), newChild.RegisteredInMoscow.FormatEx());
+                    }
                 }
 
                 if (oldChild.Male != newChild.Male)
@@ -1271,6 +1324,11 @@ namespace RestChild.Web.Common
                         newChild.DocumentCode.FormatEx(val: string.Empty));
                 }
 
+                if (oldChild.IsCPMPK != newChild.IsCPMPK)
+                {
+                    diff.Append("Ребёнок имеет заключение ЦПМПК города Москвы", oldChild.IsCPMPK.FormatEx(),
+                        newChild.IsCPMPK.FormatEx());
+                }
             }
 
             if (oldChild.NullSafe(r => r.SchoolId) != newChild.NullSafe(r => r.SchoolId))
@@ -1289,7 +1347,7 @@ namespace RestChild.Web.Common
 
             if (oldChild.NullSafe(r => r.BenefitTypeId) != newChild.NullSafe(r => r.BenefitTypeId))
             {
-                diff.Append("Вид льготы",
+                diff.Append("Категория льготы ребенка",
                     oldChild?.BenefitType?.Name ?? unitOfWork.GetById<BenefitType>(oldChild?.BenefitTypeId)?.Name,
                     newChild?.BenefitType?.Name ?? unitOfWork.GetById<BenefitType>(newChild?.BenefitTypeId)?.Name);
             }
@@ -1366,8 +1424,8 @@ namespace RestChild.Web.Common
 
             if (oldChild.NullSafe(r => r.RequestInformationVoucherId) != newChild.NullSafe(r => r.RequestInformationVoucherId))
             {
-                var oldVoucher = oldChild.RequestInformationVoucher ?? unitOfWork.GetById<RequestInformationVoucher>(oldChild?.RequestInformationVoucherId);
-                var newVoucher = newChild.RequestInformationVoucher ?? unitOfWork.GetById<RequestInformationVoucher>(newChild?.RequestInformationVoucherId);
+                var oldVoucher = oldChild?.RequestInformationVoucher ?? unitOfWork.GetById<RequestInformationVoucher>(oldChild?.RequestInformationVoucherId);
+                var newVoucher = newChild?.RequestInformationVoucher ?? unitOfWork.GetById<RequestInformationVoucher>(newChild?.RequestInformationVoucherId);
                 if (oldVoucher != null && newVoucher != null)
                 {
                     diff.Append("Путевка",

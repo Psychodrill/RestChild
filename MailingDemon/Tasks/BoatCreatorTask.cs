@@ -7,7 +7,6 @@ using RestChild.DAL;
 using RestChild.DAL.RepositoryExtensions;
 using RestChild.Domain;
 using System.Collections.Generic;
-using System.Data.Common.CommandTrees;
 
 namespace MailingDemon.Tasks
 {
@@ -733,7 +732,7 @@ namespace MailingDemon.Tasks
 								c =>
 								c.BoutId.HasValue
 								&& (c.IsDeleted
-									|| (c.Request != null && 
+									|| (c.Request != null &&
 											(
 												c.Request.StatusId == (long)StatusEnum.Reject || !c.Request.IsLast || c.Request.IsDeleted
 												|| (c.Request.TypeOfRest.Commercial && !c.Payed)

@@ -170,7 +170,7 @@ namespace RestChild.Web.Controllers
                     PupilId = p.Id,
                     OrganisatonAddresId = p.OrphanageAddressId,
                     OrganisatonAddres = p.OrphanageAddress
-                    
+
                 })
                 {
                     DrugDoses = p.Drugs?.Where(ss => !ss.IsDeleted).ToDictionary(ss => Guid.NewGuid().ToString(), ss =>
@@ -204,7 +204,7 @@ namespace RestChild.Web.Controllers
         }
 
         /// <summary>
-        ///     Заполнение вспомогательных данных для cписка/группы отправки
+        ///     Заполнение вспомогательных данных для списка/группы отправки
         /// </summary>
         private void OrphanagePupilGroupListModelFill(OrphanagePupilGroupListModel data,
             RequestForPeriodOfRest req)
@@ -261,9 +261,16 @@ namespace RestChild.Web.Controllers
                     e.TourId = req.TourId;
                     e.TypeOfLimitListId = (long) TypeOfLimitListEnum.Orphan;
                     e.IsLast = true;
+                    e.Name = req.PupilGroup?.Name;
 
-                    e.HistoryLink = ApiController.WriteHistory(e.HistoryLink,
-                        "Создание списка (группы отправки) учреждения социальной защиты", string.Empty);
+                    var rfr = req.PupilGroup?.Organization?.OrganisatonCollaborators.FirstOrDefault(ss => ss.PositionId == (long) OrphanageCollaboratorType.ResponsibleForRest && !ss.Applicant.IsDeleted);
+                    if (rfr != null)
+                    {
+                        e.Responsible = rfr.Applicant.GetFio();
+                        e.ResponsiblePhone = rfr.Applicant.Phone;
+                    }
+
+                    e.HistoryLink = ApiController.WriteHistory(e.HistoryLink, "Создание списка (группы отправки) учреждения социальной защиты", string.Empty);
                     e.HistoryLinkId = e.HistoryLink.Id;
 
                     UnitOfWork.AddEntity(e);
@@ -553,6 +560,7 @@ namespace RestChild.Web.Controllers
                             {
                                 child.ChildListId = null;
                                 child.ChildList = null;
+                                child.IsDeleted = true;
                                 UnitOfWork.SaveChanges();
                             }
 
@@ -618,6 +626,7 @@ namespace RestChild.Web.Controllers
                             {
                                 app.ChildListId = null;
                                 app.ChildList = null;
+                                app.IsDeleted = true;
                                 UnitOfWork.SaveChanges();
                             }
 
@@ -680,7 +689,9 @@ namespace RestChild.Web.Controllers
                                 sb.Append("<li>Невозможно сформировать список без воспитанников</li>");
                             }
 
+                            CheckPupilsAge(model, req, sb);
 
+                            /* в соответствии с #135194 временно отключено
                             if (model.Pupils.Count > req.PupilsCount)
                             {
                                 sb.Append("<li>Кол-во отдыхающих превышает максимальное число, указанное в потребности</li>");
@@ -690,6 +701,7 @@ namespace RestChild.Web.Controllers
                             {
                                 sb.Append("<li>Кол-во сопровождающих превышает максимальное число, указанное в потребности</li>");
                             }
+                            */
 
                             //Список не может быть направлен на согласование в связи с внесением в список воспитанников, нарушавших Правила
                             var rules = new long?[] {7, 8};
@@ -751,6 +763,33 @@ namespace RestChild.Web.Controllers
         }
 
         /// <summary>
+        ///     Проверка соответствия возраста детей форме отдыха
+        /// </summary>
+        public StringBuilder CheckPupilsAge(OrphanagePupilGroupListModel model, RequestForPeriodOfRest req, StringBuilder sb)
+        {
+            var pupilIds = model.Pupils.Values.Select(x => x.Data.PupilId).ToList();
+            var childs = UnitOfWork.GetSet<Child>().Where(x => x.Pupils.Any(a => pupilIds.Contains(a.Id)));
+
+            var dateIncome = req?.Tour?.DateIncome;
+            var min = req.PupilGroup?.FormOfRest?.AgeFrom;
+            var max = req.PupilGroup?.FormOfRest?.AgeTo;
+
+            foreach (var child in childs)
+            {
+                if (child.DateOfBirth != null && dateIncome != null)
+                {
+                    var age = child.GetAgeInYears(dateIncome);
+                    if (!(age >= min && age <= max))
+                    {
+                        sb.Append($"<li> Возраст воспитанника {child.LastName} {child.FirstName} не соответствует форме отдыха. </li>");
+                    }
+                }
+            }
+
+            return sb;
+        }
+
+        /// <summary>
         ///     всплывающий список воспитанников для добавления в список
         /// </summary>
         [Route("Orphanage/PupilGroupLists/PupilsChoose")]
@@ -763,14 +802,18 @@ namespace RestChild.Web.Controllers
                 return RedirectToAvalibleAction();
             }
 
-            var pupils = UnitOfWork.GetSet<Pupil>().Where(ss =>
+            /*var pupils = UnitOfWork.GetSet<Pupil>().Where(ss =>
                 ss.OrphanageAddress.OrganisationId == orphanageId && ss.DateOut == null &&
-                (ss.Child.EntityId == null || ss.Child.EntityId == ss.Child.AddressId)).ToList();
+                (ss.Child.EntityId == null || ss.Child.EntityId == ss.Child.AddressId)).ToList();*/
 
-            var filter = new OrphanagePupilsFilterModel(pupils)
+            var filter = new OrphanagePupilsFilterModel()
             {
-                ActionName = nameof(OrphanagePupilGroupListsPupilsChooseSearch)
+                ActionName = nameof(OrphanagePupilGroupListsPupilsChooseSearch),
+                IsFilled = true,
+                OrphanageId = orphanageId
             };
+
+            filter.Results = ApiController.GetPupils(filter);
 
             return PartialView("Partials/GroupPupilsToAdd", filter);
         }
@@ -789,7 +832,7 @@ namespace RestChild.Web.Controllers
             }
 
             filter.IsFilled = true;
-            filter.Result = ApiController.GetPupils(filter);
+            filter.Results = ApiController.GetPupils(filter);
 
             return PartialView("Partials/GroupPupilsToAddForm", filter);
         }
@@ -850,7 +893,7 @@ namespace RestChild.Web.Controllers
                 (ss.Applicant.EntityId == null || ss.Applicant.EntityId == ss.Applicant.AddressId)).ToList();
 
             var filter = new OrphanageCollaboratorsFilterModel(collaborators);
-
+            filter.Collaborators = ApiController.GetOrphanageCollaborators(filter);
             return PartialView("Partials/GroupCollaboratorsToAdd", filter);
         }
 
@@ -867,32 +910,7 @@ namespace RestChild.Web.Controllers
                 return RedirectToAvalibleAction();
             }
 
-            var query = UnitOfWork.GetSet<OrganisatorCollaborator>().Where(ss =>
-                ss.OrganisatonId == filter.OrphanageId
-                && ss.Filled
-                && (ss.Applicant.EntityId == null || ss.Applicant.EntityId == ss.ApplicantId)).AsQueryable();
-            if (!string.IsNullOrWhiteSpace(filter.Name))
-            {
-                var nameArr = filter.Name.Split(' ');
-                foreach (var name in nameArr.Where(ss => !string.IsNullOrWhiteSpace(ss)))
-                {
-                    query = query.Where(ss =>
-                        ss.Applicant.FirstName.ToLower().Contains(name.ToLower()) ||
-                        ss.Applicant.LastName.ToLower().Contains(name.ToLower()) ||
-                        ss.Applicant.MiddleName.ToLower().Contains(name.ToLower()));
-                }
-            }
-
-            var cols = query.Select(ss => new OrphanageCollaboratorsResultListModel
-            {
-                Id = ss.Id,
-                Name = ss.Applicant.LastName + " " + ss.Applicant.FirstName + " " + ss.Applicant.MiddleName,
-                Position = ss.Position.Name
-            }).ToList();
-
-
-            filter.Collaborators =
-                new CommonPagedList<OrphanageCollaboratorsResultListModel>(cols, 1, cols.Count(), cols.Count());
+            filter.Collaborators = ApiController.GetOrphanageCollaborators(filter);
 
             return PartialView("Partials/GroupCollaboratorsToAddForm", filter);
         }

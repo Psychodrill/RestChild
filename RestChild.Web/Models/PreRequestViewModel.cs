@@ -7,6 +7,7 @@ using RestChild.Comon;
 using RestChild.Comon.Dto;
 using RestChild.Comon.Dto.SearchRestChild;
 using RestChild.Comon.Enumeration;
+using RestChild.DAL.RepositoryExtensions;
 using RestChild.Domain;
 using RestChild.Extensions.Extensions;
 using RestChild.Web.Common;
@@ -403,7 +404,6 @@ namespace RestChild.Web.Models
             foreach (var request in requests)
             {
                 var applicant = request.Applicant ?? new Applicant();
-
                 var tour = tours.ContainsKey(request.TourId ?? 0) ? tours[request.TourId ?? 0] : null;
                 var hotelsId = tour != null ? tour.HotelsId : request.HotelsId;
                 var hotel = hotels.ContainsKey(hotelsId ?? 0) ? hotels[hotelsId ?? 0] : null;
@@ -457,7 +457,8 @@ namespace RestChild.Web.Models
                         l.TransportId == applicant.Bout?.TransportInfoToId);
                     var from = applicant.LinkToPeoples?.FirstOrDefault(l =>
                         l.TransportId == applicant.Bout?.TransportInfoFromId);
-
+                    if (applicant.Address == null && applicant.AddressId != null)
+                        applicant.Address = unitOfWork.GetById<Address>(applicant.AddressId);
 
                     result.Add(new PreRequestViewModel
                     {
@@ -489,6 +490,7 @@ namespace RestChild.Web.Models
                         ApplicantDocNumber = applicant.DocumentNumber,
                         ApplicantPhone = applicant.Phone,
                         ApplicantEmail = applicant.Email,
+                        AddressRegistration = applicant.Address?.ToString(),
                         MpguNumber = request.RequestNumberMpgu,
                         RequestDate = request.DateRequest,
                         HotelAddress = hotelAddress,

@@ -14,18 +14,18 @@
     @Html.HiddenFor(m => m.Id)
     @Html.HiddenFor(m => m.OrganisatonCollaboratorId, new { @class = "ppkey" })
     <td>
-        <a href="@Url.Action("OrphanageCollaboratorEdit", "Orphan", new {collaboratorId = Model.OrganisatonCollaborator.EntityId ?? Model.OrganisatonCollaboratorId})">
+        <span class="numerator"></span> <a href="@Url.Action("OrphanageCollaboratorEdit", "Orphan", new {collaboratorId = Model.OrganisatonCollaborator.EntityId ?? Model.OrganisatonCollaboratorId})">
             @Model.OrganisatonCollaborator.Applicant.GetFio()
         </a>
     </td>
     <td class="text-center">
-        @Html.CheckBoxFor(m => m.TicketTo).DisableIf(() => !isEditable)
+        @Html.CheckBoxFor(m => m.TicketTo).DisableIf(!isEditable)
     </td>
     <td class="text-center">
-        @Html.CheckBoxFor(m => m.TicketFrom).DisableIf(() => !isEditable)
+        @Html.CheckBoxFor(m => m.TicketFrom).DisableIf(!isEditable)
     </td>
     <td>
-        @Html.DropDownListFor(m => m.OrganisatonAddresId, possibleTransferAdresses, new { @class = "form-control select2 possibleTransferOrganisatonAddresId" }).DisableIf(() => !isEditable)
+        @Html.DropDownListFor(m => m.OrganisatonAddresId, possibleTransferAdresses, new { @class = "form-control select2 possibleTransferOrganisatonAddresId" }).DisableIf(!isEditable)
     </td>
     <td class="text-center">
         @if (isEditable)

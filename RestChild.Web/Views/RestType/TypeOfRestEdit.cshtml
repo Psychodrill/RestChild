@@ -176,20 +176,46 @@
 						<a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToListRestriction) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Правила сопровождения</label>
-					<div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
-						@{ var roolAttendantExt = !string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? Model.UrlToRoolAttendant.Substring(Model.UrlToRoolAttendant.LastIndexOf('.')) : string.Empty; }
-						<a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToRoolAttendant)&t=@Url.Encode("Правила сопровождения" + roolAttendantExt)">Скачать</a>
-						@Html.HiddenFor(r => r.UrlToRoolAttendant)
-						<span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)">
-							Прикрепить
-							<input type="file" name="files[]" multiple>
-						</span>
-						<a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
-					</div>
-				</div>
-				<div class="form-group">
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Правила сопровождения</label>
+                    <div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
+                        @{ var stationaryType = !string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? Model.UrlToRoolAttendant.Substring(Model.UrlToRoolAttendant.LastIndexOf('.')) : string.Empty; }
+                        <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToRoolAttendant)&t=@Url.Encode("Правила сопровождения" + stationaryType)">Скачать</a>
+                        @Html.HiddenFor(r => r.UrlToRoolAttendant)
+                        <span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)">
+                            Прикрепить
+                            <input type="file" name="files[]" multiple>
+                        </span>
+                        <a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Фото лагеря стационарного типа</label>
+                    <div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
+                        @{ var campType = !string.IsNullOrEmpty(Model.UrlToStationaryTypeOfCampPhoto) ? Model.UrlToStationaryTypeOfCampPhoto.Substring(Model.UrlToStationaryTypeOfCampPhoto.LastIndexOf('.')) : string.Empty; }
+                        <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToStationaryTypeOfCampPhoto) ? " hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToStationaryTypeOfCampPhoto)&t=@Url.Encode("Фото типа лагеря для МПГУ" + campType)">Скачать</a>
+                        @Html.HiddenFor(r => r.UrlToStationaryTypeOfCampPhoto)
+                        <span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToStationaryTypeOfCampPhoto) ? " hidden" : string.Empty)">
+                            Прикрепить
+                            <input type="file" name="files[]" multiple>
+                        </span>
+                        <a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Фото лагеря палаточного типа</label>
+                    <div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
+                        @{ var qweqwe = !string.IsNullOrEmpty(Model.UrlToCampTypeOfCampPhoto) ? Model.UrlToCampTypeOfCampPhoto.Substring(Model.UrlToCampTypeOfCampPhoto.LastIndexOf('.')) : string.Empty; }
+                        <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToCampTypeOfCampPhoto) ? " hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToCampTypeOfCampPhoto)&t=@Url.Encode("Фото типа лагеря для МПГУ" + qweqwe)">Скачать</a>
+                        @Html.HiddenFor(r => r.UrlToCampTypeOfCampPhoto)
+                        <span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToCampTypeOfCampPhoto) ? " hidden" : string.Empty)">
+                            Прикрепить
+                            <input type="file" name="files[]" multiple>
+                        </span>
+                        <a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
+                    </div>
+                </div>
+                <div class="form-group">
 					<div class="col-md-9 col-md-offset-3">
 						<button type="submit" class="btn btn-default btn-primary" id="btnSave">
 							<i class="glyphicon glyphicon-pencil"></i> Сохранить

@@ -513,6 +513,11 @@ namespace RestChild.Booking.Logic.Extensions
                         SendEmailOnChangeStatus(unitOfWork, entity, s.Name, message.Note, planDate, s, accountId);
                     }
 
+                    if ((s.Chain?.StatusId ?? -1) == (long)StatusEnum.RegistrationDecline && s.Status ==  (long)StatusEnum.RegistrationDeclineBecauseDuplicate && s.ReasonCode == "1")
+                    {
+                        message.Note = comment;
+                    }
+
                     message.Note = message.Note?.Replace("\n", "<br/>") ?? string.Empty;
 
                     unitOfWork.AddEntity(new ExchangeUTS
@@ -742,10 +747,10 @@ namespace RestChild.Booking.Logic.Extensions
 
             var declineReasonText = string.Empty;
 
-            if (actionCode == AccessRightEnum.Status.FcRepareRequest &&
-                (request.TypeOfRestId == (long) TypeOfRestEnum.MoneyOn3To7 ||
-                 request.TypeOfRestId == (long) TypeOfRestEnum.MoneyOn7To15 ||
-                 request.TypeOfRestId == (long) TypeOfRestEnum.Money))
+            var certsTypesOfRest = unitOfWork.GetSet<TypeOfRest>().Where(ss =>
+                ss.Id == (long) TypeOfRestEnum.Money || ss.ParentId == (long) TypeOfRestEnum.Money).Select(ss => ss.Id).ToList();
+
+            if (actionCode == AccessRightEnum.Status.FcRepareRequest && certsTypesOfRest.Any(ss => request.TypeOfRestId == ss))
             {
                 actionCode = AccessRightEnum.Status.FcToCertificateIssued;
                 action = unitOfWork.GetSet<StatusAction>()

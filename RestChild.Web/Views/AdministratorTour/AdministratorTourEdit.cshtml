@@ -1,18 +1,17 @@
 ﻿@using System.Collections
 @using RestChild.Comon
-@using RestChild.Domain
-@using RestChild.Web.App_Code
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.AdministratorTourModel
 
 @{
-	ViewBag.Title = "Администратор";
+    ViewBag.Title = "Администратор";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="row">
-	<div class="col-md-12">
-		<h2>Администратор</h2>
-	</div>
+    <div class="col-md-12">
+        <h2>Администратор</h2>
+    </div>
 </div>
 
 <a href="@Url.Action("Search", "AdministratorTour")">Вернуться</a>
@@ -21,160 +20,160 @@
 @Html.Partial("Assets/_StatePanel", Model.State)
 
 <div class="row">
-	<div class="col-md-12">
-		@using (Html.BeginForm("Save", "AdministratorTour", FormMethod.Post, new { enctype = "multipart/form-data", @id = "administratorForm" }))
-		{
-			@Html.AntiForgeryToken()
-			@Html.HiddenFor(m => m.Data.Id)
-			@Html.HiddenFor(m => m.Data.StateId)
-			@Html.HiddenFor(m => m.Data.Password)
-			@Html.HiddenFor(m => m.Data.Salt)
-			@Html.HiddenFor(m => m.Data.DateCreate)
-			@Html.HiddenFor(m => m.Data.DateUpdate)
-			@Html.HiddenFor(m => m.Data.ExternalUid)
-			@Html.HiddenFor(m => m.StateMachineActionString)
-			if (!ViewData.ModelState.IsValid)
-			{
-				<div class="alert alert-danger" role="alert">
-					@Html.ValidationSummary(false)
-				</div>
-			}
-			<fieldset class="form-horizontal">
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Фамилия<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.LastName, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.Data.LastName, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Имя<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.FirstName, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.Data.FirstName, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-3 col-md-offset-3">
-						<div class="checkbox">
-							<label>
-								@Html.CheckBoxFor(model => model.Data.HaveMiddleName).DisableIf(() => !Model.IsEditable)
-								Нет отчества
-							</label>
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Отчество<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.MiddleName, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable || Model.NullSafe(m => m.Data.HaveMiddleName))
-						@Html.ValidationMessageFor(model => model.Data.MiddleName, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Электронная почта</label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.Email, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.Data.Email, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Телефон</label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.Phone, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.Data.Phone, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Пол</label>
-					<div class="col-md-9">
-						@Html.DropDownListFor(model => model.IsMale, new SelectList(new ArrayList() { new { Id = string.Empty, Name = "-- Не выбрано --" }, new { Id = "True", Name = "Мужской" }, new { Id = "False", Name = "Женский" } }, "Id", "Name"), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.IsMale, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Дата рождения<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.DateOfBirth, new { @class = "form-control date", autocomplete = "off", Value = Model.NullSafe(m => m.Data.DateOfBirth).FormatEx(string.Empty, string.Empty) }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.Data.DateOfBirth, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Место рождения<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.PlaceOfBirth, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.Data.DateOfBirth, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Документ, подтверждающий личность<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.DropDownListFor(model => model.Data.DocumentTypeId, new SelectList(Model.DocumentTypes.Select(t => new { Id = (long?)t.Id, Name = t.Name }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.Data.DocumentTypeId, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Серия документа<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.DocumentSeria, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.Data.DocumentSeria, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Номер документа<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.DocumentNumber, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.Data.DocumentNumber, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Дата выдачи документа<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.DocumentDateOfIssue, new { @class = "form-control date", autocomplete = "off", Value = Model.NullSafe(m => m.Data.DocumentDateOfIssue).FormatEx(string.Empty, string.Empty) }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.Data.DocumentDateOfIssue, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Кем выдан документ<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.DocumentSubjectIssue, new { @class = "form-control", autocomplete = "off" }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.Data.DocumentSubjectIssue, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Пользователь</label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Data.LinkedAccountId, new { @class = "form-control user-control", autocomplete = "off", data_id = Model.Data.LinkedAccountId, data_text = Model.NullSafe(m => m.Data.LinkedAccount.Name) }).DisableIf(() => !Model.IsEditable)
-						@Html.ValidationMessageFor(model => model.Data.LinkedAccountId, "Заполните поле")
-					</div>
-				</div>
-			</fieldset>
-		}
-	</div>
+    <div class="col-md-12">
+        @using (Html.BeginForm("Save", "AdministratorTour", FormMethod.Post, new {enctype = "multipart/form-data", @id = "administratorForm"}))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Data.Id)
+            @Html.HiddenFor(m => m.Data.StateId)
+            @Html.HiddenFor(m => m.Data.Password)
+            @Html.HiddenFor(m => m.Data.Salt)
+            @Html.HiddenFor(m => m.Data.DateCreate)
+            @Html.HiddenFor(m => m.Data.DateUpdate)
+            @Html.HiddenFor(m => m.Data.ExternalUid)
+            @Html.HiddenFor(m => m.StateMachineActionString)
+            if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @Html.ValidationSummary(false)
+                </div>
+            }
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Фамилия<span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.LastName, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.LastName, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Имя<span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.FirstName, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.FirstName, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3 col-md-offset-3">
+                        <div class="checkbox">
+                            <label>
+                                @Html.CheckBoxFor(model => model.Data.HaveMiddleName).DisableIf(!Model.IsEditable)
+                                Нет отчества
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Отчество<span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.MiddleName, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable || Model.NullSafe(m => m.Data.HaveMiddleName))
+                        @Html.ValidationMessageFor(model => model.Data.MiddleName, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Электронная почта</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.Email, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.Email, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Телефон</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.Phone, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.Phone, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Пол</label>
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(model => model.IsMale, new SelectList(new ArrayList() {new {Id = string.Empty, Name = "-- Не выбрано --"}, new {Id = "True", Name = "Мужской"}, new {Id = "False", Name = "Женский"}}, "Id", "Name"), new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.IsMale, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Дата рождения<span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.DateOfBirth, new {@class = "form-control date", autocomplete = "off", Value = Model.NullSafe(m => m.Data.DateOfBirth).FormatEx(string.Empty, string.Empty)}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.DateOfBirth, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Место рождения<span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.PlaceOfBirth, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.DateOfBirth, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Документ, подтверждающий личность<span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(model => model.Data.DocumentTypeId, new SelectList(Model.DocumentTypes.Select(t => new {Id = (long?) t.Id, Name = t.Name}).ToList().InsertAt(new {Id = (long?) null, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.DocumentTypeId, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Серия документа<span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.DocumentSeria, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.DocumentSeria, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Номер документа<span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.DocumentNumber, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.DocumentNumber, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Дата выдачи документа<span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.DocumentDateOfIssue, new {@class = "form-control date", autocomplete = "off", Value = Model.NullSafe(m => m.Data.DocumentDateOfIssue).FormatEx(string.Empty, string.Empty)}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.DocumentDateOfIssue, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Кем выдан документ<span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.DocumentSubjectIssue, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.DocumentSubjectIssue, "Заполните поле")
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Пользователь</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.LinkedAccountId, new {@class = "form-control user-control", autocomplete = "off", data_id = Model.Data.LinkedAccountId, data_text = Model.NullSafe(m => m.Data.LinkedAccount.Name)}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.LinkedAccountId, "Заполните поле")
+                    </div>
+                </div>
+            </fieldset>
+        }
+    </div>
 </div>
 
 @section styles{
-	@Styles.Render("~/Content/css/select2.css")
-	@Styles.Render("~/Content/css/select2-bootstrap.css")
-	@Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
-	<link href="~/Content/Vocabulary/VocabularyEdit.css" rel="stylesheet" />
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    <link href="~/Content/Vocabulary/VocabularyEdit.css" rel="stylesheet"/>
 }
 
 @section Scripts {
-	@Scripts.Render("~/Scripts/jquery.validate.min.js")
-	@Scripts.Render("~/Scripts/select2.min.js")
-	@Scripts.Render("~/Scripts/select2_locale_ru.js")
-	<script type="text/javascript" src="~/Scripts/moment.js"></script>
-	<script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
-	<script type="text/javascript">
+    @Scripts.Render("~/Scripts/jquery.validate.min.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
 		moment.locale('ru');
 	</script>
-	<script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
-	<script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
-	@Scripts.Render("~/Scripts/doT.js")
-	@Scripts.Render("~/Scripts/Vocabulary/CounselorEdit.js")
-	@Scripts.Render("~/Scripts/Vocabulary/AdministratorTourEdit.js")
-	@Scripts.Render("~/Scripts/StateScript.js")
-	@Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
-	@Html.Partial("Assets/HistoryLinkTemplate")
+    <script type="text/javascript" src="~/Scripts/jQuery.FileUpload/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/Vocabulary/CounselorEdit.js")
+    @Scripts.Render("~/Scripts/Vocabulary/AdministratorTourEdit.js")
+    @Scripts.Render("~/Scripts/StateScript.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
 }

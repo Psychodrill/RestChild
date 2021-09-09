@@ -13,7 +13,7 @@ using RestChild.MPGUIntegration.V61;
 namespace RestChild.MPGUIntegration
 {
    /// <summary>
-   ///    утилиты для для отправки сообщений в очереди
+   ///    Утилиты для для отправки сообщений в очереди
    /// </summary>
    public static class Utils
    {
@@ -204,7 +204,8 @@ namespace RestChild.MPGUIntegration
             ToOrgCode = "0001",
             LastUpdateTick = DateTime.Now.Ticks,
             ServiceNumber = filter.ServiceNumber,
-            ToState = filter.StatusCode
+            ToState = filter.StatusCode,
+            IsSigned = true
          };
 
          unitOfWork.AddEntity(eMassage);
@@ -222,7 +223,8 @@ namespace RestChild.MPGUIntegration
             Incoming = false,
             QueueName = QueueName,
             Message = Message,
-            LastUpdateTick = DateTime.Now.Ticks
+            LastUpdateTick = DateTime.Now.Ticks,
+            IsSigned = true
          };
 
          UnitOfWork.AddEntity(eMassage);

@@ -1,4 +1,5 @@
-﻿@using RestChild.Comon
+﻿@using PagedList.Mvc
+@using RestChild.Comon
 @using RestChild.Comon.Enumeration
 @model RestChild.Web.Models.Orphans.OrphanagePupilsFilterModel
 
@@ -38,7 +39,7 @@
     </div>
 </div>
 
-@if (Model.Result != null && Model.Result.Any())
+@if (Model.Results != null && Model.Results.Any())
 {
     <table class="table table-striped table-hover">
         <thead>
@@ -50,8 +51,8 @@
             </tr>
         </thead>
         <tbody>
-            @{ var rowNumber = 1; }
-            @foreach (var pupil in Model.Result.ToList())
+            @{ var rowNumber = Model.Results.FirstItemOnPage; }
+            @foreach (var pupil in Model.Results.ToList())
             {
                 <tr>
                     @Html.Hidden("PupilId", pupil.Id, new { @class = "pupilId" })
@@ -70,6 +71,21 @@
             }
         </tbody>
     </table>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.PagedListPager(
+                    Model.Results,
+                    page =>
+                    {
+                        Model.Results = null;
+                        Model.PageNumber = page;
+                        return Url.Action("OrphanageGroupPupilSearch", "Orphan", Model);
+                    },
+                    PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+                        new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} ", },
+                        new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "PupilsList", InsertionMode = InsertionMode.Replace }))
+            </div>
+        </div>
 }
 else
 {

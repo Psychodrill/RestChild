@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web.Http;
+using System.Web.Mvc;
 using Newtonsoft.Json;
 using RestChild.Comon.Dto.Commercial;
 using RestChild.Comon.Enumeration;
@@ -18,14 +19,14 @@ namespace RestChild.Web.Controllers.WebApi
     /// <summary>
     ///     контроллер для получение данных по объектам
     /// </summary>
-    [Authorize]
+    [System.Web.Http.Authorize]
     public class NewBoutController : BaseMobileController
     {
         /// <summary>
         ///     получение списка лагерей
         /// </summary>
-        [HttpPost]
-        [HttpGet]
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.HttpGet]
         public IList<Camp> GetCamps(string query)
         {
             var q = MobileUw.GetSet<Camp>().Where(x => x.StateId != StateMachineStateEnum.Deleted);
@@ -46,7 +47,7 @@ namespace RestChild.Web.Controllers.WebApi
         /// <summary>
         ///     установка связи вожатого и пользователя
         /// </summary>
-        [HttpPost]
+        [System.Web.Http.HttpPost]
         public void LinkPersonal(long uid, string k)
         {
             if (!Security.HasRight(AccessRightEnum.NewBout.View))
@@ -85,7 +86,7 @@ namespace RestChild.Web.Controllers.WebApi
         /// <summary>
         ///     отказ от подарка
         /// </summary>
-        [HttpPost]
+        [System.Web.Http.HttpPost]
         public void GiftCancel(long uid)
         {
             if (!Security.HasRight(AccessRightEnum.GiftReserved.View))
@@ -102,14 +103,15 @@ namespace RestChild.Web.Controllers.WebApi
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
             }
 
-            var link = MobileUw.WriteHistory(giftReserved.Link, "Отмена выдачи подарка", "Отмена выдачи подарка.",
-                giftReserved.StateId, StateEnum.GiftReserved.Canceled, Security.GetCurrentAccountId());
+            var description = $"Отмена выдачи подарка: {giftReserved?.Gift?.Gift?.Name} {giftReserved?.Gift?.Name} для ребенка: {giftReserved?.Owner?.Name}";
+            var link = MobileUw.WriteHistory(giftReserved.Link, "Отмена выдачи подарка", description,
+                StateEnum.GiftReserved.Refusal, giftReserved.StateId, Security.GetCurrentAccountId());
             if (giftReserved.Link == null)
             {
                 giftReserved.LinkId = link.Id;
             }
 
-            giftReserved.StateId = StateEnum.GiftReserved.Canceled;
+            giftReserved.StateId = StateEnum.GiftReserved.Refusal;
             if (giftReserved.Owner != null)
             {
                 giftReserved.Owner.PointsOnAccount += giftReserved.Price;
@@ -121,7 +123,7 @@ namespace RestChild.Web.Controllers.WebApi
         /// <summary>
         ///     выдача подарка
         /// </summary>
-        [HttpPost]
+        [System.Web.Http.HttpPost]
         public void GiftIssued(long uid, string code)
         {
             if (!Security.HasRight(AccessRightEnum.GiftReserved.View))
@@ -155,8 +157,8 @@ namespace RestChild.Web.Controllers.WebApi
         /// <summary>
         ///     выдача подарка
         /// </summary>
-        [HttpPost]
-        public void GiftRequestToIssued(long uid)
+        [System.Web.Http.HttpPost]
+        public ActionResult GiftRequestToIssued(long uid)
         {
             if (!Security.HasRight(AccessRightEnum.GiftReserved.View))
             {
@@ -168,6 +170,18 @@ namespace RestChild.Web.Controllers.WebApi
             if (giftReserved == null)
             {
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
+
+            if (!giftReserved.Owner.Phone.StartsWith("+7"))
+            {
+                throw new HttpResponseException(HttpStatusCode.MethodNotAllowed);
+            }
+
+            var sendEmail = false;
+            var grseb = System.Configuration.ConfigurationManager.AppSettings["GiftRequestSMSEmailBouth"];
+            if (string.IsNullOrWhiteSpace(grseb))
+            {
+                bool.TryParse(grseb, out sendEmail);
             }
 
             var rnd = new Random();
@@ -190,20 +204,26 @@ namespace RestChild.Web.Controllers.WebApi
                 Phone = giftReserved.Owner.Phone,
                 DateCreate = DateTime.Now,
                 EmailTitle = "Код подтверждения",
-                EmailMessage = $"Код подтверждения {code}",
-                SmsMessage = $"Код подтверждения {code}",
+                //Код подтверждения АИС "Детский отдых": XXXXX
+                EmailMessage = $"Код подтверждения АИС \"Детский отдых\": {code}",
+                SmsMessage = $"Код подтверждения АИС \"Детский отдых\": {code}",
+
+                //EmailMessage = $"Код подтверждения {code}",
+                //SmsMessage = $"Код подтверждения {code}",
 
                 //чтобы отправилось только смс
-                IsEmailSended = true
+                IsEmailSended = !sendEmail
             });
 
             MobileUw.SaveChanges();
+
+            return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
         /// <summary>
         ///     Получить смены доступные для данного места отдыха
         /// </summary>
-        [HttpPost]
+        [System.Web.Http.HttpPost]
         public IList<BaseResponse> GetChanges(long? campId)
         {
             var changes = MobileUw.GetSet<Bout>().Where(x => x.CampId == campId).OrderByDescending(a => a.DateIncome).Select(ss => new BaseResponse
@@ -218,8 +238,8 @@ namespace RestChild.Web.Controllers.WebApi
         /// <summary>
         ///     Получить все задания для выбранного места отдыха и смены
         /// </summary>
-        [HttpPost]
-        [HttpGet]
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.HttpGet]
         public IList<TasksModel> GetAllTasks(long? campId, string change)
         {
             var boutId = MobileUw.GetSet<Bout>().FirstOrDefault(x => x.CampId == campId && x.Change == change)?.Id;
@@ -233,7 +253,7 @@ namespace RestChild.Web.Controllers.WebApi
         /// <summary>
         ///     Добавить задания в заезд
         /// </summary>
-        [HttpPost]
+        [System.Web.Http.HttpPost]
         public void AddTasksToBout([FromBody] CopyTasksModel data)
         {
             var sourceBoutTasks = MobileUw.GetSet<BoutTask>().Where(x => data.SourceTaskIds.Contains(x.Id)).ToList();

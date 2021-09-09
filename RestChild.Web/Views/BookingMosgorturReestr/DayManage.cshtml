@@ -70,7 +70,7 @@
       <label class="col-sm-2 control-label">Дата работы <span class="requared">*</span></label>
       <div class="col-md-10">
          <div class='input-group date datepicker-anytime'>
-            @Html.TextBoxFor(r => r.Date, new { @class = "form-control input-mask-date-anytime day-date", autocomplete = "off", @Value = Model.NullSafe(m => m.Date).FormatEx(string.Empty, string.Empty) }).ReadOnlyIf(() => Model.IsDeleted || Model.BookingCount > 0)
+            @Html.TextBoxFor(r => r.Date, new { @class = "form-control input-mask-date-anytime day-date", autocomplete = "off", @Value = Model.NullSafe(m => m.Date).FormatEx(string.Empty, string.Empty) }).ReadOnlyIf(Model.IsDeleted || Model.BookingCount > 0)
             <span class="input-group-addon">
                <span class="glyphicon glyphicon-calendar"></span>
             </span>
@@ -78,17 +78,17 @@
          @Html.ValidationMessageFor(m => m.Date)
       </div>
    </div>
-   <div class="form-group">
-      <label class="col-sm-2 control-label">Интервал приёма (минут)</label>
-      <div class="col-md-4">
-         @Html.TextBoxFor(m => m.TimeInterval, new { @class = "form-control", maxlength = 10, @readonly = "readonly" })
-         @Html.ValidationMessageFor(m => m.TimeInterval)
-      </div>
-      <label class="col-sm-2 control-label">Кол-во окон</label>
-      <div class="col-md-4">
-         @Html.TextBox("WindowCount", null, new { @class = "form-control", maxlength = 10, @disabled = "disabled" })
-      </div>
-   </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Интервал приёма (минут)</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.TimeInterval, new { @class = "form-control", maxlength = 10, @readonly = "readonly" })
+            @Html.ValidationMessageFor(m => m.TimeInterval)
+        </div>
+        <label class="col-sm-2 control-label">Кол-во окон</label>
+        <div class="col-md-4">
+            @Html.TextBox("WindowCount", null, new { @class = "form-control", maxlength = 10, @disabled = "disabled" })
+        </div>
+    </div>
 
    for (int i = 0; i < Model.Windows.Count(); i++)
    {

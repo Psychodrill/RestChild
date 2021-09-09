@@ -125,6 +125,23 @@ namespace RestChild.DAL.Configurations
                     }
                 );
             }
+
+            // новый вид проверки документов
+            if (!context.ExchangeBaseRegistryType.Any(c =>
+                c.Id == (long) ExchangeBaseRegistryTypeEnum.FRIExchange))
+            {
+                context.ExchangeBaseRegistryType.AddOrUpdate(r => r.Id,
+                    new ExchangeBaseRegistryType
+                    {
+                        Id = (long)ExchangeBaseRegistryTypeEnum.FRIExchange,
+                        Name = "Предоставление из ФРИ сведений об инвалидности",
+                        IsDeleted = false,
+                        SendMessage = true,
+                        Eid = (long)ExchangeBaseRegistryTypeEnum.FRIExchange
+                    }
+                );
+            }
+
         }
     }
 }

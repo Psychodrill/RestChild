@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
     @if (string.IsNullOrWhiteSpace(ViewBag.Title))
@@ -26,419 +26,438 @@
     @RenderSection("styles", required: false)
 </head>
 <body data-spy="scroll" data-target="#scrollspy" data-offset-top="60">
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                @if (Request.IsAuthenticated)
+<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="container">
+<div class="navbar-header">
+    @if (Request.IsAuthenticated)
+    {
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    }
+    <a class="navbar-brand title-white" href="@Url.Action("Index", "Home")"></a>
+</div>
+@if (Request.IsAuthenticated)
+{
+    <div class="navbar-collapse collapse">
+    <ul class="nav navbar-nav">
+    @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.TradeUnionList.View, AccessRightEnum.RetryRequestInBaseRegistry, AccessRightEnum.RequestView, AccessRightEnum.Contract.View, AccessRightEnum.ToursView, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization, AccessRightEnum.Orphans.Main, AccessRightEnum.Orphans.PupilGroup, AccessRightEnum.Orphans.PupilGroupList}))
+    {
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Льготники/Профильники<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.Contract.View))
                 {
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
+                    <li>@Html.ActionLink("Реестр контрактов", "Search", "Contract")</li>
                 }
-                <a class="navbar-brand title-white" href="@Url.Action("Index", "Home")"></a>
+                @if (Security.HasRight(AccessRightEnum.ToursView))
+                {
+                    <li>@Html.ActionLink("Реестр размещений", "Search", "Tours")</li>
+                }
+                @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.Contract.Manage, AccessRightEnum.ToursView}) && Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.TradeUnionList.View, AccessRightEnum.RetryRequestInBaseRegistry, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.RequestView, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization}))
+                {
+                    <li role="separator" class="divider"></li>
+                }
+                @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.RequestView}))
+                {
+                    <li>@Html.ActionLink("Реестр заявлений", "RequestList", "FirstRequestCompany")</li>
+                    <li>@Html.ActionLink("Межведомственные запросы", "List", "InteragencyRequest")</li>
+                    <li>@Html.ActionLink("Реестр отдыхающих", "PreRegisterList2", "FirstRequestCompany")</li>
+                    if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.TradeUnionList.View, AccessRightEnum.RetryRequestInBaseRegistry, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization}))
+                    {
+                        <li role="separator" class="divider"></li>
+                    }
+                }
+                @if (Security.HasRight(AccessRightEnum.RetryRequestInBaseRegistry))
+                {
+                    <li>@Html.ActionLink("Проверка льготы", "List", "BaseRegistry")</li>
+                    if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.TradeUnionList.View, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization}))
+                    {
+                        <li role="separator" class="divider"></li>
+                    }
+                }
+
+                @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization}))
+                {
+                    if (Security.HasRight(AccessRightEnum.Limits.LimitToOiv))
+                    {
+                        <li>@Html.ActionLink("Квоты ОИВ", "VedomstvoList", "Limits")</li>
+                    }
+                    if (Security.HasRightForSomeOrganization(AccessRightEnum.Limit.Request.View))
+                    {
+                        <li>@Html.ActionLink("Заявки на квоты учреждений", "RequestList", "Limits")</li>
+                    }
+                    if (Security.HasRight(AccessRightEnum.Limits.LimitToOiv) || Security.HasRightForSomeOrganization(AccessRightEnum.Limits.LimitByOrganization))
+                    {
+                        <li>@Html.ActionLink("Квоты учреждения", "OrganizationList", "Limits")</li>
+                    }
+                    if (Security.HasRight(AccessRightEnum.Limits.LimitToOiv) || Security.HasRightForSomeOrganization(AccessRightEnum.Limits.LimitByOrganization) || Security.HasRightForSomeOrganization(AccessRightEnum.Limits.LimitChildInOrganization))
+                    {
+                        <li>@Html.ActionLink("Заявки от учреждений (списки детей)", "Organization", "Limits")</li>
+                    }
+
+                    if (Security.HasRightForSomeOrganization(AccessRightEnum.TradeUnionList.View))
+                    {
+                        <li role="separator" class="divider"></li>
+                    }
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.TradeUnionList.View))
+                {
+                    <li>@Html.ActionLink("Профсоюзные списки", "List", "TradeUnion")</li>
+                }
+                @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.Orphans.Main, AccessRightEnum.Orphans.PupilGroup, AccessRightEnum.Orphans.PupilGroupList}))
+                {
+                    <li role="separator" class="divider"></li>
+                    if (Security.HasRightForSomeOrganization(AccessRightEnum.Orphans.Main))
+                    {
+                        <li>@Html.ActionLink("Реестр учреждений социальной защиты", "OrphanageSearch", "Orphan")</li>
+                    }
+                    if (Security.HasRightForSomeOrganization(AccessRightEnum.Orphans.PupilGroup))
+                    {
+                        <li>@Html.ActionLink("Реестр потребностей учреждений социальной защиты", "OrphanageGroupsList", "Orphan")</li>
+                    }
+                    if (Security.HasRightForSomeOrganization(AccessRightEnum.Orphans.PupilGroupList))
+                    {
+                        <li>@Html.ActionLink("Реестр групп отправок учреждений социальной защиты", "OrphanagePupilGroupListsList", "Orphan")</li>
+                    }
+                }
+            </ul>
+        </li>
+    }
+
+    @if (Security.HasAnyRightsForSomeOrganization(new[]
+    {
+        AccessRightEnum.Bout.Counselor, AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour,
+        AccessRightEnum.Transport.View, AccessRightEnum.DirectoryFlightsManage, AccessRightEnum.CounselorTask.View,
+        AccessRightEnum.NewBout.View, AccessRightEnum.Task.View, AccessRightEnum.Gift.View, AccessRightEnum.GiftReserved.View,
+        AccessRightEnum.TradeUnionCashback.ListView, AccessRightEnum.TradeUnionCashback.RegistryView
+    }))
+    {
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Заезды<span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                @if (Security.HasAnyRights(new[] {AccessRightEnum.NewBout.View}))
+                {
+                    <li>@Html.ActionLink("Реестр заездов", "List", "NewBout")</li>
+                }
+                @if (Security.HasAnyRights(new[] {AccessRightEnum.NewBout.View}))
+                {
+                    <li>@Html.ActionLink("Реестр статистики по детям", "ChildList", "NewBout")</li>
+                }
+                @if (Security.HasAnyRights(new[] {AccessRightEnum.NewBout.View}))
+                {
+                    <li>@Html.ActionLink("Реестр заданий", "List", "Task")</li>
+                }
+                @if (Security.HasAnyRights(new[] {AccessRightEnum.Gift.View}))
+                {
+                    <li>@Html.ActionLink("Реестр подарков", "List", "Gift")</li>
+                }
+                @if (Security.HasAnyRights(new[] {AccessRightEnum.GiftReserved.View}))
+                {
+                    <li>@Html.ActionLink("Реестр выдачи подарков", "List", "GiftReserved")</li>
+                }
+
+                @if (Security.HasAnyRightsForSomeOrganization(new[]
+                {
+                    AccessRightEnum.Bout.Counselor, AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour,
+                    AccessRightEnum.Transport.View, AccessRightEnum.DirectoryFlightsManage, AccessRightEnum.CounselorTask.View
+                }))
+                {
+                    <li role="separator" class="divider"></li>
+                }
+
+                @if (Security.HasAnyRights(new[] {AccessRightEnum.Bout.Counselor, AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour}))
+                {
+                    <li>@Html.ActionLink("Реестр отправок", "Search", "Bout")</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.Transport.View))
+                {
+                    <li>@Html.ActionLink("Управление транспортом", "Search", "TransportInfo")</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.DirectoryFlightsManage))
+                {
+                    <li>@Html.ActionLink("Реестр рейсов", "Search", "DirectoryFlights")</li>
+                }
+                @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.TradeUnionCashback.ListView}) ||
+                     Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.TradeUnionCashback.RegistryView}))
+                {
+                    <li role="separator" class="divider"></li>
+                    if (Security.HasRightForSomeOrganization(AccessRightEnum.TradeUnionCashback.ListView))
+                    {
+                        <li>@Html.ActionLink("Списки фактически отдохнувших", "List", "TradeUnionCashback")</li>
+                    }
+                    if (Security.HasRightForSomeOrganization(AccessRightEnum.TradeUnionCashback.RegistryView))
+                    {
+                        <li>@Html.ActionLink("Реестр претендентов на кэшбэк", "Search", "TradeUnionCashback")</li>
+                    }
+                }
+                @if (Security.HasRight(AccessRightEnum.CounselorTask.View))
+                {
+                    if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour, AccessRightEnum.TransportInfoManage, AccessRightEnum.DirectoryFlightsManage}))
+                    {
+                        <li role="separator" class="divider"></li>
+                    }
+                    <li>@Html.ActionLink("Взаимодействие с сотрудниками", "List", "CounselorTask")</li>
+                }
+
+                @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.CounselorsManage, AccessRightEnum.AdministratorTour.View, AccessRightEnum.TrainingCounselors.View, AccessRightEnum.CounselorTest.View}))
+                {
+                    if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.CounselorTask.View, AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour, AccessRightEnum.TransportInfoManage, AccessRightEnum.DirectoryFlightsManage}))
+                    {
+                        <li role="separator" class="divider"></li>
+                    }
+                    if (Security.HasRight(AccessRightEnum.CounselorsManage))
+                    {
+                        <li>@Html.ActionLink("Реестр вожатых", "Search", "Counselors")</li>
+                    }
+                    if (Security.HasRight(AccessRightEnum.AdministratorTour.View))
+                    {
+                        <li>@Html.ActionLink("Реестр администраторов смен", "Search", "AdministratorTour")</li>
+                    }
+                    if (Security.HasRight(AccessRightEnum.CounselorTest.View))
+                    {
+                        <li>@Html.ActionLink("Тесты вожатых", "List", "CounselorTest")</li>
+                    }
+                    if (Security.HasRight(AccessRightEnum.TrainingCounselors.View))
+                    {
+                        <li>@Html.ActionLink("Группы обучения вожатых", "GroupList", "CounselorTest")</li>
+                    }
+                }
+            </ul>
+        </li>
+    }
+
+    @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.ManageExchangeBaseRegistry, AccessRightEnum.CounselorsManage, AccessRightEnum.AdministratorTour.View, AccessRightEnum.Hotel.View, AccessRightEnum.PlaceOfRestManage, AccessRightEnum.VocabularyManage, AccessRightEnum.Organization.View, AccessRightEnum.AccountManage, AccessRightEnum.CityView}))
+    {
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Справочники <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.Hotel.View))
+                {
+                    <li>@Html.ActionLink("Реестр оздоровительных организаций", "Search", "Hotels")</li>
+                    if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.PlaceOfRestManage, AccessRightEnum.VocabularyManage, AccessRightEnum.Organization.View, AccessRightEnum.AccountManage, AccessRightEnum.CityView}))
+                    {
+                        <li role="separator" class="divider"></li>
+                    }
+                }
+                @if (Security.HasRight(AccessRightEnum.PlaceOfRestManage))
+                {
+                    <li>@Html.ActionLink("Направления отдыха", "Search", "RestPlaces")</li>
+                }
+                @if (Security.HasRight(AccessRightEnum.VocabularyManage))
+                {
+                    <li>@Html.ActionLink("Заявочные кампании", "Search", "RequestCurrentPeriod")</li>
+                    <li>@Html.ActionLink("Цели обращения", "Search", "RestType")</li>
+                    <li>@Html.ActionLink("Время отдыха", "Search", "RestTime")</li>
+                    <li>@Html.ActionLink("Виды льгот", "Search", "BenefitType")</li>
+                    <li>@Html.ActionLink("Статусы по отношению к ребенку", "Search", "StatusByChild")</li>
+                    <li>@Html.ActionLink("Тэги", "List", "Tag")</li>
+                    <li>@Html.ActionLink("Классификатор \"Тематик смены\"", "ClassificatorList", "SubjectOfRest")</li>
+                    <li>@Html.ActionLink("\"Тематика смены\"", "Search", "SubjectOfRest")</li>
+                }
+                @if (Security.HasRight(AccessRightEnum.Organization.View))
+                {
+                    <li>@Html.ActionLink("Организации", "List", "Organization")</li>
+                }
+                @if (Security.HasAnyRights(new[] {AccessRightEnum.CityView}))
+                {
+                    <li>@Html.ActionLink("Города", "Search", "City")</li>
+                }
+                @if (Security.HasAnyRights(new[] {AccessRightEnum.PedParty.PedPartyView, AccessRightEnum.PedParty.PedPartyManage}))
+                {
+                    <li>@Html.ActionLink("Педотряды", "Search", "PedParty")</li>
+                }
+                @if (Security.HasAnyRights(new[] {AccessRightEnum.ManageExchangeBaseRegistry}))
+                {
+                    <li>@Html.ActionLink("Управление отправкой запросов в базовый регистр", "ManageExchangeBaseRegistry", "BaseRegistry")</li>
+                }
+                @if (Security.HasAnyRights(new[] {AccessRightEnum.MosgorturScheduleBookingView, AccessRightEnum.MosgorturBookingTargetsView, AccessRightEnum.MosgorturWorkingDaysView}))
+                {
+                    <li role="separator" class="divider"></li>
+                    if (Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView))
+                    {
+                        <li>@Html.ActionLink("Реестр записи на приём в ГАУК «МОСГОРТУР»", "Search", "BookingMosgorturReestr", new {filter = System.Guid.NewGuid().ToString()}, null)</li>
+                    }
+                    if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysView))
+                    {
+                        <li>@Html.ActionLink("Управление рабочими днями ГАУК «МОСГОРТУР»", "WorkingDays", "BookingMosgorturReestr")</li>
+                    }
+                    if (Security.HasRight(AccessRightEnum.MosgorturBookingTargetsView))
+                    {
+                        <li>@Html.ActionLink("Цели обращения в ГАУК «МОСГОРТУР»", "Search", "BookingMosgorturTargets")</li>
+                    }
+                }
+                @if (Security.HasAnyRights(new[] {AccessRightEnum.ZAGSIntegration, AccessRightEnum.DTSZNIntegration, AccessRightEnum.ChildTransfer}))
+                {
+                    <li role="separator" class="divider"></li>
+                    if (Security.HasRight(AccessRightEnum.ZAGSIntegration))
+                    {
+                        <li>@Html.ActionLink("Интеграция с ЗАГС", "Index", "ZAGZIntegration")</li>
+                    }
+                    if (Security.HasRight(AccessRightEnum.DTSZNIntegration))
+                    {
+                        <li>@Html.ActionLink("Интеграция с ДТСЗН", "Index", "DTSZN")</li>
+                    }
+                    if (Security.HasRight(AccessRightEnum.ChildTransfer))
+                    {
+                        <li>@Html.ActionLink("Перенос заездов", "Index", "ChildTransfer")</li>
+                    }
+                }
+            </ul>
+        </li>
+    }
+    @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.AnalyticReports.EGISO, AccessRightEnum.AnalyticReports.BenefitRestChildByAgeAndSex, AccessRightEnum.AnalyticReports.BenefitFamilyRestByAgeAndSex, AccessRightEnum.AnalyticReports.BenefitRestChildByCategoryAndDistrict, AccessRightEnum.AnalyticReports.BenefitFamilyRestByCategoryAndDistrict, AccessRightEnum.AnalyticReports.BenefitRestChildByBoutCompleteness, AccessRightEnum.AnalyticReports.BenefitFamilyRestByBoutCompleteness, AccessRightEnum.AnalyticReports.ByTransportServices, AccessRightEnum.AnalyticReports.ByResidenceServices, AccessRightEnum.AnalyticReports.SpecializedCampsByOrganizations, AccessRightEnum.AnalyticReports.SpecializedCampsByVedomstvo, AccessRightEnum.AnalyticReports.SpecializedCampsByAgeAndRegions, AccessRightEnum.AnalyticReports.RestWithChildTypeOfRooms}))
+    {
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Отчеты <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.EGISO))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.EGISO), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.EGISO}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.BenefitRestChildByAgeAndSex))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.BenefitRestChildByAgeAndSex), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.BenefitRestChildByAgeAndSex}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.BenefitFamilyRestByAgeAndSex))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.BenefitFamilyRestByAgeAndSex), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.BenefitFamilyRestByAgeAndSex}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.BenefitRestChildByCategoryAndDistrict))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.BenefitRestChildByCategoryAndDistrict), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.BenefitRestChildByCategoryAndDistrict}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.BenefitFamilyRestByCategoryAndDistrict))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.BenefitFamilyRestByCategoryAndDistrict), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.BenefitFamilyRestByCategoryAndDistrict}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.BenefitRestChildByBoutCompleteness))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.BenefitRestChildByBoutCompleteness), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.BenefitRestChildByBoutCompleteness}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.BenefitFamilyRestByBoutCompleteness))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.BenefitFamilyRestByBoutCompleteness), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.BenefitFamilyRestByBoutCompleteness}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.ByTransportServices))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.ByTransportServices), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.ByTransportServices}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.ByResidenceServices))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.ByResidenceServices), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.ByResidenceServices}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.SpecializedCampsByVedomstvo))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.SpecializedCampsByVedomstvo), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.SpecializedCampsByVedomstvo}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.SpecializedCampsByOrganizations))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.SpecializedCampsByOrganizations), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.SpecializedCampsByOrganizations}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.SpecializedCampsByAgeAndRegions))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.SpecializedCampsByAgeAndRegions), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.SpecializedCampsByAgeAndRegions}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.RestWithChildTypeOfRooms))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.RestWithChildTypeOfRooms), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.RestWithChildTypeOfRooms}, new {})</li>
+                }
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.RoomsFund))
+                {
+                    <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.RoomsFund), "BaseReport", "AnalyticReport", new {ReportType = AccessRightEnum.AnalyticReports.RoomsFund}, new {})</li>
+                }
+            </ul>
+        </li>
+    }
+    @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.Monitoring.ChildrenNumberInformation.View, AccessRightEnum.Monitoring.FinanceInformation.View, AccessRightEnum.Monitoring.SmallLeisureInfoData.View, AccessRightEnum.Monitoring.ReestrWork, AccessRightEnum.Monitoring.CompleteFormDownload,}))
+    {
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Мониторинг <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                @if (MonitoringOrganizationExtension.HasRightOfMonitoringOrganization(AccessRightEnum.Monitoring.ChildrenNumberInformation.View))
+                {
+                    <li>@Html.ActionLink("Сведения о численности детей", "ChildrenNumberInformationEdit", "Monitoring")</li>
+                }
+                @if (MonitoringOrganizationExtension.HasRightOfMonitoringOrganization(AccessRightEnum.Monitoring.FinanceInformation.View))
+                {
+                    <li>@Html.ActionLink("Сведения о финансировании", "FinanceInformationEdit", "Monitoring")</li>
+                }
+                @if (MonitoringOrganizationExtension.HasRightOfMonitoringOrganization(AccessRightEnum.Monitoring.SmallLeisureInfoData.View))
+                {
+                    <li>@Html.ActionLink("Сведения о малых формах досуга", "SmallLeisureInfoEdit", "Monitoring")</li>
+                }
+                @if (Security.HasRight(AccessRightEnum.Monitoring.ReestrWork))
+                {
+                    if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.Monitoring.ChildrenNumberInformation.View, AccessRightEnum.Monitoring.FinanceInformation.View, AccessRightEnum.Monitoring.SmallLeisureInfoData.View}))
+                    {
+                        <li role="separator" class="divider"></li>
+                    }
+                    <li>@Html.ActionLink("Реестр форм о численности детей", "ChildrenNumberInformationList", "Monitoring")</li>
+                    <li>@Html.ActionLink("Реестр форм о финансировании", "FinanceInformationList", "Monitoring")</li>
+                    <li>@Html.ActionLink("Реестр форм о малых формах досуга", "SmallLeisureInfoList", "Monitoring")</li>
+                }
+                @if (Security.HasRight(AccessRightEnum.Monitoring.CompleteFormDownload))
+                {
+                    if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.Monitoring.ChildrenNumberInformation.View, AccessRightEnum.Monitoring.FinanceInformation.View, AccessRightEnum.Monitoring.SmallLeisureInfoData.View, AccessRightEnum.Monitoring.ReestrWork}))
+                    {
+                        <li role="separator" class="divider"></li>
+                    }
+                    <li>@Html.ActionLink("Выгрузка сводных форм", "CompleteForms", "Monitoring")</li>
+                }
+            </ul>
+        </li>
+    }
+    </ul>
+    @Html.Partial("_LoginPartial")
+    </div>
+}
+</div>
+</div>
+<div class="infoPanel"></div>
+<div class="container body-content">
+    @RenderBody()
+    <!--<hr/>
+    <footer>
+        <p></p>
+    </footer>-->
+</div>
+<div id="AlertContainer" class="alert-panel"></div>
+<div class="modal fade" id="PleaseWaitDiv" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3><img class="text-center" width="40" height="40" src="@Url.Content("~/Content/images/spinner.gif")"/> Пожалуйста, подождите...</h3>
             </div>
-            @if (Request.IsAuthenticated)
-            {
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.TradeUnionList.View, AccessRightEnum.RetryRequestInBaseRegistry, AccessRightEnum.RequestView, AccessRightEnum.Contract.View, AccessRightEnum.ToursView, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization, AccessRightEnum.Orphans.Main, AccessRightEnum.Orphans.PupilGroup, AccessRightEnum.Orphans.PupilGroupList }))
-                        {
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Льготники/Профильники<span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.Contract.View))
-                                    {
-                                        <li>@Html.ActionLink("Реестр контрактов", "Search", "Contract")</li>
-                                    }
-                                    @if (Security.HasRight(AccessRightEnum.ToursView))
-                                    {
-                                        <li>@Html.ActionLink("Реестр размещений", "Search", "Tours")</li>
-                                    }
-                                    @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.Contract.Manage, AccessRightEnum.ToursView }) && Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.TradeUnionList.View, AccessRightEnum.RetryRequestInBaseRegistry, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.RequestView, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization }))
-                                    {
-                                        <li role="separator" class="divider"></li>
-                                    }
-                                    @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.RequestView }))
-                                    {
-                                        <li>@Html.ActionLink("Реестр заявлений", "RequestList", "FirstRequestCompany")</li>
-                                        <li>@Html.ActionLink("Межведомственные запросы", "List", "InteragencyRequest")</li>
-                                        <li>@Html.ActionLink("Реестр отдыхающих", "PreRegisterList2", "FirstRequestCompany")</li>
-                                        if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.TradeUnionList.View, AccessRightEnum.RetryRequestInBaseRegistry, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization }))
-                                        {
-                                            <li role="separator" class="divider"></li>
-                                        }
-                                    }
-                                    @if (Security.HasRight(AccessRightEnum.RetryRequestInBaseRegistry))
-                                    {
-                                        <li>@Html.ActionLink("Проверка льготы", "List", "BaseRegistry")</li>
-                                        if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.TradeUnionList.View, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization }))
-                                        {
-                                            <li role="separator" class="divider"></li>
-                                        }
-                                    }
-
-                                    @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization }))
-                                    {
-                                        if (Security.HasRight(AccessRightEnum.Limits.LimitToOiv))
-                                        {
-                                            <li>@Html.ActionLink("Квоты ОИВ", "VedomstvoList", "Limits")</li>
-                                        }
-                                        if (Security.HasRightForSomeOrganization(AccessRightEnum.Limit.Request.View))
-                                        {
-                                            <li>@Html.ActionLink("Заявки на квоты учреждений", "RequestList", "Limits")</li>
-                                        }
-                                        if (Security.HasRight(AccessRightEnum.Limits.LimitToOiv) || Security.HasRightForSomeOrganization(AccessRightEnum.Limits.LimitByOrganization))
-                                        {
-                                            <li>@Html.ActionLink("Квоты учреждения", "OrganizationList", "Limits")</li>
-                                        }
-                                        if (Security.HasRight(AccessRightEnum.Limits.LimitToOiv) || Security.HasRightForSomeOrganization(AccessRightEnum.Limits.LimitByOrganization) || Security.HasRightForSomeOrganization(AccessRightEnum.Limits.LimitChildInOrganization))
-                                        {
-                                            <li>@Html.ActionLink("Заявки от учреждений (списки детей)", "Organization", "Limits")</li>
-                                        }
-
-                                        if (Security.HasRightForSomeOrganization(AccessRightEnum.TradeUnionList.View))
-                                        {
-                                            <li role="separator" class="divider"></li>
-                                        }
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.TradeUnionList.View))
-                                    {
-                                        <li>@Html.ActionLink("Профсоюзные списки", "List", "TradeUnion")</li>
-                                    }
-                                    @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.Orphans.Main, AccessRightEnum.Orphans.PupilGroup, AccessRightEnum.Orphans.PupilGroupList }))
-                                    {
-                                        <li role="separator" class="divider"></li>
-                                        if (Security.HasRightForSomeOrganization(AccessRightEnum.Orphans.Main))
-                                        {
-                                            <li>@Html.ActionLink("Реестр учреждений социальной защиты", "OrphanageSearch", "Orphan")</li>
-                                        }
-                                        if (Security.HasRightForSomeOrganization(AccessRightEnum.Orphans.PupilGroup))
-                                        {
-                                            <li>@Html.ActionLink("Реестр потребностей учреждений социальной защиты", "OrphanageGroupsList", "Orphan")</li>
-                                        }
-                                        if (Security.HasRightForSomeOrganization(AccessRightEnum.Orphans.PupilGroupList))
-                                        {
-                                            <li>@Html.ActionLink("Реестр групп отправок учреждений социальной защиты", "OrphanagePupilGroupListsList", "Orphan")</li>
-                                        }
-                                    }
-                                </ul>
-                            </li>
-                        }
-
-                        @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.Bout.Counselor, AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour,
-                            AccessRightEnum.Transport.View, AccessRightEnum.DirectoryFlightsManage, AccessRightEnum.CounselorTask.View,
-                            AccessRightEnum.NewBout.View, AccessRightEnum.Task.View, AccessRightEnum.Gift.View, AccessRightEnum.GiftReserved.View
-                        }))
-                        {
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Заезды<span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    @if (Security.HasAnyRights(new[] { AccessRightEnum.NewBout.View }))
-                                    {
-                                        <li>@Html.ActionLink("Реестр заездов", "List", "NewBout")</li>
-                                    }
-                                    @if (Security.HasAnyRights(new[] { AccessRightEnum.NewBout.View }))
-                                    {
-                                        <li>@Html.ActionLink("Реестр статистики по детям", "ChildList", "NewBout")</li>
-                                    }
-                                    @if (Security.HasAnyRights(new[] { AccessRightEnum.NewBout.View }))
-                                    {
-                                        <li>@Html.ActionLink("Реестр заданий", "List", "Task")</li>
-                                    }
-                                    @if (Security.HasAnyRights(new[] { AccessRightEnum.Gift.View }))
-                                    {
-                                        <li>@Html.ActionLink("Реестр подарков", "List", "Gift")</li>
-                                    }
-                                    @if (Security.HasAnyRights(new[] { AccessRightEnum.GiftReserved.View }))
-                                    {
-                                        <li>@Html.ActionLink("Реестр выдачи подарков", "List", "GiftReserved")</li>
-                                    }
-
-                                    @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.Bout.Counselor, AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour,
-                                        AccessRightEnum.Transport.View, AccessRightEnum.DirectoryFlightsManage, AccessRightEnum.CounselorTask.View
-                                    }))
-                                    {
-                                        <li role="separator" class="divider"></li>
-                                    }
-
-                                    @if (Security.HasAnyRights(new[] { AccessRightEnum.Bout.Counselor, AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour }))
-                                    {
-                                        <li>@Html.ActionLink("Реестр отправок", "Search", "Bout")</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.Transport.View))
-                                    {
-                                        <li>@Html.ActionLink("Управление транспортом", "Search", "TransportInfo")</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.DirectoryFlightsManage))
-                                    {
-                                        <li>@Html.ActionLink("Реестр рейсов", "Search", "DirectoryFlights")</li>
-                                    }
-                                    @if (Security.HasRight(AccessRightEnum.CounselorTask.View))
-                                    {
-                                        if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour, AccessRightEnum.TransportInfoManage, AccessRightEnum.DirectoryFlightsManage }))
-                                        {
-                                            <li role="separator" class="divider"></li>
-                                        }
-                                        <li>@Html.ActionLink("Взаимодействие с сотрудниками", "List", "CounselorTask")</li>
-                                    }
-
-                                    @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.CounselorsManage, AccessRightEnum.AdministratorTour.View, AccessRightEnum.TrainingCounselors.View, AccessRightEnum.CounselorTest.View }))
-                                    {
-                                        if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.CounselorTask.View, AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour, AccessRightEnum.TransportInfoManage, AccessRightEnum.DirectoryFlightsManage }))
-                                        {
-                                            <li role="separator" class="divider"></li>
-                                        }
-                                        if (Security.HasRight(AccessRightEnum.CounselorsManage))
-                                        {
-                                            <li>@Html.ActionLink("Реестр вожатых", "Search", "Counselors")</li>
-                                        }
-                                        if (Security.HasRight(AccessRightEnum.AdministratorTour.View))
-                                        {
-                                            <li>@Html.ActionLink("Реестр администраторов смен", "Search", "AdministratorTour")</li>
-                                        }
-                                        if (Security.HasRight(AccessRightEnum.CounselorTest.View))
-                                        {
-                                            <li>@Html.ActionLink("Тесты вожатых", "List", "CounselorTest")</li>
-                                        }
-                                        if (Security.HasRight(AccessRightEnum.TrainingCounselors.View))
-                                        {
-                                            <li>@Html.ActionLink("Группы обучения вожатых", "GroupList", "CounselorTest")</li>
-                                        }
-                                    }
-                                </ul>
-                            </li>
-                        }
-
-                        @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.ManageExchangeBaseRegistry, AccessRightEnum.CounselorsManage, AccessRightEnum.AdministratorTour.View, AccessRightEnum.Hotel.View, AccessRightEnum.PlaceOfRestManage, AccessRightEnum.VocabularyManage, AccessRightEnum.Organization.View, AccessRightEnum.AccountManage, AccessRightEnum.CityView }))
-                        {
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Справочники <span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.Hotel.View))
-                                    {
-                                        <li>@Html.ActionLink("Реестр оздоровительных организаций", "Search", "Hotels")</li>
-                                        if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.PlaceOfRestManage, AccessRightEnum.VocabularyManage, AccessRightEnum.Organization.View, AccessRightEnum.AccountManage, AccessRightEnum.CityView }))
-                                        {
-                                            <li role="separator" class="divider"></li>
-                                        }
-                                    }
-                                    @if (Security.HasRight(AccessRightEnum.PlaceOfRestManage))
-                                    {
-                                        <li>@Html.ActionLink("Направления отдыха", "Search", "RestPlaces")</li>
-                                    }
-                                    @if (Security.HasRight(AccessRightEnum.VocabularyManage))
-                                    {
-                                        <li>@Html.ActionLink("Заявочные кампании", "Search", "RequestCurrentPeriod")</li>
-                                        <li>@Html.ActionLink("Цели обращения", "Search", "RestType")</li>
-                                        <li>@Html.ActionLink("Время отдыха", "Search", "RestTime")</li>
-                                        <li>@Html.ActionLink("Виды льгот", "Search", "BenefitType")</li>
-                                        <li>@Html.ActionLink("Статусы по отношению к ребенку", "Search", "StatusByChild")</li>
-                                        <li>@Html.ActionLink("Тэги", "List", "Tag")</li>
-                                        <li>@Html.ActionLink("Классификатор \"Тематик смены\"", "ClassificatorList", "SubjectOfRest")</li>
-                                        <li>@Html.ActionLink("\"Тематика смены\"", "Search", "SubjectOfRest")</li>
-                                        @*<li>@Html.ActionLink("Типы функционирования оздоровительных организаций", "Search", "FunctioningType")</li>
-                                            <li>@Html.ActionLink("Размещения оздоровительных организаций", "Search", "HotelPlacement")</li>*@
-                                    }
-                                    @if (Security.HasRight(AccessRightEnum.Organization.View))
-                                    {
-                                        <li>@Html.ActionLink("Организации", "List", "Organization")</li>
-                                    }
-                                    @if (Security.HasAnyRights(new[] { AccessRightEnum.CityView }))
-                                    {
-                                        <li>@Html.ActionLink("Города", "Search", "City")</li>
-                                    }
-                                    @if (Security.HasAnyRights(new[] { AccessRightEnum.PedParty.PedPartyView, AccessRightEnum.PedParty.PedPartyManage }))
-                                    {
-                                        <li>@Html.ActionLink("Педотряды", "Search", "PedParty")</li>
-                                    }
-                                    @if (Security.HasAnyRights(new[] { AccessRightEnum.ManageExchangeBaseRegistry }))
-                                    {
-                                        <li>@Html.ActionLink("Управление отправкой запросов в базовый регистр", "ManageExchangeBaseRegistry", "BaseRegistry")</li>
-                                    }
-                                    @if (Security.HasAnyRights(new[] { AccessRightEnum.MosgorturScheduleBookingView, AccessRightEnum.MosgorturBookingTargetsView, AccessRightEnum.MosgorturWorkingDaysView }))
-                                    {
-                                        <li role="separator" class="divider"></li>
-                                        if (Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView))
-                                        {
-                                            <li>@Html.ActionLink("Реестр записи на приём в ГАУК «МОСГОРТУР»", "Search", "BookingMosgorturReestr", new { filter = System.Guid.NewGuid().ToString() }, null)</li>
-                                        }
-                                        if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysView))
-                                        {
-                                            <li>@Html.ActionLink("Управление рабочими днями ГАУК «МОСГОРТУР»", "WorkingDays", "BookingMosgorturReestr")</li>
-                                        }
-                                        if (Security.HasRight(AccessRightEnum.MosgorturBookingTargetsView))
-                                        {
-                                            <li>@Html.ActionLink("Цели обращения в ГАУК «МОСГОРТУР»", "Search", "BookingMosgorturTargets")</li>
-                                        }
-                                    }
-                                    @if (Security.HasAnyRights(new[] { AccessRightEnum.ZAGSIntegration, AccessRightEnum.DTSZNIntegration, AccessRightEnum.ChildTransfer }))
-                                    {
-                                        <li role="separator" class="divider"></li>
-                                        if (Security.HasRight(AccessRightEnum.ZAGSIntegration))
-                                        {
-                                            <li>@Html.ActionLink("Интеграция с ЗАГС", "Index", "ZAGZIntegration")</li>
-                                        }
-                                        if (Security.HasRight(AccessRightEnum.DTSZNIntegration))
-                                        {
-                                            <li>@Html.ActionLink("Интеграция с ДТСЗН", "Index", "DTSZN")</li>
-                                        }
-                                        if (Security.HasRight(AccessRightEnum.ChildTransfer))
-                                        {
-                                            <li>@Html.ActionLink("Перенос заездов", "Index", "ChildTransfer")</li>
-                                        }
-                                    }
-                                </ul>
-                            </li>
-                        }
-                        @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.AnalyticReports.EGISO, AccessRightEnum.AnalyticReports.BenefitRestChildByAgeAndSex, AccessRightEnum.AnalyticReports.BenefitFamilyRestByAgeAndSex, AccessRightEnum.AnalyticReports.BenefitRestChildByCategoryAndDistrict, AccessRightEnum.AnalyticReports.BenefitFamilyRestByCategoryAndDistrict, AccessRightEnum.AnalyticReports.BenefitRestChildByBoutCompleteness, AccessRightEnum.AnalyticReports.BenefitFamilyRestByBoutCompleteness, AccessRightEnum.AnalyticReports.ByTransportServices, AccessRightEnum.AnalyticReports.ByResidenceServices, AccessRightEnum.AnalyticReports.SpecializedCampsByOrganizations, AccessRightEnum.AnalyticReports.SpecializedCampsByVedomstvo, AccessRightEnum.AnalyticReports.SpecializedCampsByAgeAndRegions, AccessRightEnum.AnalyticReports.RestWithChildTypeOfRooms }))
-                        {
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Отчеты <span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.EGISO))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.EGISO), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.EGISO }, new { })</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.BenefitRestChildByAgeAndSex))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.BenefitRestChildByAgeAndSex), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.BenefitRestChildByAgeAndSex }, new { })</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.BenefitFamilyRestByAgeAndSex))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.BenefitFamilyRestByAgeAndSex), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.BenefitFamilyRestByAgeAndSex }, new { })</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.BenefitRestChildByCategoryAndDistrict))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.BenefitRestChildByCategoryAndDistrict), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.BenefitRestChildByCategoryAndDistrict }, new { })</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.BenefitFamilyRestByCategoryAndDistrict))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.BenefitFamilyRestByCategoryAndDistrict), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.BenefitFamilyRestByCategoryAndDistrict }, new { })</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.BenefitRestChildByBoutCompleteness))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.BenefitRestChildByBoutCompleteness), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.BenefitRestChildByBoutCompleteness }, new { })</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.BenefitFamilyRestByBoutCompleteness))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.BenefitFamilyRestByBoutCompleteness), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.BenefitFamilyRestByBoutCompleteness }, new { })</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.ByTransportServices))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.ByTransportServices), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.ByTransportServices }, new { })</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.ByResidenceServices))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.ByResidenceServices), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.ByResidenceServices }, new { })</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.SpecializedCampsByVedomstvo))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.SpecializedCampsByVedomstvo), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.SpecializedCampsByVedomstvo }, new { })</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.SpecializedCampsByOrganizations))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.SpecializedCampsByOrganizations), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.SpecializedCampsByOrganizations }, new { })</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.SpecializedCampsByAgeAndRegions))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.SpecializedCampsByAgeAndRegions), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.SpecializedCampsByAgeAndRegions }, new { })</li>
-                                    }
-                                    @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.RestWithChildTypeOfRooms))
-                                    {
-                                        <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.RestWithChildTypeOfRooms), "Index", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.RestWithChildTypeOfRooms }, new { })</li>
-                                    }
-                                </ul>
-                            </li>
-                        }
-                        @if(Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.Monitoring.ChildrenNumberInformation.View, AccessRightEnum.Monitoring.FinanceInformation.View, AccessRightEnum.Monitoring.SmallLeisureInfoData.View, AccessRightEnum.Monitoring.ReestrWork, AccessRightEnum.Monitoring.CompleteFormDownload,  }))
-                        {
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Мониторинг <span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    @if (MonitoringOrganizationExtension.HasRightOfMonitoringOrganization(AccessRightEnum.Monitoring.ChildrenNumberInformation.View))
-                                    {
-                                        <li>@Html.ActionLink("Сведения о численности детей", "ChildrenNumberInformationEdit", "Monitoring")</li>
-                                    }
-                                    @if (MonitoringOrganizationExtension.HasRightOfMonitoringOrganization(AccessRightEnum.Monitoring.FinanceInformation.View))
-                                    {
-                                        <li>@Html.ActionLink("Сведения о финансировании", "FinanceInformationEdit", "Monitoring")</li>
-                                    }
-                                    @if (MonitoringOrganizationExtension.HasRightOfMonitoringOrganization(AccessRightEnum.Monitoring.SmallLeisureInfoData.View))
-                                    {
-                                        <li>@Html.ActionLink("Сведения о малых формах досуга", "SmallLeisureInfoEdit", "Monitoring")</li>
-                                    }
-                                    @if (Security.HasRight(AccessRightEnum.Monitoring.ReestrWork))
-                                    {
-                                        if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.Monitoring.ChildrenNumberInformation.View, AccessRightEnum.Monitoring.FinanceInformation.View, AccessRightEnum.Monitoring.SmallLeisureInfoData.View }))
-                                        {
-                                            <li role="separator" class="divider"></li>
-                                        }
-                                        <li>@Html.ActionLink("Реестр форм о численности детей", "ChildrenNumberInformationList", "Monitoring")</li>
-                                        <li>@Html.ActionLink("Реестр форм о финансировании", "FinanceInformationList", "Monitoring")</li>
-                                        <li>@Html.ActionLink("Реестр форм о малых формах досуга", "SmallLeisureInfoList", "Monitoring")</li>
-                                    }
-                                    @if (Security.HasRight(AccessRightEnum.Monitoring.CompleteFormDownload))
-                                    {
-                                        if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.Monitoring.ChildrenNumberInformation.View, AccessRightEnum.Monitoring.FinanceInformation.View, AccessRightEnum.Monitoring.SmallLeisureInfoData.View, AccessRightEnum.Monitoring.ReestrWork }))
-                                        {
-                                            <li role="separator" class="divider"></li>
-                                        }
-                                        <li>@Html.ActionLink("Выгрузка сводных форм", "CompleteForms", "Monitoring")</li>
-
-                                    }
-                                </ul>
-                            </li>
-                        }
-                    </ul>
-                    @Html.Partial("_LoginPartial")
-                </div>
-            }
         </div>
     </div>
-    <div class="infoPanel"></div>
-    <div class="container body-content">
-        @RenderBody()
-        <!--<hr/>
-        <footer>
-           <p></p>
-        </footer>-->
+</div>
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted" style="padding: 9px">
+            В случае возникновения проблем и ошибок при работе с Системой, а также выявлении некорректных данных просим обращаться в службу технической поддержки
+            по email: <a href="mailto:aiso_hd@mos.ru">aiso_hd@mos.ru</a> или по телефону <a href="tel:+74959898025">+7(495) 989-80-25</a>. Версия ПО: @MvcApplication.Version
+        </p>
     </div>
-    <div id="AlertContainer" class="alert-panel"></div>
-    <div class="modal fade" id="PleaseWaitDiv" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <h3><img class="text-center" width="40" height="40" src="@Url.Content("~/Content/images/spinner.gif")" /> Пожалуйста, подождите...</h3>
-                </div>
-            </div>
-        </div>
-    </div>
-    <footer class="footer">
-        <div class="container">
-            <p class="text-muted" style="padding: 9px">
-                В случае возникновения проблем и ошибок при работе с Системой, а также выявлении некорректных данных просим обращаться в службу технической поддержки
-                по email: <a href="mailto:aiso_hd@mos.ru">aiso_hd@mos.ru</a> или по телефону <a href="tel:+74959898025">+7(495) 989-80-25</a>. Версия ПО: @MvcApplication.Version
-            </p>
-        </div>
-    </footer>
-    <script type="text/javascript" language="javascript">
+</footer>
+<script type="text/javascript" language="javascript">
    var rootPath = window.location.href.replace(window.location.pathname, '').replace(window.location.search, '').replace(window.location.hash, '').replace('#', '').replace('?', '') + '@Url.Content("~/")';
     </script>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jqueryui")
-    @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/jqueryinputmask")
-    @Scripts.Render("~/bundles/layoutScripts")
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryui")
+@Scripts.Render("~/bundles/bootstrap")
+@Scripts.Render("~/bundles/jqueryinputmask")
+@Scripts.Render("~/bundles/layoutScripts")
 
-    @RenderSection("scripts", required: false)
-    <script type="text/javascript">
+@RenderSection("scripts", required: false)
+<script type="text/javascript">
    $(function() {
       $('input[type="text"]').attr('autocomplete', 'off');
       @if (!string.IsNullOrEmpty(Request["reloaded"]) || (TempData[BaseController.RedirectedKey] != null))
       {
-         <text>
+          <text>
             ShowAlert("Данные были обновлены, так как были изменены с последнего открытия карточки",
                "alert-danger",
                "glyphicon-ok",
@@ -446,43 +465,43 @@
          </text>
       }
       @{
-         var errors = TempData[BaseController.ErrorsKey] as List<string>;
-         if (errors != null && errors.Any())
-         {
-            <text>
+          var errors = TempData[BaseController.ErrorsKey] as List<string>;
+          if (errors != null && errors.Any())
+          {
+              <text>
                var errorMsg = '';
 
             </text>
-            foreach (var error in errors)
-            {
-               <text>
+              foreach (var error in errors)
+              {
+                  <text>
                   errorMsg = errorMsg + '<li>@error</li>';
                </text>
-            }
-            <text>
+              }
+              <text>
                errorMsg = '<ul>' + errorMsg + '</ul>';
                ShowAlert(errorMsg, "alert-danger", "", true);
             </text>
-         }
+          }
 
-         var messages = TempData[BaseController.MessageKey] as List<string>;
-         if (messages != null && messages.Any())
-         {
-            <text>
+          var messages = TempData[BaseController.MessageKey] as List<string>;
+          if (messages != null && messages.Any())
+          {
+              <text>
                var messageMsg = '';
 
             </text>
-            foreach (var message in messages)
-            {
-               <text>
+              foreach (var message in messages)
+              {
+                  <text>
                   messageMsg = messageMsg + '<li>@message</li>';
                </text>
-            }
-            <text>
+              }
+              <text>
                messageMsg = '<ul>' + messageMsg + '</ul>';
                ShowAlert(messageMsg, "alert-success", "", true);
             </text>
-         }
+          }
       }
 
       $(window).resize(function() {
@@ -495,6 +514,6 @@
          10);
    });
     </script>
-    <!-- ver: @MvcApplication.Version -->
+<!-- ver: @MvcApplication.Version -->
 </body>
 </html>

@@ -1,85 +1,82 @@
-﻿@using System.Collections
-@using PagedList.Mvc
-@using RestChild.Comon
-@using RestChild.Comon.Enumeration
-@using RestChild.Domain
-@using RestChild.Web.App_Code
+﻿@using RestChild.Comon
 @model RestChild.Extensions.Filter.CoworkersFilterModel
 @{
-	Layout = null;
+    Layout = null;
 }
 
 @if (Model.Result != null && Model.Result.Any())
 {
-	foreach (var group in Model.Result)
-	{
-		<div>
-			<label>
-				@Html.Raw(group.Key.NullSafe(b => b.Hotels.Name).FormatEx() + " (" + (group.Key.GroupedTimeOfRest != null ? group.Key.GroupedTimeOfRest.Name : (group.Key.DateIncome.FormatEx() + " - " + group.Key.DateOutcome.FormatEx())) + ")")
-				<button type="button" class="btn btn-xs glyphicon glyphicon-plus btn-primary add-all" title="Добавить"></button>
-			</label>
+    foreach (var group in Model.Result)
+    {
+        <div>
+            <label>
+                @Html.Raw(group.Key.NullSafe(b => b.Hotels.Name).FormatEx() + " (" + (group.Key.GroupedTimeOfRest != null ? group.Key.GroupedTimeOfRest.Name : (group.Key.DateIncome.FormatEx() + " - " + group.Key.DateOutcome.FormatEx())) + ")")
+                <button type="button" class="btn btn-xs glyphicon glyphicon-plus btn-primary add-all" title="Добавить"></button>
+            </label>
 
-			<table class="table table-striped table-hover">
-				<thead>
-					<tr>
-						<th class="text-center" width="5%">№</th>
-						<th>ФИО</th>
-						<th>Сотрудник</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					@{int rowNumber = Model.Result.FirstItemOnPage;}
-					@foreach (var coworker in group.OrderBy(g => g.TaskExecutorType).ThenBy(g => g.GetFio()))
-					{
-						<tr>
-							<td class="text-center">@(rowNumber++)</td>
-							<td class="coworker-dialog-name">@((coworker.GetFio()).FormatEx())</td>
-							<td>@coworker.GetCoworkerType()</td>
-							<td class="text-center">
-								<button type="button" class="btn btn-xs glyphicon glyphicon-plus btn-primary add-one" title="Добавить" data-id="@(coworker.GetId())" data-coworker-type="@((long) coworker.TaskExecutorType)"></button>
-								<input type="hidden" class="coworker-id" value="@(coworker.Counselor != null ? coworker.Counselor.Id : coworker.Administrator != null ? coworker.Administrator.Id : 0)" />
-								<input type="hidden" class="coworker-type" value="@((long) coworker.TaskExecutorType)" />
-								<input type="hidden" class="party-id" value="@((long) coworker.Party.NullSafe(p => p.Id))" />
-								<input type="hidden" class="bout-id" value="@((long) coworker.Bout.NullSafe(b => b.Id))" />
-								<input type="hidden" class="coworker-type-str" value="@(coworker.GetCoworkerType())" />
-								<input type="hidden" class="coworker-bout" value="@(coworker.Bout != null ? Html.Raw(coworker.Bout.NullSafe(b => b.Hotels.Name).FormatEx() + " (" + (group.Key.GroupedTimeOfRest != null ? group.Key.GroupedTimeOfRest.Name : (group.Key.DateIncome.FormatEx() + " - " + group.Key.DateOutcome.FormatEx())) + ")") : null)" />
-							</td>
-						</tr>
-					}
-				</tbody>
-			</table>
-		</div>
-				}
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th class="text-center" width="5%">№</th>
+                    <th>ФИО</th>
+                    <th>Сотрудник</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @{ int rowNumber = Model.Result.FirstItemOnPage; }
+                @foreach (var coworker in group.OrderBy(g => g.TaskExecutorType).ThenBy(g => g.GetFio()))
+                {
+                    <tr>
+                        <td class="text-center">@(rowNumber++)</td>
+                        <td class="coworker-dialog-name">@((coworker.GetFio()).FormatEx())</td>
+                        <td>@coworker.GetCoworkerType()</td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-xs glyphicon glyphicon-plus btn-primary add-one" title="Добавить" data-id="@(coworker.GetId())" data-coworker-type="@((long) coworker.TaskExecutorType)"></button>
+                            <input type="hidden" class="coworker-id" value="@(coworker.Counselor != null ? coworker.Counselor.Id : coworker.Administrator != null ? coworker.Administrator.Id : 0)"/>
+                            <input type="hidden" class="coworker-type" value="@((long) coworker.TaskExecutorType)"/>
+                            <input type="hidden" class="party-id" value="@((long) coworker.Party.NullSafe(p => p.Id))"/>
+                            <input type="hidden" class="bout-id" value="@((long) coworker.Bout.NullSafe(b => b.Id))"/>
+                            <input type="hidden" class="coworker-type-str" value="@(coworker.GetCoworkerType())"/>
+                            <input type="hidden" class="coworker-bout" value="@(coworker.Bout != null ? Html.Raw(coworker.Bout.NullSafe(b => b.Hotels.Name).FormatEx() + " (" + (group.Key.GroupedTimeOfRest != null ? group.Key.GroupedTimeOfRest.Name : (group.Key.DateIncome.FormatEx() + " - " + group.Key.DateOutcome.FormatEx())) + ")") : null)"/>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
 
-						<div class="row">
-							<div class="col-md-12">
-								<nav id="pagging">
-									<ul class="pagination">
-										<li @Html.Raw((Model.PageNumber - 1) == 0 ? "class='disabled'" : "style=\"cursor: pointer\"")>
-											<a @Html.Raw((Model.PageNumber - 1) == 0 ? string.Empty : ("onclick=\"searchCoworkers(" + (Model.PageNumber - 1) + ")\""))>
-												<span aria-hidden="true">&laquo;</span>
-											</a>
-										</li>
-										@for (var i = Model.PageStart; i <= Model.PageEnd; i++)
-										{
-											<li @Html.Raw((Model.PageNumber - 1) == i ? "class='active'" : string.Empty)><a style="cursor: pointer" onclick="searchCoworkers(@i) ">@(i + 1)</a></li>
-										}
-										<li @Html.Raw((Model.PageNumber - 1) == Model.PageLast ? "class='disabled'" : "style=\"cursor: pointer\"")>
-											<a @Html.Raw((Model.PageNumber - 1) == Model.PageLast ? string.Empty : "onclick=\"searchCoworkers(" + (Model.PageNumber + 1) + ")\"")>
-												<span aria-hidden="true">&raquo;</span>
-											</a>
-										</li>
-									</ul>
-								</nav>
-							</div>
-						</div>
-						}
-						else
-						{
-							<div class="row">
-								<div class="col-md-12">
-									<p>Поиск не дал результатов</p>
-								</div>
-							</div>
-						}
+    <div class="row">
+        <div class="col-md-12">
+            <nav id="pagging">
+                <ul class="pagination">
+                    <li @Html.Raw((Model.PageNumber - 1) == 0 ? "class='disabled'" : "style=\"cursor: pointer\"")>
+                        <a @Html.Raw((Model.PageNumber - 1) == 0 ? string.Empty : ("onclick=\"searchCoworkers(" + (Model.PageNumber - 1) + ")\""))>
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    @for (var i = Model.PageStart; i <= Model.PageEnd; i++)
+                    {
+                        <li @Html.Raw((Model.PageNumber - 1) == i ? "class='active'" : string.Empty)>
+                            <a style="cursor: pointer" onclick="searchCoworkers(@i) ">@(i + 1)</a>
+                        </li>
+                    }
+                    <li @Html.Raw((Model.PageNumber - 1) == Model.PageLast ? "class='disabled'" : "style=\"cursor: pointer\"")>
+                        <a @Html.Raw((Model.PageNumber - 1) == Model.PageLast ? string.Empty : "onclick=\"searchCoworkers(" + (Model.PageNumber + 1) + ")\"")>
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-12">
+            <p>Поиск не дал результатов</p>
+        </div>
+    </div>
+}

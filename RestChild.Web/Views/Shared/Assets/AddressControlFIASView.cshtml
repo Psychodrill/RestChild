@@ -1,26 +1,24 @@
-﻿@using System.Linq
-@using System.Globalization
-@using iTextSharp.text.pdf.qrcode
-@using RestChild.Domain
-@using RestChild.Web.App_Code
+﻿@using System.Globalization
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.AddressViewModel
 
 @{
-	var viewBag = ViewData["viewBag"] ?? ViewBag;
-	string prefix = viewBag.AddressControlViewPrefix ?? string.Empty;
-	var isDisabled = (bool)(ViewData["IsDisabled"] ?? false);
-	// Нужен IEnumerable<BtiDistrict> в viewBag.Districts
+    var viewBag = ViewData["viewBag"] ?? ViewBag;
+    string prefix = viewBag.AddressControlViewPrefix ?? string.Empty;
+    var isDisabled = (bool) (ViewData["IsDisabled"] ?? false);
+    // Нужен IEnumerable<BtiDistrict> в viewBag.Districts
 
-    bool oldAddressInUse = (bool?)ViewBag.OldArdessInUse ?? false;
+    var oldAddressInUse = (bool?) ViewBag.OldArdessInUse ?? false;
+    var requared = (bool?) ViewData["ArdessRequared"] ?? true;
 }
 
 <div class="address-control-body">
     @Html.Hidden(prefix + "Id", Model.Data.Id)
-    @Html.Hidden(prefix + "IsDisabled", isDisabled, new { @class = "address-control-disabled" })
+    @Html.Hidden(prefix + "IsDisabled", isDisabled, new {@class = "address-control-disabled"})
 
     <div class="row form-group">
         <div class="col-md-12">
-            @Html.CheckBox(prefix + "ManualType", Model.ManualType, new { @class = "StreetNotFoundCheckbox" }).DisableIf(() => isDisabled)
+            @Html.CheckBox(prefix + "ManualType", Model.ManualType, new {@class = "StreetNotFoundCheckbox"}).DisableIf(isDisabled)
             Улицы нет в списке
         </div>
     </div>
@@ -32,13 +30,13 @@
                 <label class="col-md-3 control-label">Улица<span class="requared">*</span></label>
                 <div class="col-md-9">
                     @Html.Hidden(prefix + "Data.StreetAutocomplete",
-                           Model.Data.Street,
-                       new
-                       {
-                          @class = "form-control street-autocomplete",
-                          data_default_id = Model.Data != null && Model.Data.BtiAddress != null && Model.Data.BtiAddress.BtiStreet != null ? Model.Data.BtiAddress.BtiStreet.Id.ToString(CultureInfo.InvariantCulture) : string.Empty,
-                          data_default_text = Model.Data.BtiAddress != null && Model.Data.BtiAddress.BtiStreet != null ? Model.Data.BtiAddress.BtiStreet.Name : string.Empty
-                       }).DisableIf(() => isDisabled)
+                        Model.Data.Street,
+                        new
+                        {
+                            @class = "form-control street-autocomplete",
+                            data_default_id = Model.Data != null && Model.Data.BtiAddress != null && Model.Data.BtiAddress.BtiStreet != null ? Model.Data.BtiAddress.BtiStreet.Id.ToString(CultureInfo.InvariantCulture) : string.Empty,
+                            data_default_text = Model.Data.BtiAddress != null && Model.Data.BtiAddress.BtiStreet != null ? Model.Data.BtiAddress.BtiStreet.Name : string.Empty
+                        }).DisableIf(isDisabled)
                 </div>
             </div>
             <div class="row form-group">
@@ -48,11 +46,11 @@
             </div>
             <div class="row form-group has-feedback">
                 <div class="col-md-5 col-md-offset-3 col-xs-7">
-                    @Html.DropDownList(prefix + "Data.BtiAddressId", new List<SelectListItem>(), new { @class = "form-control bti-address has-feedback address-control-select2", data_selectedId = @Model.Data.BtiAddressId ?? 0 }).DisableIf(() => isDisabled)
-                    <img src="@Url.Content("~/Content/images/spinner.gif")" width="20" class="loading form-control-feedback invisible" />
+                    @Html.DropDownList(prefix + "Data.BtiAddressId", new List<SelectListItem>(), new {@class = "form-control bti-address has-feedback address-control-select2", data_selectedId = @Model.Data.BtiAddressId ?? 0}).DisableIf(isDisabled)
+                    <img src="@Url.Content("~/Content/images/spinner.gif")" width="20" class="loading form-control-feedback invisible"/>
                 </div>
                 <div class="col-md-3 col-md-push-1 col-xs-3 col-xs-push-2">
-                    @Html.TextBox(prefix + "Data.Appartment", Model.Data.Appartment, new { @class = "form-control appartment-simple", placeholder = "Квартира" }).DisableIf(() => isDisabled)
+                    @Html.TextBox(prefix + "Data.Appartment", Model.Data.Appartment, new {@class = "form-control appartment-simple", placeholder = "Квартира"}).DisableIf(isDisabled)
                 </div>
             </div>
             <div class="row form-group">
@@ -75,17 +73,24 @@
     {
         <div class="hidden" name="@(prefix + "StreetAutocompleteDiv")">
             <div class="row form-group">
-                <label class="col-md-3 control-label">Адрес<span class="requared">*</span></label>
+                @if (requared)
+                {
+                    <label class="col-md-3 control-label">Адрес<span class="requared">*</span></label>
+                }
+                else
+                {
+                    <label class="col-md-3 control-label">Адрес</label>
+                }
                 <div class="col-md-9">
                     @Html.Hidden(prefix + "Data.FiasId", Model.Data.FiasId,
-                       new
-                       {
-                          @class = "form-control street-autocompleteAR",
-                          data_default_id = Model.Data.FiasId,
-                          data_default_text = string.IsNullOrWhiteSpace(Model.Data.FiasId) ? string.Empty : Model.Data.Name,
-                          data_default_district = Model.Data.District,
-                          data_default_region = Model.Data.Region,
-                       }).DisableIf(() => isDisabled)
+                        new
+                        {
+                            @class = "form-control street-autocompleteAR",
+                            data_default_id = Model.Data.FiasId,
+                            data_default_text = string.IsNullOrWhiteSpace(Model.Data.FiasId) ? string.Empty : Model.Data.Name,
+                            data_default_district = Model.Data.District,
+                            data_default_region = Model.Data.Region,
+                        }).DisableIf(isDisabled)
                     @Html.Hidden(prefix + "Data.Name", Model.Data.Name)
                 </div>
             </div>
@@ -95,9 +100,16 @@
                 </div>
             </div>
             <div class="row form-group has-feedback">
-                <label class="col-md-3 control-label">Квартира<span class="requared">*</span></label>
+                @if (requared)
+                {
+                    <label class="col-md-3 control-label">Квартира<span class="requared">*</span></label>
+                }
+                else
+                {
+                    <label class="col-md-3 control-label">Квартира</label>
+                }
                 <div class="col-md-3 col-xs-7">
-                    @Html.TextBox(prefix + "Data.Appartment", Model.Data.Appartment, new { @class = "form-control appartment-simple", placeholder = "Квартира" }).DisableIf(() => isDisabled)
+                    @Html.TextBox(prefix + "Data.Appartment", Model.Data.Appartment, new {@class = "form-control appartment-simple", placeholder = "Квартира"}).DisableIf(isDisabled)
                 </div>
                 <div class="col-md-5 col-md-push-1 col-xs-3 col-xs-push-2">
                     В случае отсутствия номера квартиры (для частных домов и др.) необходимо указывать значение "1"
@@ -122,56 +134,56 @@
             <label class="col-md-3 control-label">Округ<span class="requared">*</span></label>
             <div class="col-md-9">
                 @Html.DropDownList(prefix + "Data.BtiDistrictId",
-                new SelectList(viewBag.Districts,
-                    "Id",
-                    "Name",
-                    Model.Data.BtiDistrictId ?? 0),
+                    new SelectList(viewBag.Districts,
+                        "Id",
+                        "Name",
+                        Model.Data.BtiDistrictId ?? 0),
                     new
                     {
                         @class = "form-control bti-district-id address-control-select2"
-                    }).DisableIf(() => isDisabled)
+                    }).DisableIf(isDisabled)
             </div>
         </div>
         <div class="row form-group has-feedback">
             <label class="col-md-3 control-label">Район<span class="requared">*</span></label>
             <div class="col-md-9">
                 @Html.DropDownList(prefix + "Data.BtiRegionId",
-            new List<SelectListItem>()
-                {
-                    new SelectListItem() { Value = "0", Text = "-- Не выбрано --" }
-                },
-            new
-                {
-                    @class = "form-control bti-region-id address-control-select2",
-                    data_selectedId = Model.Data.BtiRegionId ?? 0
-                }).DisableIf(() => isDisabled)
-                <img src="@Url.Content("~/Content/images/spinner.gif")" width="20" class="loading form-control-feedback invisible" />
+                    new List<SelectListItem>()
+                    {
+                        new SelectListItem() {Value = "0", Text = "-- Не выбрано --"}
+                    },
+                    new
+                    {
+                        @class = "form-control bti-region-id address-control-select2",
+                        data_selectedId = Model.Data.BtiRegionId ?? 0
+                    }).DisableIf(isDisabled)
+                <img src="@Url.Content("~/Content/images/spinner.gif")" width="20" class="loading form-control-feedback invisible"/>
             </div>
         </div>
         <div class="row form-group has-feedback">
             <label class="col-md-3 control-label">Улица<span class="requared">*</span></label>
             <div class="col-md-9">
-                @Html.TextBox(prefix + "Data.Street", Model.Data.Street ?? string.Empty, new { @class = "form-control street", placeholder = "Улица" }).DisableIf(() => isDisabled)
+                @Html.TextBox(prefix + "Data.Street", Model.Data.Street ?? string.Empty, new {@class = "form-control street", placeholder = "Улица"}).DisableIf(isDisabled)
             </div>
         </div>
         <div class="row form-group has-feedback">
             <label class="col-md-3 control-label">Дом<span class="requared">*</span>/корпус/строение/владение</label>
             <div class="col-md-3">
-                @Html.TextBox(prefix + "Data.House", Model.Data.House ?? string.Empty, new { @class = "form-control house", placeholder = "Дом" }).DisableIf(() => isDisabled)
+                @Html.TextBox(prefix + "Data.House", Model.Data.House ?? string.Empty, new {@class = "form-control house", placeholder = "Дом"}).DisableIf(isDisabled)
             </div>
             <div class="col-md-2">
-                @Html.TextBox(prefix + "Data.Corpus", Model.Data.Corpus ?? string.Empty, new { @class = "form-control corpus", placeholder = "Корпус" }).DisableIf(() => isDisabled)
+                @Html.TextBox(prefix + "Data.Corpus", Model.Data.Corpus ?? string.Empty, new {@class = "form-control corpus", placeholder = "Корпус"}).DisableIf(isDisabled)
             </div>
             <div class="col-md-2">
-                @Html.TextBox(prefix + "Data.Stroenie", Model.Data.Stroenie ?? string.Empty, new { @class = "form-control stroenie", placeholder = "Строение" }).DisableIf(() => isDisabled)
+                @Html.TextBox(prefix + "Data.Stroenie", Model.Data.Stroenie ?? string.Empty, new {@class = "form-control stroenie", placeholder = "Строение"}).DisableIf(isDisabled)
             </div>
             <div class="col-md-2">
-                @Html.TextBox(prefix + "Data.Vladenie", Model.Data.Vladenie ?? string.Empty, new { @class = "form-control vladenie", placeholder = "Владение" }).DisableIf(() => isDisabled)
+                @Html.TextBox(prefix + "Data.Vladenie", Model.Data.Vladenie ?? string.Empty, new {@class = "form-control vladenie", placeholder = "Владение"}).DisableIf(isDisabled)
             </div>
         </div>
         <div class="row form-group">
             <div class="col-md-9 col-md-offset-3 col-xs-12">
-                @Html.TextBox(prefix + "Data.Appartment", Model.Data.Appartment, new { @class = "form-control appartment", placeholder = "Квартира" }).DisableIf(() => isDisabled)
+                @Html.TextBox(prefix + "Data.Appartment", Model.Data.Appartment, new {@class = "form-control appartment", placeholder = "Квартира"}).DisableIf(isDisabled)
             </div>
         </div>
         <div class="row form-group">
@@ -182,4 +194,3 @@
     </div>
 
 </div>
-

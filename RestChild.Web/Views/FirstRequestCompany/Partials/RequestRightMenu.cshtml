@@ -6,6 +6,7 @@
 @model RestChild.Web.Models.RequestViewModel
 @{
     var typeOfRest = Model.Data.TypeOfRest ?? new TypeOfRest();
+    var placeOfRest = Model.Data.PlaceOfRest ?? new PlaceOfRest();
     var needParentInvalid = Model.Child.Any(c => c.Data.BenefitTypeId == (long) BenefitTypeEnum.ParentsInvalid || (c.Data.BenefitType != null && c.Data.BenefitType.SameBenefitId == (long) BenefitTypeEnum.ParentsInvalid));
 }
 <div class="col-md-3" id="scrollspy">
@@ -51,6 +52,21 @@
             @if (typeOfRest.NeedPlace)
             {
                 <a href="#PlaceRest" class="@invalidClass(RequestViewBlockEnum.PlacesBlock)">Место отдыха @invalidGlyphIcon(RequestViewBlockEnum.PlacesBlock)</a>
+            }
+        </li>
+        <li id="TypeOfTransportLink">
+            @if ((typeOfRest.IsActive && typeOfRest.NeedTypeOfTransport) &&
+                 (placeOfRest.IsActive && placeOfRest.NeedTypeOfTransport) &&
+                 ((Model.Data.TransferFromId == (long) TypeOfTransferEnum.AsGroupMemberByMoscowBudget) ||
+                  (Model.Data.TransferToId == (long) TypeOfTransferEnum.AsGroupMemberByMoscowBudget)))
+            {
+                <a href="#TypeOfTransport" class="@invalidClass(RequestViewBlockEnum.TypeOfTransport)">Тип транспорта @invalidGlyphIcon(RequestViewBlockEnum.TypeOfTransport)</a>
+            }
+        </li>
+        <li id="TypeOfCampLink">
+            @if (typeOfRest.IsActive &&typeOfRest.ParentId == (long)TypeOfRestEnum.ChildRest)
+            {
+                <a href="#TypeOfCamp" class="@invalidClass(RequestViewBlockEnum.TypeOfCamp)">Тип лагеря @invalidGlyphIcon(RequestViewBlockEnum.TypeOfCamp)</a>
             }
         </li>
         <li id="PlacesLink">
@@ -112,7 +128,7 @@
                 <a href="#Bank" class="@invalidClass(RequestViewBlockEnum.Bank)">Банковские реквизиты @invalidGlyphIcon(RequestViewBlockEnum.Bank)</a>
             }
         </li>
-        @if (Model.Data.AddonRequests != null && Model.Data.AddonRequests.Any(a=>!a.IsDeleted))
+        @if (Model.Data.AddonRequests != null && Model.Data.AddonRequests.Any(a => !a.IsDeleted))
         {
             <li>
                 <a href="#ChildrenRequests">Сведения о созданных заявлениях</a>

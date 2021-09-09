@@ -625,6 +625,7 @@ $(() => {
     //$("select.bti-district-id").trigger("change");
 });
 
+// @ts-ignore
 function confirmStateButtonTradeUnion(formSelector, actionSelector, actionCode, buttonName, description, commentSelector) {
     var error = '';
     if (!$('.GroupedTimeOfRestId').select2('val') || $('.GroupedTimeOfRestId').select2('val') <= 0) {

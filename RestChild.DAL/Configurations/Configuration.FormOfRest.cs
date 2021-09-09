@@ -39,14 +39,19 @@ namespace RestChild.DAL.Configurations
                     Id = 4,
                     Name = "Отдых воспитанников в возрасте 2-7 лет в сопровождении",
                     IsDeleted = false,
-                    TypeOfRestId = (long) TypeOfRestEnum.SpecializedСampFamily
+                    TypeOfRestId = (long) TypeOfRestEnum.SpecializedСampFamily,
+                    AgeFrom = 2,
+                    AgeTo = 7
+                    
                 },
                 new FormOfRest
                 {
                     Id = 5,
                     Name = "Отдых воспитанников в возрасте 7-17 лет в сопровождении",
                     IsDeleted = false,
-                    TypeOfRestId = (long) TypeOfRestEnum.SpecializedСamp
+                    TypeOfRestId = (long) TypeOfRestEnum.SpecializedСamp,
+                    AgeFrom = 7,
+                    AgeTo = 17
                 },
                 new FormOfRest
                 {
@@ -54,20 +59,27 @@ namespace RestChild.DAL.Configurations
                     Name = "Отдых воспитанников в возрасте 18-23 лет в сопровождении",
                     IsDeleted = false,
                     TypeOfRestId = (long) TypeOfRestEnum.SpecializedСampFamily,
+                    AgeFrom = 18,
+                    AgeTo = 23
                 },
                 new FormOfRest
                 {
                     Id = 7,
                     Name = "Отдых воспитанников в возрасте 7-17 лет без сопровождения",
                     IsDeleted = false,
-                    TypeOfRestId = (long) TypeOfRestEnum.SpecializedСamp
+                    TypeOfRestId = (long) TypeOfRestEnum.SpecializedСamp,
+                    AgeFrom = 7,
+                    AgeTo = 17
+
                 },
                 new FormOfRest
                 {
                     Id = 8,
                     Name = "Отдых воспитанников в возрасте 18-23 лет без сопровождения",
                     IsDeleted = false,
-                    TypeOfRestId = (long) TypeOfRestEnum.SpecializedСampFamily
+                    TypeOfRestId = (long) TypeOfRestEnum.SpecializedСampFamily,
+                    AgeFrom = 18,
+                    AgeTo = 23
                 });
 
             SetEidAndLastUpdateTicks(context.FormOfRest.ToList());

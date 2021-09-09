@@ -48,15 +48,7 @@ namespace RestChild.Web.Controllers
         }
 
         /// <summary>
-        ///     закешировать безопасность
-        /// </summary>
-        public static void SaveSecurity(long accountId, ClaimsIdentity identity, IList<string> security, string key)
-        {
-            SecurityBasis.SaveSecurity(accountId, identity, security, key);
-        }
-
-        /// <summary>
-        ///     получить текущего пользоваителя
+        ///     получить текущего пользователя
         /// </summary>
         /// <returns></returns>
         public static IList<string> GetSecurity(long? id = null)

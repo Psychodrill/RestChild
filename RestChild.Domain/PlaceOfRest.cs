@@ -115,6 +115,14 @@ namespace RestChild.Domain
       [DataMember(Name = "notForSelect", EmitDefaultValue = false)]
       public virtual bool NotForSelect { get; set; }
       
+      /// <summary>
+      /// Необходимо указать тип транспорта
+      /// </summary>
+      [Display(Description = "Необходимо указать тип транспорта")]
+      [Required(ErrorMessage = "\"Необходимо указать тип транспорта\" должно быть заполнено")]
+      [DataMember(Name = "needTypeOfTransport", EmitDefaultValue = false)]
+      public virtual bool NeedTypeOfTransport { get; set; }
+      
       
       /// <summary>
       /// Связь места отдыха с заявлением

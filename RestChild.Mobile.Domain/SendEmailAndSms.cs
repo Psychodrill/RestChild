@@ -14,7 +14,7 @@ namespace RestChild.Mobile.Domain
     /// </summary>
     [Serializable]
     [DataContract(Name = "sendEmailAndSms")]
-    public class SendEmailAndSms : IEntityBase
+    public partial class SendEmailAndSms : IEntityBase
     {
         /// <summary>
         ///     Электронная почта организации

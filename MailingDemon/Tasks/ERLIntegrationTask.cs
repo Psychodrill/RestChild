@@ -265,7 +265,11 @@ namespace MailingDemon.Tasks
             if (request.TypeOfRest.TypeOfRestERLId == (long)TypeOfRestERLEnum.CompensationYouthRest || request.TypeOfRest.TypeOfRestERLId == (long)TypeOfRestERLEnum.Compensation)
                 return person.Child.AmountOfCompensation.ToNullSafeString();
 
-            return request.YearOfRest.Prices.Where(ss => ss.TypeOfRestId == request.TypeOfRestId).Select(ss => ss.Price.ToString()).FirstOrDefault();
+            var price = request.YearOfRest.Prices.Where(ss => ss.TypeOfRestId == request.TypeOfRestId).Select(ss => ss.Price).FirstOrDefault();
+
+            var priceCoop = Convert.ToInt32(Math.Floor(price * 100));
+
+            return priceCoop.ToString();
         }
 
         /// <summary>
@@ -360,7 +364,7 @@ namespace MailingDemon.Tasks
                     UnitOfWork.SaveChanges();
                 }
 
-                
+
             }
         }
     }

@@ -28,7 +28,7 @@ namespace RestChild.Web.Controllers
         /// <summary>
         ///     Index
         /// </summary>
-        public ActionResult Index()
+        public override ActionResult Index()
         {
             return RedirectToAction(nameof(Search));
         }

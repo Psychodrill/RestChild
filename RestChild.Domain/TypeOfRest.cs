@@ -283,6 +283,30 @@ namespace RestChild.Domain
       [DataMember(Name = "notChildren", EmitDefaultValue = false)]
       public virtual bool NotChildren { get; set; }
       
+      /// <summary>
+      /// Необходимо указать тип транспорта
+      /// </summary>
+      [Display(Description = "Необходимо указать тип транспорта")]
+      [Required(ErrorMessage = "\"Необходимо указать тип транспорта\" должно быть заполнено")]
+      [DataMember(Name = "needTypeOfTransport", EmitDefaultValue = false)]
+      public virtual bool NeedTypeOfTransport { get; set; }
+      
+      /// <summary>
+      /// Ссылка на фотографию лагеря стационарного типа
+      /// </summary>
+      [Display(Description = "Ссылка на фотографию лагеря стационарного типа")]
+      [MaxLength(1000, ErrorMessage = "\"Ссылка на фотографию лагеря стационарного типа\" не может быть больше 1000 символов")]
+      [DataMember(Name = "urlToStationaryTypeOfCampPhoto", EmitDefaultValue = false)]
+      public virtual string UrlToStationaryTypeOfCampPhoto { get; set; }
+      
+      /// <summary>
+      /// Ссылка на фотографию лагеря палаточного типа
+      /// </summary>
+      [Display(Description = "Ссылка на фотографию лагеря палаточного типа")]
+      [MaxLength(1000, ErrorMessage = "\"Ссылка на фотографию лагеря палаточного типа\" не может быть больше 1000 символов")]
+      [DataMember(Name = "urlToCampTypeOfCampPhoto", EmitDefaultValue = false)]
+      public virtual string UrlToCampTypeOfCampPhoto { get; set; }
+      
       
       /// <summary>
       /// Вид отдыха

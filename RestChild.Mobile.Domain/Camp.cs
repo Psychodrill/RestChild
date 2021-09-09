@@ -18,6 +18,16 @@ namespace RestChild.Mobile.Domain
     public class Camp : IEntityBase
     {
         /// <summary>
+        ///     Уникальный идентификатор (не генерируемый)
+        /// </summary>
+        [Display(Description = "Уникальный идентификатор (не генерируемый)")]
+        [Required(ErrorMessage = "\"Уникальный идентификатор (не генерируемый)\" должно быть заполнено")]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DataMember(Name = "id", EmitDefaultValue = false)]
+        public virtual long Id { get; set; }
+
+        /// <summary>
         ///     Наименование
         /// </summary>
         [Display(Description = "Наименование")]
@@ -40,6 +50,13 @@ namespace RestChild.Mobile.Domain
         [MaxLength(1000, ErrorMessage = "\"Ближайший город\" не может быть больше 1000 символов")]
         [DataMember(Name = "nearestCity", EmitDefaultValue = false)]
         public virtual string NearestCity { get; set; }
+
+        /// <summary>
+        ///     Идентификатор вида отеля/лагеря (из МГТ)
+        /// </summary>
+        [Display(Description = "Идентификатор вида отеля/лагеря (из МГТ)")]
+        [DataMember(Name = "hotelTypeId", EmitDefaultValue = false)]
+        public virtual long? HotelTypeId { get; set; }
 
 
         /// <summary>
@@ -71,16 +88,6 @@ namespace RestChild.Mobile.Domain
         [Display(Description = "Статус лагеря")]
         [DataMember(Name = "state", EmitDefaultValue = false)]
         public virtual State State { get; set; }
-
-        /// <summary>
-        ///     Уникальный идентификатор (не генерируемый)
-        /// </summary>
-        [Display(Description = "Уникальный идентификатор (не генерируемый)")]
-        [Required(ErrorMessage = "\"Уникальный идентификатор (не генерируемый)\" должно быть заполнено")]
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [DataMember(Name = "id", EmitDefaultValue = false)]
-        public virtual long Id { get; set; }
 
         /// <summary>
         ///     Последнее сохранение

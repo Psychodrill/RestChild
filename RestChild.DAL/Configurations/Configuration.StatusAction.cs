@@ -374,7 +374,7 @@ namespace RestChild.DAL.Configurations
                     FromStatus =
                         statuses.Where(
                             s =>
-                                new[] {(long) StatusEnum.Reject}.Contains(s.Id)).ToList(),
+                                new[] {(long) StatusEnum.Reject, (long) StatusEnum.CertificateIssued}.Contains(s.Id)).ToList(),
                     IsFirstCompany = true
                 },
 
@@ -391,9 +391,24 @@ namespace RestChild.DAL.Configurations
                     FromStatus = statuses.Where(s => new[] {(long) StatusEnum.DecisionMaking}.Contains(s.Id)).ToList(),
                     IsFirstCompany = true,
                     RequestOnMoney = false
-                }
+                },
 
                 #endregion
+
+                #region ЛОК 2022
+
+                new StatusAction
+                    {
+                        Id = (long) StatusEnum.RegistrationDecline + 202200000,
+                        Code = AccessRightEnum.Status.ToRegistrationDeclineChildDiffSSOId,
+                        Name = "Отказать в регистрации заявления",
+                        ToStatusId = (long) StatusEnum.RegistrationDecline,
+                        FromStatus = statuses.Where(s => new[] {(long) StatusEnum.Draft}.Contains(s.Id)).ToList(),
+                        IsFirstCompany = true,
+                        RequestOnMoney = false
+                    }
+
+                    #endregion
 
             );
 

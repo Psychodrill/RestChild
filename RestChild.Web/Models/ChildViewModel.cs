@@ -275,7 +275,8 @@ namespace RestChild.Web.Models
             else
             {
                 if (TypeOfRests != null && TypeOfRestBenefitRestrictions != null && request.TypeOfRestId.HasValue
-                    && request.TimeOfRestId.HasValue)
+                    && (request.TimeOfRestId.HasValue ||
+                        request.TypeOfRestId == (long)TypeOfRestEnum.Money || request.TypeOfRest.ParentId == (long)TypeOfRestEnum.Money))
                 {
                     var typeOfRest = TypeOfRests.FirstOrDefault(t => t.Id == request.TypeOfRestId);
                     if (startOfRest.HasValue && typeOfRest != null)
@@ -297,6 +298,15 @@ namespace RestChild.Web.Models
                         {
                             DateOfBirthEm =
                                 "Возраст ребёнка не соответствует указанному виду отдыха и выбранной льготе";
+                            IsValid = false;
+                        }
+                    }
+                    else if (request.TypeOfRestId == (long)TypeOfRestEnum.Money || request.TypeOfRest.ParentId == (long)TypeOfRestEnum.Money)
+                    {
+                        var ageInRegDate = Data.GetAgeInYears(request.DateRequest);
+                        if (ageInRegDate < request.TypeOfRest.MinAge || ageInRegDate > request.TypeOfRest.MaxAge)
+                        {
+                            DateOfBirthEm = "Возраст ребёнка не соответствует указанному виду отдыха";
                             IsValid = false;
                         }
                     }

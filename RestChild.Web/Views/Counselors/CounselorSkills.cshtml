@@ -1,7 +1,6 @@
-﻿@using System.Collections
-@using RestChild.Comon
-@using RestChild.Domain
+﻿
 @using RestChild.Web.App_Code
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.CounselorsModel
 
 <fieldset class="form-horizontal">
@@ -21,19 +20,19 @@
 					<div class="counselor-skill @(fullRow ? "col-md-12 form-group" : "col-md-4") ">
 						<div class="@(fullRow ? "col-md-4" : "col-md-12")">
 							<div class="checkbox">
-								<label>@Html.CheckBox("Skills[" + skillNum + "].IsSelected", skill.IsSelected, new { @class = "counselor-skill-checkbox" }).DisableIf(() => !Model.IsEditable) @skill.Skill.Name</label>
+								<label>@Html.CheckBox("Skills[" + skillNum + "].IsSelected", skill.IsSelected, new { @class = "counselor-skill-checkbox" }).DisableIf(!Model.IsEditable) @skill.Skill.Name</label>
 							</div>
 						</div>
 						@if (skill.Skill.NeedText)
 						{
 							<div class="col-md-4">
-								@Html.TextBox("Skills[" + skillNum + "].Text", skill.Text, new { @class = "form-control counselor-skill-input" }).DisableIf(() => !Model.IsEditable || !skill.IsSelected)
+								@Html.TextBox("Skills[" + skillNum + "].Text", skill.Text, new { @class = "form-control counselor-skill-input" }).DisableIf(!Model.IsEditable || !skill.IsSelected)
 							</div>
 						}
 						@if (skill.Skill.NeedVocabulary ?? false)
 						{
 							<div class="col-md-4">
-								@Html.DropDownList("Skills[" + skillNum + "].SkillVocabularyId", SelectListHelper.Create(skill.SkillVocabularies, v => new SelectListItem() { Value = v.Id.ToString(), Text = v.Name, Selected = v.Id == skill.SkillVocabularyId }), new { @class = "form-control  counselor-skill-input" }).DisableIf(() => !Model.IsEditable || !skill.IsSelected)
+								@Html.DropDownList("Skills[" + skillNum + "].SkillVocabularyId", SelectListHelper.Create(skill.SkillVocabularies, v => new SelectListItem() { Value = v.Id.ToString(), Text = v.Name, Selected = v.Id == skill.SkillVocabularyId }), new { @class = "form-control  counselor-skill-input" }).DisableIf(!Model.IsEditable || !skill.IsSelected)
 							</div>
 						}
 

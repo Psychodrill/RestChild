@@ -18,15 +18,6 @@ namespace MailingDemon.Tasks
    [Task]
    public class MqListener : BaseTask
    {
-      private static string ApplicationBinPath
-      {
-         get
-         {
-            var u = new Uri(typeof(WindsorHolder).Assembly.CodeBase);
-            return Path.GetDirectoryName(Uri.UnescapeDataString(u.AbsolutePath));
-         }
-      }
-
       protected override void Execute()
       {
          GetMessagesFromUts(ConfigurationManager.AppSettings["MqRequestIncoming"]);

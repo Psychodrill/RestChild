@@ -83,6 +83,38 @@ $(function () {
             }
         });
     });
+    $("#deleteBtn").click(function () {
+        BootstrapDialog.show({
+            title: "Подтвердить действие",
+            message: "Вы действительно хотите удалить межведомственный запрос?",
+            buttons: [
+                {
+                    label: "Удалить",
+                    cssClass: "btn-danger",
+                    action: function (dialogItself) {
+                        $.ajax({
+                            type: "get",
+                            url: rootPath + "/api/WebInteragencyRequest/RemoveInteragencyRequest/" + $('#RequestId').val(),
+                        })
+                            .done(function (result) {
+                        })
+                            .fail(function () {
+                            BootstrapDialog.show({
+                                title: "",
+                                message: "Ошибка"
+                            });
+                        });
+                        dialogItself.close();
+                    }
+                }, {
+                    label: "Отмена",
+                    action: function (dialogItself) {
+                        dialogItself.close();
+                    }
+                }
+            ]
+        });
+    });
 });
 function openIntergencyRequest(action) {
     window.open(action, '_blank');

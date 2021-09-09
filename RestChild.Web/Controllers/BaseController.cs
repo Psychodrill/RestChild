@@ -42,7 +42,7 @@ namespace RestChild.Web.Controllers
 
         protected internal virtual FileStreamDeleteOnCloseResult FileAndDeleteOnClose(string fileName, string contentType, string fileDownloadName)
         {
-            FileStreamDeleteOnCloseResult fileStreamResult = new FileStreamDeleteOnCloseResult(fileName, contentType)
+            var fileStreamResult = new FileStreamDeleteOnCloseResult(fileName, contentType)
             {
                 FileDownloadName = fileDownloadName
             };
@@ -90,6 +90,14 @@ namespace RestChild.Web.Controllers
         public void SetMessages(ICollection<string> message)
         {
             TempData[MessageKey] = message?.ToList();
+        }
+
+        /// <summary>
+        ///     Переход по умолчанию
+        /// </summary>
+        public virtual ActionResult Index()
+        {
+            return RedirectToAvalibleAction();
         }
     }
 }

@@ -114,5 +114,15 @@
         ///     СНИЛС ребенка
         /// </summary>
         ChildSnils = 210,
+
+        /// <summary>
+        ///     Файлы от менеджеров
+        /// </summary>
+        ManagersFiles = 1000,
+
+        /// <summary>
+        ///     Файлы от клиента
+        /// </summary>
+        ClientFiles = 2000,
     }
 }

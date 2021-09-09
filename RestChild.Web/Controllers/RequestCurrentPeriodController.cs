@@ -28,9 +28,9 @@ namespace RestChild.Web.Controllers
             VocController.SetUnitOfWorkInRefClass(unitOfWork);
         }
 
-        public ActionResult Index()
+        public override ActionResult Index()
         {
-            return RedirectToAction("Search");
+            return RedirectToAction(nameof(Search));
         }
 
         public ActionResult Search(string name = "", int pageNumber = 1)
@@ -372,7 +372,13 @@ namespace RestChild.Web.Controllers
 
             if (entity.Id == 0)
             {
-                ApiController.Post(entity);
+                var rcp = ApiController.Post(entity);
+
+                foreach (var tor in UnitOfWork.GetSet<TypeOfRest>().Select(ss => ss.Id).ToList())
+                {
+                    UnitOfWork.AddEntity(new AverageRestPrice() { TypeOfRestId = tor, YearOfRestId = rcp.Id, Price = 0});
+                }
+                UnitOfWork.SaveChanges();
             }
             else
             {

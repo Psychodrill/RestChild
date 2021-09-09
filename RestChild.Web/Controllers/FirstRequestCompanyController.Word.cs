@@ -1832,24 +1832,6 @@ namespace RestChild.Web.Controllers
         }
 
         /// <summary>
-        ///     Уведомление о предоставлении сертификата или путёвки (альтернативный)
-        /// </summary>
-        public ActionResult NotificationAboutTourAlternative(long requestId)
-        {
-            var data = WordProcessor.NotificationAboutTourAlternative(UnitOfWork, Security.GetCurrentAccount(), requestId);
-            return File(data.FileBody, data.MimeType, data.FileName);
-        }
-
-        /// <summary>
-        ///     Уведомление о выборе отдыха в 2021 году (альтернативный)
-        /// </summary>
-        public ActionResult NotificationAboutTourChoose(long requestId)
-        {
-            var data = WordProcessor.NotificationAboutTourChoose(UnitOfWork, Security.GetCurrentAccount(), requestId);
-            return File(data.FileBody, data.MimeType, data.FileName);
-        }
-
-        /// <summary>
         ///     уведомление об регистрации.
         /// </summary>
         public ActionResult NotificationRegistration(long requestId)

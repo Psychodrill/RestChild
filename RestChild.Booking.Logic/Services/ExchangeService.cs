@@ -556,7 +556,11 @@ namespace RestChild.Booking.Logic.Services
             {
                 if (entity is Organization target)
                 {
-                    org.Orphanage = org.Orphanage ?? target.Orphanage;
+                    org.Orphanage ??= target.Orphanage;
+                    org.IsInMonitoring = target.IsInMonitoring;
+                    org.OKATO ??= target.OKATO;
+                    org.ESNSIType ??= target.ESNSIType;
+
                     org.HistoryLinkId = target.HistoryLinkId;
                 }
             }

@@ -268,6 +268,22 @@ namespace RestChild.Domain
       [DataMember(Name = "isInMonitoring", EmitDefaultValue = false)]
       public virtual bool IsInMonitoring { get; set; }
       
+      /// <summary>
+      /// ОКАТО региона по местонахождению лагеря
+      /// </summary>
+      [Display(Description = "ОКАТО региона по местонахождению лагеря")]
+      [MaxLength(1000, ErrorMessage = "\"ОКАТО региона по местонахождению лагеря\" не может быть больше 1000 символов")]
+      [DataMember(Name = "oKATO", EmitDefaultValue = false)]
+      public virtual string OKATO { get; set; }
+      
+      /// <summary>
+      /// ЕСНСИ тип лагеря
+      /// </summary>
+      [Display(Description = "ЕСНСИ тип лагеря")]
+      [MaxLength(1000, ErrorMessage = "\"ЕСНСИ тип лагеря\" не может быть больше 1000 символов")]
+      [DataMember(Name = "eSNSIType", EmitDefaultValue = false)]
+      public virtual string ESNSIType { get; set; }
+      
       
       /// <summary>
       /// ОКВЭД

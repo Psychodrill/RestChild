@@ -18,7 +18,6 @@ namespace RestChild.Web.Controllers
 	{
 		public WebApi.OrganizationController ApiController { get; set; }
 
-
         /// <summary>
         ///     Список организаций
         /// </summary>
@@ -50,7 +49,6 @@ namespace RestChild.Web.Controllers
         /// <summary>
         ///     Редактировать/создать новую организацию
         /// </summary>
-
         public ActionResult Edit(long id = 0)
 		{
 			if (!Security.HasRight(AccessRightEnum.Organization.Edit))
@@ -107,5 +105,13 @@ namespace RestChild.Web.Controllers
 
 			return RedirectToAction("Edit", new {id = data.Id});
 		}
+
+        /// <summary>
+        ///     Вход по умолчанию
+        /// </summary>
+        public override ActionResult Index()
+        {
+            return RedirectToAction(nameof(List));
+        }
 	}
 }

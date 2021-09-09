@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web.Http;
 using MimeTypes;
 using RestChild.Booking.Logic.Extensions;
@@ -163,9 +164,13 @@ namespace RestChild.Web.Controllers.WebApi
                         }
                     }
 
+                    if (request.IsFirstCompany)
+                    {
+                        UnitOfWork.SendChangeStatusByEvent(request, RequestEventEnum.GetResponseBase);
+                    }
+
                     var comment = string.Empty;
                     exchangeBaseRegistry.IsProcessed = true;
-
 
                     var childForUpdate = exchangeBaseRegistry.Child;
                     Child childForCurUpdate = null;
@@ -260,117 +265,6 @@ namespace RestChild.Web.Controllers.WebApi
 
                     if (requestForUpdate != null)
                     {
-                        if (exchangeBaseRegistry.ExchangeBaseRegistryTypeId ==
-                            (long) ExchangeBaseRegistryTypeEnum.Benefit)
-                        {
-                            var any = UnitOfWork.GetSet<ExchangeBaseRegistry>().Where(v =>
-                                !v.NotActual && !v.ResponseDate.HasValue &&
-                                new[] {(long?) ExchangeBaseRegistryTypeEnum.Benefit}.Contains(
-                                    v.ExchangeBaseRegistryTypeId)).Any(v =>
-                                v.ApplicantId == requestForUpdate.ApplicantId ||
-                                v.Applicant.RequestId == requestForUpdate.Id ||
-                                v.Child.RequestId == requestForUpdate.Id);
-
-                            if (!any)
-                            {
-                                UnitOfWork.SendChangeStatusByEvent(requestForUpdate,
-                                    RequestEventEnum.GetResponseInBenefit);
-                            }
-                        }
-
-                        if (exchangeBaseRegistry.ExchangeBaseRegistryTypeId ==
-                            (long) ExchangeBaseRegistryTypeEnum.Relationship
-                            || exchangeBaseRegistry.ExchangeBaseRegistryTypeId ==
-                            (long) ExchangeBaseRegistryTypeEnum.RelationshipSmev)
-                        {
-                            var any = UnitOfWork.GetSet<ExchangeBaseRegistry>().Where(v =>
-                                !v.NotActual && !v.ResponseDate.HasValue &&
-                                new[]
-                                {
-                                    (long?) ExchangeBaseRegistryTypeEnum.Relationship,
-                                    (long?) ExchangeBaseRegistryTypeEnum.RelationshipSmev
-                                }.Contains(
-                                    v.ExchangeBaseRegistryTypeId)).Any(v =>
-                                v.ApplicantId == requestForUpdate.ApplicantId ||
-                                v.Applicant.RequestId == requestForUpdate.Id ||
-                                v.Child.RequestId == requestForUpdate.Id);
-
-                            if (!any)
-                            {
-                                UnitOfWork.SendChangeStatusByEvent(requestForUpdate,
-                                    RequestEventEnum.GetResponseForRelatives);
-                            }
-                        }
-
-                        if (exchangeBaseRegistry.ExchangeBaseRegistryTypeId ==
-                            (long) ExchangeBaseRegistryTypeEnum.Snils ||
-                            exchangeBaseRegistry.ExchangeBaseRegistryTypeId ==
-                            (long) ExchangeBaseRegistryTypeEnum.Snils2040 ||
-                            exchangeBaseRegistry.ExchangeBaseRegistryTypeId ==
-                            (long) ExchangeBaseRegistryTypeEnum.SNILSByFio)
-                        {
-                            var any = UnitOfWork.GetSet<ExchangeBaseRegistry>().Where(v =>
-                                !v.NotActual && !v.ResponseDate.HasValue &&
-                                new[]
-                                {
-                                    (long?) ExchangeBaseRegistryTypeEnum.Snils,
-                                    (long?) ExchangeBaseRegistryTypeEnum.Snils2040,
-                                    (long?) ExchangeBaseRegistryTypeEnum.SNILSByFio
-                                }.Contains(
-                                    v.ExchangeBaseRegistryTypeId)).Any(v =>
-                                v.ApplicantId == requestForUpdate.ApplicantId ||
-                                v.Applicant.RequestId == requestForUpdate.Id ||
-                                v.Child.RequestId == requestForUpdate.Id);
-
-                            if (!any)
-                            {
-                                UnitOfWork.SendChangeStatusByEvent(requestForUpdate,
-                                    RequestEventEnum.GetResponseForSnils);
-                            }
-                        }
-
-                        if (exchangeBaseRegistry.ExchangeBaseRegistryTypeId ==
-                            (long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS)
-                        {
-                            var any = UnitOfWork.GetSet<ExchangeBaseRegistry>().Where(v =>
-                                !v.NotActual && !v.ResponseDate.HasValue &&
-                                new[] {(long?) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS}.Contains(
-                                    v.ExchangeBaseRegistryTypeId)).Any(v =>
-                                v.ApplicantId == requestForUpdate.ApplicantId ||
-                                v.Applicant.RequestId == requestForUpdate.Id ||
-                                v.Child.RequestId == requestForUpdate.Id);
-
-                            if (!any)
-                            {
-                                UnitOfWork.SendChangeStatusByEvent(requestForUpdate,
-                                    RequestEventEnum.GetResponseForBRASUR);
-                            }
-                        }
-
-                        if (exchangeBaseRegistry.ExchangeBaseRegistryTypeId ==
-                            (long) ExchangeBaseRegistryTypeEnum.PassportRegistration ||
-                            exchangeBaseRegistry.ExchangeBaseRegistryTypeId ==
-                            (long) ExchangeBaseRegistryTypeEnum.GetPassportRegistration)
-                        {
-                            var any = UnitOfWork.GetSet<ExchangeBaseRegistry>().Where(v =>
-                                !v.NotActual && !v.ResponseDate.HasValue &&
-                                new[]
-                                {
-                                    (long?) ExchangeBaseRegistryTypeEnum.PassportRegistration,
-                                    (long?) ExchangeBaseRegistryTypeEnum.GetPassportRegistration
-                                }.Contains(
-                                    v.ExchangeBaseRegistryTypeId)).Any(v =>
-                                v.ApplicantId == requestForUpdate.ApplicantId ||
-                                v.Applicant.RequestId == requestForUpdate.Id ||
-                                v.Child.RequestId == requestForUpdate.Id);
-
-                            if (!any)
-                            {
-                                UnitOfWork.SendChangeStatusByEvent(requestForUpdate,
-                                    RequestEventEnum.GetResponseFoRegistrationByPassport);
-                            }
-                        }
-
                         var resCheck = CheckStateCheckRequest(requestForUpdate);
 
                         requestForUpdate = UnitOfWork.GetById<Request>(requestForUpdate.Id);
@@ -762,11 +656,15 @@ namespace RestChild.Web.Controllers.WebApi
         [HttpGet]
         public void CheckRequestInBaseRegistry(long requestId)
         {
-            CheckRequestInBaseRegistryBenefit(requestId);
-            CheckRequestInBaseRegistrySnils(requestId);
-            CheckRequestInBaseRegistryPassport(requestId);
-            CheckRequestInBaseRegistryRelatives(requestId);
-            CheckRequestInBaseRegistryRegistrationByPassport(requestId);
+            var req = UnitOfWork.GetById<Request>(requestId);
+
+            CheckRequestInBaseRegistryStatusSet(req);
+
+            CheckRequestInBaseRegistryBenefitReq(req);
+            CheckRequestInBaseRegistrySnilsReq(req);
+            CheckRequestInBaseRegistryPassportReq(req);
+            CheckRequestInBaseRegistryRelativesReq(req);
+            CheckRequestInBaseRegistryRegistrationByPassportReq(req);
         }
 
         /// <summary>
@@ -827,6 +725,12 @@ namespace RestChild.Web.Controllers.WebApi
                         break;
                     case ItemsChoiceType.timeOfRest:
                         target.TimeOfRestId = Convert.ToInt32(source.Items[i]);
+                        break;
+                    case ItemsChoiceType.typeOfCamp:
+                        target.TypeOfCampId = Convert.ToInt32(source.Items[i]);
+                        break;
+                    case ItemsChoiceType.typeOfCampAddon:
+                        target.TypeOfCampAddonId = Convert.ToInt32(source.Items[i]);
                         break;
                     case ItemsChoiceType.placeOfRestAddon:
                         target.PlacesOfRest = target.PlacesOfRest ?? new List<RequestPlaceOfRest>();
@@ -1269,7 +1173,9 @@ namespace RestChild.Web.Controllers.WebApi
                         BankCorr = requestData?.bankProperty?.korr,
                         BankLastName = requestData?.bankProperty?.lastName,
                         BankFirstName = requestData?.bankProperty?.firstName,
-                        BankMiddleName = requestData?.bankProperty?.middleName
+                        BankMiddleName = requestData?.bankProperty?.middleName,
+                        PriorityTypeOfTransportInRequestId = requestData.typeOfTransportSpecified ? requestData.typeOfTransport : (int?)null,
+                        AdditionalTypeOfTransportInRequestId = requestData.typeOfTransportAddonSpecified ? requestData.typeOfTransportAddon : (int?)null
                     };
 
                     if (entity.DateRequest.HasValue && entity.DateRequest.Value.Year < 2000)
@@ -1846,9 +1752,10 @@ namespace RestChild.Web.Controllers.WebApi
                     }
 
                     var status = StatusEnum.Send;
-                    var multiAttendant = false;
                     long? decline = null;
                     var isDeleted = false;
+
+                    string action = null;
 
                     if (!vm.CheckModel())
                     {
@@ -1876,14 +1783,28 @@ namespace RestChild.Web.Controllers.WebApi
                         ApiRequest.CheckChildren(vm, true);
                         if (vm.SameChildren.Any())
                         {
+                            bool plural = vm.SameChildren.Count > 1;
                             status = StatusEnum.RegistrationDecline;
+                            if (vm.SameChildren.Select(ss => ss.Request.SsoId).Any(ss => entity.SsoId != ss))
+                            {
+                                action = AccessRightEnum.Status.ToRegistrationDeclineChildDiffSSOId;
+                            }
+                            var sb = new StringBuilder();
+                            foreach (var child in vm.SameChildren)
+                            {
+                                sb.Append($"{child.LastName} {child.FirstName} {child.MiddleName},");
+                            }
+                            var msg = sb.ToString();
+                            msg = msg.Substring(0, msg.Length - 1);
+
+                            uts.ErrorText = $@"Заявление является повторным. Вы уже подали заявление о предоставлении услуг отдыха и оздоровления на {(plural ? "детей" : "ребёнка")} ({msg})";
                         }
 
                         ApiRequest.CheckAttendants(vm);
                         if (vm.SameAttendantSnils.Any() || vm.SameAttendants.Any())
                         {
                             status = StatusEnum.RegistrationDecline;
-                            multiAttendant = true;
+                            action = AccessRightEnum.Status.ToRegistrationDeclineAttendant;
                         }
                     }
 
@@ -1910,8 +1831,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                     if (!entity.IsDeleted)
                     {
-                        UnitOfWork.SendChangeStatus(entity, entity.StatusId ?? (long) status, uts.ErrorText,
-                            multiAttendant ? AccessRightEnum.Status.ToRegistrationDeclineAttendant : null);
+                        UnitOfWork.SendChangeStatus(entity, entity.StatusId ?? (long) status, uts.ErrorText, action);
                     }
 
                     if (status == StatusEnum.Send && !entity.IsDeleted)

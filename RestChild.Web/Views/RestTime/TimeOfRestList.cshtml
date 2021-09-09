@@ -3,92 +3,92 @@
 @using RestChild.Web.App_Code
 @model RestChild.Extensions.Filter.CommonPagedList<RestChild.Domain.TimeOfRest>
 @{
-	ViewBag.Title = "Справочник времени отдыха";
-	Layout = "~/Views/Shared/_SearchLayout.cshtml";
-	ViewBag.SearchAction = "Search";
-	ViewBag.InsertAction = "Insert";
-	ViewBag.SaveAction = "Save";
-	ViewBag.Controller = "RestTime";
-	ViewBag.ActiveChecker = false;
-	ViewBag.ActiveCheckerCaption = "";
-	ViewBag.Caption = "Справочник времени отдыха";
-	ViewBag.InsertButtonCaption = "Добавить время отдыха";
-	ViewBag.SearchPanelCaption = "Поиск времени отдыха";
+    ViewBag.Title = "Справочник времени отдыха";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.SearchAction = "Search";
+    ViewBag.InsertAction = "Insert";
+    ViewBag.SaveAction = "Save";
+    ViewBag.Controller = "RestTime";
+    ViewBag.ActiveChecker = false;
+    ViewBag.ActiveCheckerCaption = "";
+    ViewBag.Caption = "Справочник времени отдыха";
+    ViewBag.InsertButtonCaption = "Добавить время отдыха";
+    ViewBag.SearchPanelCaption = "Поиск времени отдыха";
 
-	var typesOfRests = (ViewBag.TypesOfRest as List<TypeOfRest>) ?? new List<TypeOfRest>();
-	var years = (ViewBag.Years as IList<YearOfRest>) ?? new List<YearOfRest>();
+    var typesOfRests = (ViewBag.TypesOfRest as List<TypeOfRest>) ?? new List<TypeOfRest>();
+    var years = (ViewBag.Years as IList<YearOfRest>) ?? new List<YearOfRest>();
 }
 
 @section searchForm
 {
-	<div class="form-group">
-		<label class="col-md-3 control-label text-right">Время отдыха</label>
-		<div class="col-md-9">
-			@Html.TextBox("name", (string)ViewBag.name, new { @class = "form-control" })
-		</div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Время отдыха</label>
+        <div class="col-md-9">
+            @Html.TextBox("name", (string) ViewBag.name, new {@class = "form-control"})
+        </div>
 
-	</div>
-	<div class="form-group">
-		<label class="col-md-3 control-label text-right">Цель обращения</label>
-		<div class="col-md-3">
-			@Html.DropDownList("tId", SelectListHelper.Create(typesOfRests, s => new SelectListItem() { Value = s.Id.ToString(), Text = s.Name, Selected = ((long?)ViewBag.type) == s.Id }), new { @class = "form-control" })
-		</div>
-		<label class="col-md-3 control-label text-right">Год кампании</label>
-		<div class="col-md-3">
-			@Html.DropDownList("yId", SelectListHelper.Create(years, s => new SelectListItem() { Value = s.Id.ToString(), Text = s.Name, Selected = ((long?)ViewBag.year) == s.Id }), new { @class = "form-control" })
-		</div>
-	</div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Цель обращения</label>
+        <div class="col-md-3">
+            @Html.DropDownList("tId", SelectListHelper.Create(typesOfRests, s => new SelectListItem() {Value = s.Id.ToString(), Text = s.Name, Selected = ((long?) ViewBag.type) == s.Id}), new {@class = "form-control"})
+        </div>
+        <label class="col-md-3 control-label text-right">Год кампании</label>
+        <div class="col-md-3">
+            @Html.DropDownList("yId", SelectListHelper.Create(years, s => new SelectListItem() {Value = s.Id.ToString(), Text = s.Name, Selected = ((long?) ViewBag.year) == s.Id}), new {@class = "form-control"})
+        </div>
+    </div>
 }
 
 @section searchResult{
-	@if (Model.Any())
-	{
-		<table class="table table-striped table-hover">
-			<thead>
-				<tr>
-					<th class="text-center">№</th>
-					<th class="text-center">Время отдыха</th>
-					<th class="text-center">Цель обращения</th>
-					<th class="text-center"></th>
-				</tr>
-			</thead>
-			<tbody>
-				@{int rowNumber = Model.FirstItemOnPage;}
-				@foreach (var time in Model)
-				{
-					<tr>
-						<td class="text-center">@(rowNumber++)</td>
-						<td>@time.Name</td>
-						<td>@(time.TypeOfRest != null ? time.TypeOfRest.Name : "")</td>
-						<td class="text-center">@Html.ActionLink(" ", "Update", new { id = time.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
-					</tr>
-				}
-			</tbody>
-		</table>
-		<div class="row">
-			<div class="col-md-12">
-				@Html.PagedListPager(Model, page => Url.Action("Search", new { pageNumber = page, name = (string)ViewBag.name, tId = (long?)ViewBag.type, yId = (long?)ViewBag.year }), new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
-			</div>
-		</div>
-	}
-	else
-	{
-						<div class="row">
-							<div class="col-md-12">
-								<p>Поиск не дал результатов</p>
-							</div>
-						</div>
-	}
+    @if (Model.Any())
+    {
+        <table class="table table-striped table-hover">
+            <thead>
+            <tr>
+                <th class="text-center">№</th>
+                <th class="text-center">Время отдыха</th>
+                <th class="text-center">Цель обращения</th>
+                <th class="text-center"></th>
+            </tr>
+            </thead>
+            <tbody>
+            @{ int rowNumber = Model.FirstItemOnPage; }
+            @foreach (var time in Model)
+            {
+                <tr>
+                    <td class="text-center">@(rowNumber++)</td>
+                    <td>@time.Name</td>
+                    <td>@(time.TypeOfRest != null ? time.TypeOfRest.Name : "")</td>
+                    <td class="text-center">@Html.ActionLink(" ", "Update", new {id = time.Id}, new {@class = " glyphicon glyphicon-pencil", target = "_blank"})</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.PagedListPager(Model, page => Url.Action("Search", new {pageNumber = page, name = (string) ViewBag.name, tId = (long?) ViewBag.type, yId = (long?) ViewBag.year}), new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
 }
 
 @section Scripts{
-	@Styles.Render("~/Content/css/select2.css")
-	@Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
 
 
-	@Scripts.Render("~/Scripts/select2.min.js")
-	@Scripts.Render("~/Scripts/select2_locale_ru.js")
-	<script type="text/javascript">
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript">
 		$(function() {
 			$('select').select2({ width: 'resolve' });
 		});

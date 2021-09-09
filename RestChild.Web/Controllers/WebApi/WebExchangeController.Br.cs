@@ -2,15 +2,22 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Web;
 using System.Web.Configuration;
 using System.Web.Http;
 using System.Xml;
+using System.Xml.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestChild.Booking.Logic.Extensions;
 using RestChild.Comon;
 using RestChild.Comon.Dto;
 using RestChild.Comon.Dto.Commercial;
 using RestChild.Comon.Enumeration;
+using RestChild.Comon.Exchange.Cpmpk;
 using RestChild.Comon.Exchange.PassportRegistration;
 using RestChild.DAL.RepositoryExtensions;
 using RestChild.Domain;
@@ -25,7 +32,6 @@ namespace RestChild.Web.Controllers.WebApi
     /// </summary>
     public partial class WebExchangeController
     {
-
         /// <summary>
         ///     обновить запрос для пере-отправки
         /// </summary>
@@ -64,7 +70,9 @@ namespace RestChild.Web.Controllers.WebApi
                     return exchangeBaseRegistry;
                 }
             }
-            catch{}
+            catch
+            {
+            }
 
             return null;
         }
@@ -152,7 +160,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                     var request =
                         $@"<ServiceProperties>{(!string.IsNullOrEmpty(applicant.Snils) ? $"<snils>{applicant.Snils}</snils>" : string.Empty)}<birthdate>{applicant.DateOfBirth:yyyy-MM-dd}T00:00:00Z</birthdate><doctype>{
-                                documentType.BaseRegistryUid}</doctype><firstname>{applicant.FirstName}</firstname><lastname>{applicant.LastName
+                            documentType.BaseRegistryUid}</doctype><firstname>{applicant.FirstName}</firstname><lastname>{applicant.LastName
                             }</lastname><middlename>{applicant.MiddleName}</middlename><passport>{applicant.DocumentNumber
                             }</passport><passport_serie>{applicant.DocumentSeria}</passport_serie></ServiceProperties>";
 
@@ -475,7 +483,7 @@ namespace RestChild.Web.Controllers.WebApi
             sb.Append($"<passport_serie>{sp.passport_serie}</passport_serie>");
             sb.Append($"<passport>{sp.passport}</passport>");
             sb.Append($"<passport_date>{sp.passport_date}</passport_date>");
-            //sb.Append($"<snils>{sp.snils}</snils>");
+            // sb.Append($"<snils>{sp.snils}</snils>");
             sb.Append($"<doctype>{sp.doctype}</doctype>");
             sb.Append("</ServiceProperties>");
             return sb.ToString();
@@ -600,6 +608,134 @@ namespace RestChild.Web.Controllers.WebApi
         }
 
         /// <summary>
+        ///     Запрос информации ЦПМПК
+        /// </summary>
+        internal BaseResponse AdditionallyCheckCPMPK(BenefitCheckRequest model)
+        {
+            try
+            {
+                var requestText =
+                    $"/app/document/do?fullName={HttpUtility.UrlEncode($"{model.LastName} {model.FirstName} {model.MiddleName}")}&dob={model.DateOfBirth.XmlToString()}";
+
+                UnitOfWork.AddEntity(new ExchangeBaseRegistry
+                {
+                    RequestGuid = Guid.NewGuid().ToString(),
+                    ChildId = null,
+                    RequestText = requestText,
+                    ResponseText = null,
+                    SendDate = DateTime.Now,
+                    ResponseDate = DateTime.Now,
+                    IsProcessed = false,
+                    IsIncoming = false,
+                    OperationType = "cpmpkrequest",
+                    //Success = false,
+                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange,
+                    ServiceNumber = "б/н",
+                    ResponseGuid = "б/н",
+                    EidSendStatus = 0
+                });
+
+                UnitOfWork.SaveChanges();
+
+                return new BaseResponse
+                {
+                    Name = "Сформирован запрос информации ЦПМПК"
+
+                };
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Ошибка запроса информации ЦПМПК", ex);
+                return new BaseResponse {HasError = true, ErrorMessage = ex.Message};
+            }
+        }
+
+        /// <summary>
+        ///     Запрос информации об адресе регистрации
+        /// </summary>
+        internal BaseResponse AdditionallyCheckRegistrationAddress(BenefitCheckRequest model)
+        {
+            try
+            {
+                var documentType = UnitOfWork.GetById<DocumentType>(model.DocumentTypeId);
+
+                var sp = new ServiceProperties
+                {
+                    firstname = model.FirstName,
+                    middlename = model.MiddleName,
+                    lastname = model.LastName,
+                    birthdate = model.DateOfBirth.DateTimeToXml(),
+                    address1_town = model.AddressCity,
+                    address1_line1 = model.AddressLine1,
+                    address1_line2 = model.AddressLine2,
+                    address1_line3 = model.AddressLine3,
+                    address1_line4 = model.AddressLine4,
+                    passport_serie = model.DocumentSeria,
+                    passport = model.DocumentNumber,
+                    passport_date = model.DocumentDateOfIssue.DateTimeToXml(),
+                    doctype = 1,
+                };
+
+                var sb = new StringBuilder();
+                sb.Append("<ServiceProperties>");
+                sb.Append($"<firstname>{sp.firstname}</firstname>");
+                sb.Append($"<middlename>{sp.middlename}</middlename>");
+                sb.Append($"<lastname>{sp.lastname}</lastname>");
+                sb.Append($"<birthdate>{sp.birthdate}</birthdate>");
+
+                sb.Append($"<address1_line1>{sp.address1_line1?.Trim()}</address1_line1>");
+                sb.Append($"<address1_line2>{sp.address1_line2?.Trim()}</address1_line2>");
+                sb.Append($"<address1_line3>{sp.address1_line3?.Trim()}</address1_line3>");
+                sb.Append($"<address1_line4>{sp.address1_line4?.Trim()}</address1_line4>");
+                if (string.IsNullOrWhiteSpace(sp.address1_town))
+                {
+                    sp.address1_town = "Москва";
+                }
+
+                sb.Append($"<address1_town>{sp.address1_town}</address1_town>");
+                sb.Append("<address1_stateorprovince>45000000000</address1_stateorprovince>");
+                sb.Append($"<address2_stateorprovince>45000000000</address2_stateorprovince>");
+                sb.Append($"<passport_serie>{sp.passport_serie}</passport_serie>");
+                sb.Append($"<passport>{sp.passport}</passport>");
+                sb.Append($"<passport_date>{sp.passport_date}</passport_date>");
+                sb.Append($"<doctype>{sp.doctype}</doctype>");
+                sb.Append("</ServiceProperties>");
+
+                var request = sb.ToString();
+
+
+                var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
+                var requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
+
+                var messageV6 = GetCoordinateMessageV6(request,
+                    ((long) ExchangeBaseRegistryTypeEnum.PassportRegistration).ToString(),
+                    requestNumber + "/1", requestNumber);
+
+                UnitOfWork.AddEntity(new ExchangeBaseRegistry
+                {
+                    IsIncoming = false,
+                    RequestText = Serialization.Serializer(messageV6),
+                    OperationType = "SendTask",
+                    RequestGuid = messageV6.CoordinateTaskDataMessage.Task.TaskId,
+                    ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
+                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.PassportRegistration
+                });
+
+                UnitOfWork.SaveChanges();
+                return new BaseResponse
+                {
+                    Name = "Сформирован запрос в базовый регистр номер " +
+                           messageV6.CoordinateTaskDataMessage.Task.TaskNumber
+                };
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Ошибка отправки в базовый регистр запроса адреса регистрации", ex);
+                return new BaseResponse {HasError = true, ErrorMessage = ex.Message};
+            }
+        }
+
+        /// <summary>
         ///     запрос информации о ребёнке родство
         /// </summary>
         /// <param name="model"></param>
@@ -642,7 +778,7 @@ namespace RestChild.Web.Controllers.WebApi
                     IsAddonRequest = true,
                     BirthDate = model.DateOfBirth,
                     SearchField =
-                        $"{model.LastName?.ToLower().Trim()}|{model.FirstName?.ToLower().Trim()}|{model.MiddleName?.ToLower().Trim()}"
+                        $"{model.LastName?.ToLower().Trim()}|{model.FirstName?.ToLower().Trim()}|{model.MiddleName?.ToLower().Trim()}",
                 });
 
                 eb.IsIncoming = false;
@@ -675,7 +811,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                 var request =
                     $@"<ServiceProperties>{(!string.IsNullOrEmpty(model.Snils) ? $"<snils>{model.Snils}</snils>" : string.Empty)}<birthdate>{model.DateOfBirth:yyyy-MM-dd}T00:00:00Z</birthdate><doctype>{
-                            documentType.BaseRegistryUid}</doctype><firstname>{model.FirstName}</firstname><lastname>{model.LastName
+                        documentType.BaseRegistryUid}</doctype><firstname>{model.FirstName}</firstname><lastname>{model.LastName
                         }</lastname><middlename>{model.MiddleName}</middlename><passport>{model.DocumentNumber
                         }</passport><passport_serie>{model.DocumentSeria}</passport_serie></ServiceProperties>";
 
@@ -1063,7 +1199,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                 var request =
                     $@"<ServiceProperties>{(!string.IsNullOrEmpty(child.Snils) ? $"<snils>{child.Snils}</snils>" : string.Empty)}<birthdate>{child.DateOfBirth:yyyy-MM-dd}T00:00:00Z</birthdate><doctype>{
-                            documentType.BaseRegistryUid}</doctype><firstname>{child.FirstName}</firstname><lastname>{child.LastName
+                        documentType.BaseRegistryUid}</doctype><firstname>{child.FirstName}</firstname><lastname>{child.LastName
                         }</lastname><middlename>{child.MiddleName}</middlename><passport>{child.DocumentNumber
                         }</passport><passport_serie>{child.DocumentSeria}</passport_serie></ServiceProperties>";
 
@@ -1090,9 +1226,9 @@ namespace RestChild.Web.Controllers.WebApi
                 {
                     var request2 =
                         $@"<ServiceProperties><birthdate>{child.DateOfBirth:yyyy-MM-dd}T00:00:00Z</birthdate><doctype>{
-                                documentTypeCert.BaseRegistryUid}</doctype><firstname>{child.FirstName}</firstname><lastname>{
+                            documentTypeCert.BaseRegistryUid}</doctype><firstname>{child.FirstName}</firstname><lastname>{
                                 child.LastName}</lastname><middlename>{child.MiddleName}</middlename><passport>{child.DocumentNumberCertOfBirth
-                            }</passport><passport_serie>{child.DocumentSeriaCertOfBirth}</passport_serie></ServiceProperties>";
+                                }</passport><passport_serie>{child.DocumentSeriaCertOfBirth}</passport_serie></ServiceProperties>";
 
                     var taskNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber;
                     messageV6 = GetCoordinateMessageV6(request2,
@@ -1162,14 +1298,20 @@ namespace RestChild.Web.Controllers.WebApi
         public void CheckRequestInBaseRegistryBenefit(long requestId)
         {
             var req = UnitOfWork.GetById<Request>(requestId);
+
+            CheckRequestInBaseRegistryStatusSet(req);
+
+            CheckRequestInBaseRegistryBenefitReq(req);
+        }
+
+        /// <summary>
+        ///     проверка заявления в АС УР БР (исполнение)
+        /// </summary>
+        private void CheckRequestInBaseRegistryBenefitReq(Request req)
+        {
             if (req?.Child == null)
             {
                 return;
-            }
-
-            if (req.IsFirstCompany)
-            {
-                UnitOfWork.SendChangeStatusByEvent(req, RequestEventEnum.SendRequestInBenefit);
             }
 
             var count = UnitOfWork.GetSet<ExchangeBaseRegistry>().Count(v =>
@@ -1227,16 +1369,21 @@ namespace RestChild.Web.Controllers.WebApi
         public void CheckRequestInBaseRegistrySnils(long requestId)
         {
             var req = UnitOfWork.GetById<Request>(requestId);
+
+            CheckRequestInBaseRegistryStatusSet(req);
+
+            CheckRequestInBaseRegistrySnilsReq(req);
+        }
+
+        /// <summary>
+        ///     проверка заявления в АС УР БР (исполнение)
+        /// </summary>
+        private void CheckRequestInBaseRegistrySnilsReq(Request req)
+        {
             if (req?.Child == null)
             {
                 return;
             }
-
-            if (req.IsFirstCompany)
-            {
-                UnitOfWork.SendChangeStatusByEvent(req, RequestEventEnum.SendRequestForSnils);
-            }
-
 
             var count = UnitOfWork.GetSet<ExchangeBaseRegistry>().Count(v =>
                 v.ApplicantId == req.ApplicantId || v.Applicant.RequestId == req.Id ||
@@ -1281,11 +1428,17 @@ namespace RestChild.Web.Controllers.WebApi
         public void CheckRequestInBaseRegistryPassport(long requestId)
         {
             var req = UnitOfWork.GetById<Request>(requestId);
-            if (req.IsFirstCompany)
-            {
-                UnitOfWork.SendChangeStatusByEvent(req, RequestEventEnum.SendRequestInBRASUR);
-            }
 
+            CheckRequestInBaseRegistryStatusSet(req);
+
+            CheckRequestInBaseRegistryPassportReq(req);
+        }
+
+        /// <summary>
+        ///     проверка заявления паспорта в АС УР БР (исполнение)
+        /// </summary>
+        private void CheckRequestInBaseRegistryPassportReq(Request req)
+        {
             BrGetPassportDataBySnils(req);
             req.NeedSendForPassport = false;
             UnitOfWork.SaveChanges();
@@ -1299,6 +1452,17 @@ namespace RestChild.Web.Controllers.WebApi
         public void CheckRequestInBaseRegistryRelatives(long requestId)
         {
             var req = UnitOfWork.GetById<Request>(requestId);
+
+            CheckRequestInBaseRegistryStatusSet(req);
+
+            CheckRequestInBaseRegistryRelativesReq(req);
+        }
+
+        /// <summary>
+        ///     отправка проверки по свидетельству о рождении (исполнение)
+        /// </summary>
+        private void CheckRequestInBaseRegistryRelativesReq(Request req)
+        {
             if (req?.Child == null)
             {
                 return;
@@ -1316,12 +1480,6 @@ namespace RestChild.Web.Controllers.WebApi
                 var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
                 requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
                 count = 1;
-            }
-
-            // двух этапная кампания, логика что отправлять ничего не нужно
-            if (req.IsFirstCompany)
-            {
-                UnitOfWork.SendChangeStatusByEvent(req, RequestEventEnum.SendRequestForRelatives);
             }
 
             if (req.SourceId == (long) SourceEnum.Mpgu &&
@@ -1344,14 +1502,34 @@ namespace RestChild.Web.Controllers.WebApi
         public void CheckRequestInBaseRegistryRegistrationByPassport(long requestId)
         {
             var req = UnitOfWork.GetById<Request>(requestId);
-            if (req.IsFirstCompany)
-            {
-                UnitOfWork.SendChangeStatusByEvent(req, RequestEventEnum.SendRequestForRegistrationByPassport);
-            }
 
+            CheckRequestInBaseRegistryStatusSet(req);
+
+            CheckRequestInBaseRegistryRegistrationByPassportReq(req);
+        }
+
+        /// <summary>
+        ///     отправка проверки регистрации по паспорту (исполнение)
+        /// </summary>
+        private void CheckRequestInBaseRegistryRegistrationByPassportReq(Request req)
+        {
             BrGetRegistrationDataByPassport(req);
             req.NeedSendForRegistrationByPassport = false;
             UnitOfWork.SaveChanges();
+        }
+
+        /// <summary>
+        ///     Установка статуса 7704 при отправке запроса в БР (единая точка входа)
+        /// </summary>
+        /// <param name="req"></param>
+        private void CheckRequestInBaseRegistryStatusSet(Request req)
+        {
+            if (req.IsFirstCompany)
+            {
+                if (UnitOfWork.GetSet<ExchangeUTS>().Any(ss => ss.RequestId == req.Id && !ss.Incoming && ss.ToState == (long)StatusEnum.OperatorCheck)) return;
+
+                UnitOfWork.SendChangeStatusByEvent(req, RequestEventEnum.SendRequestBase);
+            }
         }
     }
 }

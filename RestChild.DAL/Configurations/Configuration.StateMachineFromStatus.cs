@@ -1001,6 +1001,13 @@ namespace RestChild.DAL.Configurations
                     StateMachineId = (long)StateMachineEnum.MonitoringSmallLeisureInfoData,
                     StateMachineActionId = StateMachineStateEnum.Monitoring.SmallLeisureInfoData.EditForAll,
                     FromStateId = StateMachineStateEnum.Monitoring.SmallLeisureInfoData.Approved
+                },
+                new StateMachineFromStatus
+                {
+                    Id = ++id,
+                    StateMachineId = (long) StateMachineEnum.PupilGroup,
+                    StateMachineActionId = StateMachineStateEnum.PupilGroup.EditForMGT,
+                    FromStateId = StateMachineStateEnum.PupilGroup.Approved
                 }
             );
 

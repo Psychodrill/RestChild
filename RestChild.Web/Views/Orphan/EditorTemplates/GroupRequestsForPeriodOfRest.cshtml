@@ -17,12 +17,12 @@
     <div class="row form-group">
         <label class="col-md-2 control-label">Период отдыха</label>
         <div class="col-md-4">
-            @Html.HiddenFor(r => r.TimeOfRestId, new { @class = "form-control timesofrest" }).DisableIf(() => Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
+            @Html.HiddenFor(r => r.TimeOfRestId, new { @class = "form-control timesofrest" }).DisableIf(Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
             @Html.HiddenFor(r => r.TimeOfRest.Name)
         </div>
         <label class="col-md-2 control-label">Размещение для отдыха</label>
         <div class="col-md-4">
-            @Html.HiddenFor(r => r.TourId, new { @class = "form-control tours" }).DisableIf(() => Model.Id < 1 || !Model.PupilGroupId.HasValue || Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Agreed)
+            @Html.HiddenFor(r => r.TourId, new { @class = "form-control tours" }).DisableIf(Model.Id < 1 || !Model.PupilGroupId.HasValue || Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Agreed)
             @Html.Hidden("Tour.Name", Html.Raw(Model.Id > 0 && Model.TourId.HasValue ? Model.Tour.Hotels.Name + Model.Tour.Name : string.Empty))
         </div>
     </div>
@@ -30,7 +30,7 @@
         <label class="col-md-2 control-label text-right">Каникулы с</label>
         <div class="col-md-2">
             <div class='input-group date datepicker-anytime'>
-                @Html.TextBoxFor(r => r.VacationFrom, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.VacationFrom).FormatEx(string.Empty, string.Empty) }).DisableIf(() => Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
+                @Html.TextBoxFor(r => r.VacationFrom, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.VacationFrom).FormatEx(string.Empty, string.Empty) }).DisableIf(Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -39,7 +39,7 @@
         <label class="col-md-1 control-label text-right">по</label>
         <div class="col-md-2">
             <div class='input-group date datepicker-anytime'>
-                @Html.TextBoxFor(r => r.VacationTo, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.VacationTo).FormatEx(string.Empty, string.Empty) }).DisableIf(() => Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
+                @Html.TextBoxFor(r => r.VacationTo, new { @class = "form-control input-mask-date-anytime request-period-start", tabindex = "9", autocomplete = "off", Value = Model.NullSafe(m => m.VacationTo).FormatEx(string.Empty, string.Empty) }).DisableIf(Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -50,22 +50,18 @@
     <div class="form-group">
         <label class="col-md-2 control-label text-right">Регион</label>
         <div class="col-md-4">
-            @Html.HiddenFor(r => r.PlaceOfRestId, new { @class = "form-control placesofrest" }).DisableIf(() => Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
+            @Html.HiddenFor(r => r.PlaceOfRestId, new { @class = "form-control placesofrest" }).DisableIf(Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
             @Html.HiddenFor(r => r.PlaceOfRest.Name)
         </div>
     </div>
     <div class="form-group">
         <label class="col-md-3 control-label text-right">Кол-во воспитанников</label>
         <div class="col-md-1">
-            @Html.TextBoxFor(model => model.PupilsCount, new { @class = "form-control pcount", maxlength = 1000, autocomplete = "off" }).ReadOnlyIf(() => Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
+            @Html.TextBoxFor(model => model.PupilsCount, new { @class = "form-control pcount", maxlength = 1000, autocomplete = "off" }).ReadOnlyIf(Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
         </div>
         <label class="col-md-3 control-label text-right">Кол-во сопровождающих от учреждения</label>
         <div class="col-md-1">
-            @Html.TextBoxFor(model => model.CollaboratorsCount, new { @class = "form-control ccount", maxlength = 1000, autocomplete = "off" }).ReadOnlyIf(() => Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
-        </div>
-        <label class="col-md-3 control-label text-right">Кол-во сопровождающих от МГТ</label>
-        <div class="col-md-1">
-            @Html.TextBoxFor(model => model.MGTCollaboratorsCount, new { @class = "form-control mcount", maxlength = 1000, autocomplete = "off" }).ReadOnlyIf(() => Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
+            @Html.TextBoxFor(model => model.CollaboratorsCount, new { @class = "form-control ccount", maxlength = 1000, autocomplete = "off" }).ReadOnlyIf(Model.Id > 0 || (Model.PupilGroupId.HasValue && Model.PupilGroup.StateId != StateMachineStateEnum.PupilGroup.Formation))
         </div>
     </div>
     <div class="form-group">

@@ -1,8 +1,10 @@
-﻿@using RestChild.Comon
+﻿@using iTextSharp.text.pdf.qrcode
+@using RestChild.Comon
 @using RestChild.Comon.Enumeration
 @using RestChild.Domain
 @using RestChild.Web.App_Code
 @using RestChild.Web.Controllers
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.HotelsViewModel
 @{
 	ViewBag.Title = "Реестр оздоровительных организаций";
@@ -84,70 +86,70 @@
 								<div class="form-group">
 									<label class="col-md-3 control-label text-right">Наименование оздоровительной организаций<span class="requared">*</span></label>
 									<div class="col-md-9">
-										@Html.TextBoxFor(m => m.Data.Name, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEditName)
+										@Html.TextBoxFor(m => m.Data.Name, new { @class = "form-control", autocomplete = "Off" }).DisableIf(!Model.CanEditName)
 										@Html.ValidationMessageFor(m => m.Data.Name, "Заполните поле")
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-3 control-label text-right">Организация – победитель конкурса<span class="requared">*</span></label>
 									<div class="col-md-9">
-										@Html.HiddenFor(m => m.Data.OrganizationId, new { @class = "form-control change-submit", data_default_text = Model.NullSafe(l => l.Data.Organization.Name) }).DisableIf(() => !Model.CanEdit)
+										@Html.HiddenFor(m => m.Data.OrganizationId, new { @class = "form-control change-submit", data_default_text = Model.NullSafe(l => l.Data.Organization.Name) }).DisableIf(!Model.CanEdit)
 										@Html.ValidationMessageFor(m => m.Data.OrganizationId, "Заполните поле")
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-3 control-label text-right">Телефон<span class="requared">*</span></label>
 									<div class="col-md-9">
-										@Html.TextBoxFor(m => m.Data.Phone, new { @class = "form-control input-mask-phone", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+										@Html.TextBoxFor(m => m.Data.Phone, new { @class = "form-control input-mask-phone", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 										@Html.ValidationMessageFor(m => m.Data.Phone, "Заполните поле")
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-3 control-label text-right">Факс</label>
 									<div class="col-md-9">
-										@Html.TextBoxFor(m => m.Data.Fax, new { @class = "form-control input-mask-phone", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+										@Html.TextBoxFor(m => m.Data.Fax, new { @class = "form-control input-mask-phone", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 										@Html.ValidationMessageFor(m => m.Data.Fax, "Заполните поле")
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-3 control-label text-right">Электронная почта</label>
 									<div class="col-md-9">
-										@Html.TextBoxFor(m => m.Data.Email, new { @class = "form-control input-mask-email", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+										@Html.TextBoxFor(m => m.Data.Email, new { @class = "form-control input-mask-email", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 										@Html.ValidationMessageFor(m => m.Data.Email, "Заполните поле")
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-3 control-label text-right">Домашняя страница</label>
 									<div class="col-md-9">
-										@Html.TextBoxFor(m => m.Data.Url, new {@class = "form-control input-mask-url", autocomplete = "Off"}).DisableIf(() => !Model.CanEdit)
+										@Html.TextBoxFor(m => m.Data.Url, new {@class = "form-control input-mask-url", autocomplete = "Off"}).DisableIf(!Model.CanEdit)
 										@Html.ValidationMessageFor(m => m.Data.Url, "Заполните поле")
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-3 control-label text-right">Ссылка 3D тур</label>
 									<div class="col-md-9">
-										@Html.TextBoxFor(m => m.Link3DTour, new { @class = "form-control", maxlength="300", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+										@Html.TextBoxFor(m => m.Link3DTour, new { @class = "form-control", maxlength="300", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 										@Html.HiddenFor(m => m.Link3DTourId)
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-3 control-label text-right">ФИО руководителя</label>
 									<div class="col-md-9">
-										@Html.TextBoxFor(m => m.Data.Head, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+										@Html.TextBoxFor(m => m.Data.Head, new { @class = "form-control", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 										@Html.ValidationMessageFor(m => m.Data.Head, "Заполните поле")
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-3 control-label text-right">Должность руководителя</label>
 									<div class="col-md-9">
-										@Html.TextBoxFor(m => m.Data.HeadPosition, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+										@Html.TextBoxFor(m => m.Data.HeadPosition, new { @class = "form-control", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 										@Html.ValidationMessageFor(m => m.Data.HeadPosition, "Заполните поле")
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="col-md-3 control-label text-right">Вид места отдыха<span class="requared">*</span></label>
 									<div class="col-md-9">
-										@Html.DropDownListFor(m => m.Data.HotelTypeId, SelectListHelper.Create(Model.HotelTypes, t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control" }).DisableIf(() => Model.Data.Id != 0 && Model.Data.State != null && Model.Data.HotelTypeId.HasValue || !Model.CanEdit)
+										@Html.DropDownListFor(m => m.Data.HotelTypeId, SelectListHelper.Create(Model.HotelTypes, t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Name }), new { @class = "form-control hotelType" }).DisableIf(Model.Data.Id != 0 && Model.Data.State != null && Model.Data.HotelTypeId.HasValue || !Model.CanEdit)
 										@Html.ValidationMessageFor(m => m.Data.HotelTypeId, "Заполните поле")
 										@if (Model.Data.Id != 0 && Model.Data.State != null && Model.Data.HotelTypeId.HasValue)
 										{
@@ -158,7 +160,7 @@
 								<div class="form-group">
 									<div class="col-md-9 col-md-offset-3 checkbox">
 										<label>
-											@Html.CheckBoxFor(m => m.Data.AccessibleEnvironment).DisableIf(() => !Model.CanEdit) Доступная среда
+											@Html.CheckBoxFor(m => m.Data.AccessibleEnvironment).DisableIf(!Model.CanEdit) Доступная среда
 										</label>
 
 									</div>
@@ -166,7 +168,7 @@
 								<div class="form-group">
 									<div class="col-md-9 col-md-offset-3 checkbox">
 										<label>
-											@Html.CheckBoxFor(m => m.Data.TakeChildUp3Years).DisableIf(() => !Model.CanEdit) Принимает детей до 3х лет
+											@Html.CheckBoxFor(m => m.Data.TakeChildUp3Years).DisableIf(!Model.CanEdit) Принимает детей до 3х лет
 										</label>
 
 									</div>
@@ -174,18 +176,26 @@
 								<div class="form-group">
 									<div class="col-md-9 col-md-offset-3 checkbox">
 										<label>
-											@Html.CheckBoxFor(m => m.Data.IsLok).DisableIf(() => !Model.CanEdit) Участник ЛОК
+											@Html.CheckBoxFor(m => m.Data.IsLok).DisableIf(!Model.CanEdit) Участник ЛОК
 										</label>
 									</div>
 								</div>
-								<div class="form-group">
-									<div class="col-md-9 col-md-offset-3 checkbox">
-										<label>
-											@Html.CheckBoxFor(m => m.Data.NotForSite).DisableIf(() => !Model.CanEdit) Не для сайта
-										</label>
-									</div>
-								</div>
-							</fieldset>
+                                <div class="form-group">
+                                    <div class="col-md-9 col-md-offset-3 checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(m => m.Data.NotForSite).DisableIf(!Model.CanEdit) Не для сайта
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group isCampingCheckContainer">
+                                    <div class="col-md-9 col-md-offset-3 checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(m => m.Data.IsCamping, new {@class = "isCampingCheck hidden", @type = "checkbox"})
+                                            @Html.CheckBoxFor(m => m.Data.IsCamping, new {@class = "isCampingCheck visibleCheckbox"}).DisableIf(!Model.CanEdit || Model.Data.Id > 0) Палаточного типа
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
 						</div>
 					</div>
 					<div role="tabpanel" class="tab-pane @(Model.ActiveTab == "PlaceInfo" ? "active" : string.Empty)" id="PlaceInfo">
@@ -196,7 +206,7 @@
 							<div class="form-group">
 								<label class="col-md-3 control-label text-right">Регион<span class="requared">*</span></label>
 								<div class="col-md-9">
-									@Html.DropDownListFor(m => m.Data.PlaceOfRestId, SelectListHelper.Create(Model.Regions, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" }).DisableIf(() => !Model.CanEdit)
+									@Html.DropDownListFor(m => m.Data.PlaceOfRestId, SelectListHelper.Create(Model.Regions, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" }).DisableIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.PlaceOfRestId, "Заполните поле")
 									@if (!Model.CanEdit)
 									{
@@ -207,7 +217,7 @@
 							<div class="form-group">
 								<label class="col-md-3 control-label text-right">Ближайший город (транспортный узел)<span class="requared">*</span></label>
 								<div class="col-md-9">
-									@Html.DropDownListFor(m => m.Data.CityId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" }).DisableIf(() => !Model.CanEdit)
+									@Html.DropDownListFor(m => m.Data.CityId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" }).DisableIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.PlaceOfRestId, "Заполните поле")
 									@if (Model.Data.StateId == StateMachineStateEnum.Hotel.OnReworking)
 									{
@@ -218,21 +228,21 @@
 							<div class="form-group">
 								<label class="col-md-3 control-label text-right">Адрес<span class="requared">*</span></label>
 								<div class="col-md-9">
-									@Html.TextBoxFor(m => m.Data.Address, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit).ReadonlyIf(() => !Model.CanEdit)
+									@Html.TextBoxFor(m => m.Data.Address, new { @class = "form-control", autocomplete = "Off" }).DisableIf(!Model.CanEdit).ReadOnlyIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.Address, "Заполните поле")
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-md-3 control-label text-right">Удаленность от центра города, км</label>
 								<div class="col-md-9">
-									@Html.TextBoxFor(m => m.Data.DistanceFromCenter, new { @class = "form-control decimal", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit).ReadonlyIf(() => !Model.CanEdit)
+									@Html.TextBoxFor(m => m.Data.DistanceFromCenter, new { @class = "form-control decimal", autocomplete = "Off" }).DisableIf(!Model.CanEdit).ReadOnlyIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.DistanceFromCenter, "Заполните поле")
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-md-3 control-label text-right">Удаленность от пляжа, км</label>
 								<div class="col-md-9">
-									@Html.TextBoxFor(m => m.Data.DistanceFromBeach, new {@class = "form-control decimal", autocomplete = "Off"}).DisableIf(() => !Model.CanEdit).ReadonlyIf(() => !Model.CanEdit)
+									@Html.TextBoxFor(m => m.Data.DistanceFromBeach, new {@class = "form-control decimal", autocomplete = "Off"}).DisableIf(!Model.CanEdit).ReadOnlyIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.DistanceFromBeach, "Заполните поле")
 								</div>
 							</div>
@@ -240,21 +250,21 @@
 							<div class="form-group">
 								<label class="col-md-3 control-label text-right">Широта</label>
 								<div class="col-md-9">
-									@Html.TextBoxFor(m => m.Data.Latitude, new { @class = "form-control coordinates", autocomplete = "Off", maxlength=11 }).DisableIf(() => !Model.CanEdit).ReadonlyIf(() => !Model.CanEdit)
+									@Html.TextBoxFor(m => m.Data.Latitude, new { @class = "form-control coordinates", autocomplete = "Off", maxlength=11 }).DisableIf(!Model.CanEdit).ReadOnlyIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.Latitude, "Заполните поле")
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-md-3 control-label text-right">Долгота</label>
 								<div class="col-md-9">
-									@Html.TextBoxFor(m => m.Data.Longitude, new { @class = "form-control coordinates", autocomplete = "Off", maxlength = 11 }).DisableIf(() => !Model.CanEdit).ReadonlyIf(() => !Model.CanEdit)
+									@Html.TextBoxFor(m => m.Data.Longitude, new { @class = "form-control coordinates", autocomplete = "Off", maxlength = 11 }).DisableIf(!Model.CanEdit).ReadOnlyIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.Longitude, "Заполните поле")
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-md-3 control-label text-right">Маршрут проезда</label>
 								<div class="col-md-9">
-									@Html.TextAreaFor(m => m.Data.DrivingDirections, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+									@Html.TextAreaFor(m => m.Data.DrivingDirections, new { @class = "form-control", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.DrivingDirections, "Заполните поле")
 								</div>
 							</div>
@@ -268,28 +278,28 @@
 							<div class="form-group">
 								<label class="col-md-3 control-label text-right">Описание</label>
 								<div class="col-md-9">
-									@Html.TextAreaFor(m => m.Data.Description, new { @class = "form-control", autocomplete = "Off", style = "max-height: 300px" }).DisableIf(() => !Model.CanEdit)
+									@Html.TextAreaFor(m => m.Data.Description, new { @class = "form-control", autocomplete = "Off", style = "max-height: 300px" }).DisableIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.Description, "Заполните поле")
 								</div>
 							</div>
 							<div class="form-group hidden">
 								<label class="col-md-3 control-label text-right">Количество корпусов</label>
 								<div class="col-md-9">
-									@Html.TextBoxFor(m => m.Data.NumberHousing, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+									@Html.TextBoxFor(m => m.Data.NumberHousing, new { @class = "form-control", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.NumberHousing, "Заполните поле")
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-md-3 control-label text-right">Площадь территории, га</label>
 								<div class="col-md-9">
-									@Html.TextBoxFor(m => m.Data.Squere, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+									@Html.TextBoxFor(m => m.Data.Squere, new { @class = "form-control", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.Squere, "Заполните поле")
 								</div>
 							</div>
 							@*<div class="form-group">
 								<label class="col-md-3 control-label text-right">Тип функционирования</label>
 								<div class="col-md-9">
-									@Html.DropDownListFor(m => m.Data.FunctioningTypeId, SelectListHelper.Create(Model.FunctioningType, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" }).DisableIf(() => !Model.CanEdit)
+									@Html.DropDownListFor(m => m.Data.FunctioningTypeId, SelectListHelper.Create(Model.FunctioningType, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" }).DisableIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.PlaceOfRestId, "Заполните поле")
 								</div>
 							</div>*@
@@ -298,12 +308,12 @@
 								<div class="col-md-6">
 									<label class="control-label input-label col-md-1 without-margin without-padding width-auto">с</label>
 									<div class="col-md-2">
-										@Html.TextBoxFor(r => r.Data.AgeFrom, new { @class = "form-control integer", autocomplete = "off" }).DisableIf(() => !Model.CanEdit)
+										@Html.TextBoxFor(r => r.Data.AgeFrom, new { @class = "form-control integer", autocomplete = "off" }).DisableIf(!Model.CanEdit)
 									</div>
 
 									<label class="control-label input-label col-md-1 without-margin without-padding width-auto">по</label>
 									<div class="col-md-2">
-										@Html.TextBoxFor(r => r.Data.AgeTo, new { @class = "form-control integer", autocomplete = "off" }).DisableIf(() => !Model.CanEdit)
+										@Html.TextBoxFor(r => r.Data.AgeTo, new { @class = "form-control integer", autocomplete = "off" }).DisableIf(!Model.CanEdit)
 									</div>
 								</div>
 
@@ -311,14 +321,14 @@
 							@*<div class="form-group">
 								<label class="col-md-3 control-label text-right">Размещение</label>
 								<div class="col-md-9">
-									@Html.DropDownListFor(m => m.Data.HotelPlacementId, SelectListHelper.Create(Model.HotelPlacements, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" }).DisableIf(() => !Model.CanEdit)
+									@Html.DropDownListFor(m => m.Data.HotelPlacementId, SelectListHelper.Create(Model.HotelPlacements, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control" }).DisableIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.PlaceOfRestId, "Заполните поле")
 								</div>
 							</div>*@
 							<div class="form-group">
 								<div class="col-md-3 col-md-offset-3 checkbox">
 									<label>
-										@Html.CheckBoxFor(m => m.Data.MedicalOfficeAvailability).DisableIf(() => !Model.CanEdit)
+										@Html.CheckBoxFor(m => m.Data.MedicalOfficeAvailability).DisableIf(!Model.CanEdit)
 										Наличие медицинского кабинета
 									</label>
 								</div>
@@ -327,20 +337,20 @@
 							<div class="form-group">
 								<div class="col-md-3 col-md-offset-3 checkbox">
 									<label>
-										@Html.CheckBoxFor(m => m.Data.OutdoorPondAvailability).DisableIf(() => !Model.CanEdit)
+										@Html.CheckBoxFor(m => m.Data.OutdoorPondAvailability).DisableIf(!Model.CanEdit)
 										Наличие открытого водоема
 									</label>
 								</div>
 								<label class="col-md-1 control-label text-right">название</label>
 								<div class="col-md-5">
-									@Html.TextBoxFor(m => m.Data.OutdoorPondName, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+									@Html.TextBoxFor(m => m.Data.OutdoorPondName, new { @class = "form-control", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.OutdoorPondName, "Заполните поле")
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-3 col-md-offset-3 checkbox">
 									<label>
-										@Html.CheckBoxFor(m => m.Data.PoolAvailability).DisableIf(() => !Model.CanEdit)
+										@Html.CheckBoxFor(m => m.Data.PoolAvailability).DisableIf(!Model.CanEdit)
 										Наличие бассейна
 									</label>
 								</div>
@@ -464,7 +474,7 @@
 													<div class="text-center accomodation-name-label">
 														<label class="line-height35">Название</label>
 													</div>
-													@Html.TextBox("Data.Accommodation[" + accomodationNum + "].Name", accomodation.Name, new { @class = "form-control accomodation-name", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+													@Html.TextBox("Data.Accommodation[" + accomodationNum + "].Name", accomodation.Name, new { @class = "form-control accomodation-name", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 													@Html.ValidationMessage("Data.Accommodation[" + accomodationNum + "].Name", "Заполните поле")
 												</div>
 												<div class="col-md-3">
@@ -472,7 +482,7 @@
 														<label class="">Количество взрослых</label>
 													</div>
 													<div class="col-md-4 without-margin without-padding">
-														@Html.TextBox("Data.Accommodation[" + accomodationNum + "].Adult", accomodation.Adult, new { @class = "form-control count", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+														@Html.TextBox("Data.Accommodation[" + accomodationNum + "].Adult", accomodation.Adult, new { @class = "form-control count", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 														@Html.ValidationMessage("Data.Accommodation[" + accomodationNum + "].Adult", "Заполните поле")
 													</div>
 													@if (Model.CanEdit)
@@ -515,15 +525,15 @@
 															{
 																<tr class="accomodation-child-tr">
 																	<td>
-																		@Html.TextBox("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].AgeFrom", child.AgeFrom, new { @class = "form-control age", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+																		@Html.TextBox("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].AgeFrom", child.AgeFrom, new { @class = "form-control age", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 																		@Html.ValidationMessage("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].AgeFrom", "Заполните поле")
 																	</td>
 																	<td>
-																		@Html.TextBox("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].AgeTo", child.AgeTo, new { @class = "form-control age", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+																		@Html.TextBox("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].AgeTo", child.AgeTo, new { @class = "form-control age", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 																		@Html.ValidationMessage("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].AgeTo", "Заполните поле")
 																	</td>
 																	<td>
-																		@Html.TextBox("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].CountChildren", child.CountChildren, new { @class = "form-control count", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+																		@Html.TextBox("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].CountChildren", child.CountChildren, new { @class = "form-control count", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 																		@Html.ValidationMessage("Data.Accommodation[" + accomodationNum + "].AccommodationChildren[" + accomodationChildNum + "].CountChildren", "Заполните поле")
 																	</td>
 																	<td>
@@ -563,37 +573,37 @@
 							</h3>
 							<div class="form-group">
 								<div class="col-md-3 col-md-offset-1">
-									@Html.CheckBoxFor(m => m.Data.LibraryAvailability).DisableIf(() => !Model.CanEdit)
+									@Html.CheckBoxFor(m => m.Data.LibraryAvailability).DisableIf(!Model.CanEdit)
 									Библиотека
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-3 col-md-offset-1">
-									@Html.CheckBoxFor(m => m.Data.ComputerClassAvailability).DisableIf(() => !Model.CanEdit)
+									@Html.CheckBoxFor(m => m.Data.ComputerClassAvailability).DisableIf(!Model.CanEdit)
 									Компьютерный класс
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 col-md-offset-1">
-									@Html.CheckBoxFor(m => m.Data.CinimaAvailability).DisableIf(() => !Model.CanEdit)
+									@Html.CheckBoxFor(m => m.Data.CinimaAvailability).DisableIf(!Model.CanEdit)
 									Кинозал
 								</div>
 								<label class="col-md-2 control-label text-right">График работы</label>
 								<div class="col-md-5">
-									@Html.TextBoxFor(m => m.Data.CinimaTimetable, new { @class = "form-control", autocomplete = "Off" }).DisableIf(() => !Model.CanEdit)
+									@Html.TextBoxFor(m => m.Data.CinimaTimetable, new { @class = "form-control", autocomplete = "Off" }).DisableIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.CinimaTimetable, "Заполните поле")
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-3 col-md-offset-1">
-									@Html.CheckBoxFor(m => m.Data.GymAvailability).DisableIf(() => !Model.CanEdit)
+									@Html.CheckBoxFor(m => m.Data.GymAvailability).DisableIf(!Model.CanEdit)
 									Тренажерный зал
 								</div>
 							</div>
 							<div class="form-group">
 								<label class="col-md-1 control-label text-right">Другое</label>
 								<div class="col-md-9">
-									@Html.TextAreaFor(m => m.Data.OtherLeisure, new { @class = "form-control", autocomplete = "Off", maxlength = "1000" }).DisableIf(() => !Model.CanEdit)
+									@Html.TextAreaFor(m => m.Data.OtherLeisure, new { @class = "form-control", autocomplete = "Off", maxlength = "1000" }).DisableIf(!Model.CanEdit)
 									@Html.ValidationMessageFor(m => m.Data.DrivingDirections, "Заполните поле")
 								</div>
 							</div>

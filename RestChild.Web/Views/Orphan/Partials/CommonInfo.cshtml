@@ -1,5 +1,5 @@
 ﻿@using RestChild.Comon.Enumeration
-@using RestChild.Web.App_Code
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.Orphans.OrphanageModel
 
 <div role="tabpanel" class="tab-pane @(Model.ActiveTab == "CommonInfo" || string.IsNullOrEmpty(Model.ActiveTab) ? "active" : string.Empty)" id="CommonInfo">
@@ -12,14 +12,14 @@
             <div class="form-group">
                 <label class="col-md-3 control-label text-right">Название учреждения<span class="requared">*</span></label>
                 <div class="col-md-9">
-                    @Html.TextAreaFor(model => model.Data.Name, new { @class = "form-control", maxlength = 1000, autocomplete = "off", Rows = "3", style = "resize: none;" }).ReadonlyIf(() => Model.Data.Id > 0)
+                    @Html.TextAreaFor(model => model.Data.Name, new { @class = "form-control", maxlength = 1000, autocomplete = "off", Rows = "3", style = "resize: none;" }).ReadOnlyIf(Model.Data.Id > 0)
                     @Html.ValidationMessageFor(model => model.Data.Name, "Заполните поле")
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 control-label text-right">Краткое название учреждения</label>
                 <div class="col-md-9">
-                    @Html.TextBoxFor(model => model.Data.ShortName, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).ReadonlyIf(() => Model.Data.Id > 0)
+                    @Html.TextBoxFor(model => model.Data.ShortName, new { @class = "form-control", maxlength = 1000, autocomplete = "off" }).ReadOnlyIf(Model.Data.Id > 0)
                     @Html.ValidationMessageFor(model => model.Data.ShortName, "Заполните поле")
                 </div>
             </div>
@@ -115,25 +115,25 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label text-right">ФИО</label>
                         <div class="col-md-9">
-                            @Html.TextBox("CollaboratorFIO", Collaborator.Applicant.GetFio(), new { @class = "form-control", maxlength = 100, autocomplete = "off" }).ReadonlyIf(() => true)
+                            @Html.TextBox("CollaboratorFIO", Collaborator.Applicant.GetFio(), new { @class = "form-control", maxlength = 100, autocomplete = "off" }).ReadOnlyIf(true)
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label text-right">Телефон</label>
                         <div class="col-md-9">
-                            @Html.TextBox("CollaboratorPhone", Collaborator.Applicant.Phone, new { @class = "form-control", maxlength = 100, autocomplete = "off" }).ReadonlyIf(() => true)
+                            @Html.TextBox("CollaboratorPhone", Collaborator.Applicant.Phone, new { @class = "form-control", maxlength = 100, autocomplete = "off" }).ReadOnlyIf(true)
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label text-right">Телефон (моб)</label>
                         <div class="col-md-9">
-                            @Html.TextBox("CollaboratorPhone2", Collaborator.AditionalPhone, new { @class = "form-control", maxlength = 100, autocomplete = "off" }).ReadonlyIf(() => true)
+                            @Html.TextBox("CollaboratorPhone2", Collaborator.AditionalPhone, new { @class = "form-control", maxlength = 100, autocomplete = "off" }).ReadOnlyIf(true)
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label text-right">E-mail</label>
                         <div class="col-md-9">
-                            @Html.TextBox("CollaboratorEmail", Collaborator.Applicant.Email, new { @class = "form-control", maxlength = 100, autocomplete = "off" }).ReadonlyIf(() => true)
+                            @Html.TextBox("CollaboratorEmail", Collaborator.Applicant.Email, new { @class = "form-control", maxlength = 100, autocomplete = "off" }).ReadOnlyIf(true)
                         </div>
                     </div>
                 </fieldset>

@@ -1,7 +1,7 @@
 ﻿@using PagedList.Mvc
 @using RestChild.Comon
 @using RestChild.Domain
-@using RestChild.Web.App_Code
+@using RestChild.Web.Extensions
 @model RestChild.Web.Models.LimitEditModel
 @{
     ViewBag.Title = Model.Data.Name;
@@ -204,7 +204,7 @@
         {
             <tr>
                 <td class="text-center">
-                    @Html.CheckBox(" ", r.IsIncluded, new {@listrequestid = r.Id, @class = "include-in-list"}).DisableIf(() => !canIncludeExclude)
+                    @Html.CheckBox(" ", r.IsIncluded, new {@listrequestid = r.Id, @class = "include-in-list"}).DisableIf(!canIncludeExclude)
                 </td>
                 <td class="text-center">@(rowNumber++)</td>
                 <td>

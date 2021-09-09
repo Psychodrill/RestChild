@@ -184,6 +184,19 @@
                             @Html.DropDownListFor(m => m.TypeOfTransportId, SelectListHelper.Create(Model.TypeOfTransports, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
                         </div>
                     }
+                    @if (Model.NextYearsIncludedVisibility)
+                    {
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                    @Html.CheckBoxFor(m => m.NextYearsIncluded)
+                                    <label class="control-label" for="@Html.IdFor(m=>m.NextYearsIncluded)">и последующие годы</label>
+                                </div>
+                        </div>
+                        <label class="col-md-2 control-label" for="@Html.IdFor(m => m.Statuses)">Статус</label>
+                        <div class="col-md-4 form-group">
+                            @Html.DropDownListFor(m => m.StatusId, SelectListHelper.Create(Model.Statuses, c => new SelectListItem() {Value = c.Id.ToString(), Text = c.Name}), new {@class = "form-control select2"})
+                        </div>
+                    }
                 </div>
                 <div class="text-center">
                     <button class="btn btn-default btn-primary" type="submit" name="actionName" value="@AnalyticReportController.ShowActionName">Сформировать</button>

@@ -1,10 +1,17 @@
 ﻿namespace RestChild.Comon.Enumeration
 {
     /// <summary>
-    ///     свидетельство о рождении
+    ///     Тип документа удостоверяющего личность
     /// </summary>
     public enum DocumentTypeEnum
     {
-        CertOfBirth = 22
+        /// <summary>
+        ///     Свидетельство о рождении
+        /// </summary>
+        CertOfBirth = 22,
+        /// <summary>
+        ///     Паспорт РФ
+        /// </summary>
+        PassportRF = 20001
     }
 }

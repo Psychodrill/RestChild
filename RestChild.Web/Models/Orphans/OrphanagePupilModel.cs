@@ -62,8 +62,16 @@ namespace RestChild.Web.Models.Orphans
             var res = base.BuildData();
             res.Drugs = Doses?.Values.ToList() ?? new List<PupilDose>(0);
             res.LinkToFiles = res.LinkToFilesId.HasValue ? new LinkToFile { Id = res.LinkToFilesId.Value } : new LinkToFile();
+            foreach (var file in Files)
+            {
+                if (Int64.TryParse(file.Key, out long val))
+                {
+                    file.Value.Id = val;
+                }
+            }
             res.LinkToFiles.Files = Files?.Where(ss => !string.IsNullOrWhiteSpace(ss.Key)).Select(ss => ss.Value).ToList() ?? new List<FileOrLink>();
             return res;
         }
     }
 }
+

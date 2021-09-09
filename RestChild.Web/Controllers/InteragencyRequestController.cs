@@ -299,6 +299,11 @@ namespace RestChild.Web.Controllers
             SetUnitOfWorkInRefClass(UnitOfWork);
             var model = GetInteragencyRequestViewModel(id, createSecondaryRequest);
 
+            if (model.Data.StatusInteragencyRequestId == (long)StatusInteragencyRequestEnum.Deleted)
+            {
+                return RedirectToAction(nameof(List));
+            }
+
             ViewBag.Title = !model.Data.IsSecondaryRequest
                 ? "Межведомственный запрос"
                 : "Повторный межведомственный запрос";

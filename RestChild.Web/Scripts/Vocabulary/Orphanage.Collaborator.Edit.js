@@ -13,6 +13,12 @@ $(function () {
             $(closest_midname).prop("readonly", false);
         }
     });
+    $(".OrphanageCollaboratorFormDeleteSave").click(function (e) {
+        return confirmStateButton("#OrphanageCollaboratorForm", "#Data_Applicant_IsDeleted", "true", "Удалить", "Удалить сотрудника?", null);
+    });
+    $(".OrphanageCollaboratorFormRestoreSave").click(function (e) {
+        return confirmStateButton("#OrphanageCollaboratorForm", "#Data_Applicant_IsDeleted", "false", "Восстановить", "Восстановить сотрудника?", null);
+    });
     var $sendDialog = $(".sendDialog");
     $sendDialog.find("select").change(function (e) {
         documentInputType($(e.target));

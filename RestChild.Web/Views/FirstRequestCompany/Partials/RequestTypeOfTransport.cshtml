@@ -1,0 +1,22 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Domain
+@using RestChild.Web.App_Code
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.RequestViewModel
+
+<fieldset class="bs-callout bs-callout-info request-block @(Model.Data.TypeOfRest.NullSafe(x => x.NeedTypeOfTransport) ? string.Empty : "hidden")">
+    <h3 id="TypeOfTransport" class="anchor bs-callout-info">Тип транспорта</h3>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Приоритетный<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.DropDownListFor(r => r.Data.PriorityTypeOfTransportInRequestId, SelectListHelper.Create(Model.TypesOfTransportInRequest, h => new SelectListItem() { Value = h.Id.ToString(), Text = h.Name }), new {@class = "form-control select2 priorityTypeOfTransport"})
+        </div>
+    </div>
+    <div class="row form-group">
+        <label class="col-md-3 control-label">Дополнительный<span class="requared">*</span></label>
+        <div class="col-md-9">
+            @Html.DropDownListFor(r => r.Data.AdditionalTypeOfTransportInRequestId, SelectListHelper.Create(Model.TypesOfTransportInRequest, h => new SelectListItem() { Value = h.Id.ToString(), Text = h.Name }), new {@class = "form-control select2 additionalTypeOfTransport"})
+        </div>
+    </div>
+</fieldset>

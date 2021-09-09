@@ -5,6 +5,9 @@ $(function () {
         placeholder: "чч:мм",
         clearIncomplete: true
     });
+    $("#mainForm").submit(function () {
+        $("#saveBtn").prop("disabled", true);
+    });
     $('.ts-type').on('change', function (e) {
         var $e = $(e.target).closest('input');
         if (!$e.prop('checked')) {
