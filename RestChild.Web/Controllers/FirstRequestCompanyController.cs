@@ -81,7 +81,7 @@ namespace RestChild.Web.Controllers
         [System.Web.Mvc.HttpGet]
         public ActionResult RequestEdit(long? id, bool needValidate = false, string saveaction = null,
             bool needCompleteionAlert = false, long? typeOfRestId = null, long? tourId = null, Guid? bookingGuid = null,
-            string rateTypeString = null)
+            string rateTypeString = null, bool reApply = false)
         {
             if (!Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.RequestView}))
             {
@@ -91,7 +91,7 @@ namespace RestChild.Web.Controllers
             SetUnitOfWorkInRefClass(UnitOfWork);
 
             var request = ApiController.RequestEdit(id);
-
+            var reApplyReq = ApiController.RequestEdit(null);
             if (request == null || request.IsDeleted || (request.TypeOfRest?.Commercial ?? false))
             {
                 return RedirectToAction("RequestList");
@@ -101,9 +101,37 @@ namespace RestChild.Web.Controllers
             {
                 ViewBag.LastVersionRequest = ApiController.GetLastVersionRequest(request.EntityId ?? 0);
             }
-
             var model = new RequestViewModel(request);
-
+            if (reApply)
+            {
+                //request.TypeOfRest.Name = null;
+                //model.Data.TypeOfRest = null;
+                //request.TimeOfRestId = null;
+                //request.SubjectOfRestId = null;
+                //request.YearOfRestId = null;
+                //request.PlaceOfRestId = null;
+                //request.Status = UnitOfWork.GetById<Status>((long)StatusEnum.Draft);
+                //request.StatusId = (long)StatusEnum.Draft;
+                //request.Tour = null;
+                //request.TourId = null;
+                reApplyReq.Child = request.Child;
+                reApplyReq.Attendant = request.Attendant;
+                reApplyReq.Applicant = request.Applicant;
+                reApplyReq.Agent = request.Agent;
+                // reApplyReq.IsLast = request.IsLast;
+                // reApplyReq.IsDeleted = request.IsDeleted;
+                //reApplyReq.IsDraft = request.IsDraft;
+                //reApplyReq.Status = UnitOfWork.GetById<Status>((long)StatusEnum.WaitApplicant);
+                //reApplyReq.StatusId = request.StatusId;
+                // reApplyReq.Version = request.Version;
+                // reApplyReq.UpdateDate = request.UpdateDate;
+                reApplyReq.SourceId = request.SourceId;
+                reApplyReq.Source = request.Source;
+                reApplyReq.Files = request.Files.Where(r => !r.FileTitle.Contains("Уведомление") && !r.FileTitle.Contains("Путёвка")).ToList();
+                model = new RequestViewModel(reApplyReq);
+            }
+            
+            
             BookingRequest bookingRequest = null;
             if (!id.HasValue && typeOfRestId.HasValue && tourId.HasValue && bookingGuid.HasValue)
             {
@@ -574,7 +602,7 @@ namespace RestChild.Web.Controllers
                     .OrderBy(OrderString)
                     .InsertAt(new TypeOfRest {Id = 0, Name = DefaultOptionValue}).ToList();
 
-            var hs = typeOfRests.Select(t => t.ParentId).Where(p => p.HasValue).Select(p => p.Value).ToHashSet();
+            HashSet<long> hs = typeOfRests.Select(t => t.ParentId).Where(p => p.HasValue).Select(p => p.Value).ToHashSet<long>();
             ViewBag.TypesOfRest = typeOfRests.Select(t => GetLeveled(hs, t)).ToList();
 
             ViewBag.TimesOfRest =

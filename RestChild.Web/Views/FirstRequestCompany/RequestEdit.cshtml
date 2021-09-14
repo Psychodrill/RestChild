@@ -68,17 +68,21 @@
             <p class="panel-operation-button">
                 @if (!Model.Data.IsDeleted && Model.Data.IsLast && Model.IsEditable)
                 {
-                    if (Model.Data.StatusId == (long) StatusEnum.WaitApplicant || Model.Data.StatusId == (long) StatusEnum.Draft || Security.HasRight(AccessRightEnum.EditAfterRegistration) || Security.HasRight(AccessRightEnum.AddonServiceInRequest))
+                    if (Model.Data.StatusId == (long)StatusEnum.WaitApplicant || Model.Data.StatusId == (long)StatusEnum.Draft || Security.HasRight(AccessRightEnum.EditAfterRegistration) || Security.HasRight(AccessRightEnum.AddonServiceInRequest))
                     {
                         <button id="SaveButton" type="submit" class="btn btn-default btn-primary edit-control save-button">
                             Сохранить
                         </button>
                     }
-                    if (Model.Data.StatusId == (long) StatusEnum.Draft && Security.HasRight(AccessRightEnum.RemoveDraft))
+                    if (Model.Data.StatusId == (long)StatusEnum.Draft && Security.HasRight(AccessRightEnum.RemoveDraft))
                     {
                         <button id="DeleteButton" type="button" role="button" class="btn btn-default btn-danger edit-control" onclick="confirmButton('удалить заявление', '@RequestActionEnum.RemoveDraftVersion') ">
                             Удалить
                         </button>
+                    }
+                    if (Model.Data.StatusId == (long)StatusEnum.CertificateIssued /*&& (Model.Data.TypeOfRestId != (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationGroup || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationYouthRest)*/)
+                    {
+                        <a class="btn btn-default btn-primary edit-control" target="_blank" href="@Url.Action("RequestEdit", "FirstRequestCompany", new {requestId = Model.Data.Id, reApply = true})"> Тестовое заявление </a>
                     }
                     foreach (StatusAction action in Model.Actions)
                     {
@@ -89,31 +93,31 @@
                 }
                 @if (Model.Data.Id != 0)
                 {
-                    /*if (Security.HasRight(AccessRightEnum.Status.FcToDecisionMakingCovid) && Model.Data.StatusId == (long)StatusEnum.DecisionMakingCovid)
+                    if (Security.HasRight(AccessRightEnum.Status.FcToDecisionMakingCovid) && Model.Data.StatusId == (long)StatusEnum.DecisionMakingCovid)
                     {
                         <a class="btn btn-default active-control" id="certificateCreateLink" href="@Url.Action("CreateCertificateRequest", "FirstRequestCompany", new {id = Model.Data.Id})">Выбор сертификата</a>
                         <a class="btn btn-default active-control" id="requestCreateLink" href="@Url.Action("CreateRequestOnNextYear", "FirstRequestCompany", new {id = Model.Data.Id})">Создать заявление на следующий год</a>
-                    }*/
+                    }
                     <a class="btn btn-default active-control" target="_blank" href="@Url.Action("RequestDoc", "FirstRequestCompany", new {id = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Заявление</a>
                     <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRegistration", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> О регистрации</a>
-                    if (Model.Data.StatusId == (long) StatusEnum.WaitApplicant)
+                    if (Model.Data.StatusId == (long)StatusEnum.WaitApplicant)
                     {
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationWaitApplicant", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление о приостановлении</a>
                     }
-                    if (Model.Data.StatusId == (long) StatusEnum.DecisionMaking || Model.Data.StatusId == (long) StatusEnum.DecisionMakingCovid || Model.Data.StatusId == (long) StatusEnum.DecisionIsMade || Model.Data.StatusId == (long) StatusEnum.IncludedInList)
+                    if (Model.Data.StatusId == (long)StatusEnum.DecisionMaking || Model.Data.StatusId == (long)StatusEnum.DecisionMakingCovid || Model.Data.StatusId == (long)StatusEnum.DecisionIsMade || Model.Data.StatusId == (long)StatusEnum.IncludedInList)
                     {
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationOrgChoose", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление о необходимости выбора организации</a>
                     }
-                    if (Model.Data.StatusId != (long) StatusEnum.Reject && Model.Data.StatusId != (long) StatusEnum.Draft && Model.Data.StatusId != (long) StatusEnum.CancelByApplicant && Model.Data.StatusId != (long) StatusEnum.RegistrationDecline
-                        && (Model.Data.TypeOfRestId == (long) TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId == (long) TypeOfRestEnum.CompensationYouthRest))
+                    if (Model.Data.StatusId != (long)StatusEnum.Reject && Model.Data.StatusId != (long)StatusEnum.Draft && Model.Data.StatusId != (long)StatusEnum.CancelByApplicant && Model.Data.StatusId != (long)StatusEnum.RegistrationDecline
+                        && (Model.Data.TypeOfRestId == (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest))
                     {
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRequestInformation", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Запрос необходимой информации</a>
                     }
-                    if (Model.Data.StatusId == (long) StatusEnum.Reject || (Model.Data.StatusId == (long) StatusEnum.CertificateIssued && Model.Data.DeclineReasonId.HasValue) || (Model.Data.StatusId == (long) StatusEnum.CancelByApplicant && string.IsNullOrWhiteSpace(Model.Data.CertificateNumber)))
+                    if (Model.Data.StatusId == (long)StatusEnum.Reject || (Model.Data.StatusId == (long)StatusEnum.CertificateIssued && Model.Data.DeclineReasonId.HasValue) || (Model.Data.StatusId == (long)StatusEnum.CancelByApplicant && string.IsNullOrWhiteSpace(Model.Data.CertificateNumber)))
                     {
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRefuse", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Результат рассмотрения</a>
                     }
-                    if (Model.Data.StatusId == (long) StatusEnum.CancelByApplicant && !string.IsNullOrWhiteSpace(Model.Data.CertificateNumber))
+                    if (Model.Data.StatusId == (long)StatusEnum.CancelByApplicant && !string.IsNullOrWhiteSpace(Model.Data.CertificateNumber))
                     {
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationDeadline", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление об отказе в установленный срок</a>
                     }
@@ -124,30 +128,30 @@
                         (long?) TypeOfRestEnum.YouthRestCamps, (long?) TypeOfRestEnum.Money, (long?) TypeOfRestEnum.MoneyOn3To7, (long?) TypeOfRestEnum.MoneyOn7To15, (long?) TypeOfRestEnum.MoneyOn18
                     };
 
-                    if ((Model.Data.StatusId == (long) StatusEnum.CertificateIssued && (Model.Data.TypeOfRestId == (long) TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId == (long) TypeOfRestEnum.CompensationYouthRest)) && !Model.Data.ParentRequestId.HasValue)
+                    if ((Model.Data.StatusId == (long)StatusEnum.CertificateIssued && (Model.Data.TypeOfRestId == (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)) && !Model.Data.ParentRequestId.HasValue)
                     {
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationAboutDecision", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Результат рассмотрения</a>
                     }
-                    if (new[] {(long) StatusEnum.DecisionIsMade, (long) StatusEnum.CertificateIssued}.Contains(Model.Data.StatusId ?? 0) && !Model.Data.DeclineReasonId.HasValue && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
+                    if (new[] { (long)StatusEnum.DecisionIsMade, (long)StatusEnum.CertificateIssued }.Contains(Model.Data.StatusId ?? 0) && !Model.Data.DeclineReasonId.HasValue && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
                     {
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationAboutDecision", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление о предоставлении услуги</a>
                     }
-                    if (Model.Data.StatusId != (long) StatusEnum.Reject && !Model.Data.DeclineReasonId.HasValue && Model.Data.StatusId != (long) StatusEnum.CancelByApplicant && Model.Data.StatusId != (long) StatusEnum.RegistrationDecline && Model.Data.StatusId != (long) StatusEnum.Draft && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
+                    if (Model.Data.StatusId != (long)StatusEnum.Reject && !Model.Data.DeclineReasonId.HasValue && Model.Data.StatusId != (long)StatusEnum.CancelByApplicant && Model.Data.StatusId != (long)StatusEnum.RegistrationDecline && Model.Data.StatusId != (long)StatusEnum.Draft && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
                     {
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRefuseRefuse", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление о непринятии отказа от рассмотрения поданного заявления</a>
                     }
-                    if (Model.Data.StatusId == (long) StatusEnum.Send && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
+                    if (Model.Data.StatusId == (long)StatusEnum.Send && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
                     {
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("RefusingDocument", "RequestNotitification", new {Id = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Отказ от заявления</a>
                     }
-                    if (Model.Data.StatusId == (long) StatusEnum.Draft && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
+                    if (Model.Data.StatusId == (long)StatusEnum.Draft && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
                     {
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationAcquaintance", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление об ознакомлении</a>
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationLackOfPossibilityReplacement", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление об отсутствии возможности замены сертификата</a>
                     }
-                    var childRest = new[] {(long?) TypeOfRestEnum.ChildRest, (long?) TypeOfRestEnum.RestWithParents, (long?) TypeOfRestEnum.RestWithParentsInvalidOrphanComplex, (long?) TypeOfRestEnum.YouthRestCamps};
+                    var childRest = new[] { (long?)TypeOfRestEnum.ChildRest, (long?)TypeOfRestEnum.RestWithParents, (long?)TypeOfRestEnum.RestWithParentsInvalidOrphanComplex, (long?)TypeOfRestEnum.YouthRestCamps };
 
-                    if (Model.Data.StatusId == (long) StatusEnum.CertificateIssued && !Model.Data.DeclineReasonId.HasValue && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
+                    if (Model.Data.StatusId == (long)StatusEnum.CertificateIssued && !Model.Data.DeclineReasonId.HasValue && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
                     {
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("GetCertificateForRequest", "Pdf", new {requestId = Model.Data.Id})">
                             <i class="glyphicon glyphicon-print"></i> @Html.Raw(Model.Data.RequestOnMoney ? "Сертификат" : "Путевка")
@@ -159,7 +163,7 @@
                             <a class="btn btn-default active-control" target="_blank" href="@Url.Action("RefusingDocumentCertificate", "RequestNotitification", new {Id = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Отказ от путевки</a>
                         }
                     }
-                    if (Model.Data.StatusId == (long) StatusEnum.Reject && Model.Data.DeclineReasonId == (long) DeclineReasonEnum.RefuseAllVariantsCovid2020 && Security.HasRight(AccessRightEnum.Status.FcToDecisionMakingCovid) && Model.Data.ParentRequestId.HasValue)
+                    if (Model.Data.StatusId == (long)StatusEnum.Reject && Model.Data.DeclineReasonId == (long)DeclineReasonEnum.RefuseAllVariantsCovid2020 && Security.HasRight(AccessRightEnum.Status.FcToDecisionMakingCovid) && Model.Data.ParentRequestId.HasValue)
                     {
                         <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRefuse", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Результат рассмотрения (дополнительная кампания)</a>
                     }
