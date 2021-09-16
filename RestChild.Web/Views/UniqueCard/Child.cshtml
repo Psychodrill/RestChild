@@ -11,9 +11,11 @@
 
     var otherChildren = Model.Relatives.SelectMany(r => r.Children).Where(c => c.Id != Model.Id).ToList();
     var publishedChild = new HashSet<long>();
-
+    var restPlaceTime = Model.LastInfo.Request.PlaceOfRestId.HasValue ? (Model.LastInfo.Request.PlaceOfRest.Name.ToString() + ", " + Model.LastInfo.Request.Tour.Hotels.Name.ToString() + ", " + Model.LastInfo.Request.TimeOfRest.Name.ToString() + ", c " + Model.LastInfo.Request.Tour.DateIncome.FormatEx().ToString() + " до " + Model.LastInfo.Request.Tour.DateOutcome.FormatEx().ToString()) : "Сведения отсутствуют" ;
+    //  var DeclineReason = Model.LastInfo.Request.DeclineReason.Name;
     var documents = Model.Children.SelectMany(r => r.Request.Files).OrderBy(r => r.Request.RequestNumber).ToList();
     var requests = Model.Children.Where(r => r.Request.StatusId == (long) StatusEnum.CertificateIssued).OrderByDescending(r => r.Request.YearOfRest.Name).ThenByDescending(r => r.Request.DateRequest).ToList();
+    var certificateIssued = Model.Children.Where(q => (q.Request.TypeOfRestId == (long)TypeOfRestEnum.Money || q.Request.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn18 || q.Request.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 || q.Request.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn7To15 || q.Request.TypeOfRestId == (long)TypeOfRestEnum.MoneyOnInvalidOn4To17) && q.Request.StatusId == (long)StatusEnum.CertificateIssued).OrderByDescending(r => r.Request.YearOfRest.Name).ThenByDescending(r => r.Request.DateRequest).ToList(); ;
 }
 
 <div class="form-horizontal">
@@ -26,7 +28,7 @@
             Данные по заявлению <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = current.RequestId})" target="_blank">@current.Request.RequestNumber</a>
         </div>
     </div>
-    <hr/>
+    <hr />
 
     @if (current != null)
     {
@@ -56,7 +58,7 @@
                     </div>
                 }
             </div>
-            <hr/>
+            <hr />
         </div>
 
         <div class="block-base">
@@ -85,7 +87,7 @@
                     </div>
                 }
             </div>
-            <hr/>
+            <hr />
         </div>
 
         <div class="block-base">
@@ -114,7 +116,7 @@
                     </div>
                 }
             </div>
-            <hr/>
+            <hr />
         </div>
 
         <div class="block-base">
@@ -143,7 +145,7 @@
                     </div>
                 }
             </div>
-            <hr/>
+            <hr />
         </div>
 
         if (Model.Relatives.Any())
@@ -166,7 +168,7 @@
                         </div>
                     }
                 </div>
-                <hr/>
+                <hr />
             </div>
         }
 
@@ -197,55 +199,82 @@
                         </div>
                     }
                 </div>
-                <hr/>
+                <hr />
             </div>
         }
+
+        if (restPlaceTime != null)
+        {
+            <div class="block-base">
+                <h4>
+                    Место и время отдыха
+                </h4>
+                <div class="blockitems">
+                    <div class="form-group">
+                        <div class="col-xs-8 start-div">
+                            <div>
+                                @restPlaceTime
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+            </div>
+        }
+
 
         if (requests.Any())
         {
             <h4>Ранее предоставленные услуги и нарушения за предыдущие годы</h4>
             <table class="table table-bordered">
                 <thead>
-                <tr>
-                    <th>Год предоставления</th>
-                    <th>Вид услуги</th>
-                    <th>Заявление</th>
-                </tr>
+                    <tr>
+                        <th>Год предоставления</th>
+                        <th>Вид услуги</th>
+                        <th>Заявление</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach (var d in requests.Where(y=>y.Request.YearOfRest != null).ToList())
-                {
-                    <tr>
-                        <td>
-                            @(d.Request.YearOfRest.Name)
-                        </td>
-                        <td>
-                            <div>
-                                @(d.Request.TypeOfRest.Name)
-                                @if (d.Request.Tour != null && d.Request.Tour.Hotels != null)
+                    @foreach (var d in requests.Where(y => y.Request.YearOfRest != null).ToList())
+                    {
+                        <tr>
+                            <td>
+                                @(d.Request.YearOfRest.Name)
+                            </td>
+                            <td>
+                                <div>
+                                    @foreach (var c in certificateIssued)
+                                    { 
+                                    if (c.Id == d.Id)
+                                       {
+                                        <span> Сертификат № @(d.Request.CertificateNumber) от @(d.Request.CertificateDate.FormatEx()) <br /></span>
+                                       }
+                                    }                                    
+                                    @(d.Request.TypeOfRest.Name)
+                                    @if (d.Request.Tour != null && d.Request.Tour.Hotels != null)
+                                    {
+                                        <div>@d.Request.Tour.Hotels.Name</div>
+                                        <div>
+                                            @if (d.Request.Tour.TimeOfRest != null)
+                                            {
+                                                <span>@d.Request.Tour.TimeOfRest.Name,</span>
+                                            }
+                                            c @d.Request.Tour.DateIncome.FormatEx() до @d.Request.Tour.DateOutcome.FormatEx()
+                                        </div>
+                                    }
+                                </div>
+                                @if (d.TypeViolation != null)
                                 {
-                                    <div>@d.Request.Tour.Hotels.Name</div>
-                                    <div>
-                                        @if (d.Request.Tour.TimeOfRest != null)
-                                        {
-                                        <span>@d.Request.Tour.TimeOfRest.Name,</span>
-                                        }
-                                        c @d.Request.Tour.DateIncome.FormatEx() до @d.Request.Tour.DateOutcome.FormatEx()
+                                    <div style="font-style: italic">
+                                        @d.TypeViolation.Name
                                     </div>
                                 }
-                            </div>
-                            @if (d.TypeViolation != null)
-                            {
-                                <div style="font-style: italic">
-                                    @d.TypeViolation.Name
-                                </div>
-                            }
-                        </td>
-                        <td>
-                            <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = d.RequestId})" target="_blank">@d.Request.RequestNumber</a>
-                        </td>
-                    </tr>
-                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = d.RequestId})" target="_blank">@d.Request.RequestNumber</a>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         }
@@ -256,31 +285,31 @@
             <h4>Прикрепленные к заявлениям документы</h4>
             <table class="table table-bordered">
                 <thead>
-                <tr>
-                    <th>Вид документа</th>
-                    <th>Ссылка на документ</th>
-                    <th>Дата добавления</th>
-                    <th>Ссылка на заявление</th>
-                </tr>
+                    <tr>
+                        <th>Вид документа</th>
+                        <th>Ссылка на документ</th>
+                        <th>Дата добавления</th>
+                        <th>Ссылка на заявление</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach (var d in documents)
-                {
-                    <tr>
-                        <td>
-                            @(d.RequestFileType != null ? d.RequestFileType.Name : "-")
-                        </td>
-                        <td>
-                            <a target="_blank" class="href-file" href="@Url.Content("~/")Upload.ashx?f=@Url.Encode(d.FileName)&t=@Url.Encode(d.FileTitle)@(d.RemoteSave?"&r=1":"")">@Html.Raw(d.FileTitle.FormatEx())</a>
-                        </td>
-                        <td>
-                            @(d.DataCreate.FormatEx())
-                        </td>
-                        <td>
-                            <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = d.RequestId})" target="_blank">@d.Request.RequestNumber</a>
-                        </td>
-                    </tr>
-                }
+                    @foreach (var d in documents)
+                    {
+                        <tr>
+                            <td>
+                                @(d.RequestFileType != null ? d.RequestFileType.Name : "-")
+                            </td>
+                            <td>
+                                <a target="_blank" class="href-file" href="@Url.Content("~/")Upload.ashx?f=@Url.Encode(d.FileName)&t=@Url.Encode(d.FileTitle)@(d.RemoteSave?"&r=1":"")">@Html.Raw(d.FileTitle.FormatEx())</a>
+                            </td>
+                            <td>
+                                @(d.DataCreate.FormatEx())
+                            </td>
+                            <td>
+                                <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = d.RequestId})" target="_blank">@d.Request.RequestNumber</a>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         }
