@@ -157,6 +157,25 @@ namespace MailingDemon.Tasks
                              q.TypeOfRest.Parent.ParentId == (long) TypeOfRestEnum.RestWithParents)
                     .GroupBy(g => g.StatusId)
                     .ToDictionary(s => s.Key, r => r.Count());
+            var mpguCertificates =
+                mpguQuery.Where(
+                        q => q.TypeOfRestId == (long)TypeOfRestEnum.Money ||
+                              q.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn18 ||
+                              q.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 ||
+                              q.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn7To15 ||
+                              q.TypeOfRestId == (long)TypeOfRestEnum.MoneyOnInvalidOn4To17 ||
+                              q.TypeOfRest.ParentId == (long)TypeOfRestEnum.Money ||
+                              q.TypeOfRest.ParentId == (long)TypeOfRestEnum.MoneyOn18 ||
+                              q.TypeOfRest.ParentId == (long)TypeOfRestEnum.MoneyOn3To7 ||
+                              q.TypeOfRest.ParentId == (long)TypeOfRestEnum.MoneyOn7To15 ||
+                              q.TypeOfRest.ParentId == (long)TypeOfRestEnum.MoneyOnInvalidOn4To17 ||
+                              q.TypeOfRest.Parent.ParentId == (long)TypeOfRestEnum.Money ||
+                              q.TypeOfRest.Parent.ParentId == (long)TypeOfRestEnum.MoneyOn18 ||
+                              q.TypeOfRest.Parent.ParentId == (long)TypeOfRestEnum.MoneyOn3To7 ||
+                              q.TypeOfRest.Parent.ParentId == (long)TypeOfRestEnum.MoneyOn7To15 ||
+                              q.TypeOfRest.Parent.ParentId == (long)TypeOfRestEnum.MoneyOnInvalidOn4To17)
+                    .GroupBy(g => g.StatusId)
+                    .ToDictionary(s => s.Key, r => r.Count());
             var operatorQuery = queue.Where(q => q.SourceId == (long) SourceEnum.Operator);
             var operatorIndividual =
                 operatorQuery.Where(
@@ -170,13 +189,33 @@ namespace MailingDemon.Tasks
                              q.TypeOfRest.Parent.ParentId == (long) TypeOfRestEnum.RestWithParents)
                     .GroupBy(g => g.StatusId)
                     .ToDictionary(s => s.Key, r => r.Count());
-
+            var operatorCertificate =
+                operatorQuery.Where(
+                       q =>   q.TypeOfRestId == (long)TypeOfRestEnum.Money ||
+                              q.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn18 ||
+                              q.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 ||
+                              q.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn7To15 ||
+                              q.TypeOfRestId == (long)TypeOfRestEnum.MoneyOnInvalidOn4To17 ||
+                              q.TypeOfRest.ParentId == (long)TypeOfRestEnum.Money ||
+                              q.TypeOfRest.ParentId == (long)TypeOfRestEnum.MoneyOn18 ||
+                              q.TypeOfRest.ParentId == (long)TypeOfRestEnum.MoneyOn3To7 ||
+                              q.TypeOfRest.ParentId == (long)TypeOfRestEnum.MoneyOn7To15 ||
+                              q.TypeOfRest.ParentId == (long)TypeOfRestEnum.MoneyOnInvalidOn4To17 ||
+                              q.TypeOfRest.Parent.ParentId == (long)TypeOfRestEnum.Money ||
+                              q.TypeOfRest.Parent.ParentId == (long)TypeOfRestEnum.MoneyOn18 ||
+                              q.TypeOfRest.Parent.ParentId == (long)TypeOfRestEnum.MoneyOn3To7 ||
+                              q.TypeOfRest.Parent.ParentId == (long)TypeOfRestEnum.MoneyOn7To15 ||
+                              q.TypeOfRest.Parent.ParentId == (long)TypeOfRestEnum.MoneyOnInvalidOn4To17)
+                    .GroupBy(g => g.StatusId)
+                    .ToDictionary(s => s.Key, r => r.Count());
 
             var mpguAll = GetCollectedDict(null, mpguIndividual);
             mpguAll = GetCollectedDict(mpguAll, mpguParents);
+            mpguAll = GetCollectedDict(mpguAll, mpguCertificates);
 
             var operatorAll = GetCollectedDict(null, operatorIndividual);
             operatorAll = GetCollectedDict(operatorAll, operatorParents);
+            operatorAll = GetCollectedDict(operatorAll, operatorCertificate);
 
             var total = GetCollectedDict(null, mpguAll);
             total = GetCollectedDict(total, operatorAll);
@@ -185,11 +224,13 @@ namespace MailingDemon.Tasks
             {
                 FillRow("МПГУ - индивидуальный отдых", 1, mpguIndividual),
                 FillRow("МПГУ - совместный отдых", 2, mpguParents),
-                FillRow("Итого - МПГУ", 3, mpguAll, "table-statustic-subtotal"),
-                FillRow("Оператор - индивидуальный отдых", 4, operatorIndividual),
-                FillRow("Оператор - совместный отдых", 5, operatorParents),
-                FillRow("Итого - оператор", 6, operatorAll, "table-statustic-subtotal"),
-                FillRow("Всего", 7, total, "table-statustic-total")
+                FillRow("МПГУ - сертификаты", 3,mpguCertificates),
+                FillRow("Итого - МПГУ", 4, mpguAll, "table-statustic-subtotal"),
+                FillRow("Оператор - индивидуальный отдых", 5, operatorIndividual),
+                FillRow("Оператор - совместный отдых", 6, operatorParents),
+                FillRow("Оператор - сертификаты", 7, operatorCertificate),
+                FillRow("Итого - оператор", 8, operatorAll, "table-statustic-subtotal"),
+                FillRow("Всего", 9, total, "table-statustic-total")
             };
 
             if (unit.GetSet<ReportSheet>().Any(r => r.Id == SecondReportId))
@@ -885,6 +926,17 @@ namespace MailingDemon.Tasks
                                 c.IsLast && !c.IsDeleted && c.Applicant.IsAccomp &&
                                 c.StatusId != (long) StatusEnum.Draft &&
                                 c.SourceId.HasValue && c.YearOfRest.Year >= yearOfCompany && !c.TypeOfRest.Commercial);
+                var certificateCertificate =
+                    unit.GetSet<Request>()
+                         .Where(
+                             q =>
+                                (q.TypeOfRestId == (long)TypeOfRestEnum.Money ||
+                                 q.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn18 ||
+                                 q.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 ||
+                            q.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn7To15 ||
+                            q.TypeOfRestId == (long)TypeOfRestEnum.MoneyOnInvalidOn4To17)
+                           && q.StatusId == (long)StatusEnum.CertificateIssued);
+
 
                 var checkDate = DateTime.Now.AddDays(-1);
                 var checkHour = DateTime.Now.AddHours(-1);
@@ -1024,11 +1076,61 @@ namespace MailingDemon.Tasks
                     certificatesAll.Style = $"background-color:#{rowAnalytics.TotalColor}";
                 }
 
+                rowAnalytics = new AnalyticsViewRow
+                {
+                    Id = 3,
+                    AnalyticsViewRowTypeId = (long)AnalyticsViewRowTypeEnum.FourColumns,
+                    Name = "Выдано сертификатов",
+                    ByDay = certificateCertificate.Count(q => q.DateChangeStatus >= checkDate),
+                    ByHour = certificateCertificate.Count(q => q.DateChangeStatus >= checkHour),
+                    ByWeek = certificateCertificate.Count(q => q.DateChangeStatus >= checkWeek),
+                    Total = certificateCertificate.Count()
+                };
+
+                rowAnalytics.ByDayColor = rowAnalytics.ByDay != 0 ? green : yellow;
+                rowAnalytics.ByHourColor = rowAnalytics.ByHour != 0 ? green : yellow;
+                rowAnalytics.ByWeekColor = rowAnalytics.ByWeek != 0 ? green : yellow;
+                rowAnalytics.TotalColor = rowAnalytics.Total != 0 ? green : yellow;
+                res.Add(rowAnalytics);
+
+                var certifIssuedAwaitByHour =
+                    unit.GetById<ReportRowData>(ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.ByHour);
+                var certifIssuedAwaitByDay =
+                    unit.GetById<ReportRowData>(ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.ByDay);
+                var certifIssuedAwaitByWeek =
+                    unit.GetById<ReportRowData>(ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.ByWeek);
+                var certifIssuedAwaitAll =
+                    unit.GetById<ReportRowData>(ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.All);
+
+                if (certifIssuedAwaitByHour != null)
+                {
+                    certifIssuedAwaitByHour.Value = rowAnalytics.ByHour.FormatEx("0");
+                    certifIssuedAwaitByHour.Style = $"background-color:#{rowAnalytics.ByHourColor}";
+                }
+
+                if (certifIssuedAwaitByDay != null)
+                {
+                    certifIssuedAwaitByDay.Value = rowAnalytics.ByDay.FormatEx("0");
+                    certifIssuedAwaitByDay.Style = $"background-color:#{rowAnalytics.ByDayColor}";
+                }
+
+                if (certifIssuedAwaitByWeek != null)
+                {
+                    certifIssuedAwaitByWeek.Value = rowAnalytics.ByWeek.FormatEx("0");
+                    certifIssuedAwaitByWeek.Style = $"background-color:#{rowAnalytics.ByWeekColor}";
+                }
+
+                if (certifIssuedAwaitAll != null)
+                {
+                    certifIssuedAwaitAll.Value = rowAnalytics.Total.FormatEx("0");
+                    certifIssuedAwaitAll.Style = $"background-color:#{rowAnalytics.TotalColor}";
+                }
+
                 var qWait = queue.Where(q => q.StatusId == (long) StatusEnum.WaitApplicant);
 
                 rowAnalytics = new AnalyticsViewRow
                 {
-                    Id = 3,
+                    Id = 4,
                     AnalyticsViewRowTypeId = (long) AnalyticsViewRowTypeEnum.FourColumns,
                     Name = "Ожидание прихода заявителя",
                     ByDay = qWait.Count(q => q.DateChangeStatus >= checkDate),
@@ -1080,7 +1182,7 @@ namespace MailingDemon.Tasks
 
                 rowAnalytics = new AnalyticsViewRow
                 {
-                    Id = 4,
+                    Id = 5,
                     AnalyticsViewRowTypeId = (long) AnalyticsViewRowTypeEnum.FourColumns,
                     Name = "Отказ в предоставлении услуги",
                     ByDay = qReject.Count(q => q.DateChangeStatus >= checkDate),
@@ -1125,7 +1227,7 @@ namespace MailingDemon.Tasks
 
                 rowAnalytics = new AnalyticsViewRow
                 {
-                    Id = 5,
+                    Id = 6,
                     AnalyticsViewRowTypeId = (long) AnalyticsViewRowTypeEnum.FourColumns,
                     Name = "Отказ в регистрации",
                     ByDay = qRegistrationDecline.Count(q => q.DateChangeStatus >= checkDate),
@@ -1175,7 +1277,7 @@ namespace MailingDemon.Tasks
 
                 rowAnalytics = new AnalyticsViewRow
                 {
-                    Id = 6,
+                    Id = 7,
                     AnalyticsViewRowTypeId = (long) AnalyticsViewRowTypeEnum.FourColumns,
                     Name = "Ожидает ответа из Базового регистра",
                     ByDay = br.Count(q => q.SendDate >= checkDate),
@@ -1230,7 +1332,7 @@ namespace MailingDemon.Tasks
 
                 var rowAnalyticsSecond = new AnalyticsViewRow
                 {
-                    Id = 7,
+                    Id = 8,
                     AnalyticsViewRowTypeId = (long) AnalyticsViewRowTypeEnum.FourColumns,
                     Name = "Получены ответы в Базовом регистре",
                     ByDay = br.Count(q => q.ResponseDate >= checkDate),
@@ -1294,7 +1396,7 @@ namespace MailingDemon.Tasks
 
                 rowAnalyticsSecond = new AnalyticsViewRow
                 {
-                    Id = 8,
+                    Id = 9,
                     AnalyticsViewRowTypeId = (long) AnalyticsViewRowTypeEnum.FourColumns,
                     Name = "Количество некорректных сообщений от МПГУ",
                     ByDay = etp.Count(q => q.DateCreate >= checkDate),
@@ -1365,7 +1467,7 @@ namespace MailingDemon.Tasks
 
                 var rowOneColumn = new AnalyticsViewRow
                 {
-                    Id = 9,
+                    Id = 10,
                     AnalyticsViewRowTypeId = (long) AnalyticsViewRowTypeEnum.TwoColumn,
                     Name = "Ожидание ответов по межведомственным запросам - заявлений/детей",
                     Total = requestInterdepartmental.Count(),
@@ -1407,7 +1509,7 @@ namespace MailingDemon.Tasks
 
                 rowOneColumn = new AnalyticsViewRow
                 {
-                    Id = 10,
+                    Id = 11,
                     AnalyticsViewRowTypeId = (long) AnalyticsViewRowTypeEnum.ByDays,
                     Name = "Ожидание прихода заявителя",
                     Total = queue.Count(),
@@ -1506,7 +1608,7 @@ namespace MailingDemon.Tasks
 
                 rowOneColumn = new AnalyticsViewRow
                 {
-                    Id = 11,
+                    Id = 12,
                     AnalyticsViewRowTypeId = (long) AnalyticsViewRowTypeEnum.OneColumn,
                     Name = "Количество бронирований по которым нет заявлений",
                     Total = bookingWithoutRequests
