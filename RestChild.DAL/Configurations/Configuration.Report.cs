@@ -314,6 +314,42 @@ namespace RestChild.DAL.Configurations
                 },
                 new ReportRowData
                 {
+                    Id = ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.ColumnName,
+                    RowId = ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.Id,
+                    Value = "Выдано сертификатов",
+                    CssClass = "main-report-header",
+                    SortOrder = 1
+                },
+                new ReportRowData
+                {
+                    Id = ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.ByHour,
+                    RowId = ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.Id,
+                    Value = "-",
+                    SortOrder = 2
+                },
+                new ReportRowData
+                {
+                    Id = ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.ByDay,
+                    RowId = ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.Id,
+                    Value = "-",
+                    SortOrder = 3
+                },
+                new ReportRowData
+                {
+                    Id = ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.ByWeek,
+                    RowId = ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.Id,
+                    Value = "-",
+                    SortOrder = 4
+                },
+                new ReportRowData
+                {
+                    Id = ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.All,
+                    RowId = ReportEnum.Rows.ServiceStatistics.MainStatistics.SertificatesIssued.Id,
+                    Value = "-",
+                    SortOrder = 5
+                },
+                new ReportRowData
+                {
                     Id = ReportEnum.Rows.ServiceStatistics.MainStatistics.ApplicantAwait.ColumnName,
                     RowId = ReportEnum.Rows.ServiceStatistics.MainStatistics.ApplicantAwait.Id,
                     Value = "Ожидание прихода заявителя",

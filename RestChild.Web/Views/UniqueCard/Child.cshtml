@@ -11,8 +11,7 @@
 
     var otherChildren = Model.Relatives.SelectMany(r => r.Children).Where(c => c.Id != Model.Id).ToList();
     var publishedChild = new HashSet<long>();
-    var restPlaceTime = Model.LastInfo.Request.PlaceOfRestId.HasValue ? (Model.LastInfo.Request.PlaceOfRest.Name.ToString() + ", " + Model.LastInfo.Request.Tour.Hotels.Name.ToString() + ", " + Model.LastInfo.Request.TimeOfRest.Name.ToString() + ", c " + Model.LastInfo.Request.Tour.DateIncome.FormatEx().ToString() + " до " + Model.LastInfo.Request.Tour.DateOutcome.FormatEx().ToString()) : "Сведения отсутствуют" ;
-    //  var DeclineReason = Model.LastInfo.Request.DeclineReason.Name;
+    var restPlaceTime = Model.LastInfo.Request.PlaceOfRest.IsNullOrEmpty() ? (Model.LastInfo.Request.PlaceOfRest.Name.ToString() + ", " + Model.LastInfo.Request.Tour.Hotels.Name.ToString() + ", " + Model.LastInfo.Request.TimeOfRest.Name.ToString() + ", c " + Model.LastInfo.Request.Tour.DateIncome.FormatEx().ToString() + " до " + Model.LastInfo.Request.Tour.DateOutcome.FormatEx().ToString()) : "Сведения отсутствуют" ;
     var documents = Model.Children.SelectMany(r => r.Request.Files).OrderBy(r => r.Request.RequestNumber).ToList();
     var requests = Model.Children.Where(r => r.Request.StatusId == (long) StatusEnum.CertificateIssued).OrderByDescending(r => r.Request.YearOfRest.Name).ThenByDescending(r => r.Request.DateRequest).ToList();
     var certificateIssued = Model.Children.Where(q => (q.Request.TypeOfRestId == (long)TypeOfRestEnum.Money || q.Request.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn18 || q.Request.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 || q.Request.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn7To15 || q.Request.TypeOfRestId == (long)TypeOfRestEnum.MoneyOnInvalidOn4To17) && q.Request.StatusId == (long)StatusEnum.CertificateIssued).OrderByDescending(r => r.Request.YearOfRest.Name).ThenByDescending(r => r.Request.DateRequest).ToList(); ;

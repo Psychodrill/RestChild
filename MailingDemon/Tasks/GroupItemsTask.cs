@@ -228,9 +228,9 @@ namespace MailingDemon.Tasks
         {
             var childrenExclude = uw.GetSet<Child>().Where(c =>
                     c.ChildUniqeId.HasValue &&
-                    ((!GoodStatus.Contains(c.Request.StatusId) || c.Request.DeclineReasonId != 201705) || c.Request.IsDeleted) &&
+                    ((!GoodStatus.Contains(c.Request.StatusId) && c.Request.DeclineReasonId != 201705) || c.Request.IsDeleted) &&
                     c.Request.StatusId.HasValue).OrderBy(c => c.Request.DateRequest)
-                .Take(4000).ToList();
+                .Take(1000).ToList();
 
             foreach (var child in childrenExclude)
             {
@@ -242,10 +242,10 @@ namespace MailingDemon.Tasks
 
             var applicantRequestExclude = uw.GetSet<Request>().Where(c =>
                     c.Applicant.RelativeUniqeId.HasValue &&
-                    ((!GoodStatus.Contains(c.StatusId) || c.DeclineReasonId == 201705) || c.IsDeleted) && c.StatusId.HasValue)
+                    ((!GoodStatus.Contains(c.StatusId) && c.DeclineReasonId != 201705) || c.IsDeleted) && c.StatusId.HasValue)
                 .OrderBy(c => c.DateRequest)
                 .Select(c => c.Applicant)
-                .Take(4000).ToList();
+                .Take(1000).ToList();
             foreach (var applicant in applicantRequestExclude)
             {
                 applicant.RelativeUniqeId = null;
@@ -256,9 +256,9 @@ namespace MailingDemon.Tasks
 
             var applicantsExclude = uw.GetSet<Applicant>().Where(c =>
                     c.RelativeUniqeId.HasValue &&
-                    ((!GoodStatus.Contains(c.Request.StatusId) || c.Request.DeclineReasonId == 201705) || c.Request.IsDeleted) && c.Request.StatusId.HasValue)
+                    ((!GoodStatus.Contains(c.Request.StatusId) && c.Request.DeclineReasonId != 201705) || c.Request.IsDeleted) && c.Request.StatusId.HasValue)
                 .OrderBy(c => c.Request.DateRequest)
-                .Take(2000).ToList();
+                .Take(1000).ToList();
             foreach (var applicant in applicantsExclude)
             {
                 applicant.RelativeUniqeId = null;
@@ -268,7 +268,7 @@ namespace MailingDemon.Tasks
             uw.DetachAllEntitys();
 
             var relations = uw.GetSet<RelativeUniqeApplicant>().Where(a => !a.Applicant.RelativeUniqeId.HasValue)
-                .Take(2000).ToList();
+                .Take(1000).ToList();
 
             uw.Delete<RelativeUniqeApplicant>(relations);
             uw.SaveChanges();
