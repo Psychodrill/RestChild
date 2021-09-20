@@ -198,7 +198,7 @@ namespace RestChild.Web.Models
             else
             {
                 if (Data.DateOfBirth.HasValue && Data.DocumentTypeId == BirthSertificateId &&
-                    GetMonthsBetween(DateTime.Now, Data.DateOfBirth.Value) >= 14 * 12 + 2)
+                    GetMonthsBetween(DateTime.Now, Data.DateOfBirth.Value) >= 14 * 12 + 3)
                 {
                     IsValid = false;
                     DocumentTypeEm = "Для ребенка старше 14 лет нельзя выбрать свидетельство о рождении";
@@ -313,7 +313,7 @@ namespace RestChild.Web.Models
                 }
 
                 var dateTime = Data.Request?.DateRequest?.Date ?? DateTime.Today;
-                if (Data.GetAgeInYears(dateTime.AddMonths(-2)).Value >= 14
+                if (Data.GetAgeInYears(dateTime.AddMonths(-3)).Value >= 14
                     && Data.DocumentTypeId.HasValue && DocumentTypeHelper.IsBirthCert(Data.DocumentTypeId.Value))
                 {
                     DocumentTypeEm = "Свидетельство о рождении не соответствует возрасту ребенка";

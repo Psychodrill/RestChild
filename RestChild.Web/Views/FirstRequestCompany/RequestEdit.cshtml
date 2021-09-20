@@ -71,9 +71,14 @@
                     if (Model.Data.StatusId == (long)StatusEnum.WaitApplicant || Model.Data.StatusId == (long)StatusEnum.Draft || Security.HasRight(AccessRightEnum.EditAfterRegistration) || Security.HasRight(AccessRightEnum.AddonServiceInRequest))
                     {
                         <button id="SaveButton" type="submit" class="btn btn-default btn-primary edit-control save-button">
-                            Сохранить
+                             Сохранить
                         </button>
                     }
+
+            <!--<button type="button" class="btn btn-default btn-primary copy-request">
+                Скопировать данные в новое заявление
+            </button> -->
+
                     if (Model.Data.StatusId == (long)StatusEnum.Draft && Security.HasRight(AccessRightEnum.RemoveDraft))
                     {
                         <button id="DeleteButton" type="button" role="button" class="btn btn-default btn-danger edit-control" onclick="confirmButton('удалить заявление', '@RequestActionEnum.RemoveDraftVersion') ">
