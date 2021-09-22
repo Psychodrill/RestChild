@@ -107,11 +107,26 @@
                     }
 
                     /// <summary>
+                    ///     Выдано сертификатов
+                    /// </summary>
+                    public static class SertificatesIssued
+                    {
+                        public static readonly long Id = 7;
+
+                        public static readonly long ColumnName = 50;
+                        public static readonly long ByHour = 51;
+                        public static readonly long ByDay = 52;
+                        public static readonly long ByWeek = 53;
+                        public static readonly long All = 54;
+                    }
+
+
+                    /// <summary>
                     ///     Ожидание прихода заявителя
                     /// </summary>
                     public static class ApplicantAwait
                     {
-                        public static readonly long Id = 7;
+                        public static readonly long Id = 8;
 
                         public static readonly long ColumnName = 19;
                         public static readonly long ByHour = 20;
@@ -125,7 +140,7 @@
                     /// </summary>
                     public static class ServiceDenied
                     {
-                        public static readonly long Id = 8;
+                        public static readonly long Id = 9;
 
                         public static readonly long ColumnName = 24;
                         public static readonly long ByHour = 25;
@@ -139,7 +154,7 @@
                     /// </summary>
                     public static class ServiceRegisterDenied
                     {
-                        public static readonly long Id = 9;
+                        public static readonly long Id = 10;
 
                         public static readonly long ColumnName = 45;
                         public static readonly long ByHour = 46;
@@ -153,7 +168,7 @@
                     /// </summary>
                     public static class BaseRegisterAwait
                     {
-                        public static readonly long Id = 10;
+                        public static readonly long Id = 11;
 
                         public static readonly long ColumnName = 29;
                         public static readonly long ByHour = 30;
@@ -167,7 +182,7 @@
                     /// </summary>
                     public static class BaseRegisterResponsed
                     {
-                        public static readonly long Id = 11;
+                        public static readonly long Id = 12;
 
                         public static readonly long ColumnName = 34;
                         public static readonly long ByHour = 35;
@@ -181,7 +196,7 @@
                     /// </summary>
                     public static class MpguErrorMessages
                     {
-                        public static readonly long Id = 12;
+                        public static readonly long Id = 13;
 
                         public static readonly long ColumnName = 39;
                         public static readonly long ByHour = 40;
@@ -198,7 +213,7 @@
                 {
                     public static class Row1
                     {
-                        public static readonly long Id = 13;
+                        public static readonly long Id = 14;
 
                         public static readonly long Column1 = 44;
                     }
