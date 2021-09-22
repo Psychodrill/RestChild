@@ -26,8 +26,11 @@ namespace RestChild.Web.Models.Orphans
             }
 
             Collaborators = Data?.OrganisatonCollaborators?.Where(ss => !ss.Applicant.IsDeleted && (ss.EntityId == null || ss.EntityId == ss.Id)).OrderBy(ss => ss.Applicant.LastName).ToDictionary(sx => sx.Id.ToString(), sa => sa);
-            Pupils = Data?.OrphanageOrganizationAddresses?.SelectMany(ss => ss.Pupils).Where(ss => !ss.Child.IsDeleted && ss.Child.EntityId == null || ss.Child.EntityId == ss.Child.Id).OrderBy(ss => ss.Child.LastName).ToDictionary(sx => sx.Id.ToString(), sa => sa);
-            Data.Orphanage = true;
+            Pupils = Data?.OrphanageOrganizationAddresses?.SelectMany(ss => ss.Pupils).Where(ss => ss.Child.ChildListId == null && !ss.Child.IsDeleted && ss.Child.EntityId == null || ss.Child.EntityId == ss.Child.Id).OrderBy(ss => ss.Child.LastName).ToDictionary(sx => sx.Id.ToString(), sa => sa);
+            if (Data != null)
+            {
+                Data.Orphanage = true;
+            }
         }
 
         /// <summary>
