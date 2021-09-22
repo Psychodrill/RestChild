@@ -68,6 +68,11 @@
         /// <summary>
         ///     Проверка в ФРИ сведений об инвалидности
         /// </summary>
-        FRIExchange = 2043
+        FRIExchange = 2043,
+
+        /// <summary>
+        ///     Получение данных из ЕГР ЗАГС
+        /// </summary>
+        GetEGRZAGS = 11827
     }
 }

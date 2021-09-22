@@ -21,262 +21,262 @@
 @Html.Hidden("RequestId", Model.Data.Id)
 
 <div class="row request-main-div">
-<div class="col-md-9 scroll-area">
-<form action="@Url.Action("SaveRequest", "FirstRequestCompany")" method="POST" class="form-horizontal" role="form" id="mainForm" autocomplete="off">
-@Html.HiddenFor(m => m.Data.InternalCommentary)
-@Html.HiddenFor(m => m.Data.BookingGuid)
-@Html.HiddenFor(m => m.Data.LastUpdateTick)
-@Html.HiddenFor(m => m.Data.ParentRequestId)
-@Html.HiddenFor(m => m.Data.IsFirstCompany, new {@id = "isFirstCompany"})
-@Html.HiddenFor(m => m.Data.RequestOnMoney, new {@id = "requestOnMoney"})
-@Html.HiddenFor(m => m.HasBooking, new {@id = "hasBooking"})
-@Html.HiddenFor(m => m.Data.ParentRequestId)
-@Html.HiddenFor(m => m.Data.HotelsId)
-@Html.HiddenFor(m => m.Data.OrganizationId)
+    <div class="col-md-9 scroll-area">
+        <form action="@Url.Action("SaveRequest", "FirstRequestCompany")" method="POST" class="form-horizontal" role="form" id="mainForm" autocomplete="off">
+            @Html.HiddenFor(m => m.Data.InternalCommentary)
+            @Html.HiddenFor(m => m.Data.BookingGuid)
+            @Html.HiddenFor(m => m.Data.LastUpdateTick)
+            @Html.HiddenFor(m => m.Data.ParentRequestId)
+            @Html.HiddenFor(m => m.Data.IsFirstCompany, new { @id = "isFirstCompany" })
+            @Html.HiddenFor(m => m.Data.RequestOnMoney, new { @id = "requestOnMoney" })
+            @Html.HiddenFor(m => m.HasBooking, new { @id = "hasBooking" })
+            @Html.HiddenFor(m => m.Data.ParentRequestId)
+            @Html.HiddenFor(m => m.Data.HotelsId)
+            @Html.HiddenFor(m => m.Data.OrganizationId)
 
-@if (Model.BookingRequest != null)
-{
-    @Html.HiddenFor(m => m.BookingRequest.Attendants)
-    @Html.HiddenFor(m => m.BookingRequest.Booked)
-    @Html.HiddenFor(m => m.BookingRequest.BookingDate)
-    @Html.HiddenFor(m => m.BookingRequest.BookingGuid)
-    @Html.HiddenFor(m => m.BookingRequest.Places)
-    @Html.HiddenFor(m => m.BookingRequest.Released)
-    @Html.HiddenFor(m => m.BookingRequest.Rooms)
-    @Html.HiddenFor(m => m.BookingRequest.TourId)
-    @Html.HiddenFor(m => m.BookingRequest.TypeOfRestId)
-}
+            @if (Model.BookingRequest != null)
+            {
+                @Html.HiddenFor(m => m.BookingRequest.Attendants)
+                @Html.HiddenFor(m => m.BookingRequest.Booked)
+                @Html.HiddenFor(m => m.BookingRequest.BookingDate)
+                @Html.HiddenFor(m => m.BookingRequest.BookingGuid)
+                @Html.HiddenFor(m => m.BookingRequest.Places)
+                @Html.HiddenFor(m => m.BookingRequest.Released)
+                @Html.HiddenFor(m => m.BookingRequest.Rooms)
+                @Html.HiddenFor(m => m.BookingRequest.TourId)
+                @Html.HiddenFor(m => m.BookingRequest.TypeOfRestId)
+            }
 
-@if (Model.Data.StatusId != (long) StatusEnum.Draft && !Security.HasRight(AccessRightEnum.EditAfterRegistration))
-{
-    @Html.HiddenFor(m => m.SaveFileOnly, new {@Value = true})
-}
-<fieldset>
-    <div class="form-group row">
-        <div class="col-md-8">
-            <h2>Заявление</h2>
-            <a href="@Url.Action("RequestList")">Вернуться</a>
-        </div>
-        <div class="col-md-4">
-            <div class="well well-sm" style="max-width: 300px; float: right;">
-                Статус: <strong>@Model.Data.Status.Name</strong>
-            </div>
-        </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-md-12 ">
-            <p class="panel-operation-button">
-                @if (!Model.Data.IsDeleted && Model.Data.IsLast && Model.IsEditable)
-                {
-                    if (Model.Data.StatusId == (long)StatusEnum.WaitApplicant || Model.Data.StatusId == (long)StatusEnum.Draft || Security.HasRight(AccessRightEnum.EditAfterRegistration) || Security.HasRight(AccessRightEnum.AddonServiceInRequest))
-                    {
-                        <button id="SaveButton" type="submit" class="btn btn-default btn-primary edit-control save-button">
-                             Сохранить
-                        </button>
-                    }
+            @if (Model.Data.StatusId != (long)StatusEnum.Draft && !Security.HasRight(AccessRightEnum.EditAfterRegistration))
+            {
+                @Html.HiddenFor(m => m.SaveFileOnly, new { @Value = true })
+            }
+            <fieldset>
+                <div class="form-group row">
+                    <div class="col-md-8">
+                        <h2>Заявление</h2>
+                        <a href="@Url.Action("RequestList")">Вернуться</a>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="well well-sm" style="max-width: 300px; float: right;">
+                            Статус: <strong>@Model.Data.Status.Name</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-12 ">
+                        <p class="panel-operation-button">
+                            @if (!Model.Data.IsDeleted && Model.Data.IsLast && Model.IsEditable)
+                            {
+                                if (Model.Data.StatusId == (long)StatusEnum.WaitApplicant || Model.Data.StatusId == (long)StatusEnum.Draft || Security.HasRight(AccessRightEnum.EditAfterRegistration) || Security.HasRight(AccessRightEnum.AddonServiceInRequest))
+                                {
+                                    <button id="SaveButton" type="submit" class="btn btn-default btn-primary edit-control save-button">
+                                        Сохранить
+                                    </button>
+                                }
 
-            <!--<button type="button" class="btn btn-default btn-primary copy-request">
-                Скопировать данные в новое заявление
-            </button> -->
+                                <!--<button type="button" class="btn btn-default btn-primary copy-request">
+                                    Скопировать данные в новое заявление
+                                </button> -->
 
-                    if (Model.Data.StatusId == (long)StatusEnum.Draft && Security.HasRight(AccessRightEnum.RemoveDraft))
-                    {
-                        <button id="DeleteButton" type="button" role="button" class="btn btn-default btn-danger edit-control" onclick="confirmButton('удалить заявление', '@RequestActionEnum.RemoveDraftVersion') ">
-                            Удалить
-                        </button>
-                    }
-                    if (Model.Data.StatusId == (long)StatusEnum.CertificateIssued /*&& (Model.Data.TypeOfRestId != (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationGroup || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationYouthRest)*/)
-                    {
-                        <a class="btn btn-default btn-primary edit-control" target="_blank" href="@Url.Action("RequestEdit", "FirstRequestCompany", new {requestId = Model.Data.Id, reApply = true})"> Тестовое заявление </a>
-                    }
-                    foreach (StatusAction action in Model.Actions)
-                    {
-                        <button type="button" class="btn btn-default edit-control" onclick="@(new[] {AccessRightEnum.Status.FcToReject, AccessRightEnum.Status.ToRejectFromCertificateIssued, AccessRightEnum.Status.ToReject, AccessRightEnum.Status.ToRejectNormal, AccessRightEnum.Status.ToCancelByApplicant}.Contains(action.Code) ? " confirmButtonWithDecline" : "confirmButton")('@action.Name', '@action.Code', '@action.ToStatusId') ">
-                            @action.Name
-                        </button>
-                    }
-                }
-                @if (Model.Data.Id != 0)
-                {
-                    if (Security.HasRight(AccessRightEnum.Status.FcToDecisionMakingCovid) && Model.Data.StatusId == (long)StatusEnum.DecisionMakingCovid)
-                    {
-                        <a class="btn btn-default active-control" id="certificateCreateLink" href="@Url.Action("CreateCertificateRequest", "FirstRequestCompany", new {id = Model.Data.Id})">Выбор сертификата</a>
-                        <a class="btn btn-default active-control" id="requestCreateLink" href="@Url.Action("CreateRequestOnNextYear", "FirstRequestCompany", new {id = Model.Data.Id})">Создать заявление на следующий год</a>
-                    }
-                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("RequestDoc", "FirstRequestCompany", new {id = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Заявление</a>
-                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRegistration", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> О регистрации</a>
-                    if (Model.Data.StatusId == (long)StatusEnum.WaitApplicant)
-                    {
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationWaitApplicant", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление о приостановлении</a>
-                    }
-                    if (Model.Data.StatusId == (long)StatusEnum.DecisionMaking || Model.Data.StatusId == (long)StatusEnum.DecisionMakingCovid || Model.Data.StatusId == (long)StatusEnum.DecisionIsMade || Model.Data.StatusId == (long)StatusEnum.IncludedInList)
-                    {
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationOrgChoose", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление о необходимости выбора организации</a>
-                    }
-                    if (Model.Data.StatusId != (long)StatusEnum.Reject && Model.Data.StatusId != (long)StatusEnum.Draft && Model.Data.StatusId != (long)StatusEnum.CancelByApplicant && Model.Data.StatusId != (long)StatusEnum.RegistrationDecline
-                        && (Model.Data.TypeOfRestId == (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest))
-                    {
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRequestInformation", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Запрос необходимой информации</a>
-                    }
-                    if (Model.Data.StatusId == (long)StatusEnum.Reject || (Model.Data.StatusId == (long)StatusEnum.CertificateIssued && Model.Data.DeclineReasonId.HasValue) || (Model.Data.StatusId == (long)StatusEnum.CancelByApplicant && string.IsNullOrWhiteSpace(Model.Data.CertificateNumber)))
-                    {
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRefuse", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Результат рассмотрения</a>
-                    }
-                    if (Model.Data.StatusId == (long)StatusEnum.CancelByApplicant && !string.IsNullOrWhiteSpace(Model.Data.CertificateNumber))
-                    {
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationDeadline", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление об отказе в установленный срок</a>
-                    }
-                    var preferentialTypeOfRest = new[]
-                    {
+                                if (Model.Data.StatusId == (long)StatusEnum.Draft && Security.HasRight(AccessRightEnum.RemoveDraft))
+                                {
+                                    <button id="DeleteButton" type="button" role="button" class="btn btn-default btn-danger edit-control" onclick="confirmButton('удалить заявление', '@RequestActionEnum.RemoveDraftVersion') ">
+                                        Удалить
+                                    </button>
+                                }
+                                @*if (Model.Data.StatusId == (long)StatusEnum.CertificateIssued /*&& (Model.Data.TypeOfRestId != (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationGroup || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationYouthRest)*/)
+                                    {
+                                        <a class="btn btn-default btn-primary edit-control" target="_blank" href="@Url.Action("RequestEdit", "FirstRequestCompany", new { requestId = Model.Data.Id, reApply = true })"> Тестовое заявление </a>
+                                    }*@
+                                foreach (StatusAction action in Model.Actions)
+                                {
+                                    <button type="button" class="btn btn-default edit-control" onclick="@(new[] { AccessRightEnum.Status.FcToReject, AccessRightEnum.Status.ToRejectFromCertificateIssued, AccessRightEnum.Status.ToReject, AccessRightEnum.Status.ToRejectNormal, AccessRightEnum.Status.ToCancelByApplicant }.Contains(action.Code) ? " confirmButtonWithDecline" : "confirmButton")('@action.Name', '@action.Code', '@action.ToStatusId') ">
+                                        @action.Name
+                                    </button>
+                                }
+                            }
+                            @if (Model.Data.Id != 0)
+                            {
+                                if (Security.HasRight(AccessRightEnum.Status.FcToDecisionMakingCovid) && Model.Data.StatusId == (long)StatusEnum.DecisionMakingCovid)
+                                {
+                                    <a class="btn btn-default active-control" id="certificateCreateLink" href="@Url.Action("CreateCertificateRequest", "FirstRequestCompany", new { id = Model.Data.Id })">Выбор сертификата</a>
+                                    <a class="btn btn-default active-control" id="requestCreateLink" href="@Url.Action("CreateRequestOnNextYear", "FirstRequestCompany", new { id = Model.Data.Id })">Создать заявление на следующий год</a>
+                                }
+                                <a class="btn btn-default active-control" target="_blank" href="@Url.Action("RequestDoc", "FirstRequestCompany", new { id = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Заявление</a>
+                                <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRegistration", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> О регистрации</a>
+                                if (Model.Data.StatusId == (long)StatusEnum.WaitApplicant)
+                                {
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationWaitApplicant", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Уведомление о приостановлении</a>
+                                }
+                                if (Model.Data.StatusId == (long)StatusEnum.DecisionMaking || Model.Data.StatusId == (long)StatusEnum.DecisionMakingCovid || Model.Data.StatusId == (long)StatusEnum.DecisionIsMade || Model.Data.StatusId == (long)StatusEnum.IncludedInList)
+                                {
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationOrgChoose", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Уведомление о необходимости выбора организации</a>
+                                }
+                                if (Model.Data.StatusId != (long)StatusEnum.Reject && Model.Data.StatusId != (long)StatusEnum.Draft && Model.Data.StatusId != (long)StatusEnum.CancelByApplicant && Model.Data.StatusId != (long)StatusEnum.RegistrationDecline
+                                    && (Model.Data.TypeOfRestId == (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest))
+                                {
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRequestInformation", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Запрос необходимой информации</a>
+                                }
+                                if (Model.Data.StatusId == (long)StatusEnum.Reject || (Model.Data.StatusId == (long)StatusEnum.CertificateIssued && Model.Data.DeclineReasonId.HasValue) || (Model.Data.StatusId == (long)StatusEnum.CancelByApplicant && string.IsNullOrWhiteSpace(Model.Data.CertificateNumber)))
+                                {
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRefuse", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Результат рассмотрения</a>
+                                }
+                                if (Model.Data.StatusId == (long)StatusEnum.CancelByApplicant && !string.IsNullOrWhiteSpace(Model.Data.CertificateNumber))
+                                {
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationDeadline", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Уведомление об отказе в установленный срок</a>
+                                }
+                                var preferentialTypeOfRest = new[]
+                                {
                         (long?) TypeOfRestEnum.ChildRest, (long?) TypeOfRestEnum.ChildRestCamps, (long?) TypeOfRestEnum.TentChildrenCamp, (long?) TypeOfRestEnum.ChildRestFederalCamps,
                         (long?) TypeOfRestEnum.RestWithParents, (long?) TypeOfRestEnum.RestWithParentsInvalidOrphanComplex, (long?) TypeOfRestEnum.YouthRestOrphanCamps,
                         (long?) TypeOfRestEnum.YouthRestCamps, (long?) TypeOfRestEnum.Money, (long?) TypeOfRestEnum.MoneyOn3To7, (long?) TypeOfRestEnum.MoneyOn7To15, (long?) TypeOfRestEnum.MoneyOn18
                     };
 
-                    if ((Model.Data.StatusId == (long)StatusEnum.CertificateIssued && (Model.Data.TypeOfRestId == (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)) && !Model.Data.ParentRequestId.HasValue)
-                    {
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationAboutDecision", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Результат рассмотрения</a>
-                    }
-                    if (new[] { (long)StatusEnum.DecisionIsMade, (long)StatusEnum.CertificateIssued }.Contains(Model.Data.StatusId ?? 0) && !Model.Data.DeclineReasonId.HasValue && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
-                    {
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationAboutDecision", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление о предоставлении услуги</a>
-                    }
-                    if (Model.Data.StatusId != (long)StatusEnum.Reject && !Model.Data.DeclineReasonId.HasValue && Model.Data.StatusId != (long)StatusEnum.CancelByApplicant && Model.Data.StatusId != (long)StatusEnum.RegistrationDecline && Model.Data.StatusId != (long)StatusEnum.Draft && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
-                    {
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRefuseRefuse", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление о непринятии отказа от рассмотрения поданного заявления</a>
-                    }
-                    if (Model.Data.StatusId == (long)StatusEnum.Send && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
-                    {
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("RefusingDocument", "RequestNotitification", new {Id = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Отказ от заявления</a>
-                    }
-                    if (Model.Data.StatusId == (long)StatusEnum.Draft && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
-                    {
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationAcquaintance", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление об ознакомлении</a>
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationLackOfPossibilityReplacement", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление об отсутствии возможности замены сертификата</a>
-                    }
-                    var childRest = new[] { (long?)TypeOfRestEnum.ChildRest, (long?)TypeOfRestEnum.RestWithParents, (long?)TypeOfRestEnum.RestWithParentsInvalidOrphanComplex, (long?)TypeOfRestEnum.YouthRestCamps };
+                                if ((Model.Data.StatusId == (long)StatusEnum.CertificateIssued && (Model.Data.TypeOfRestId == (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)) && !Model.Data.ParentRequestId.HasValue)
+                                {
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationAboutDecision", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Результат рассмотрения</a>
+                                }
+                                if (new[] { (long)StatusEnum.DecisionIsMade, (long)StatusEnum.CertificateIssued }.Contains(Model.Data.StatusId ?? 0) && !Model.Data.DeclineReasonId.HasValue && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
+                                {
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationAboutDecision", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Уведомление о предоставлении услуги</a>
+                                }
+                                if (Model.Data.StatusId != (long)StatusEnum.Reject && !Model.Data.DeclineReasonId.HasValue && Model.Data.StatusId != (long)StatusEnum.CancelByApplicant && Model.Data.StatusId != (long)StatusEnum.RegistrationDecline && Model.Data.StatusId != (long)StatusEnum.Draft && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
+                                {
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRefuseRefuse", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Уведомление о непринятии отказа от рассмотрения поданного заявления</a>
+                                }
+                                if (Model.Data.StatusId == (long)StatusEnum.Send && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
+                                {
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("RefusingDocument", "RequestNotitification", new { Id = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Отказ от заявления</a>
+                                }
+                                if (Model.Data.StatusId == (long)StatusEnum.Draft && Model.Data.IsFirstCompany && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
+                                {
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationAcquaintance", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Уведомление об ознакомлении</a>
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationLackOfPossibilityReplacement", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Уведомление об отсутствии возможности замены сертификата</a>
+                                }
+                                var childRest = new[] { (long?)TypeOfRestEnum.ChildRest, (long?)TypeOfRestEnum.RestWithParents, (long?)TypeOfRestEnum.RestWithParentsInvalidOrphanComplex, (long?)TypeOfRestEnum.YouthRestCamps };
 
-                    if (Model.Data.StatusId == (long)StatusEnum.CertificateIssued && !Model.Data.DeclineReasonId.HasValue && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
-                    {
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("GetCertificateForRequest", "Pdf", new {requestId = Model.Data.Id})">
-                            <i class="glyphicon glyphicon-print"></i> @Html.Raw(Model.Data.RequestOnMoney ? "Сертификат" : "Путевка")
-                        </a>
-                        if (!Model.Data.RequestOnMoney)
+                                if (Model.Data.StatusId == (long)StatusEnum.CertificateIssued && !Model.Data.DeclineReasonId.HasValue && (preferentialTypeOfRest.Contains(Model.Data.TypeOfRestId) || (Model.Data.TypeOfRest != null && preferentialTypeOfRest.Contains(Model.Data.TypeOfRest.ParentId))))
+                                {
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("GetCertificateForRequest", "Pdf", new { requestId = Model.Data.Id })">
+                                        <i class="glyphicon glyphicon-print"></i> @Html.Raw(Model.Data.RequestOnMoney ? "Сертификат" : "Путевка")
+                                    </a>
+                                    if (!Model.Data.RequestOnMoney)
+                                    {
+                                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationNonRecognition", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Уведомление о непризнании отказа</a>
+                                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationNonRecognitionByTime", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Уведомление о непризнании отказа (после установленного срока)</a>
+                                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("RefusingDocumentCertificate", "RequestNotitification", new { Id = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Отказ от путевки</a>
+                                    }
+                                }
+                                if (Model.Data.StatusId == (long)StatusEnum.Reject && Model.Data.DeclineReasonId == (long)DeclineReasonEnum.RefuseAllVariantsCovid2020 && Security.HasRight(AccessRightEnum.Status.FcToDecisionMakingCovid) && Model.Data.ParentRequestId.HasValue)
+                                {
+                                    <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRefuse", "FirstRequestCompany", new { requestId = Model.Data.Id })"><i class="glyphicon glyphicon-print"></i> Результат рассмотрения (дополнительная кампания)</a>
+                                }
+                                <button type="button" class="btn btn-default history-button active-control"><span class="glyphicon glyphicon-list-alt"></span> История</button>
+                            }
+                            <button type="button" class="btn btn-default comment-button active-control"><span class="glyphicon @(string.IsNullOrWhiteSpace(Model.Data.InternalCommentary) ? "glyphicon-tag" : "glyphicon-pencil")"></span> КС</button>
+                        </p>
+                        <span class="field-validation-error">@Model.ErrorMessage.FormatEx(string.Empty)</span>
+                    </div>
+                </div>
+            </fieldset>
+            @{ Html.RenderPartial("Partials/DoublesPerson", Model); }
+
+            @if (!(Model.IsValid ?? true))
+            {
+                <text>
+                    <div class="summary-block">@Html.Raw(Model.GetErrorDescription())</div>
+                </text>
+            }
+
+            @Html.Hidden("action")
+
+            @{ Html.RenderPartial("Partials/RequestGeneral", Model); }
+            @{ Html.RenderPartial("Partials/RequestAddonRequests", Model); }
+            @{ Html.RenderPartial("Partials/RequestTypeOfRest", Model); }
+            @{ Html.RenderPartial("Partials/RequestPlaceRest", Model); }
+            @{ Html.RenderPartial("Partials/RequestTypeOfCamp", Model); }
+            @{ Html.RenderPartial("Partials/RequestTypeOfTransport", Model); }
+            @{ Html.RenderPartial("Partials/RequestPlacement", Model); }
+            @{ Html.RenderPartial("Partials/RequestApplicant", Model); }
+            @{ if (!Model.Agent.Data.IsNullOrEmpty()) { Html.RenderPartial("Partials/RequestAgent", Model); } }
+
+            <h3 id="AttendantsReference" class="anchor bs-callout-info @(Model.Data.TypeOfRest.NullSafe(x => x.NeedAttendant) && Model.Data.TypeOfRestId != (long) TypeOfRestEnum.CompensationYouthRest ? string.Empty : " hidden")">
+                Сведения о сопровождающих
+            </h3><span class="field-validation-error">@Model.AttendantEm.FormatEx(string.Empty)</span>
+
+            <fieldset id="Attendants" class="@(Model.Data.TypeOfRest.NullSafe(x => x.NeedAttendant) ? string.Empty : " hidden")">
+                @Html.EditorFor(m => m.Attendant, "AttendatsTemplate")
+            </fieldset>
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-default btn-primary @(Model.Data.TypeOfRestId == (long) TypeOfRestEnum.Compensation || !(Model.ForbidInsertAttendants ?? false) ? string.Empty : " hidden")" id="AddAttendant">
+                        <i class="glyphicon glyphicon-plus"></i>Добавить
+                    </button>
+                </div>
+            </div>
+            @{ Html.RenderPartial("Partials/RequestInformationVoucher", Model); }
+            <h3 id="ChildsReference" class="anchor bs-callout-info">Сведения о детях</h3>
+            <span class="field-validation-error">@Model.ChildEm.FormatEx(string.Empty)</span>
+            <fieldset id="Childs">
+                @Html.EditorFor(m => m.Child, "ChildsTemplate")
+            </fieldset>
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-default btn-primary @(Model.ForbidInsertChilds ?? false ? " hidden" : null)" id="AddChild">
+                        <i class="glyphicon glyphicon-plus"></i> Добавить ребёнка
+                    </button>
+                </div>
+            </div>
+
+            @{ Html.RenderPartial("Partials/RequestParentInvalid", Model); }
+            @{ Html.RenderPartial("Partials/RequestBank", Model); }
+            @{ Html.RenderPartial("Partials/RequestCertificates", Model); }
+            @{ Html.RenderPartial("Partials/RequestFiles", Model); }
+
+            <div class="form-group row">
+                <div class="col-md-12">
+                    <p class="panel-operation-button">
+                        @if (!Model.Data.IsDeleted && Model.Data.IsLast && Model.IsEditable)
                         {
-                            <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationNonRecognition", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление о непризнании отказа</a>
-                            <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationNonRecognitionByTime", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Уведомление о непризнании отказа (после установленного срока)</a>
-                            <a class="btn btn-default active-control" target="_blank" href="@Url.Action("RefusingDocumentCertificate", "RequestNotitification", new {Id = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Отказ от путевки</a>
+                            if (Model.Data.StatusId == (long)StatusEnum.WaitApplicant || Model.Data.StatusId == (long)StatusEnum.Draft || Security.HasRight(AccessRightEnum.EditAfterRegistration) || Security.HasRight(AccessRightEnum.AddonServiceInRequest))
+                            {
+                                <button type="submit" class="btn btn-default btn-primary edit-control save-button">
+                                    Сохранить
+                                </button>
+                            }
+                            foreach (StatusAction action in Model.Actions)
+                            {
+                                <button type="button" class="btn btn-default edit-control" onclick="@(new[] {AccessRightEnum.Status.FcToReject, AccessRightEnum.Status.ToRejectFromCertificateIssued, AccessRightEnum.Status.ToReject, AccessRightEnum.Status.ToRejectNormal, AccessRightEnum.Status.ToCancelByApplicant}.Contains(action.Code) ? " confirmButtonWithDecline" : "confirmButton")('@action.Name', '@action.Code', '@action.ToStatusId') ">
+                                    @action.Name
+                                </button>
+                            }
                         }
-                    }
-                    if (Model.Data.StatusId == (long)StatusEnum.Reject && Model.Data.DeclineReasonId == (long)DeclineReasonEnum.RefuseAllVariantsCovid2020 && Security.HasRight(AccessRightEnum.Status.FcToDecisionMakingCovid) && Model.Data.ParentRequestId.HasValue)
-                    {
-                        <a class="btn btn-default active-control" target="_blank" href="@Url.Action("NotificationRefuse", "FirstRequestCompany", new {requestId = Model.Data.Id})"><i class="glyphicon glyphicon-print"></i> Результат рассмотрения (дополнительная кампания)</a>
-                    }
-                    <button type="button" class="btn btn-default history-button active-control"><span class="glyphicon glyphicon-list-alt"></span> История</button>
-                }
-                <button type="button" class="btn btn-default comment-button active-control"><span class="glyphicon @(string.IsNullOrWhiteSpace(Model.Data.InternalCommentary) ? "glyphicon-tag" : "glyphicon-pencil")"></span> КС</button>
-            </p>
-            <span class="field-validation-error">@Model.ErrorMessage.FormatEx(string.Empty)</span>
-        </div>
+                        @if (Model.Data.Id != 0)
+                        {
+                            <button type="button" class="btn btn-default history-button"><span class="glyphicon glyphicon-list-alt"></span> История</button>
+                        }
+                    </p>
+                </div>
+            </div>
+
+            @Html.HiddenFor(r => r.Data.ExternalSystem)
+            @Html.HiddenFor(r => r.Data.ExternalUid)
+            @Html.HiddenFor(r => r.Data.IsDeleted)
+            @Html.HiddenFor(r => r.Data.IsLast)
+            @Html.HiddenFor(r => r.Data.UpdateDate)
+            @Html.HiddenFor(r => r.Data.DateChangeStatus)
+            @Html.HiddenFor(r => r.Data.IsDraft)
+            @Html.HiddenFor(r => r.Data.Version)
+            @Html.HiddenFor(r => r.Data.StatusId)
+            @Html.HiddenFor(r => r.Data.EntityId)
+            @Html.HiddenFor(r => r.Data.RequestNumber)
+            @Html.HiddenFor(r => r.Data.RequestNumberMpgu)
+            @Html.HiddenFor(r => r.Data.IsDeleted)
+            @Html.HiddenFor(r => r.Data.Id)
+        </form>
     </div>
-</fieldset>
-@{ Html.RenderPartial("Partials/DoublesPerson", Model); }
-
-@if (!(Model.IsValid ?? true))
-{
-    <text>
-        <div class="summary-block">@Html.Raw(Model.GetErrorDescription())</div>
-    </text>
-}
-
-@Html.Hidden("action")
-
-@{ Html.RenderPartial("Partials/RequestGeneral", Model); }
-@{ Html.RenderPartial("Partials/RequestAddonRequests", Model); }
-@{ Html.RenderPartial("Partials/RequestTypeOfRest", Model); }
-@{ Html.RenderPartial("Partials/RequestPlaceRest", Model); }
-@{ Html.RenderPartial("Partials/RequestTypeOfCamp", Model); }
-@{ Html.RenderPartial("Partials/RequestTypeOfTransport", Model); }
-@{ Html.RenderPartial("Partials/RequestPlacement", Model); }
-@{ Html.RenderPartial("Partials/RequestApplicant", Model); }
-@{ Html.RenderPartial("Partials/RequestAgent", Model); }
-
-<h3 id="AttendantsReference" class="anchor bs-callout-info @(Model.Data.TypeOfRest.NullSafe(x => x.NeedAttendant) && Model.Data.TypeOfRestId != (long) TypeOfRestEnum.CompensationYouthRest ? string.Empty : " hidden")">
-    Сведения о сопровождающих
-</h3><span class="field-validation-error">@Model.AttendantEm.FormatEx(string.Empty)</span>
-
-<fieldset id="Attendants" class="@(Model.Data.TypeOfRest.NullSafe(x => x.NeedAttendant) ? string.Empty : " hidden")">
-    @Html.EditorFor(m => m.Attendant, "AttendatsTemplate")
-</fieldset>
-<div class="form-group row">
-    <div class="col-md-12">
-        <button type="button" class="btn btn-default btn-primary @(Model.Data.TypeOfRestId == (long) TypeOfRestEnum.Compensation || !(Model.ForbidInsertAttendants ?? false) ? string.Empty : " hidden")" id="AddAttendant">
-            <i class="glyphicon glyphicon-plus"></i>Добавить
-        </button>
-    </div>
-</div>
-@{ Html.RenderPartial("Partials/RequestInformationVoucher", Model); }
-<h3 id="ChildsReference" class="anchor bs-callout-info">Сведения о детях</h3>
-<span class="field-validation-error">@Model.ChildEm.FormatEx(string.Empty)</span>
-<fieldset id="Childs">
-    @Html.EditorFor(m => m.Child, "ChildsTemplate")
-</fieldset>
-<div class="form-group row">
-    <div class="col-md-12">
-        <button type="button" class="btn btn-default btn-primary @(Model.ForbidInsertChilds ?? false ? " hidden" : null)" id="AddChild">
-            <i class="glyphicon glyphicon-plus"></i> Добавить ребёнка
-        </button>
-    </div>
-</div>
-
-@{ Html.RenderPartial("Partials/RequestParentInvalid", Model); }
-@{ Html.RenderPartial("Partials/RequestBank", Model); }
-@{ Html.RenderPartial("Partials/RequestCertificates", Model); }
-@{ Html.RenderPartial("Partials/RequestFiles", Model); }
-
-<div class="form-group row">
-    <div class="col-md-12">
-        <p class="panel-operation-button">
-            @if (!Model.Data.IsDeleted && Model.Data.IsLast && Model.IsEditable)
-            {
-                if (Model.Data.StatusId == (long) StatusEnum.WaitApplicant || Model.Data.StatusId == (long) StatusEnum.Draft || Security.HasRight(AccessRightEnum.EditAfterRegistration) || Security.HasRight(AccessRightEnum.AddonServiceInRequest))
-                {
-                    <button type="submit" class="btn btn-default btn-primary edit-control save-button">
-                        Сохранить
-                    </button>
-                }
-                foreach (StatusAction action in Model.Actions)
-                {
-                    <button type="button" class="btn btn-default edit-control" onclick="@(new[] {AccessRightEnum.Status.FcToReject, AccessRightEnum.Status.ToRejectFromCertificateIssued, AccessRightEnum.Status.ToReject, AccessRightEnum.Status.ToRejectNormal, AccessRightEnum.Status.ToCancelByApplicant}.Contains(action.Code) ? " confirmButtonWithDecline" : "confirmButton")('@action.Name', '@action.Code', '@action.ToStatusId') ">
-                        @action.Name
-                    </button>
-                }
-            }
-            @if (Model.Data.Id != 0)
-            {
-                <button type="button" class="btn btn-default history-button"><span class="glyphicon glyphicon-list-alt"></span> История</button>
-            }
-        </p>
-    </div>
-</div>
-
-@Html.HiddenFor(r => r.Data.ExternalSystem)
-@Html.HiddenFor(r => r.Data.ExternalUid)
-@Html.HiddenFor(r => r.Data.IsDeleted)
-@Html.HiddenFor(r => r.Data.IsLast)
-@Html.HiddenFor(r => r.Data.UpdateDate)
-@Html.HiddenFor(r => r.Data.DateChangeStatus)
-@Html.HiddenFor(r => r.Data.IsDraft)
-@Html.HiddenFor(r => r.Data.Version)
-@Html.HiddenFor(r => r.Data.StatusId)
-@Html.HiddenFor(r => r.Data.EntityId)
-@Html.HiddenFor(r => r.Data.RequestNumber)
-@Html.HiddenFor(r => r.Data.RequestNumberMpgu)
-@Html.HiddenFor(r => r.Data.IsDeleted)
-@Html.HiddenFor(r => r.Data.Id)
-</form>
-</div>
-@{ Html.RenderPartial("Partials/RequestRightMenu", Model); }
+    @{ Html.RenderPartial("Partials/RequestRightMenu", Model); }
 </div>
 @{ Html.RenderPartial("RequestTemplate", Model); }
 
@@ -294,19 +294,19 @@
                     Ошибка загрузки
                 </div>
                 <div id="HistoryModalLoading" align="center">
-                    <img src="~/Content/images/spinner.gif"/> Загрузка истории
+                    <img src="~/Content/images/spinner.gif" /> Загрузка истории
                 </div>
                 <div id="HistoryModalTable">
                     <table class="table table-striped table-hover">
                         <thead>
-                        <tr>
-                            <th class="text-center">Операция</th>
-                            <th class="text-center">Дата и время изменения</th>
-                            <th class="text-center">ФИО оператора</th>
-                            <th class="text-center">Телефон оператора</th>
-                            <th class="text-center">Email оператора</th>
-                            <th class="text-center"></th>
-                        </tr>
+                            <tr>
+                                <th class="text-center">Операция</th>
+                                <th class="text-center">Дата и время изменения</th>
+                                <th class="text-center">ФИО оператора</th>
+                                <th class="text-center">Телефон оператора</th>
+                                <th class="text-center">Email оператора</th>
+                                <th class="text-center"></th>
+                            </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
@@ -354,7 +354,7 @@
                 <h4 class="modal-title">Новый сопровождающий</h4>
             </div>
             <form id="AttendantModalForm">
-                <input name="ReplacingAccompanyId" id="ReplacingAccompanyId" type="hidden"/>
+                <input name="ReplacingAccompanyId" id="ReplacingAccompanyId" type="hidden" />
                 <div class="modal-body ReplacingAccompanyErr" style="padding-left: 30px;"></div>
                 <div class="modal-body ReplacingAccompanyBody"></div>
             </form>
@@ -387,17 +387,17 @@
             </div>
             <div class="modal-footer">
                 <button id="submitRequestCopy" type="button" class="btn btn-default btn-primary">Копировать</button>
-                <input id="@Model.Data.Id" class="requestToCopy" type="hidden"/>
+                <input id="@Model.Data.Id" class="requestToCopy" type="hidden" />
                 @{
                     foreach (var attendant in Model.Data.Attendant)
                     {
-                        <input id="@attendant.Id" class="attendantToCopy" value="@String.Join(" ", attendant.LastName, attendant.FirstName, attendant.MiddleName)" type="hidden"/>
+                        <input id="@attendant.Id" class="attendantToCopy" value="@String.Join(" ", attendant.LastName, attendant.FirstName, attendant.MiddleName)" type="hidden" />
                     }
                 }
                 @{
                     foreach (var child in Model.Data.Child)
                     {
-                        <input id="@child.Id" class="childToCopy" value="@String.Join(" ", child.LastName, child.FirstName, child.MiddleName)" type="hidden"/>
+                        <input id="@child.Id" class="childToCopy" value="@String.Join(" ", child.LastName, child.FirstName, child.MiddleName)" type="hidden" />
                     }
                 }
             </div>
@@ -454,7 +454,7 @@
     }
 
     @* Это же условие в RestChild.Web\Controllers\WebApi\WebFirstRequestCompanyController.cs, все поля дизаблятся, сравнивать не нужно! *@
-    @if (Model.Data.StatusId != (long) StatusEnum.Draft && !Security.HasRight(AccessRightEnum.EditAfterRegistration))
+    @if (Model.Data.StatusId != (long)StatusEnum.Draft && !Security.HasRight(AccessRightEnum.EditAfterRegistration))
     {
         <script type="text/javascript" language="javascript">
             $(function () {
@@ -471,14 +471,14 @@
         </script>
     }
 
-    @if (Model.Data.StatusId != (long) StatusEnum.Draft && !Security.HasRight(AccessRightEnum.EditAfterRegistration) && !Model.CanEditRegionAndPlacement)
+    @if (Model.Data.StatusId != (long)StatusEnum.Draft && !Security.HasRight(AccessRightEnum.EditAfterRegistration) && !Model.CanEditRegionAndPlacement)
     {
         <script type="text/javascript" language="javascript">
-                $(function () {
-                    $('.time-of-rest').select2('disable');
-                    $('.placeOfRestId ').select2('disable');
-                });
-            </script>
+            $(function () {
+                $('.time-of-rest').select2('disable');
+                $('.placeOfRestId ').select2('disable');
+            });
+        </script>
     }
 
 
