@@ -143,6 +143,13 @@ namespace RestChild.Web.Models
             return monthDiff;
         }
 
+        private int GetDaysBetween(DateTime from, DateTime to)
+        {
+            if (from > to) return GetDaysBetween(to, from);
+            var dayDiff = to - from;
+            return dayDiff.Days;
+        }
+
         public bool CheckModel(Request request, string action = null)
         {
             IsValid = true;
@@ -198,7 +205,7 @@ namespace RestChild.Web.Models
             else
             {
                 if (Data.DateOfBirth.HasValue && Data.DocumentTypeId == BirthSertificateId &&
-                    GetMonthsBetween(DateTime.Now, Data.DateOfBirth.Value) >= 14 * 12 + 3)
+                    GetDaysBetween(DateTime.Now, Data.DateOfBirth.Value) > (14 * 365 + 6) + 90)
                 {
                     IsValid = false;
                     DocumentTypeEm = "Для ребенка старше 14 лет нельзя выбрать свидетельство о рождении";
@@ -418,6 +425,8 @@ namespace RestChild.Web.Models
 
             return IsValid.Value;
         }
+
+        
 
         public override string ToString()
         {
