@@ -93,7 +93,7 @@
                     }
 
                     /// <summary>
-                    ///     Выдано сертификатов
+                    ///     Выдано путёвок
                     /// </summary>
                     public static class Sertificates
                     {
@@ -120,6 +120,20 @@
                         public static readonly long All = 54;
                     }
 
+
+                    /// <summary>
+                    ///     Выдано сертификатов
+                    /// </summary>
+                    public static class SertificatesIssued
+                    {
+                        public static readonly long Id = 7;
+
+                        public static readonly long ColumnName = 50;
+                        public static readonly long ByHour = 51;
+                        public static readonly long ByDay = 52;
+                        public static readonly long ByWeek = 53;
+                        public static readonly long All = 54;
+                    }
 
                     /// <summary>
                     ///     Ожидание прихода заявителя
