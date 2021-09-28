@@ -191,13 +191,14 @@ namespace RestChild.Web.Controllers
 
    }
 
-   public class ZAGZIntegrationController : BaseController
-   {
-      public override void SetUnitOfWorkInRefClass(IUnitOfWork unitOfWork)
-      {
-         base.SetUnitOfWorkInRefClass(unitOfWork);
-      }
+    public class ZAGZIntegrationController : BaseController
+    {
+        public override void SetUnitOfWorkInRefClass(IUnitOfWork unitOfWork)
+        {
+            base.SetUnitOfWorkInRefClass(unitOfWork);
+        }
 
+      [HttpGet]
       public ActionResult Index(string Msg = "")
       {
          SetUnitOfWorkInRefClass(UnitOfWork);

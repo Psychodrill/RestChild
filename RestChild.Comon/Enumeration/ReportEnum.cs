@@ -120,7 +120,10 @@
                         public static readonly long All = 54;
                     }
 
+<<<<<<< HEAD
                 
+=======
+>>>>>>> origin/Andrey
                     /// <summary>
                     ///     Ожидание прихода заявителя
                     /// </summary>
