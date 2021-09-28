@@ -41,8 +41,8 @@ namespace RestChild.Web.Controllers.WebApi
 
             string taskNumber;
 
-            if (req != null && req.TypeOfRestId != (long) TypeOfRestEnum.Compensation &&
-                req.TypeOfRestId != (long) TypeOfRestEnum.CompensationYouthRest)
+            if (req != null && req.TypeOfRestId != (long)TypeOfRestEnum.Compensation &&
+                req.TypeOfRestId != (long)TypeOfRestEnum.CompensationYouthRest)
             {
                 var count = UnitOfWork.GetSet<ExchangeBaseRegistry>().Count(v =>
                     v.ApplicantId == req.ApplicantId || v.Applicant.RequestId == req.Id ||
@@ -112,7 +112,7 @@ namespace RestChild.Web.Controllers.WebApi
                             MPGUIntegration.V61.ItemsChoiceType.ServiceTypeCode
                         },
                         Items = new[]
-                            {serviceNumber, WebConfigurationManager.AppSettings["serviceTypeCode"] ?? "048001"},
+                            { serviceNumber, WebConfigurationManager.AppSettings["serviceTypeCode"] ?? "048001" },
                         Department = new Department
                         {
                             Code = WebConfigurationManager.AppSettings["DepartmentCode"],
@@ -166,7 +166,7 @@ namespace RestChild.Web.Controllers.WebApi
 
 
                     var messageV6 = GetCoordinateMessageV6(request,
-                        ((long) ExchangeBaseRegistryTypeEnum.Benefit).ToString(),
+                        ((long)ExchangeBaseRegistryTypeEnum.Benefit).ToString(),
                         requestNumber + $"/{count++}", requestNumber);
 
                     UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -178,7 +178,7 @@ namespace RestChild.Web.Controllers.WebApi
                         ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                         Applicant = applicant,
                         ApplicantId = appId,
-                        ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.Benefit
+                        ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.Benefit
                     });
 
                     applicant.BenefitApprove = false;
@@ -218,8 +218,8 @@ namespace RestChild.Web.Controllers.WebApi
                     v.ApplicantId == req.ApplicantId || v.Applicant.RequestId == req.Id ||
                     v.Child.RequestId == req.Id) + 1;
                 var requestNumber = req.RequestNumber;
-                if (req.TypeOfRestId == (long) TypeOfRestEnum.Compensation ||
-                    req.TypeOfRestId == (long) TypeOfRestEnum.CompensationYouthRest)
+                if (req.TypeOfRestId == (long)TypeOfRestEnum.Compensation ||
+                    req.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)
                 {
                     var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
                     requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
@@ -234,7 +234,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                     var request = BrPassportBySNILSMessage(req.Applicant.Snils);
                     var messageV6 = GetCoordinateMessageV6(request,
-                        ((long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS).ToString(),
+                        ((long)ExchangeBaseRegistryTypeEnum.PassportDataBySNILS).ToString(),
                         requestNumber + $"/{count++}", requestNumber);
 
                     UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -246,7 +246,7 @@ namespace RestChild.Web.Controllers.WebApi
                         ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                         Applicant = req.Applicant,
                         ApplicantId = req.ApplicantId,
-                        ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS
+                        ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.PassportDataBySNILS
                     });
                 }
 
@@ -263,7 +263,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                         var request = BrPassportBySNILSMessage(c.Snils);
                         var messageV6 = GetCoordinateMessageV6(request,
-                            ((long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS).ToString(),
+                            ((long)ExchangeBaseRegistryTypeEnum.PassportDataBySNILS).ToString(),
                             requestNumber + $"/{count++}", requestNumber);
 
                         UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -275,7 +275,7 @@ namespace RestChild.Web.Controllers.WebApi
                             ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                             Applicant = c,
                             ApplicantId = c.Id,
-                            ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS
+                            ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.PassportDataBySNILS
                         });
                     }
                 }
@@ -292,7 +292,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                         var request = BrPassportBySNILSMessage(c.Snils);
                         var messageV6 = GetCoordinateMessageV6(request,
-                            ((long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS).ToString(),
+                            ((long)ExchangeBaseRegistryTypeEnum.PassportDataBySNILS).ToString(),
                             requestNumber + $"/{count++}", requestNumber);
 
                         UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -304,7 +304,7 @@ namespace RestChild.Web.Controllers.WebApi
                             ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                             Child = c,
                             ChildId = c.Id,
-                            ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS
+                            ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.PassportDataBySNILS
                         });
                     }
                 }
@@ -336,16 +336,16 @@ namespace RestChild.Web.Controllers.WebApi
                     v.Child.RequestId == req.Id) + 1;
 
                 var requestNumber = req.RequestNumber;
-                if (req.TypeOfRestId == (long) TypeOfRestEnum.Compensation ||
-                    req.TypeOfRestId == (long) TypeOfRestEnum.CompensationYouthRest)
+                if (req.TypeOfRestId == (long)TypeOfRestEnum.Compensation ||
+                    req.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)
                 {
                     var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
                     requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
                     count = 1;
                 }
 
-                if ((req.TypeOfRest?.Id == (long) TypeOfRestEnum.YouthRestCamps ||
-                     req.TypeOfRest?.ParentId == (long) TypeOfRestEnum.YouthRestCamps) && req.ApplicantId.HasValue &&
+                if ((req.TypeOfRest?.Id == (long)TypeOfRestEnum.YouthRestCamps ||
+                     req.TypeOfRest?.ParentId == (long)TypeOfRestEnum.YouthRestCamps) && req.ApplicantId.HasValue &&
                     req.Applicant.DocumentTypeId % 100 == 1)
                 {
                     ResetCheckApplicantInBaseRegistry(req.ApplicantId.Value,
@@ -370,7 +370,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                     var request = BrGetRegistrationByPassportMessage(sp);
                     var messageV6 = GetCoordinateMessageV6(request,
-                        ((long) ExchangeBaseRegistryTypeEnum.GetPassportRegistration).ToString(),
+                        ((long)ExchangeBaseRegistryTypeEnum.GetPassportRegistration).ToString(),
                         requestNumber + $"/{count++}", requestNumber);
 
                     UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -382,14 +382,14 @@ namespace RestChild.Web.Controllers.WebApi
                         ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                         Applicant = req.Applicant,
                         ApplicantId = req.ApplicantId,
-                        ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.GetPassportRegistration
+                        ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.GetPassportRegistration
                     });
                 }
 
                 var benefitTypes =
                     System.Configuration.ConfigurationManager.AppSettings["OrphansInvalid"]?.Split(',')
                         .Select(v => v.LongParse()).Where(v => v.HasValue).ToArray() ??
-                    new long?[] {1, 11, 18, 34, 35, 38, 41, 48, 67};
+                    new long?[] { 1, 11, 18, 34, 35, 38, 41, 48, 67 };
 
                 if (req.Child != null)
                 {
@@ -411,7 +411,7 @@ namespace RestChild.Web.Controllers.WebApi
                             passport_serie = c.DocumentSeria,
                             passport = c.DocumentNumber,
                             passport_date = c.DocumentDateOfIssue.DateTimeToXml(),
-                            doctype = (byte) (c.DocumentTypeId % 100 == 1 ? 1 : 3),
+                            doctype = (byte)(c.DocumentTypeId % 100 == 1 ? 1 : 3),
                             lastname = c.LastName,
                             middlename = c.MiddleName,
                             address1_town = "Москва",
@@ -420,7 +420,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                         var request = BrGetRegistrationByPassportMessage(sp);
                         var messageV6 = GetCoordinateMessageV6(request,
-                            ((long) ExchangeBaseRegistryTypeEnum.GetPassportRegistration).ToString(),
+                            ((long)ExchangeBaseRegistryTypeEnum.GetPassportRegistration).ToString(),
                             requestNumber + $"/{count++}", requestNumber);
 
                         UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -432,7 +432,7 @@ namespace RestChild.Web.Controllers.WebApi
                             ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                             Child = c,
                             ChildId = c.Id,
-                            ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.GetPassportRegistration
+                            ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.GetPassportRegistration
                         });
                     }
                 }
@@ -576,7 +576,7 @@ namespace RestChild.Web.Controllers.WebApi
                 var requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
 
                 var messageV6 = GetCoordinateMessageV6(request,
-                    ((long) ExchangeBaseRegistryTypeEnum.RelationshipSmev).ToString(),
+                    ((long)ExchangeBaseRegistryTypeEnum.RelationshipSmev).ToString(),
                     requestNumber + "/1", requestNumber);
 
                 UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -586,7 +586,7 @@ namespace RestChild.Web.Controllers.WebApi
                     OperationType = "SendTask",
                     RequestGuid = messageV6.CoordinateTaskDataMessage.Task.TaskId,
                     ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
-                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.RelationshipSmev,
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.RelationshipSmev,
                     IsAddonRequest = true,
                     BirthDate = model.DateOfBirth,
                     SearchField =
@@ -603,7 +603,7 @@ namespace RestChild.Web.Controllers.WebApi
             catch (Exception ex)
             {
                 Logger.Error("Ошибка отправки в базовый регистр запроса СНИЛС по ФИО", ex);
-                return new BaseResponse {HasError = true, ErrorMessage = ex.Message};
+                return new BaseResponse { HasError = true, ErrorMessage = ex.Message };
             }
         }
 
@@ -629,7 +629,7 @@ namespace RestChild.Web.Controllers.WebApi
                     IsIncoming = false,
                     OperationType = "cpmpkrequest",
                     //Success = false,
-                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange,
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.CpmpkExchange,
                     ServiceNumber = "б/н",
                     ResponseGuid = "б/н",
                     EidSendStatus = 0
@@ -640,13 +640,12 @@ namespace RestChild.Web.Controllers.WebApi
                 return new BaseResponse
                 {
                     Name = "Сформирован запрос информации ЦПМПК"
-
                 };
             }
             catch (Exception ex)
             {
                 Logger.Error("Ошибка запроса информации ЦПМПК", ex);
-                return new BaseResponse {HasError = true, ErrorMessage = ex.Message};
+                return new BaseResponse { HasError = true, ErrorMessage = ex.Message };
             }
         }
 
@@ -708,7 +707,7 @@ namespace RestChild.Web.Controllers.WebApi
                 var requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
 
                 var messageV6 = GetCoordinateMessageV6(request,
-                    ((long) ExchangeBaseRegistryTypeEnum.PassportRegistration).ToString(),
+                    ((long)ExchangeBaseRegistryTypeEnum.PassportRegistration).ToString(),
                     requestNumber + "/1", requestNumber);
 
                 UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -718,7 +717,7 @@ namespace RestChild.Web.Controllers.WebApi
                     OperationType = "SendTask",
                     RequestGuid = messageV6.CoordinateTaskDataMessage.Task.TaskId,
                     ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
-                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.PassportRegistration
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.PassportRegistration
                 });
 
                 UnitOfWork.SaveChanges();
@@ -731,7 +730,7 @@ namespace RestChild.Web.Controllers.WebApi
             catch (Exception ex)
             {
                 Logger.Error("Ошибка отправки в базовый регистр запроса адреса регистрации", ex);
-                return new BaseResponse {HasError = true, ErrorMessage = ex.Message};
+                return new BaseResponse { HasError = true, ErrorMessage = ex.Message };
             }
         }
 
@@ -753,7 +752,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                 if (string.IsNullOrWhiteSpace(documentType.BaseRegistryUid))
                 {
-                    return new BaseResponse {HasError = true, ErrorMessage = "Не найден вид документа."};
+                    return new BaseResponse { HasError = true, ErrorMessage = "Не найден вид документа." };
                 }
 
                 var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
@@ -761,7 +760,7 @@ namespace RestChild.Web.Controllers.WebApi
                 var requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
 
                 var messageV6 = GetCoordinateMessageV6(request,
-                    ((long) ExchangeBaseRegistryTypeEnum.Relationship).ToString(),
+                    ((long)ExchangeBaseRegistryTypeEnum.Relationship).ToString(),
                     requestNumber + "/1", requestNumber);
 
                 var eb = UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -774,7 +773,7 @@ namespace RestChild.Web.Controllers.WebApi
                     ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                     Child = null,
                     ChildId = null,
-                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.Relationship,
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.Relationship,
                     IsAddonRequest = true,
                     BirthDate = model.DateOfBirth,
                     SearchField =
@@ -794,7 +793,7 @@ namespace RestChild.Web.Controllers.WebApi
             catch (Exception ex)
             {
                 Logger.Error("Ошибка отправки в базовый регистр", ex);
-                return new BaseResponse {HasError = true, ErrorMessage = ex.Message};
+                return new BaseResponse { HasError = true, ErrorMessage = ex.Message };
             }
         }
 
@@ -817,7 +816,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                 if (string.IsNullOrWhiteSpace(documentType.BaseRegistryUid))
                 {
-                    return new BaseResponse {HasError = true, ErrorMessage = "Не найден вид документа."};
+                    return new BaseResponse { HasError = true, ErrorMessage = "Не найден вид документа." };
                 }
 
                 var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
@@ -825,7 +824,7 @@ namespace RestChild.Web.Controllers.WebApi
                 var requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
 
                 var messageV6 = GetCoordinateMessageV6(request,
-                    ((long) ExchangeBaseRegistryTypeEnum.Benefit).ToString(),
+                    ((long)ExchangeBaseRegistryTypeEnum.Benefit).ToString(),
                     requestNumber + "/1", requestNumber);
 
                 var eb = UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -838,7 +837,7 @@ namespace RestChild.Web.Controllers.WebApi
                     ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                     Child = null,
                     ChildId = null,
-                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.Benefit,
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.Benefit,
                     IsAddonRequest = true,
                     BirthDate = model.DateOfBirth,
                     SearchField =
@@ -858,7 +857,7 @@ namespace RestChild.Web.Controllers.WebApi
             catch (Exception ex)
             {
                 Logger.Error("Ошибка отправки в базовый регистр", ex);
-                return new BaseResponse {HasError = true, ErrorMessage = ex.Message};
+                return new BaseResponse { HasError = true, ErrorMessage = ex.Message };
             }
         }
 
@@ -878,7 +877,7 @@ namespace RestChild.Web.Controllers.WebApi
                     model.DocumentNumber, model.DocumentDateOfIssue ?? DateTime.Today,
                     model.DocumentSubjectIssue, model.Region, model.District, model.Settlement);
                 var messageV6 = GetCoordinateMessageV6(request,
-                    ((long) ExchangeBaseRegistryTypeEnum.SNILSByFio).ToString(), requestNumber + "/1",
+                    ((long)ExchangeBaseRegistryTypeEnum.SNILSByFio).ToString(), requestNumber + "/1",
                     requestNumber);
 
                 UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -889,7 +888,7 @@ namespace RestChild.Web.Controllers.WebApi
                     RequestGuid = messageV6.CoordinateTaskDataMessage.Task.TaskId,
                     ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                     IsAddonRequest = true,
-                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.SNILSByFio,
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.SNILSByFio,
                     BirthDate = model.DateOfBirth,
                     SearchField =
                         $"{model.LastName?.ToLower().Trim()}|{model.FirstName?.ToLower().Trim()}|{model.MiddleName?.ToLower().Trim()}"
@@ -905,7 +904,7 @@ namespace RestChild.Web.Controllers.WebApi
             catch (Exception ex)
             {
                 Logger.Error("Ошибка отправки в базовый регистр запроса СНИЛС по ФИО", ex);
-                return new BaseResponse {HasError = true, ErrorMessage = ex.Message};
+                return new BaseResponse { HasError = true, ErrorMessage = ex.Message };
             }
         }
 
@@ -920,7 +919,7 @@ namespace RestChild.Web.Controllers.WebApi
                 var requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
                 var request = BrPassportBySNILSMessage(model.Snils);
                 var messageV6 = GetCoordinateMessageV6(request,
-                    ((long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS).ToString(), requestNumber + "/1",
+                    ((long)ExchangeBaseRegistryTypeEnum.PassportDataBySNILS).ToString(), requestNumber + "/1",
                     requestNumber);
 
                 UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -931,7 +930,7 @@ namespace RestChild.Web.Controllers.WebApi
                     RequestGuid = messageV6.CoordinateTaskDataMessage.Task.TaskId,
                     ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                     IsAddonRequest = true,
-                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS,
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.PassportDataBySNILS,
                     BirthDate = model.DateOfBirth,
                     SearchField =
                         $"{model.LastName?.ToLower().Trim()}|{model.FirstName?.ToLower().Trim()}|{model.MiddleName?.ToLower().Trim()}"
@@ -947,7 +946,7 @@ namespace RestChild.Web.Controllers.WebApi
             catch (Exception ex)
             {
                 Logger.Error("Ошибка отправки в базовый регистр запроса СНИЛС по ФИО", ex);
-                return new BaseResponse {HasError = true, ErrorMessage = ex.Message};
+                return new BaseResponse { HasError = true, ErrorMessage = ex.Message };
             }
         }
 
@@ -1019,7 +1018,7 @@ namespace RestChild.Web.Controllers.WebApi
                 }
 
                 var messageV6 = GetCoordinateMessageV6(request,
-                    ((long) ExchangeBaseRegistryTypeEnum.Snils2040).ToString(),
+                    ((long)ExchangeBaseRegistryTypeEnum.Snils2040).ToString(),
                     requestNumber + $"/{count++}", requestNumber);
 
                 UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -1031,7 +1030,7 @@ namespace RestChild.Web.Controllers.WebApi
                     ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                     Applicant = applicant,
                     ApplicantId = applicant.Id,
-                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.Snils2040
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.Snils2040
                 });
 
                 UnitOfWork.SaveChanges();
@@ -1039,6 +1038,81 @@ namespace RestChild.Web.Controllers.WebApi
             catch (Exception ex)
             {
                 Logger.Error("Ошибка отправки в базовый регистр по СНИЛС", ex);
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        ///     проверка ребёнка на свидетельство о рождении ЕГР ЗАГС (11827)
+        /// </summary>
+        internal int CheckChildForRelationshipEGRZAGS(string requestNumber, Child child, int count)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(child?.Snils))
+                {
+                    return count;
+                }
+
+                ResetCheckChildInBaseRegistry(child.Id, ExchangeBaseRegistryTypeEnum.GetEGRZAGS);
+
+                var request =
+                    $@"<ServiceProperties xmlns="">
+                        <base_code>01</base_code>
+                        <quantity_doc>1</quantity_doc>
+                        <rogdinflist>
+                            <lastname>{child.LastName}</lastname>
+                            <firstname>{child.FirstName}</firstname>
+                            <middlename>{child.MiddleName}</middlename>
+                            <birthdate>{child.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
+                            <snils>{child.Snils}</snils>
+                        </rogdinflist>
+                    </ServiceProperties>";
+
+                if (Settings.Default.SnilsTestRequest)
+                {
+                    request =
+                        @"<ServiceProperties xmlns="">
+               <base_code>01</base_code>
+               <quantity_doc>1</quantity_doc>
+               <rogdinflist>
+                  <rogdinf>
+                     <actnumber>1234</actnumber>
+                     <actdate>1957-08-13T09:30:47Z</actdate>
+                     <nameofregistrar>Отдел Государственной службы записи актов гражданского состояния Республики Ингушетия Джейрахского района</nameofregistrar>
+                     <code_zags>R0600004</code_zags>
+                     <member_type>1</member_type>
+                     <lastname>Иванова</lastname>
+                     <firstname>Мария</firstname>
+                     <middlename>Петровна</middlename>
+                     <birthdate>1957-08-13T09:30:47Z</birthdate>
+                  </rogdinf>
+               </rogdinflist>
+            </ServiceProperties>";
+                }
+
+                var messageV6 = GetCoordinateMessageV6(request,
+                    ((long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS).ToString(),
+                    requestNumber + $"/{count++}", requestNumber);
+
+                UnitOfWork.AddEntity(new ExchangeBaseRegistry
+                {
+                    IsIncoming = false,
+                    RequestText = Serialization.Serializer(messageV6),
+                    OperationType = "SendTask",
+                    RequestGuid = messageV6.CoordinateTaskDataMessage.Task.TaskId,
+                    ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
+                    Child = child,
+                    ChildId = child.Id,
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS
+                });
+
+                UnitOfWork.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Ошибка отправки в базовый регистр по ЕГР ЗАГС", ex);
             }
 
             return count;
@@ -1094,7 +1168,7 @@ namespace RestChild.Web.Controllers.WebApi
                 }
 
                 var messageV6 = GetCoordinateMessageV6(request,
-                    ((long) ExchangeBaseRegistryTypeEnum.RelationshipSmev).ToString(),
+                    ((long)ExchangeBaseRegistryTypeEnum.RelationshipSmev).ToString(),
                     requestNumber + $"/{count++}", requestNumber);
 
                 UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -1106,7 +1180,7 @@ namespace RestChild.Web.Controllers.WebApi
                     ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                     Child = child,
                     ChildId = child.Id,
-                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.RelationshipSmev
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.RelationshipSmev
                 });
 
                 UnitOfWork.SaveChanges();
@@ -1152,7 +1226,7 @@ namespace RestChild.Web.Controllers.WebApi
                 }
 
                 var messageV6 = GetCoordinateMessageV6(request,
-                    ((long) ExchangeBaseRegistryTypeEnum.Snils2040).ToString(),
+                    ((long)ExchangeBaseRegistryTypeEnum.Snils2040).ToString(),
                     requestNumber + $"/{count++}", requestNumber);
 
                 UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -1164,7 +1238,7 @@ namespace RestChild.Web.Controllers.WebApi
                     ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                     Child = child,
                     ChildId = childId,
-                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.Snils2040
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.Snils2040
                 });
 
                 UnitOfWork.SaveChanges();
@@ -1204,7 +1278,7 @@ namespace RestChild.Web.Controllers.WebApi
                         }</passport><passport_serie>{child.DocumentSeria}</passport_serie></ServiceProperties>";
 
                 var messageV6 = GetCoordinateMessageV6(request,
-                    ((long) ExchangeBaseRegistryTypeEnum.Benefit).ToString(),
+                    ((long)ExchangeBaseRegistryTypeEnum.Benefit).ToString(),
                     requestNumber + $"/{count++}", requestNumber);
 
                 UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -1216,7 +1290,7 @@ namespace RestChild.Web.Controllers.WebApi
                     ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                     Child = child,
                     ChildId = childId,
-                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.Benefit
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.Benefit
                 });
 
                 var documentTypeCert = child.DocumentTypeCertOfBirth ??
@@ -1232,7 +1306,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                     var taskNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber;
                     messageV6 = GetCoordinateMessageV6(request2,
-                        ((long) ExchangeBaseRegistryTypeEnum.Benefit).ToString(),
+                        ((long)ExchangeBaseRegistryTypeEnum.Benefit).ToString(),
                         requestNumber + $"/{count++}", requestNumber);
 
                     UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -1244,7 +1318,7 @@ namespace RestChild.Web.Controllers.WebApi
                         ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
                         Child = child,
                         ChildId = childId,
-                        ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.Benefit
+                        ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.Benefit
                     });
 
                     child.BenefitApproveComment =
@@ -1263,9 +1337,9 @@ namespace RestChild.Web.Controllers.WebApi
                 child.BenefitRequestDate = child.BenefitRequestDate ?? DateTime.Now;
 
                 if (!child.BenefitApproveTypeId.HasValue ||
-                    child.BenefitApproveTypeId == (long) BenefitApproveTypeEnum.NotApproved)
+                    child.BenefitApproveTypeId == (long)BenefitApproveTypeEnum.NotApproved)
                 {
-                    child.BenefitApproveTypeId = (long) BenefitApproveTypeEnum.NotApprovedSendToBr;
+                    child.BenefitApproveTypeId = (long)BenefitApproveTypeEnum.NotApprovedSendToBr;
                 }
 
                 UnitOfWork.SaveChanges();
@@ -1319,8 +1393,8 @@ namespace RestChild.Web.Controllers.WebApi
                 v.Child.RequestId == req.Id) + 1;
 
             var requestNumber = req.RequestNumber;
-            if (req.TypeOfRestId == (long) TypeOfRestEnum.Compensation ||
-                req.TypeOfRestId == (long) TypeOfRestEnum.CompensationYouthRest)
+            if (req.TypeOfRestId == (long)TypeOfRestEnum.Compensation ||
+                req.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)
             {
                 var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
                 requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
@@ -1333,9 +1407,9 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 count = CheckChildInBaseRegistry(requestNumber, child.Id, count);
 
-                if (child.BenefitTypeId == (long) BenefitTypeEnum.ParentsInvalid ||
+                if (child.BenefitTypeId == (long)BenefitTypeEnum.ParentsInvalid ||
                     (child.BenefitType ?? UnitOfWork.GetById<BenefitType>(child.BenefitTypeId)).SameBenefitId ==
-                    (long) BenefitTypeEnum.ParentsInvalid)
+                    (long)BenefitTypeEnum.ParentsInvalid)
                 {
                     checkParentOnBenefit = true;
                 }
@@ -1343,16 +1417,16 @@ namespace RestChild.Web.Controllers.WebApi
 
             if (checkParentOnBenefit)
             {
-                if (req.BeneficiariesId == (long) BeneficiariesEnum.Applicant && req.ApplicantId.HasValue)
+                if (req.BeneficiariesId == (long)BeneficiariesEnum.Applicant && req.ApplicantId.HasValue)
                 {
-                    CheckApplicantInBaseRegistry(requestNumber, new[] {req.ApplicantId.Value}, count);
+                    CheckApplicantInBaseRegistry(requestNumber, new[] { req.ApplicantId.Value }, count);
                 }
-                else if (req.BeneficiariesId == (long) BeneficiariesEnum.SecondParent)
+                else if (req.BeneficiariesId == (long)BeneficiariesEnum.SecondParent)
                 {
                     var otherParent = req.Attendant?.FirstOrDefault();
                     if (otherParent != null)
                     {
-                        CheckApplicantInBaseRegistry(requestNumber, new[] {otherParent.Id}, count);
+                        CheckApplicantInBaseRegistry(requestNumber, new[] { otherParent.Id }, count);
                     }
                 }
             }
@@ -1390,8 +1464,8 @@ namespace RestChild.Web.Controllers.WebApi
                 v.Child.RequestId == req.Id) + 1;
 
             var requestNumber = req.RequestNumber;
-            if (req.TypeOfRestId == (long) TypeOfRestEnum.Compensation ||
-                req.TypeOfRestId == (long) TypeOfRestEnum.CompensationYouthRest)
+            if (req.TypeOfRestId == (long)TypeOfRestEnum.Compensation ||
+                req.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)
             {
                 var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
                 requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
@@ -1474,20 +1548,24 @@ namespace RestChild.Web.Controllers.WebApi
                 v.ApplicantId == req.ApplicantId || v.Applicant.RequestId == req.Id ||
                 v.Child.RequestId == req.Id) + 1;
             var requestNumber = req.RequestNumber;
-            if (req.TypeOfRestId == (long) TypeOfRestEnum.Compensation ||
-                req.TypeOfRestId == (long) TypeOfRestEnum.CompensationYouthRest)
+            if (req.TypeOfRestId == (long)TypeOfRestEnum.Compensation ||
+                req.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)
             {
                 var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
                 requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
                 count = 1;
             }
 
-            if (req.SourceId == (long) SourceEnum.Mpgu &&
-                req.TypeOfRestId != (long) TypeOfRestEnum.ChildRestFederalCamps)
+            if (req.SourceId == (long)SourceEnum.Mpgu &&
+                req.TypeOfRestId != (long)TypeOfRestEnum.ChildRestFederalCamps)
             {
                 foreach (var child in req.Child)
                 {
-                    count = CheckChildForRelationshipSmev(requestNumber, child, count);
+                    //старый документ (3091)
+                    //count = CheckChildForRelationshipSmev(requestNumber, child, count);
+
+                    //новый документ (11827)
+                    count = CheckChildForRelationshipEGRZAGS(requestNumber, child, count);
                 }
             }
 
@@ -1526,7 +1604,8 @@ namespace RestChild.Web.Controllers.WebApi
         {
             if (req.IsFirstCompany)
             {
-                if (UnitOfWork.GetSet<ExchangeUTS>().Any(ss => ss.RequestId == req.Id && !ss.Incoming && ss.ToState == (long)StatusEnum.OperatorCheck)) return;
+                if (UnitOfWork.GetSet<ExchangeUTS>().Any(ss =>
+                    ss.RequestId == req.Id && !ss.Incoming && ss.ToState == (long)StatusEnum.OperatorCheck)) return;
 
                 UnitOfWork.SendChangeStatusByEvent(req, RequestEventEnum.SendRequestBase);
             }
