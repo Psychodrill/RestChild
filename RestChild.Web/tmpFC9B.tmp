@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections>
+    <section name="log4net" type="log4net.Config.Log4NetConfigurationSectionHandler, log4net" requirePermission="false" />
+    <section name="castle" type="Castle.Windsor.Configuration.AppDomain.CastleSectionHandler, Castle.Windsor" />
+    <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+    <section name="declineMapping" type="RestChild.Comon.Config.DeclineSection, RestChild.Comon" />
+    <sectionGroup name="applicationSettings" type="System.Configuration.ApplicationSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <section name="RestChild.Web.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+      <section name="RestChild.Booking.Logic.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+    </sectionGroup>
+    <!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
+  </configSections>
+  <declineMapping>
+    <add code="CrossTime" declineId="201632" typeOfRest="11" />
+    <!--<add code="CrossChild" declineId="" typeOfRest="11"></add>-->
+    <add code="NoDocuments" declineId="201633" typeOfRest="11" />
+    <add code="BadDocuments" declineId="201634" typeOfRest="11" />
+    <!--<add code="DsznNotAnswer" declineId="8" typeOfRest="11"></add>-->
+  </declineMapping>
+  <castle configSource="Castle.config" />
+  <log4net configSource="log4net.config" />
+  <connectionStrings>
+    <!--add name="RestChild" connectionString="Data Source=192.168.2.40\TOPCASE;Initial Catalog=RestChildAiso;Uid=RestChild;Pwd=RestChildPwd;" providerName="System.Data.SqlClient" /-->
+    <!--<add name="RestChild" connectionString="Data Source=localhost;Initial Catalog=RestChildAiso;Uid=RestChild;Pwd=RestChildPwd;" providerName="System.Data.SqlClient" />
+        <add name="RestChild.Mobile" connectionString="Data Source=localhost;Initial Catalog=RestChild.Mobile;Uid=RestChild;Pwd=RestChildPwd;" providerName="System.Data.SqlClient" />-->
+    <!--<add name="RestChild" connectionString="Data Source=DESKTOP-ABMJKK7\SQLD2019;Integrated Security=true; Initial Catalog=RestChildAiso;" providerName="System.Data.SqlClient" />-->
+    <!--<add name="RestChild.Mobile" connectionString="Data Source=DESKTOP-ABMJKK7\SQLD2019;Integrated Security=true;Initial Catalog=RestChild.Mobile;" providerName="System.Data.SqlClient" />-->
+    <add name="RestChild" connectionString="Data Source=172.16.240.17;Initial Catalog=RestChildAiso;Uid=RestChild;Pwd=RestChildPwd;Connection Timeout=0;" providerName="System.Data.SqlClient" />
+    <!--<add name="RestChild" connectionString="Data Source=192.168.0.72;Initial Catalog=RestChildAiso;Uid=sa;Pwd=Пр43милд;" providerName="System.Data.SqlClient" />
+        <add name="RestChild.Mobile" connectionString="Data Source=192.168.0.72;Initial Catalog=RestChild.Mobile;Uid=sa;Pwd=Пр43милд;" providerName="System.Data.SqlClient" /> -->
+  </connectionStrings>
+  <appSettings configSource="Configs\AppSettings.config" />
+  <applicationSettings>
+    <RestChild.Web.Properties.Settings configSource="Configs\PropertiesSettings.config" />
+    <RestChild.Booking.Logic.Settings configSource="Configs\LogicSettings.config" />
+  </applicationSettings>
+  <location path="content">
+    <system.web>
+      <authorization>
+        <allow users="*" />
+      </authorization>
+    </system.web>
+  </location>
+  <system.web>
+    <authentication mode="Forms">
+      <forms cookieless="UseCookies" loginUrl="~/Account/Login" name="login" protection="All" slidingExpiration="true" timeout="86400" path="/" />
+    </authentication>
+    <compilation debug="true" targetFramework="4.5" />
+    <httpRuntime targetFramework="4.5" requestValidationMode="4.5" maxRequestLength="1048576" />
+    <customErrors mode="Off" defaultRedirect="~/Error/Error"></customErrors>
+    <globalization culture="ru-RU" uiCulture="ru-RU" />
+  </system.web>
+  <system.webServer>
+    <security>
+      <requestFiltering>
+        <requestLimits maxAllowedContentLength="157286400" />
+      </requestFiltering>
+    </security>
+    <staticContent>
+      <remove fileExtension=".woff" />
+      <mimeMap fileExtension=".woff" mimeType="application/x-font-woff" />
+      <remove fileExtension=".woff2" />
+      <mimeMap fileExtension=".woff2" mimeType="application/x-font-woff" />
+    </staticContent>
+    <handlers>
+      <remove name="ExtensionlessUrlHandler-Integrated-4.0" />
+      <remove name="OPTIONSVerbHandler" />
+      <remove name="TRACEVerbHandler" />
+      <add name="ExtensionlessUrlHandler-Integrated-4.0" path="*." verb="*" type="System.Web.Handlers.TransferRequestHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="GET,POST" path="/BookingHandler.ashx" name="RestChild.Web.BookingHandler" type="RestChild.Web.Handlers.BookingHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="GET" path="/DownloadImage.ashx" name="RestChild.Web.DownloadImageHandler" type="RestChild.Web.Handlers.DownloadImageHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="GET" path="/DownloadHotelFile.ashx" name="RestChild.Web.DownloadHotelFileHandler" type="RestChild.Web.Handlers.DownloadHotelFileHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="GET" path="/DownloadPaymentFileHandler.ashx" name="RestChild.Web.DownloadPaymentFileHandler" type="RestChild.Web.Handlers.DownloadPaymentFileHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="POST" path="/UploadImage.ashx" name="RestChild.Web.UploadImageHandler" type="RestChild.Web.Handlers.UploadImageHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="GET,POST" path="/Upload.ashx" name="RestChild.Web.UploadHandler" type="RestChild.Web.Handlers.UploadHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="GET,POST" path="/UploadHotelFile.ashx" name="RestChild.Web.UploadHotelFileHandler" type="RestChild.Web.Handlers.UploadHotelFileHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="GET,POST" path="/UploadPayment.ashx" name="RestChild.Web.UploadHandlerPayment" type="RestChild.Web.Handlers.UploadHandlerPayment" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="GET,POST" path="/UploadRulesOfRestHandler.ashx" name="RestChild.Web.UploadRulesOfRestHandler" type="RestChild.Web.Handlers.UploadRulesOfRestHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="GET,POST" path="/UploadTaskFile.ashx" name="RestChild.Web.UploadTaskFile" type="RestChild.Web.Handlers.UploadTaskFile" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="GET,POST" path="/UploadBoutJournal.ashx" name="RestChild.Web.UploadBoutJournal" type="RestChild.Web.Handlers.UploadBoutJournal" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="GET,POST" path="/UploadTourFile.ashx" name="RestChild.Web.UploadTourJournal" type="RestChild.Web.Handlers.UploadTourJournal" preCondition="integratedMode,runtimeVersionv4.0" />
+      <add verb="GET,POST" path="/UploadPupilFile.ashx" name="RestChild.Web.UploadPupilFilesHandler" type="RestChild.Web.Handlers.UploadPupilFilesHandler" preCondition="integratedMode,runtimeVersionv4.0" />
+    </handlers>
+    <rewrite>
+      <rules>
+        <rule name="Add trailing slash" stopProcessing="true">
+          <match url="^(api/WebRestPlaceImage/.*\.[a-z]{2,4})$" />
+          <action type="Rewrite" url="{R:1}/" />
+        </rule>
+      </rules>
+    </rewrite>
+  </system.webServer>
+  <!--<system.diagnostics>
+		<sources>
+			<source name="System.ServiceModel"
+					switchValue="Information, ActivityTracing"
+					propagateActivity="true" >
+				<listeners>
+					<add name="xml"/>
+				</listeners>
+			</source>
+			<source name="System.ServiceModel.MessageLogging">
+				<listeners>
+					<add name="xml"/>
+				</listeners>
+			</source>
+		</sources>
+		<sharedListeners>
+			<add name="xml"
+				 type="System.Diagnostics.XmlWriterTraceListener"
+					   initializeData="C:\logs\Traces.svclog" />
+		</sharedListeners>
+	</system.diagnostics>-->
+  <system.serviceModel>
+    <!--<diagnostics wmiProviderEnabled="true">
+			<messageLogging
+				 logEntireMessage="true"
+				 logMalformedMessages="true"
+				 logMessagesAtServiceLevel="true"
+				 logMessagesAtTransportLevel="true"
+				 maxMessagesToLog="3000"/>
+		</diagnostics>-->
+    <behaviors>
+      <serviceBehaviors>
+        <behavior>
+          <serviceSecurityAudit auditLogLocation="Application" serviceAuthorizationAuditLevel="Failure" messageAuthenticationAuditLevel="Failure" suppressAuditFailure="true" />
+          <serviceMetadata httpGetEnabled="true" httpsGetEnabled="true" />
+          <serviceDebug includeExceptionDetailInFaults="true" />
+        </behavior>
+        <behavior name="asguf">
+          <serviceSecurityAudit auditLogLocation="Application" serviceAuthorizationAuditLevel="Failure" messageAuthenticationAuditLevel="Failure" suppressAuditFailure="true" />
+          <serviceMetadata httpGetEnabled="true" httpsGetEnabled="true" />
+          <serviceDebug includeExceptionDetailInFaults="true" />
+          <!--SmevSeviceBehaviorExtensions XpathsStrings="//s:Body|//h:ServiceHeader" IdsStrings="body|serviceh" NamespasesStrings="http://asguf.mos.ru/rkis_gu/coordinate/v5/" PrefixStrings="h" />-->
+        </behavior>
+        <behavior name="JsonServiceBehavior">
+          <serviceMetadata httpGetEnabled="true" httpsGetEnabled="true" />
+          <serviceDebug includeExceptionDetailInFaults="true" />
+          <log4netBehavior />
+          <!--
+					FOR SSL
+					<serviceCredentials>
+						<clientCertificate>
+							<authentication certificateValidationMode="PeerTrust"/>
+						</clientCertificate>
+						<serviceCertificate findValue="tambovtsev-pc.internal.itopcase.ru" storeLocation="LocalMachine" storeName="My" x509FindType="FindBySubjectName" />
+					</serviceCredentials>-->
+        </behavior>
+        <behavior name="nsiDeltaBehConfig">
+          <!--<serviceSecurityAudit auditLogLocation="Application" serviceAuthorizationAuditLevel="Failure" messageAuthenticationAuditLevel="Failure" suppressAuditFailure="true" />-->
+          <serviceMetadata httpGetEnabled="true" httpsGetEnabled="true" />
+          <serviceDebug includeExceptionDetailInFaults="true" />
+          <!--<LogSeviceBehaviorExtensions CustomWsdlPath="e:\Project\aiso-prod-debug\RestChildAiso\Services\NSIDeltaService.wsdl" />-->
+        </behavior>
+        <behavior name="RestChildBookingExchangeServiceBehavior">
+          <serviceMetadata httpGetEnabled="true" httpsGetEnabled="true" />
+          <serviceDebug includeExceptionDetailInFaults="false" />
+          <serviceCredentials>
+            <userNameAuthentication userNamePasswordValidationMode="Custom" customUserNamePasswordValidatorType="RestChild.Booking.Logic.Services.ExchangeServiceAuthenticator, RestChild.Booking.Logic" />
+          </serviceCredentials>
+          <dataContractSerializer maxItemsInObjectGraph="2147483647" />
+        </behavior>
+      </serviceBehaviors>
+      <endpointBehaviors>
+        <behavior name="endpointAsGufBehavior">
+          <!--<SmevBehaviorExtensions XpathsStrings="//s:Body|//h:ServiceHeader" IdsStrings="body|serviceh" NamespasesStrings="http://asguf.mos.ru/rkis_gu/coordinate/v5/" PrefixStrings="h" />-->
+        </behavior>
+        <behavior name="endpointIsiaBehavior">
+          <!--<SmevBehaviorExtensions XpathsStrings="//s:Body" IdsStrings="body" NamespasesStrings="" PrefixStrings="" />-->
+        </behavior>
+        <behavior name="JsonServiceBehaviorEp">
+          <webHttp helpEnabled="true" />
+          <dataContractSerializer maxItemsInObjectGraph="2147483647" />
+        </behavior>
+        <behavior name="MaxBehavior">
+          <dataContractSerializer maxItemsInObjectGraph="2147483647" />
+        </behavior>
+      </endpointBehaviors>
+    </behaviors>
+    <serviceHostingEnvironment aspNetCompatibilityEnabled="true" multipleSiteBindingsEnabled="true" />
+    <extensions>
+      <bindingElementExtensions>
+        <add name="SmevMessageEncoding" type="UtilsSmev.SmevServiceEncoder.SmevServiceMessageEncodingBindingElementExtensionElement, UtilsSmev" />
+      </bindingElementExtensions>
+      <behaviorExtensions>
+        <add name="log4netBehavior" type="RestChild.Comon.Services.Log4NetBehaviorExtensionElement, RestChild.Comon" />
+        <add name="LogSeviceBehaviorExtensions" type="RestChild.Web.Services.Implementation.ServiceLoggingBehavior, RestChild.Web" />
+      </behaviorExtensions>
+    </extensions>
+    <bindings configSource="Configs\ServiceBindings.config" />
+    <client configSource="Configs\ServiceClient.config" />
+    <services configSource="Configs\ServiceServices.config" />
+  </system.serviceModel>
+  <system.data>
+    <DbProviderFactories>
+      <!--<remove invariant="Npgsql"/>
+			<add name="Npgsql Data Provider"
+                  invariant="Npgsql"
+                  description="Data Provider for PostgreSQL"
+                  type="Npgsql.NpgsqlFactory, Npgsql"
+                  support="FF" />-->
+    </DbProviderFactories>
+  </system.data>
+  <entityFramework>
+    <!--<interceptors>
+			<interceptor type="System.Data.Entity.Infrastructure.Interception.DatabaseLogger, EntityFramework">
+				<parameters>
+					<parameter value="C:\LogOutput.txt" />
+				</parameters>
+			</interceptor>
+		</interceptors>-->
+    <!--<defaultConnectionFactory type="Npgsql.NpgsqlConnectionFactory, EntityFramework6.Npgsql" />-->
+    <defaultConnectionFactory type="System.Data.Entity.Infrastructure.LocalDbConnectionFactory, EntityFramework">
+      <parameters>
+        <parameter value="v11.0" />
+      </parameters>
+    </defaultConnectionFactory>
+    <providers>
+      <provider invariantName="System.Data.SqlClient" type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer" />
+      <!--<provider invariantName="Npgsql" type="Npgsql.NpgsqlServices, EntityFramework6.Npgsql" />-->
+    </providers>
+  </entityFramework>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Optimization" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-1.1.0.0" newVersion="1.1.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="0.0.0.0-1.6.5135.21930" newVersion="1.6.5135.21930" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Antlr3.Runtime" publicKeyToken="eb42632606e9261f" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-3.5.0.2" newVersion="3.5.0.2" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.AspNet.Identity.Core" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-2.0.0.0" newVersion="2.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Owin" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Owin.Security" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Owin.Security.Cookies" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Microsoft.Owin.Security.OAuth" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-6.0.0.0" newVersion="6.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Net.Http.Formatting" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.2.0" newVersion="5.2.2.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Helpers" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.WebPages" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="0.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.3.0" newVersion="5.2.3.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Remotion.Linq" publicKeyToken="fee00910d6e5f53b" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-1.13.183.0" newVersion="1.13.183.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Common.Logging" publicKeyToken="af08829b84f0328e" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-2.3.1.0" newVersion="2.3.1.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Npgsql" publicKeyToken="5d8b90d52f46fda7" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-3.2.0.0" newVersion="3.1.5.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="EntityFramework" publicKeyToken="b77a5c561934e089" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-6.0.0.0" newVersion="6.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="EntityFramework" culture="neutral" publicKeyToken="b77a5c561934e089" />
+        <codeBase version="6.0.0.0" href="file:///E:/Project/RestChild/packages/EntityFramework.6.1.1/lib/net45/EntityFramework.DLL" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+</configuration>

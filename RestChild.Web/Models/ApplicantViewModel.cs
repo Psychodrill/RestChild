@@ -169,71 +169,72 @@ namespace RestChild.Web.Models
          	IsValid = false;
          	SnilsEm = RequaredField;
          }
+            //--------------------------------------------------------------------------------------------------------------
+            //if (!Data.ApplicantTypeId.HasValue && Data.IsApplicant)
+            //{
+            //    IsValid = false;
+            //    ApplicantTypeEm = RequaredField;
+            //}
 
-         //if (!Data.ApplicantTypeId.HasValue && Data.IsApplicant)
-         //{
-         //	IsValid = false;
-         //	ApplicantTypeEm = RequaredField;
-         //}
+            // документ для заграницы
+            //if ((MainPlace?.IsForegin ?? false) && (bool)Data?.IsAccomp)
+            //{
+            //    if (!Data.ForeginDateEnd.HasValue)
+            //    {
+            //        IsValid = false;
+            //        ForeginDateEndEm = RequaredField;
+            //    }
+            //    if (Data.ForeginDateOfIssue.HasValue &&
+            //        Data.ForeginDateOfIssue.Value > DateTime.Now)
+            //    {
+            //        IsValid = false;
+            //        ForeginDateOfIssueEm = "Дата выдачи документа не может быть в будущем";
+            //    }
 
-         //// документ для заграницы
-         //if ((MainPlace?.IsForegin ?? false) && (bool) Data?.IsAccomp)
-         //{
-         //	if (!Data.ForeginDateEnd.HasValue)
-         //	{
-         //		IsValid = false;
-         //		ForeginDateEndEm = RequaredField;
-         //	}
-         //	if (Data.ForeginDateOfIssue.HasValue &&
-         //	    Data.ForeginDateOfIssue.Value > DateTime.Now)
-         //	{
-         //		IsValid = false;
-         //		ForeginDateOfIssueEm = "Дата выдачи документа не может быть в будущем";
-         //	}
+            //    if (Data.ForeginDateEnd.HasValue && Data.ForeginDateOfIssue.HasValue &&
+            //        Data.ForeginDateOfIssue.Value > Data.ForeginDateEnd.Value)
+            //    {
+            //        IsValid = false;
+            //        ForeginDateEndEm = "Дата окончания дейтсвия заграничного паспорта не может быть раньше даты выдачи";
+            //    }
 
-         //	if (Data.ForeginDateEnd.HasValue && Data.ForeginDateOfIssue.HasValue &&
-         //	    Data.ForeginDateOfIssue.Value > Data.ForeginDateEnd.Value)
-         //	{
-         //		IsValid = false;
-         //		ForeginDateEndEm = "Дата окончания дейтсвия заграничного паспорта не может быть раньше даты выдачи";
-         //	}
+            //    if (Data.ForeginDateEnd.HasValue && startOfRest.HasValue &&
+            //        startOfRest.Value > Data.ForeginDateEnd.Value)
+            //    {
+            //        IsValid = false;
+            //        ForeginDateEndEm =
+            //            "Срок окочания действия загран паспорта не может быть меньше, чем дата заезда в организацию отдыха и оздоровления";
+            //    }
 
-         //	if (Data.ForeginDateEnd.HasValue && startOfRest.HasValue &&
-         //	    startOfRest.Value > Data.ForeginDateEnd.Value)
-         //	{
-         //		IsValid = false;
-         //		ForeginDateEndEm =
-         //			"Срок окочания действия загран паспорта не может быть меньше, чем дата заезда в организацию отдыха и оздоровления";
-         //	}
+            //    if (!Data.ForeginDateOfIssue.HasValue)
+            //    {
+            //        IsValid = false;
+            //        ForeginDateOfIssueEm = RequaredField;
+            //    }
+            //    if (!Data.ForeginTypeId.HasValue)
+            //    {
+            //        IsValid = false;
+            //        ForeginTypeEm = RequaredField;
+            //    }
+            //    if (string.IsNullOrWhiteSpace(Data.ForeginNumber))
+            //    {
+            //        IsValid = false;
+            //        ForeginNumberEm = RequaredField;
+            //    }
+            //    if (string.IsNullOrWhiteSpace(Data.ForeginSeria))
+            //    {
+            //        IsValid = false;
+            //        ForeginSeriaEm = RequaredField;
+            //    }
+            //    if (string.IsNullOrWhiteSpace(Data.ForeginSubjectIssue))
+            //    {
+            //        IsValid = false;
+            //        ForeginSubjectIssueEm = RequaredField;
+            //    }
+            //}
+            //-----------------------------------------------------------------------------------------------------------
 
-         //	if (!Data.ForeginDateOfIssue.HasValue)
-         //	{
-         //		IsValid = false;
-         //		ForeginDateOfIssueEm = RequaredField;
-         //	}
-         //	if (!Data.ForeginTypeId.HasValue)
-         //	{
-         //		IsValid = false;
-         //		ForeginTypeEm = RequaredField;
-         //	}
-         //	if (string.IsNullOrWhiteSpace(Data.ForeginNumber))
-         //	{
-         //		IsValid = false;
-         //		ForeginNumberEm = RequaredField;
-         //	}
-         //	if (string.IsNullOrWhiteSpace(Data.ForeginSeria))
-         //	{
-         //		IsValid = false;
-         //		ForeginSeriaEm = RequaredField;
-         //	}
-         //	if (string.IsNullOrWhiteSpace(Data.ForeginSubjectIssue))
-         //	{
-         //		IsValid = false;
-         //		ForeginSubjectIssueEm = RequaredField;
-         //	}
-         //}
-
-         if (Data.ApplicantTypeId == (long) ApplicantTypeEnum.Confidant && (request.TypeOfRestId != (long) TypeOfRestEnum.Compensation && request.TypeOfRestId != (long) TypeOfRestEnum.CompensationYouthRest))
+            if (Data.ApplicantTypeId == (long) ApplicantTypeEnum.Confidant && (request.TypeOfRestId != (long) TypeOfRestEnum.Compensation && request.TypeOfRestId != (long) TypeOfRestEnum.CompensationYouthRest))
          {
              if (!Data.ProxyDateOfIssure.HasValue)
              {
