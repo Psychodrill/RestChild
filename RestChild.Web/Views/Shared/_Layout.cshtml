@@ -56,16 +56,16 @@
                 {
                     <li>@Html.ActionLink("Реестр размещений", "Search", "Tours")</li>
                 }
-                @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.Contract.Manage, AccessRightEnum.ToursView}) && Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.TradeUnionList.View, AccessRightEnum.RetryRequestInBaseRegistry, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.RequestView, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization}))
+                @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.Contract.Manage, AccessRightEnum.ToursView }) && Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.TradeUnionList.View, AccessRightEnum.RetryRequestInBaseRegistry, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.RequestView, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization }))
                 {
                     <li role="separator" class="divider"></li>
                 }
-                @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.RequestView}))
+                @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.RequestView }))
                 {
                     <li>@Html.ActionLink("Реестр заявлений", "RequestList", "FirstRequestCompany")</li>
                     <li>@Html.ActionLink("Межведомственные запросы", "List", "InteragencyRequest")</li>
-                    <li>@Html.ActionLink("Реестр отдыхающих", "PreRegisterList2", "FirstRequestCompany")</li>
-                    if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.TradeUnionList.View, AccessRightEnum.RetryRequestInBaseRegistry, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization}))
+                    <li>@Html.ActionLink("Реестр отдыхающих", "PreRegisterList2", "FirstRequestCompany")</li>                    
+                    if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.TradeUnionList.View, AccessRightEnum.RetryRequestInBaseRegistry, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization }))
                     {
                         <li role="separator" class="divider"></li>
                     }
@@ -73,13 +73,13 @@
                 @if (Security.HasRight(AccessRightEnum.RetryRequestInBaseRegistry))
                 {
                     <li>@Html.ActionLink("Проверка льготы", "List", "BaseRegistry")</li>
-                    if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.TradeUnionList.View, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization}))
+                    if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.TradeUnionList.View, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization }))
                     {
                         <li role="separator" class="divider"></li>
                     }
                 }
 
-                @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization}))
+                @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization }))
                 {
                     if (Security.HasRight(AccessRightEnum.Limits.LimitToOiv))
                     {
@@ -107,7 +107,7 @@
                 {
                     <li>@Html.ActionLink("Профсоюзные списки", "List", "TradeUnion")</li>
                 }
-                @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.Orphans.Main, AccessRightEnum.Orphans.PupilGroup, AccessRightEnum.Orphans.PupilGroupList}))
+                @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.Orphans.Main, AccessRightEnum.Orphans.PupilGroup, AccessRightEnum.Orphans.PupilGroupList }))
                 {
                     <li role="separator" class="divider"></li>
                     if (Security.HasRightForSomeOrganization(AccessRightEnum.Orphans.Main))
@@ -138,23 +138,23 @@
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Заезды<span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
-                @if (Security.HasAnyRights(new[] {AccessRightEnum.NewBout.View}))
+                @if (Security.HasAnyRights(new[] { AccessRightEnum.NewBout.View }))
                 {
                     <li>@Html.ActionLink("Реестр заездов", "List", "NewBout")</li>
                 }
-                @if (Security.HasAnyRights(new[] {AccessRightEnum.NewBout.View}))
+                @if (Security.HasAnyRights(new[] { AccessRightEnum.NewBout.View }))
                 {
                     <li>@Html.ActionLink("Реестр статистики по детям", "ChildList", "NewBout")</li>
                 }
-                @if (Security.HasAnyRights(new[] {AccessRightEnum.NewBout.View}))
+                @if (Security.HasAnyRights(new[] { AccessRightEnum.NewBout.View }))
                 {
                     <li>@Html.ActionLink("Реестр заданий", "List", "Task")</li>
                 }
-                @if (Security.HasAnyRights(new[] {AccessRightEnum.Gift.View}))
+                @if (Security.HasAnyRights(new[] { AccessRightEnum.Gift.View }))
                 {
                     <li>@Html.ActionLink("Реестр подарков", "List", "Gift")</li>
                 }
-                @if (Security.HasAnyRights(new[] {AccessRightEnum.GiftReserved.View}))
+                @if (Security.HasAnyRights(new[] { AccessRightEnum.GiftReserved.View }))
                 {
                     <li>@Html.ActionLink("Реестр выдачи подарков", "List", "GiftReserved")</li>
                 }
@@ -168,7 +168,7 @@
                     <li role="separator" class="divider"></li>
                 }
 
-                @if (Security.HasAnyRights(new[] {AccessRightEnum.Bout.Counselor, AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour}))
+                @if (Security.HasAnyRights(new[] { AccessRightEnum.Bout.Counselor, AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour }))
                 {
                     <li>@Html.ActionLink("Реестр отправок", "Search", "Bout")</li>
                 }
@@ -180,8 +180,12 @@
                 {
                     <li>@Html.ActionLink("Реестр рейсов", "Search", "DirectoryFlights")</li>
                 }
-                @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.TradeUnionCashback.ListView}) ||
-                     Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.TradeUnionCashback.RegistryView}))
+                @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.RequestView }))
+                {
+                    <li>@Html.ActionLink("Реестр сертификатов", "CertificateList", "CertificateSearch")</li>
+                }
+                @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.TradeUnionCashback.ListView }) ||
+                     Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.TradeUnionCashback.RegistryView }))
                 {
                     <li role="separator" class="divider"></li>
                     if (Security.HasRightForSomeOrganization(AccessRightEnum.TradeUnionCashback.ListView))
@@ -195,16 +199,16 @@
                 }
                 @if (Security.HasRight(AccessRightEnum.CounselorTask.View))
                 {
-                    if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour, AccessRightEnum.TransportInfoManage, AccessRightEnum.DirectoryFlightsManage}))
+                    if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour, AccessRightEnum.TransportInfoManage, AccessRightEnum.DirectoryFlightsManage }))
                     {
                         <li role="separator" class="divider"></li>
                     }
                     <li>@Html.ActionLink("Взаимодействие с сотрудниками", "List", "CounselorTask")</li>
                 }
 
-                @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.CounselorsManage, AccessRightEnum.AdministratorTour.View, AccessRightEnum.TrainingCounselors.View, AccessRightEnum.CounselorTest.View}))
+                @if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.CounselorsManage, AccessRightEnum.AdministratorTour.View, AccessRightEnum.TrainingCounselors.View, AccessRightEnum.CounselorTest.View }))
                 {
-                    if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.CounselorTask.View, AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour, AccessRightEnum.TransportInfoManage, AccessRightEnum.DirectoryFlightsManage}))
+                    if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.CounselorTask.View, AccessRightEnum.BoutManage, AccessRightEnum.Bout.AdministratorTour, AccessRightEnum.TransportInfoManage, AccessRightEnum.DirectoryFlightsManage }))
                     {
                         <li role="separator" class="divider"></li>
                     }

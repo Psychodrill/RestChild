@@ -1,0 +1,406 @@
+﻿@using System.Web.UI.WebControls
+@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Extensions.Filter
+@using RestChild.Domain
+@using RestChild.Web.Controllers
+@using RestChild.Web.App_Code
+@model RestChild.Extensions.Filter.CertificateFilterModel
+@{
+    ViewBag.Title = "Реестр сертификатов";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.SearchAction = "CertificateList";
+    ViewBag.InsertAction = "SelectPlace";
+    ViewBag.SaveAction = "Save";
+    ViewBag.Controller = "CertificateSearch";
+    ViewBag.Caption = "Реестр сертификатов";
+    ViewBag.SearchPanelCaption = "Поиск сертификатов";
+    ViewBag.NeedStatus = true;
+    ViewBag.NeedInsertButton = false;
+    ViewBag.NeedTypeOfRestriction = false;
+    ViewBag.NeedDepartmentSearchAndFilter = false;
+    ViewBag.NeedSpecializedCampFilter = false;
+
+    ViewBag.NeedBRPCC = true;
+    ViewBag.NeedBRRC = true;
+    ViewBag.NeedBRSC = true;
+    ViewBag.NeedCheckSnils = true;
+    ViewBag.NeedTTI = true;
+    ViewBag.NeedTFI = true;
+    ViewBag.NeedPC = true;
+}
+
+@section searchForm
+{
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Договор взаимодействия</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(r => r.ContractId, new SelectList(ViewBag.Contracts, "Id", "SignNumber"), new { @class = "form-control select2", autocomplete = "off" })
+        </div>
+        <label class="col-md-2 control-label text-right">Организация</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(r => r.Hotels, new SelectList(ViewBag.Organizations, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">ФИО заявителя</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.ApplicantFio, (string)Model.ApplicantFio, new { @class = "form-control" })
+        </div>
+        <label class="col-md-2 control-label text-right">ФИО ребенка</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+        </div>
+    </div>
+    @*<div class="form-group">
+            <label class="col-md-2 control-label text-right">Имя заявителя</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+            </div>
+            <label class="col-md-2 control-label text-right">Имя ребенка</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label text-right">Отчество заявителя</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+            </div>
+            <label class="col-md-2 control-label text-right">Отчество ребенка</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+            </div>
+        </div>*@
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">ФИО сопровождающего</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.AttendantFio, (string)Model.AttendantFio, new { @class = "form-control" })
+        </div>
+        @*<label class="col-md-2 control-label text-right">Имя сопровождающего</label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label text-right">Отчество сопровождающего</label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+                </div>*@
+        <label class="col-md-2 control-label text-right">СНИЛС (поиск по всем лицам укзанным в сертификате)</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.SNILS, (string)Model.SNILS, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Номер сертификата</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.CertificateNumber, (string)Model.CertificateNumber, new { @class = "form-control" })
+        </div>
+        <label class="col-md-2 control-label text-right input-label date-interval-label date-interval-label">Дата выдачи сертификата</label>
+        <div class="col-md-3">
+            <div class='input-group date datepicker-anytime'>
+                @Html.TextBoxFor(r => r.Request.CertificateDate, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.Request.CertificateDate).FormatEx(string.Empty, string.Empty) })
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Номер договора с отдыхающим</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.ContractNumber, (string)Model.ContractNumber, new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label text-right input-label date-interval-label date-interval-label">Дата заключения договора с отдыхающим</label>
+            <div class="col-md-3">
+                <div class="input-group date datepicker-anytime">
+                    @Html.TextBoxFor(m => m.ContractDate, new { @class = "form-control input-mask-date-anytime" })
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Место отдыха (регион)</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(r => r.PlaceOfRestId, new SelectList(ViewBag.PlacesOfRest, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+        </div>
+        @*<label class="col-md-2 control-label text-right">Статус</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.StateMachineStateId, new SelectList(ViewBag.StatusOfRest, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+            </div>*@
+    </div>
+    <div class="form-group">
+        <div class="form-inline">
+            <label class="col-md-3 control-label text-right input-label date-interval-label date-interval-label">Дата начала отдыха с</label>
+            <div class="input-group date datepicker-anytime">
+                @Html.TextBoxFor(m => m.RestDateFromFrom, new { @class = "form-control input-mask-date-anytime" })
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            <label class="control-label text-right input-label date-interval-label date-interval-label"> по </label>
+            <div class="input-group date datepicker-anytime">
+                @Html.TextBoxFor(m => m.RestDateFromTo, new { @class = "form-control input-mask-date-anytime" })
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-inline">
+            <label class="col-md-3 control-label text-right input-label date-interval-label date-interval-label">Дата окончания отдыха с</label>
+            <div class="input-group date datepicker-anytime">
+                @Html.TextBoxFor(m => m.RestDateToFrom, new { @class = "form-control input-mask-date-anytime" })
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            <label class="control-label text-right input-label date-interval-label date-interval-label"> по </label>
+            <div class="input-group date datepicker-anytime">
+                @Html.TextBoxFor(m => m.RestDateToTo, new { @class = "form-control input-mask-date-anytime" })
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Статус отдыхающего</label>
+        <div class="col-md-3 checkbox"><label>@Html.CheckBox("WillRest", (bool)((bool?)Model.WillRest ?? false)) Отправятся на отдых</label></div>
+        <div class="col-md-3 checkbox"><label>@Html.CheckBox("Resting", (bool)((bool?)Model.Resting ?? false)) На отдыхе</label></div>
+        <div class="col-md-3 checkbox"><label>@Html.CheckBox("Rested", (bool)((bool?)Model.Rested ?? false)) Уже отдохнули</label></div>
+    </div>
+    @*<div class="form-group">
+            <label class="col-md-4 control-label text-right">Реализованные через МОСГОРТУР</label>
+            <div class="col-md-4 checkbox"><label>@Html.CheckBox("MGTUSite", (bool)((bool?)Model.CertificateRepaid ?? false)) Показывать сертификаты использованные через сайт "МОСГОРТУР"</label>
+                                           <label>@Html.CheckBox("MGTUOffice", (bool)((bool?)Model.CertificateRepaid ?? false)) Показывать сертификаты использованные в офисе "МОСГОРТУР"</label></div>
+            <div class="col-md-4 checkbox"><label>@Html.CheckBox("AttendantWith", (bool)((bool?)Model.AttendantWith ?? false)) Показывать только сертификаты 1+1 (с сопровождающим в льготном заявлении)</label>
+                                            <label>@Html.CheckBox("AttendantWO", (bool)((bool?)Model.AttendantWO ?? false)) Сопровождающий не едет</label></div>
+        </div>*@
+}
+
+
+@*@section additionalFilters
+    {
+        <div class="btn-group">
+            <a type="button" class="btn btn-default" href="@Url.Action("ExportPreRequestToExcel", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a href="@Url.Action("ExportPreRequestToExcel", Model)">Отдыхающие</a></li>
+                <li><a href="@Url.Action("CompensationRegistryToExcel", Model)">Получатели компенсации</a></li>
+                <li><a href="@Url.Action("PaymentsRegistryToExcel", Model)">Сертификаты на самостоятельный отдых</a></li>
+            </ul>
+        </div>
+    }*@
+
+@section searchResult
+{
+    @if (Model.Certificates != null && Model.Certificates.Any())
+    {
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <!--th>№</th-->
+                    <th>Договор</th>
+                    <th>Наименование организации</th>
+                    <th>Номер сертификата и дата выдачи</th>
+                    <th>ФИО заявителя</th>
+                    <th>ФИО ребёнка</th>
+                    <th>ФИО сопровождающего</th>
+                    <th>Место отдыха</th>
+                    @*<th>Цель обращения</th>*@
+                    <th>Период отдыха</th>
+                    @*<th>Статус</th>*@
+                    @*<th>Отчётность сдана</th>
+                    <th>Отчётность принята</th>
+                    <th>Оплачен</th>*@
+                    @*<th></th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Certificates.Count; i++)
+                {
+                    int index = i;
+                    Certificate cert = Model.Certificates[i];
+
+                    <text>
+                        <tr class="row-clicable" onclick="openRequest('@Url.Action("CertificateView", new {id=cert.Id})');">
+
+                            <!--td>@(Model.Certificates.FirstItemOnPage + index)</td-->
+                            <td>
+                                <div class="wordbreak">
+                                    @cert.ContractNumber.FormatEx()
+                                </div>
+                                @if (cert.StateMachineStateId != RestChild.Comon.Enumeration.StateMachineStateEnum.Deleted)
+                                {
+                                    <img src="~/Content/images/patch-check.svg" alt="check" />
+                                }
+
+                            </td>
+                            <td>
+                                <div class="wordbreak">
+                                    @cert.Place
+                                </div>
+                            </td>
+                            <td>№@cert.ContractNumber.FormatEx() от @cert.Request.CertificateDate.FormatEx()</td>
+                            <td>
+                                @cert.Request.Applicant.NullSafe(a => a.LastName).FormatEx()
+                                @cert.Request.Applicant.NullSafe(a => a.FirstName).FormatEx()
+                                @cert.Request.Applicant.NullSafe(a => a.MiddleName).FormatEx()
+                            </td>
+                            <td style="min-width: 215px">
+                                @if (cert.Request.Child != null)
+                                {
+                                    foreach (Child child in cert.Request.Child)
+                                    {
+                                        <text>
+                                            <div>
+                                                @child.NullSafe(a => a.LastName).FormatEx()
+                                                @child.NullSafe(a => a.FirstName).FormatEx()
+                                                @child.NullSafe(a => a.MiddleName).FormatEx()
+                                            </div>
+                                            <div>
+                                                <small style="color: #666;">
+                                                    @child.NullSafe(a => a.DateOfBirth).FormatEx()
+                                                    -
+                                                    @child.NullSafe(a => a.BenefitType.NullSafe(b => b.Name)).FormatEx()
+                                                </small>
+                                            </div>
+                                        </text>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @cert.Request.Applicant.NullSafe(a => a.LastName).FormatEx()
+                                @cert.Request.Applicant.NullSafe(a => a.FirstName).FormatEx()
+                                @cert.Request.Applicant.NullSafe(a => a.MiddleName).FormatEx()
+                            </td>
+                            <td style="min-width: 215px">
+                                @if (cert.Request.Tour != null)
+                                {
+                                    @Html.Raw(cert.Request.NullSafe(r => r.Tour.Hotels.Name).FormatEx())
+                                    <div>
+                                        <small><i style="color: #666">@Html.Raw(cert.Request.NullSafe(r => r.Tour.Hotels.PlaceOfRest.Name).FormatEx())</i></small>
+                                    </div>
+                                }
+                                else if (cert.Request.PlaceOfRestId.HasValue)
+                                {
+                                    <div>
+                                        @Html.Raw(cert.Request.NullSafe(r => r.PlaceOfRest.Name).FormatEx())
+                                        @if (cert.Request.PlacesOfRest != null && cert.Request.PlacesOfRest.Any())
+                                        {
+                                            <div>
+                                                <i>Дополнительно:</i>
+                                                @foreach (var a in cert.Request.PlacesOfRest ?? new List<RequestPlaceOfRest>())
+                                                {
+                                                    <div>
+                                                        <small><i style="color: #666">@Html.Raw(a.PlaceOfRest.Name.FormatEx())</i></small>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </td>
+                            @*<td>
+                                    @Html.Raw(cert.Request.TypeOfRest != null && cert.Request.TypeOfRest.Parent != null ? string.Format("{0} / {1}", cert.Request.TypeOfRest.Parent.Name, cert.Request.TypeOfRest.Name) : cert.Request.TypeOfRest != null ? cert.Request.TypeOfRest.Name : cert.Request.NullSafe(r => r.TypeOfRest.Name).FormatEx())
+                                </td>*@
+                            <td>
+                                <div>
+                                    @Html.Raw(cert.Request.Tour != null && cert.Request.Tour.TimeOfRest != null ? cert.Request.NullSafe(r => r.Tour.TimeOfRest.Name).FormatEx() : cert.Request.NullSafe(r => r.TimeOfRest.Name).FormatEx())
+                                </div>
+                                @if (cert.Request.Tour != null)
+                                {
+                                    <div>
+                                        <small><i style="color: #666">@string.Format("{0}-{1}", cert.Request.Tour.DateIncome.FormatEx(), cert.Request.Tour.DateOutcome.FormatEx())</i></small>
+                                    </div>
+                                }
+                                @if (cert.Request.TimesOfRest != null && cert.Request.TimesOfRest.Any())
+                                {
+                                    <div>
+                                        <i>Дополнительно:</i>
+                                        @foreach (var a in cert.Request.TimesOfRest ?? new List<RequestsTimeOfRest>())
+                                        {
+                                            <div>
+                                                <small><i style="color: #666">@Html.Raw(a.TimeOfRest.Name.FormatEx())</i></small>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </td>
+                            @*<td>
+                                <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
+                            </td>
+                            <td>
+                                <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
+                            </td>
+                            <td>
+                                <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
+                            </td>*@
+                            @*<td>
+                                    <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
+                                </td>*@
+                            @*<td class="text-center"><a onclick="$.noop()" class="glyphicon glyphicon-pencil"></a></td>*@
+                        </tr>
+
+                    </text>
+                }
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-md-12">
+                <p>Найдено заявлений: @Model.Certificates.TotalItemCount</p>
+            </div>
+        </div>
+
+        <div>
+            @Html.PagedListPager(Model.Certificates, page =>
+            {
+                CertificateFilterModel m = Model;
+                m.PageNumber = page;
+                return Url.Action("CertificateList", "CertificateSearch", m);
+            })
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
+}
+
+@section styles
+{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/RequestList.css")
+}
+
+@section scripts
+{
+    <script type="text/javascript" src="~/Scripts/doT.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale('ru');
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/RequestList.js"></script>
+}
