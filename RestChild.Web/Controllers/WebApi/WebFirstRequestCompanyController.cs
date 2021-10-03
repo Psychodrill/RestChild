@@ -1055,6 +1055,26 @@ namespace RestChild.Web.Controllers.WebApi
                     .ToList();
             }
 
+            //if (model.Data.TypeOfRestId == (long) TypeOfRestEnum.RestWithParentsPoor ||
+            //    model.Data.TypeOfRestId == (long) TypeOfRestEnum.MoneyOn3To7)
+            //{
+            //    var snils = model.Applicant?.Data?.Snils;
+            //    model.ApplicantDouble.AddRange(UnitOfWork.GetSet<Request>().Where(r =>
+            //            !r.IsDeleted && r.Applicant.Snils == snils
+            //                         && r.Attendant.Count > 0
+            //                         && r.Id != model.Data.Id
+            //                         && r.StatusId != (long)StatusEnum.Draft
+            //                         && r.StatusId != (long)StatusEnum.RegistrationDecline
+            //                         && r.StatusId != (long)StatusEnum.Reject
+            //                         && r.StatusId != (long)StatusEnum.CancelByApplicant
+            //                         && r.StatusId != (long)StatusEnum.Denial
+            //                         && r.YearOfRestId == model.Data.YearOfRestId
+            //                         && r.ParentRequestId == null
+            //                         && (r.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps ||
+            //                             r.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps))
+            //        .ToList());
+            //}
+
             /*
             // По решению сотрудников МГТ (Иванов и Сердешнова) откатить данный функционал - в связи с опасениями судебных исков.
             var type = UnitOfWork.GetById<TypeOfRest>(model.Data.TypeOfRestId);
@@ -1073,24 +1093,14 @@ namespace RestChild.Web.Controllers.WebApi
 
             model.ApplicantDouble = UnitOfWork.GetSet<Request>().Where(r => !r.IsDeleted && r.Applicant.Snils == snils
                                                                                          && r.Id != model.Data.Id
-                                                                                         && r.StatusId !=
-                                                                                         (long) StatusEnum.Draft
-                                                                                         && r.StatusId !=
-                                                                                         (long) StatusEnum
-                                                                                             .RegistrationDecline
-                                                                                         && r.StatusId !=
-                                                                                         (long) StatusEnum.Reject
-                                                                                         && r.StatusId !=
-                                                                                         (long) StatusEnum
-                                                                                             .CancelByApplicant
-                                                                                         && r.StatusId !=
-                                                                                         (long) StatusEnum.Denial
-                                                                                         && r.YearOfRestId ==
-                                                                                         model.Data.YearOfRestId
-                                                                                         && r.TypeOfRest
-                                                                                             .NeedAttendant &&
-                                                                                         r.TypeOfRest
-                                                                                             .FirstRequestCompanySelect)
+                                                                                         && r.StatusId != (long) StatusEnum.Draft
+                                                                                         && r.StatusId != (long) StatusEnum.RegistrationDecline
+                                                                                         && r.StatusId != (long) StatusEnum.Reject
+                                                                                         && r.StatusId != (long) StatusEnum.CancelByApplicant
+                                                                                         && r.StatusId != (long) StatusEnum.Denial
+                                                                                         && r.YearOfRestId == model.Data.YearOfRestId
+                                                                                         && r.TypeOfRest.NeedAttendant
+                                                                                         && r.TypeOfRest.FirstRequestCompanySelect)
                 .ToList();
                 */
         }

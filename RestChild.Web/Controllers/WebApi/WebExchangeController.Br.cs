@@ -1045,6 +1045,81 @@ namespace RestChild.Web.Controllers.WebApi
         }
 
         /// <summary>
+        ///     проверка ребёнка на свидетельство о рождении ЕГР ЗАГС (11827)
+        /// </summary>
+        internal int CheckChildForRelationshipEGRZAGS(string requestNumber, Child child, int count)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(child?.Snils))
+                {
+                    return count;
+                }
+
+                ResetCheckChildInBaseRegistry(child.Id, ExchangeBaseRegistryTypeEnum.GetEGRZAGS);
+
+                var request =
+                    $@"<ServiceProperties xmlns="">
+                        <base_code>01</base_code>
+                        <quantity_doc>1</quantity_doc>
+                        <rogdinflist>
+                            <lastname>{child.LastName}</lastname>
+                            <firstname>{child.FirstName}</firstname>
+                            <middlename>{child.MiddleName}</middlename>
+                            <birthdate>{child.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
+                            <snils>{child.Snils}</snils>
+                        </rogdinflist>
+                    </ServiceProperties>";
+
+                if (Settings.Default.SnilsTestRequest)
+                {
+                    request =
+                        @"<ServiceProperties xmlns="">
+               <base_code>01</base_code>
+               <quantity_doc>1</quantity_doc>
+               <rogdinflist>
+                  <rogdinf>
+                     <actnumber>1234</actnumber>
+                     <actdate>1957-08-13T09:30:47Z</actdate>
+                     <nameofregistrar>Отдел Государственной службы записи актов гражданского состояния Республики Ингушетия Джейрахского района</nameofregistrar>
+                     <code_zags>R0600004</code_zags>
+                     <member_type>1</member_type>
+                     <lastname>Иванова</lastname>
+                     <firstname>Мария</firstname>
+                     <middlename>Петровна</middlename>
+                     <birthdate>1957-08-13T09:30:47Z</birthdate>
+                  </rogdinf>
+               </rogdinflist>
+            </ServiceProperties>";
+                }
+
+                var messageV6 = GetCoordinateMessageV6(request,
+                    ((long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS).ToString(),
+                    requestNumber + $"/{count++}", requestNumber);
+
+                UnitOfWork.AddEntity(new ExchangeBaseRegistry
+                {
+                    IsIncoming = false,
+                    RequestText = Serialization.Serializer(messageV6),
+                    OperationType = "SendTask",
+                    RequestGuid = messageV6.CoordinateTaskDataMessage.Task.TaskId,
+                    ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
+                    Child = child,
+                    ChildId = child.Id,
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS
+                });
+
+                UnitOfWork.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Ошибка отправки в базовый регистр по ЕГР ЗАГС", ex);
+            }
+
+            return count;
+        }
+
+        /// <summary>
         ///     проверка ребёнка на свидетельство о рождении СМЭВ
         /// </summary>
         internal int CheckChildForRelationshipSmev(string requestNumber, Child child, int count)
@@ -1487,7 +1562,11 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 foreach (var child in req.Child)
                 {
-                    count = CheckChildForRelationshipSmev(requestNumber, child, count);
+                    //старый документ (3091)
+                    //count = CheckChildForRelationshipSmev(requestNumber, child, count);
+
+                    //новый документ (11827)
+                    count = CheckChildForRelationshipEGRZAGS(requestNumber, child, count);
                 }
             }
 
@@ -1526,7 +1605,8 @@ namespace RestChild.Web.Controllers.WebApi
         {
             if (req.IsFirstCompany)
             {
-                if (UnitOfWork.GetSet<ExchangeUTS>().Any(ss => ss.RequestId == req.Id && !ss.Incoming && ss.ToState == (long)StatusEnum.OperatorCheck)) return;
+                if (UnitOfWork.GetSet<ExchangeUTS>().Any(ss =>
+                    ss.RequestId == req.Id && !ss.Incoming && ss.ToState == (long)StatusEnum.OperatorCheck)) return;
 
                 UnitOfWork.SendChangeStatusByEvent(req, RequestEventEnum.SendRequestBase);
             }

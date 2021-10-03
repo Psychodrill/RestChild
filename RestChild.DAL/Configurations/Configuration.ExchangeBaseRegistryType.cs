@@ -74,12 +74,6 @@ namespace RestChild.DAL.Configurations
                         Id = (long) ExchangeBaseRegistryTypeEnum.RelationshipSmev,
                         Name = "Предоставление из ЕГР ЗАГС сведений об актах гражданского состояния",
                         Eid = (long) ExchangeBaseRegistryTypeEnum.RelationshipSmev
-                    },
-                    new ExchangeBaseRegistryType
-                    {
-                        Id = (long) ExchangeBaseRegistryTypeEnum.GetEGRZAGS,
-                        Name = "Предоставление из ЕГР ЗАГС сведений об актах гражданского состояния (11827)",
-                        Eid = (long) ExchangeBaseRegistryTypeEnum.GetEGRZAGS
                     }
                 );
             }
@@ -144,6 +138,19 @@ namespace RestChild.DAL.Configurations
                         IsDeleted = false,
                         SendMessage = true,
                         Eid = (long)ExchangeBaseRegistryTypeEnum.FRIExchange
+                    }
+                );
+            }
+
+            // новый вид проверки документов 11827
+            if (!context.ExchangeBaseRegistryType.Any(c => c.Id == (long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS))
+            {
+                context.ExchangeBaseRegistryType.AddOrUpdate(r => r.Id,
+                    new ExchangeBaseRegistryType
+                    {
+                        Id = (long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS,
+                        Name = "Предоставление из ЕГР ЗАГС сведений об актах гражданского состояния (11827)",
+                        Eid = (long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS
                     }
                 );
             }
