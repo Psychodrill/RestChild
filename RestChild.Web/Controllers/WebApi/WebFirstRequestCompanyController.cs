@@ -188,7 +188,7 @@ namespace RestChild.Web.Controllers.WebApi
                 var currentApplicant = applicant;
                 applicant.Id = 0;
                 if (data.TypeOfRestId != (long) TypeOfRestEnum.YouthRestOrphanCamps &&
-                    data.TypeOfRestId != (long) TypeOfRestEnum.YouthRestCamps &&
+                    data.TypeOfRestId != (long) TypeOfRestEnum.YouthRestCamps&&
                     data.TypeOfRestId != (long) TypeOfRestEnum.MoneyOn18)
                 {
                     applicant.Address = null;
@@ -351,10 +351,8 @@ namespace RestChild.Web.Controllers.WebApi
                     Attendant = entity.Attendant?.Select(a => new Applicant(a)).ToList(),
                     Files = entity.Files?.Select(f => new RequestFile(f)).ToList(),
                     AddonServicesLinks = entity.AddonServicesLinks?.Select(l => new AddonServicesLink(l, 1)).ToList(),
-                    InformationVouchers = entity.InformationVouchers?.Select(v => new RequestInformationVoucher(v, 1)
-                    {
-                        AttendantsPrice = v.AttendantsPrice?.Select(a => new RequestInformationVoucherAttendant(a, 1))
-                            .ToList()
+                    InformationVouchers = entity.InformationVouchers?.Select(v => new RequestInformationVoucher(v, 1) {
+                        AttendantsPrice = v.AttendantsPrice?.Select(a => new RequestInformationVoucherAttendant(a, 1)).ToList()
                     }).ToList(),
                     PlacesOfRest = entity.PlacesOfRest?.Select(p => new RequestPlaceOfRest(p)).ToList(),
                     TimesOfRest = entity.TimesOfRest?.Select(t => new RequestsTimeOfRest(t)).ToList(),
@@ -1037,7 +1035,9 @@ namespace RestChild.Web.Controllers.WebApi
             model.ApplicantDouble = new List<Request>();
 
             if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor ||
-                model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7)
+                model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 ||
+                model.Data.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps ||
+                model.Data.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps)
             {
                 var snils = model.Applicant?.Data?.Snils;
                 model.ApplicantDouble = UnitOfWork.GetSet<Request>().Where(r =>
@@ -1050,12 +1050,33 @@ namespace RestChild.Web.Controllers.WebApi
                                      && r.StatusId != (long)StatusEnum.Denial
                                      && r.YearOfRestId == model.Data.YearOfRestId
                                      || r.Attendant.Any(m => m.Snils == snils)
+                                     || r.Child.Any(m => m.Snils == snils)
                                      && r.ParentRequestId == null
                                      && (r.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor ||
                                          r.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7))
                     .ToList();
             }
 
+
+            //if (model.Data.TypeOfRestId == (long) TypeOfRestEnum.RestWithParentsPoor ||
+            //    model.Data.TypeOfRestId == (long) TypeOfRestEnum.MoneyOn3To7)
+            //{
+            //    var snils = model.Applicant?.Data?.Snils;
+            //    model.ApplicantDouble.AddRange(UnitOfWork.GetSet<Request>().Where(r =>
+            //            !r.IsDeleted && r.Applicant.Snils == snils
+            //                         && r.Attendant.Count > 0
+            //                         && r.Id != model.Data.Id
+            //                         && r.StatusId != (long)StatusEnum.Draft
+            //                         && r.StatusId != (long)StatusEnum.RegistrationDecline
+            //                         && r.StatusId != (long)StatusEnum.Reject
+            //                         && r.StatusId != (long)StatusEnum.CancelByApplicant
+            //                         && r.StatusId != (long)StatusEnum.Denial
+            //                         && r.YearOfRestId == model.Data.YearOfRestId
+            //                         && r.ParentRequestId == null
+            //                         && (r.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps ||
+            //                             r.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps))
+            //        .ToList());
+            //}
 
             /*
             // По решению сотрудников МГТ (Иванов и Сердешнова) откатить данный функционал - в связи с опасениями судебных исков.
@@ -1075,24 +1096,14 @@ namespace RestChild.Web.Controllers.WebApi
 
             model.ApplicantDouble = UnitOfWork.GetSet<Request>().Where(r => !r.IsDeleted && r.Applicant.Snils == snils
                                                                                          && r.Id != model.Data.Id
-                                                                                         && r.StatusId !=
-                                                                                         (long) StatusEnum.Draft
-                                                                                         && r.StatusId !=
-                                                                                         (long) StatusEnum
-                                                                                             .RegistrationDecline
-                                                                                         && r.StatusId !=
-                                                                                         (long) StatusEnum.Reject
-                                                                                         && r.StatusId !=
-                                                                                         (long) StatusEnum
-                                                                                             .CancelByApplicant
-                                                                                         && r.StatusId !=
-                                                                                         (long) StatusEnum.Denial
-                                                                                         && r.YearOfRestId ==
-                                                                                         model.Data.YearOfRestId
-                                                                                         && r.TypeOfRest
-                                                                                             .NeedAttendant &&
-                                                                                         r.TypeOfRest
-                                                                                             .FirstRequestCompanySelect)
+                                                                                         && r.StatusId != (long) StatusEnum.Draft
+                                                                                         && r.StatusId != (long) StatusEnum.RegistrationDecline
+                                                                                         && r.StatusId != (long) StatusEnum.Reject
+                                                                                         && r.StatusId != (long) StatusEnum.CancelByApplicant
+                                                                                         && r.StatusId != (long) StatusEnum.Denial
+                                                                                         && r.YearOfRestId == model.Data.YearOfRestId
+                                                                                         && r.TypeOfRest.NeedAttendant
+                                                                                         && r.TypeOfRest.FirstRequestCompanySelect)
                 .ToList();
                 */
         }
@@ -1104,9 +1115,8 @@ namespace RestChild.Web.Controllers.WebApi
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
 
-            if (model.Data.ParentRequestId != null
-                || model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor
-                || model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7)
+            if (model.Data.ParentRequestId != null)
+               
             {
                 return;
             }
@@ -1114,7 +1124,8 @@ namespace RestChild.Web.Controllers.WebApi
             model.SameAttendants = new List<Applicant>();
             model.SameAttendantSnils = new List<string>();
 
-            if (model.ParentInvalid != null)
+            if (model.ParentInvalid != null && (model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor
+                || model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7))
             {
                 return;
             }
@@ -1131,18 +1142,30 @@ namespace RestChild.Web.Controllers.WebApi
             }
 
             attendants.AddRange(model.Attendant.Select(a => a.Data));
-
+            var applicants = UnitOfWork.GetSet<Request>().Where(r =>
+                                        !r.IsDeleted
+                                     && r.Id != model.Data.Id
+                                     && r.StatusId != (long)StatusEnum.Draft
+                                     && r.StatusId != (long)StatusEnum.RegistrationDecline
+                                     && r.StatusId != (long)StatusEnum.Reject
+                                     && r.StatusId != (long)StatusEnum.CancelByApplicant
+                                     && r.StatusId != (long)StatusEnum.Denial
+                                     && r.YearOfRestId == model.Data.YearOfRestId
+                                     && r.ParentRequestId == null
+                                     && (r.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor ||
+                                         r.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7))
+                    .ToList();
             model.SameAttendantSnils = attendants.Where(a => !string.IsNullOrWhiteSpace(a.Snils)).GroupBy(g => g.Snils)
                 .Where(g => g.Count() > 1).Select(g => g.Key)
                 .ToList();
-            if (attendants.Any(a => string.IsNullOrWhiteSpace(a.Snils)))
-            {
+            //if (attendants.Any(a => string.IsNullOrWhiteSpace(a.Snils)))
+            //{
                 model.SameAttendants = attendants
                     .Where(a => !model.SameAttendantSnils.Contains(a.Snils ?? string.Empty)
-                            || a.Snils == model.Applicant?.Data?.Snils)
+                            || applicants.Any(s => s.Applicant.Snils == a.Snils))
                     .GroupBy(g => (g.DocumentSeria ?? string.Empty) + "---" + (g.DocumentNumber ?? string.Empty))
                     .Where(g => g.Count() > 1).SelectMany(g => g.Select(f => f).ToList()).ToList();
-            }
+            //}
         }
 
         /// <summary>
@@ -1839,8 +1862,7 @@ namespace RestChild.Web.Controllers.WebApi
 
             if (search.CertificateRepaid)
             {
-                query = query.Where(ss =>
-                    ss.Certificates.Any(c => c.StateMachineStateId != StateMachineStateEnum.Deleted));
+                query = query.Where(ss => ss.Certificates.Any(c=>c.StateMachineStateId != StateMachineStateEnum.Deleted));
             }
 
             if (search.DeclineReasonId.HasValue && search.DeclineReasonId.Value > 0)

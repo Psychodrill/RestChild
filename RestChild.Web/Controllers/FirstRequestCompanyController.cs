@@ -1188,12 +1188,17 @@ namespace RestChild.Web.Controllers
                         {
                             if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor)
                                 UnitOfWork.RequestChangeStatusInternal(
-                                    AccessRightEnum.Status.ToRegistrationDeclineAttendant,
-                                    request, 5, false);
+                                    AccessRightEnum.Status.ToRegistrationDecline,
+                                    request, null, false);
                             if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7)
                                 UnitOfWork.RequestChangeStatusInternal(
-                                    AccessRightEnum.Status.ToRegistrationDeclineAttendant,
-                                    request, 6, false);
+                                    AccessRightEnum.Status.ToRegistrationDecline,
+                                    request, null, false);
+                            if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps ||
+                                model.Data.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps)
+                                UnitOfWork.RequestChangeStatusInternal(
+                                    AccessRightEnum.Status.ToRegistrationDecline,
+                                    request, null, false);
                             break;
                         }
 
@@ -1202,11 +1207,11 @@ namespace RestChild.Web.Controllers
                             if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor)
                                 UnitOfWork.RequestChangeStatusInternal(
                                     AccessRightEnum.Status.ToRegistrationDeclineAttendant,
-                                    request, 2, false);
+                                    request, null, false);
                             if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7)
                                 UnitOfWork.RequestChangeStatusInternal(
                                     AccessRightEnum.Status.ToRegistrationDeclineAttendant,
-                                    request, 3, false);
+                                    request, null, false);
                             break;
                         }
 
