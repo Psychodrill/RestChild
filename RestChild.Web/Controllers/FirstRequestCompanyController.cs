@@ -1169,7 +1169,7 @@ namespace RestChild.Web.Controllers
                         ApiController.CheckChildren(model);
                         ApiController.CheckAttendants(model);
 
-                        if (model.SameChildren.Any() || model.ApplicantDouble.Any())
+                        if (model.SameChildren.Any())
                         {
                             //ApiController.RequestChangeStatusInternal(AccessRightEnum.Status.ToReject, request,
                             //	request.TypeOfRestId == (long) TypeOfRestEnum.Compensation
@@ -1184,11 +1184,29 @@ namespace RestChild.Web.Controllers
                             break;
                         }
 
+                        if (model.ApplicantDouble.Any())
+                        {
+                            if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor)
+                                UnitOfWork.RequestChangeStatusInternal(
+                                    AccessRightEnum.Status.ToRegistrationDeclineAttendant,
+                                    request, 5, false);
+                            if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7)
+                                UnitOfWork.RequestChangeStatusInternal(
+                                    AccessRightEnum.Status.ToRegistrationDeclineAttendant,
+                                    request, 6, false);
+                            break;
+                        }
+
                         if (model.SameAttendantSnils.Any() || model.SameAttendants.Any())
                         {
-                            UnitOfWork.RequestChangeStatusInternal(
-                                AccessRightEnum.Status.ToRegistrationDeclineAttendant,
-                                request, null, false);
+                            if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor)
+                                UnitOfWork.RequestChangeStatusInternal(
+                                    AccessRightEnum.Status.ToRegistrationDeclineAttendant,
+                                    request, 2, false);
+                            if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7)
+                                UnitOfWork.RequestChangeStatusInternal(
+                                    AccessRightEnum.Status.ToRegistrationDeclineAttendant,
+                                    request, 3, false);
                             break;
                         }
 
