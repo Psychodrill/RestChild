@@ -229,7 +229,7 @@
             </tbody>
         </table>
     }
-    @if (Model.Type == ExchangeBaseRegistryTypeEnum.RelationshipSmev)
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.RelationshipSmev || Model.Type == ExchangeBaseRegistryTypeEnum.GetEGRZAGS)
     {
         if (Model.SmevZagzResponse != null && Model.SmevZagzResponse.СведРегРожд != null)
         {
@@ -248,7 +248,7 @@
                         Свидетельство о рождении:
                         <ul>
                             @foreach (var i in info.СвидетРожд ?? new СведСвидетТип[0])
-                            {
+                            {  
                                 <li>
                                     <b> @i.СерияСвидет @i.НомерСвидет от @i.ДатаВыдСвидет.FormatEx()</b>
                                 </li>

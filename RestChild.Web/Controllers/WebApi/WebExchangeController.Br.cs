@@ -528,6 +528,8 @@ namespace RestChild.Web.Controllers.WebApi
             return 1;
         }
 
+
+
         /// <summary>
         ///     проверка ребёнка на свидетельство о рождении СМЭВ
         /// </summary>
@@ -537,46 +539,95 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 var documentType = UnitOfWork.GetById<DocumentType>(model.DocumentTypeId);
 
-                var request =
-                    $@"<ServiceProperties>
- <form_response>2</form_response>
- <act>1</act>
- <snils>{model.Snils}</snils>
- <lastname>{model.LastName}</lastname>
- <firstname>{model.FirstName}</firstname>
- <middlename>{model.MiddleName}</middlename>
- <birthdate>{model.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
- <doc_type>{documentType?.BaseRegistryUid}</doc_type>
- <doc_name>{documentType?.Name}</doc_name>
- <seriesnumber>{model.DocumentSeria} {model.DocumentNumber}</seriesnumber>
-</ServiceProperties>";
-
+                var middlename = "";
+                var testmsg = "";
+                if (!model.MiddleName.IsNullOrEmpty())
+                {
+                    middlename = $"<middlename>{ model.MiddleName}</middlename>";
+                }
                 if (Settings.Default.SnilsTestRequest)
                 {
-                    request =
-                        @"<ServiceProperties>
- <doc_id>a</doc_id>
- <form_response>2</form_response>
- <act>1</act>
- <actnumber>a</actnumber>
- <actdate>2018-08-13T00:00:00Z</actdate>
- <nameofregistrar>a</nameofregistrar>
- <code_zags>R0000000</code_zags>
- <snils>000 000 000 00</snils>
- <inn_fl>010000000000</inn_fl>
- <lastname>Иванов</lastname>
- <firstname>Иван</firstname>
- <middlename>Иванович</middlename>
- <birthdate>2018-08-13T00:00:00Z</birthdate>
- <testmsg/>
-</ServiceProperties>";
+                    testmsg = $"<testmsg/>";
                 }
+
+                var request =
+                    $@"<ServiceProperties>
+                        <base_code>01</base_code>
+                        <quantity_doc>1</quantity_doc>
+                        <rogdinflist>
+                            <rogdinf>
+                        	    <member_type>3</member_type>
+                                <snils>{model.Snils}</snils>
+                                <lastname>{model.LastName}</lastname>
+                                <firstname>{model.FirstName}</firstname>
+                                {middlename}
+                                <birthdate>{model.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
+                                <doc_type>{documentType?.BaseRegistryUid}</doc_type>
+                                <doc_series>{model.DocumentSeria}</doc_series>
+                                <doc_number>{model.DocumentNumber}</doc_number>
+                            </rogdinf>
+                        </rogdinflist>
+                        {testmsg}
+                    </ServiceProperties>";
+
+                //var request =
+                //    $@"<ServiceProperties>
+                //        <form_response>2</form_response>
+                //        <act>1</act>
+                //        <snils>{model.Snils}</snils>
+                //        <lastname>{model.LastName}</lastname>
+                //        <firstname>{model.FirstName}</firstname>
+                //        <middlename>{model.MiddleName}</middlename>
+                //        <birthdate>{model.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
+                //        <doc_type>{documentType?.BaseRegistryUid}</doc_type>
+                //        <doc_name>{documentType?.Name}</doc_name>
+                //        <seriesnumber>{model.DocumentSeria} {model.DocumentNumber}</seriesnumber>
+                //    </ServiceProperties>";
+
+                //if (Settings.Default.SnilsTestRequest)
+                //{
+                //    //request =
+                //    //    @"<ServiceProperties>
+                //    //         <doc_id>a</doc_id>
+                //    //         <form_response>2</form_response>
+                //    //         <act>1</act>
+                //    //         <actnumber>a</actnumber>
+                //    //         <actdate>2018-08-13T00:00:00Z</actdate>
+                //    //         <nameofregistrar>a</nameofregistrar>
+                //    //         <code_zags>R0000000</code_zags>
+                //    //         <snils>000 000 000 00</snils>
+                //    //         <inn_fl>010000000000</inn_fl>
+                //    //         <lastname>Иванов</lastname>
+                //    //         <firstname>Иван</firstname>
+                //    //         <middlename>Иванович</middlename>
+                //    //         <birthdate>2018-08-13T00:00:00Z</birthdate>
+                //    //         <testmsg/>
+                //    //    </ServiceProperties>";
+                //    request =
+                //        @"<ServiceProperties xmlns="">
+                //           <base_code>01</base_code>
+                //           <quantity_doc>1</quantity_doc>
+                //           <rogdinflist>
+                //              <rogdinf>
+                //                 <actnumber>1234</actnumber>
+                //                 <actdate>2015-01-01T09:30:47Z</actdate>
+                //                 <nameofregistrar>Отдел Государственной службы записи актов гражданского состояния Республики Ингушетия Джейрахского района</nameofregistrar>
+                //                 <code_zags>R0600004</code_zags>
+                //                 <member_type>1</member_type>
+                //                 <lastname>Иванова</lastname>
+                //                 <firstname>Мария</firstname>
+                //                 <middlename>Петровна</middlename>
+                //                 <birthdate>2015-01-01T09:30:47Z</birthdate>
+                //              </rogdinf>
+                //           </rogdinflist>
+                //        </ServiceProperties>";
+                //}
 
                 var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
                 var requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
 
                 var messageV6 = GetCoordinateMessageV6(request,
-                    ((long) ExchangeBaseRegistryTypeEnum.RelationshipSmev).ToString(),
+                    ((long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS).ToString(),
                     requestNumber + "/1", requestNumber);
 
                 UnitOfWork.AddEntity(new ExchangeBaseRegistry
@@ -586,7 +637,7 @@ namespace RestChild.Web.Controllers.WebApi
                     OperationType = "SendTask",
                     RequestGuid = messageV6.CoordinateTaskDataMessage.Task.TaskId,
                     ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
-                    ExchangeBaseRegistryTypeId = (long) ExchangeBaseRegistryTypeEnum.RelationshipSmev,
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS,
                     IsAddonRequest = true,
                     BirthDate = model.DateOfBirth,
                     SearchField =
@@ -603,7 +654,7 @@ namespace RestChild.Web.Controllers.WebApi
             catch (Exception ex)
             {
                 Logger.Error("Ошибка отправки в базовый регистр запроса СНИЛС по ФИО", ex);
-                return new BaseResponse {HasError = true, ErrorMessage = ex.Message};
+                return new BaseResponse { HasError = true, ErrorMessage = ex.Message };
             }
         }
 
@@ -962,23 +1013,23 @@ namespace RestChild.Web.Controllers.WebApi
             if (Settings.Default.SnilsTestRequest)
             {
                 return @"<ServiceProperties>
- <lastname>ИВАНОВ</lastname>
- <firstname>ИВАН</firstname>
- <middlename>ИВАНОВИЧ</middlename>
- <birthdate>1967-05-21T00:00:00</birthdate>
- <gendercode>1</gendercode>
- <placetype>ОСОБОЕ</placetype>
- <settlement>ЗАГОРСК</settlement>
- <district>ЛЕНИНСКИЙ</district>
- <region>МОСКОВСКАЯ ОБЛАСТЬ</region>
- <country>РФ</country>
- <doc_type>1</doc_type>
- <series>0005</series>
- <number>777777</number>
- <issuedate>1986-06-13T00:00:00</issuedate>
- <issuer>ОВД</issuer>
- <testmsg/>
-</ServiceProperties>";
+                             <lastname>ИВАНОВ</lastname>
+                             <firstname>ИВАН</firstname>
+                             <middlename>ИВАНОВИЧ</middlename>
+                             <birthdate>1967-05-21T00:00:00</birthdate>
+                             <gendercode>1</gendercode>
+                             <placetype>ОСОБОЕ</placetype>
+                             <settlement>ЗАГОРСК</settlement>
+                             <district>ЛЕНИНСКИЙ</district>
+                             <region>МОСКОВСКАЯ ОБЛАСТЬ</region>
+                             <country>РФ</country>
+                             <doc_type>1</doc_type>
+                             <series>0005</series>
+                             <number>777777</number>
+                             <issuedate>1986-06-13T00:00:00</issuedate>
+                             <issuer>ОВД</issuer>
+                             <testmsg/>
+                       </ServiceProperties>";
             }
 
             return
@@ -1008,14 +1059,14 @@ namespace RestChild.Web.Controllers.WebApi
                 if (Settings.Default.SnilsTestRequest)
                 {
                     request = @"<ServiceProperties>
- <lastname>ПЕТИНА</lastname>
- <birthdate>1966-09-12T00:00:00Z</birthdate>
- <firstname>ЕЛЕНА</firstname>
- <middlename>ВЛАДИМИРОВНА</middlename>
- <snils>02773319862</snils>
- <gender>2</gender>
- <testmsg/>
-</ServiceProperties>";
+                                 <lastname>ПЕТИНА</lastname>
+                                 <birthdate>1966-09-12T00:00:00Z</birthdate>
+                                 <firstname>ЕЛЕНА</firstname>
+                                 <middlename>ВЛАДИМИРОВНА</middlename>
+                                 <snils>02773319862</snils>
+                                 <gender>2</gender>
+                                 <testmsg/>
+                              </ServiceProperties>";
                 }
 
                 var messageV6 = GetCoordinateMessageV6(request,
@@ -1058,40 +1109,38 @@ namespace RestChild.Web.Controllers.WebApi
 
                 ResetCheckChildInBaseRegistry(child.Id, ExchangeBaseRegistryTypeEnum.GetEGRZAGS);
 
+                var middlename = "";
+                var testmsg = "";
+                if (!child.MiddleName.IsNullOrEmpty())
+                {
+                    middlename = $"<middlename>{ child.MiddleName}</middlename>";
+                }
+                if (Settings.Default.SnilsTestRequest)
+                {
+                    testmsg = $"<testmsg/>";
+                }
+
                 var request =
-                    $@"<ServiceProperties xmlns="">
+                    $@"<ServiceProperties>
                         <base_code>01</base_code>
                         <quantity_doc>1</quantity_doc>
                         <rogdinflist>
-                            <lastname>{child.LastName}</lastname>
-                            <firstname>{child.FirstName}</firstname>
-                            <middlename>{child.MiddleName}</middlename>
-                            <birthdate>{child.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
-                            <snils>{child.Snils}</snils>
+                            <rogdinf>
+                        	    <member_type>3</member_type>
+                                <snils>{child.Snils}</snils>
+                                <lastname>{child.LastName}</lastname>
+                                <firstname>{child.FirstName}</firstname>
+                                {middlename}
+                                <birthdate>{child.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
+                                <doc_type>{child.DocumentType?.BaseRegistryUid}</doc_type>
+                                <doc_series>{child.DocumentSeria}</doc_series>
+                                <doc_number>{child.DocumentNumber}</doc_number>
+                            </rogdinf>
                         </rogdinflist>
+                        {testmsg}
                     </ServiceProperties>";
 
-                if (Settings.Default.SnilsTestRequest)
-                {
-                    request =
-                        @"<ServiceProperties xmlns="">
-               <base_code>01</base_code>
-               <quantity_doc>1</quantity_doc>
-               <rogdinflist>
-                  <rogdinf>
-                     <actnumber>1234</actnumber>
-                     <actdate>1957-08-13T09:30:47Z</actdate>
-                     <nameofregistrar>Отдел Государственной службы записи актов гражданского состояния Республики Ингушетия Джейрахского района</nameofregistrar>
-                     <code_zags>R0600004</code_zags>
-                     <member_type>1</member_type>
-                     <lastname>Иванова</lastname>
-                     <firstname>Мария</firstname>
-                     <middlename>Петровна</middlename>
-                     <birthdate>1957-08-13T09:30:47Z</birthdate>
-                  </rogdinf>
-               </rogdinflist>
-            </ServiceProperties>";
-                }
+                
 
                 var messageV6 = GetCoordinateMessageV6(request,
                     ((long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS).ToString(),
@@ -1135,37 +1184,37 @@ namespace RestChild.Web.Controllers.WebApi
 
                 var request =
                     $@"<ServiceProperties>
- <form_response>2</form_response>
- <act>1</act>
- <snils>{child.Snils}</snils>
- <lastname>{child.LastName}</lastname>
- <firstname>{child.FirstName}</firstname>
- <middlename>{child.MiddleName}</middlename>
- <birthdate>{child.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
- <doc_type>{child.DocumentType?.BaseRegistryUid}</doc_type>
- <doc_name>{child.DocumentType?.Name}</doc_name>
- <seriesnumber>{child.DocumentSeria} {child.DocumentNumber}</seriesnumber>
-</ServiceProperties>";
+                         <form_response>2</form_response>
+                         <act>1</act>
+                         <snils>{child.Snils}</snils>
+                         <lastname>{child.LastName}</lastname>
+                         <firstname>{child.FirstName}</firstname>
+                         <middlename>{child.MiddleName}</middlename>
+                         <birthdate>{child.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
+                         <doc_type>{child.DocumentType?.BaseRegistryUid}</doc_type>
+                         <doc_name>{child.DocumentType?.Name}</doc_name>
+                         <seriesnumber>{child.DocumentSeria} {child.DocumentNumber}</seriesnumber>
+                    </ServiceProperties>";
 
                 if (Settings.Default.SnilsTestRequest)
                 {
                     request =
                         @"<ServiceProperties>
- <doc_id>a</doc_id>
- <form_response>2</form_response>
- <act>1</act>
- <actnumber>a</actnumber>
- <actdate>2018-08-13T00:00:00Z</actdate>
- <nameofregistrar>a</nameofregistrar>
- <code_zags>R0000000</code_zags>
- <snils>000 000 000 00</snils>
- <inn_fl>010000000000</inn_fl>
- <lastname>Иванов</lastname>
- <firstname>Иван</firstname>
- <middlename>Иванович</middlename>
- <birthdate>2018-08-13T00:00:00Z</birthdate>
- <testmsg/>
-</ServiceProperties>";
+                             <doc_id>a</doc_id>
+                             <form_response>2</form_response>
+                             <act>1</act>
+                             <actnumber>a</actnumber>
+                             <actdate>2018-08-13T00:00:00Z</actdate>
+                             <nameofregistrar>a</nameofregistrar>
+                             <code_zags>R0000000</code_zags>
+                             <snils>000 000 000 00</snils>
+                             <inn_fl>010000000000</inn_fl>
+                             <lastname>Иванов</lastname>
+                             <firstname>Иван</firstname>
+                             <middlename>Иванович</middlename>
+                             <birthdate>2018-08-13T00:00:00Z</birthdate>
+                             <testmsg/>
+                        </ServiceProperties>";
                 }
 
                 var messageV6 = GetCoordinateMessageV6(request,
@@ -1216,14 +1265,14 @@ namespace RestChild.Web.Controllers.WebApi
                 if (Settings.Default.SnilsTestRequest)
                 {
                     request = @"<ServiceProperties>
- <lastname>ПЕТИНА</lastname>
- <birthdate>1966-09-12T00:00:00Z</birthdate>
- <firstname>ЕЛЕНА</firstname>
- <middlename>ВЛАДИМИРОВНА</middlename>
- <snils>02773319862</snils>
- <gender>2</gender>
- <testmsg/>
-</ServiceProperties>";
+                                 <lastname>ПЕТИНА</lastname>
+                                 <birthdate>1966-09-12T00:00:00Z</birthdate>
+                                 <firstname>ЕЛЕНА</firstname>
+                                 <middlename>ВЛАДИМИРОВНА</middlename>
+                                 <snils>02773319862</snils>
+                                 <gender>2</gender>
+                                 <testmsg/>
+                               </ServiceProperties>";
                 }
 
                 var messageV6 = GetCoordinateMessageV6(request,
@@ -1557,8 +1606,8 @@ namespace RestChild.Web.Controllers.WebApi
                 count = 1;
             }
 
-            if (req.SourceId == (long) SourceEnum.Mpgu &&
-                req.TypeOfRestId != (long) TypeOfRestEnum.ChildRestFederalCamps)
+            if (req.SourceId == (long) SourceEnum.Mpgu //|| req.SourceId == (long)SourceEnum.Operator //Удалить || req.SourceId == (long)SourceEnum.Operator
+                &&  req.TypeOfRestId != (long) TypeOfRestEnum.ChildRestFederalCamps)
             {
                 foreach (var child in req.Child)
                 {

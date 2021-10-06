@@ -9,20 +9,20 @@
 //------------------------------------------------------------------------------
 
 namespace RestChild.Admin.Web.Properties {
-
-
+    
+    
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
-
+        
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-
+        
         public static Settings Default {
             get {
                 return defaultInstance;
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\RestChild\\RestPlacesImages")]
@@ -31,7 +31,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["RestPlaceImagesPath"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10")]
@@ -40,7 +40,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((int)(this["TablePageSize"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("/DownloadImage.ashx")]
@@ -49,7 +49,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["RestPlaceImagesVirtualPath"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("100")]
@@ -58,7 +58,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((int)(this["WebBtiStreetsResponseCount"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10")]
@@ -67,7 +67,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((int)(this["WebSchoolsResponseCount"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10")]
@@ -76,7 +76,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((int)(this["WebSchoolsCount"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("~/")]
@@ -85,7 +85,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["StorageRoot"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\RestChild\\RestPlacesImages\\")]
@@ -94,7 +94,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["StorageRootPath"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("3")]
@@ -103,7 +103,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((int)(this["SecondaryInteragencyRequestPeriodDays"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
@@ -112,7 +112,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((bool)(this["SendErrorStatus"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -121,7 +121,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["Setting"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\RestChild\\HotelFiles\\")]
@@ -130,7 +130,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["StorageHotelFilesRootpath"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:3164/")]
@@ -139,7 +139,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["SystemUrl"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\RestChild\\Payment\\")]
@@ -148,7 +148,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["StoragePayment"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\RestChild\\SignInfo")]
@@ -157,7 +157,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["StorageSign"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\RestChild\\RulesOfRest")]
@@ -166,7 +166,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["StorageRulesOfRest"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("50")]
@@ -175,7 +175,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((int)(this["VocabularyResponseSize"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
@@ -184,7 +184,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["EmailForReplicationReceiverMessages"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("2")]
@@ -193,7 +193,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((int)(this["CounselorsInParty"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("12")]
@@ -202,7 +202,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((int)(this["ChildOnCounselors"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\RestChild\\CounselorTask\\")]
@@ -211,7 +211,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["StorageCounselorTaskPath"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\RestChild\\BoutJournal\\")]
@@ -220,7 +220,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["StorageBoutJournal"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\RestChild\\ProductFiles\\")]
@@ -229,7 +229,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["StorageProductFiles"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\RestChild\\DogmNSIError\\")]
@@ -238,7 +238,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["DogmNSIError"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("D:\\RestChild\\DogmNSIProcessed\\")]
@@ -247,7 +247,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["DogmNSIProcessed"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("4bn*ivw%92kk3ZvLmu#kY|ruE#vB?Pc#CpGCDqjBHQ*20?X{bP55WI~")]
@@ -256,7 +256,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["SecretKey"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("201602")]
@@ -265,7 +265,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((long)(this["CrossTime"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("203")]
@@ -274,7 +274,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((long)(this["CompensationCrossChild"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("201703")]
@@ -283,7 +283,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((long)(this["CrossChild"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("201701")]
@@ -292,7 +292,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((long)(this["NoDocuments"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("201702")]
@@ -301,7 +301,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((long)(this["BadDocuments"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("48")]
@@ -310,7 +310,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["BrPaymentDocument"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
@@ -324,7 +324,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((global::System.Collections.Specialized.StringCollection)(this["ViolationToDecline"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
@@ -335,7 +335,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((global::System.Collections.Specialized.StringCollection)(this["BenefitNotForCheckPayment"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("201707")]
@@ -344,7 +344,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((long)(this["ReasonNotHavePayment"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("201706")]
@@ -353,7 +353,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((long)(this["ReasonNotHaveBenefit"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("30000")]
@@ -362,7 +362,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((decimal)(this["CertificateOnMoneyPricePerChild"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
@@ -373,7 +373,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((global::System.Collections.Specialized.StringCollection)(this["RequestDeclineNotApproved"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
@@ -385,7 +385,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((global::System.Collections.Specialized.StringCollection)(this["BenefitNotDecline"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("48")]
@@ -394,7 +394,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((string)(this["LowIncomeType"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("201705")]
@@ -403,7 +403,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((long)(this["ReasonNotIncludedInList"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
@@ -415,7 +415,7 @@ namespace RestChild.Admin.Web.Properties {
                 return ((global::System.Collections.Specialized.StringCollection)(this["BenefitCertificateOnAttendant"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]

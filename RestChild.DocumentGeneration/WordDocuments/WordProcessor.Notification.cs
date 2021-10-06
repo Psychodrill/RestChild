@@ -226,7 +226,7 @@ namespace RestChild.DocumentGeneration
                                     {Space = SpaceProcessingModeValues.Preserve}),
                             new Run(titleRequestRunProperties.CloneNode(true),
                                 new Text(
-                                        " Вам необходимо явиться в офис ГАУК \"МОСГОРТУР\" по адресу: город Москва, переулок Огородная Слобода, дом 9, строение 1.")
+                                        " Вам необходимо явиться в офис ГАУК \"МОСГОРТУР\" по адресу: город Москва, Малый Харитоньевский переулок д. 6 стр. 3.")
                                     {Space = SpaceProcessingModeValues.Preserve})));
 
 
@@ -437,7 +437,7 @@ namespace RestChild.DocumentGeneration
                                 new Indentation {FirstLine = FirstLineIndentation600.ToString()},
                                 new SpacingBetweenLines {After = Size20}),
                             new Run(titleRequestRunProperties.CloneNode(true),
-                                new Text("В случае подачи заявления при личном обращении в офисе ГАУК \"МОСГОРТУР\", дополнение формы заявления сведениями о конкретной организации отдыха и оздоровления возможно только при личном обращении заявителя в офис ГАУК \"МОСГОРТУР\" по адресу: г. Москва, пер. Огородная Слобода д.9, стр.1.")
+                                new Text("В случае подачи заявления при личном обращении в офисе ГАУК \"МОСГОРТУР\", дополнение формы заявления сведениями о конкретной организации отдыха и оздоровления возможно только при личном обращении заявителя в офис ГАУК \"МОСГОРТУР\" по адресу: г. Москва, Малый Харитоньевский переулок д. 6 стр. 3.")
                                     {Space = SpaceProcessingModeValues.Preserve})
                         ));
 
