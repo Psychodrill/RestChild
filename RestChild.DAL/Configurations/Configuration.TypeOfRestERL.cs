@@ -53,6 +53,14 @@ namespace RestChild.DAL.Configurations
                         "Компенсация за путевку лицу из числа детей-сирот и детей, оставшихся без попечения родителей",
                     MSPCode = "1030015",
                     UseApplicant = true,
+                },
+                new TypeOfRestERL
+                {
+                    Id = (long) TypeOfRestERLEnum.FreeRestChildAndApplicant,
+                    Name =
+                        "Сертификат на отдых и оздоровление ребенка и сопровождающего лица",
+                    MSPCode = "1030016",
+                    UseApplicant = false,
                 });
 
             context.SaveChanges();

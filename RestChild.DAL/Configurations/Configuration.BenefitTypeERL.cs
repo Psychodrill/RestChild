@@ -163,7 +163,8 @@ namespace RestChild.DAL.Configurations
                     bft.TypesOfRestERL.AddRange(context.TypeOfRestERL.Where(ss =>
                             ss.Id == (long) TypeOfRestERLEnum.FreeRestIndividual
                             || ss.Id == (long) TypeOfRestERLEnum.FreeRestGroup
-                            || ss.Id == (long) TypeOfRestERLEnum.Compensation)
+                            || ss.Id == (long) TypeOfRestERLEnum.Compensation
+                            || ss.Id == (long) TypeOfRestERLEnum.FreeRestChildAndApplicant)
                         .ToList());
                     bft.BenefitTypes.AddRange(context.BenefitType.Where(ss =>
                             ss.Id == 41
@@ -175,7 +176,8 @@ namespace RestChild.DAL.Configurations
                 {
                     bft.TypesOfRestERL.AddRange(context.TypeOfRestERL.Where(ss =>
                             ss.Id == (long) TypeOfRestERLEnum.FreeRestIndividual
-                            || ss.Id == (long) TypeOfRestERLEnum.FreeRestGroup)
+                            || ss.Id == (long) TypeOfRestERLEnum.FreeRestGroup
+                            || ss.Id == (long) TypeOfRestERLEnum.FreeRestChildAndApplicant)
                         .ToList());
                     bft.BenefitTypes.AddRange(context.BenefitType.Where(ss =>
                             ss.Id == 41)
@@ -186,7 +188,8 @@ namespace RestChild.DAL.Configurations
                     bft.TypesOfRestERL.AddRange(context.TypeOfRestERL.Where(ss =>
                             ss.Id == (long) TypeOfRestERLEnum.FreeRestIndividual
                             || ss.Id == (long) TypeOfRestERLEnum.FreeRestGroup
-                            || ss.Id == (long) TypeOfRestERLEnum.Compensation)
+                            || ss.Id == (long) TypeOfRestERLEnum.Compensation
+                            || ss.Id == (long) TypeOfRestERLEnum.FreeRestChildAndApplicant)
                         .ToList());
                     bft.BenefitTypes.AddRange(context.BenefitType.Where(ss =>
                             ss.Id == 44
