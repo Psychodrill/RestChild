@@ -43,6 +43,7 @@ namespace RestChild.Comon.Enumeration
 
         /// <summary>
         ///     Дети из малообеспеченных семей 3-7 лет
+        ///     (Совместный отдых для детей из малообеспеченных семей, 3-7 лет)
         /// </summary>
         [EnumMember(Value = "4")] RestWithParentsPoor = 4,
 
@@ -164,6 +165,7 @@ namespace RestChild.Comon.Enumeration
 
         /// <summary>
         ///     Сертификат на отдых и оздоровление, 3-7 лет
+        ///     (Сертификат для детей из малообеспеченных семей, 3-7 лет, и сопровождающих лиц)
         /// </summary>
         [EnumMember(Value = "17")] MoneyOn3To7 = 17,
 
