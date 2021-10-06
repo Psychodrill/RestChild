@@ -630,7 +630,6 @@ namespace RestChild.Booking.Logic
         public static void FillDecodeTypeOfRest(UnitOfWork unitOfWork)
         {
             var trs = unitOfWork.GetSet<TypeOfRest>().ToList();
-
             TypeOfRestDecode.Clear();
 
             foreach (var tr in trs)
