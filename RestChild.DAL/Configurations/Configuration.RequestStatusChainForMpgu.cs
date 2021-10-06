@@ -152,6 +152,170 @@ namespace RestChild.DAL.Configurations
 
             #endregion
 
+            #region 1035.2 отказ в регистрации путёвка сопровождение
+
+            context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            {
+                Id = (long)StatusEnum.RegistrationDecline + 1000000,
+                StatusActionId = (long)StatusEnum.RegistrationDecline,
+                IsFirstCompany = true
+            });
+
+            context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
+                Status = 1040,
+                Name = "заявление доставлено в ведомство",
+                Commentary = string.Empty,
+                OrderField = id,
+                SendEmail = false
+            }, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
+                Status = 1035,
+                ReasonCode = null,
+                Name = "отказ в регистрации заявления",
+                Commentary =
+                    "Заявление является повторным. \n\r На указанное(ые) в заявлении сопровождающее(ие) лицо(а) уже подано заявление о предоставлении бесплатной путёвки для отдыха и оздоровления.",
+                OrderField = id,
+                SendEmail = true
+            });
+
+            context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+                new RequestStatusCshedSendAndSignDocument
+                {
+                    MpguStatusId = id,
+                    SignNeed = true,
+                    DocumentPath = DocumentGenerationEnum.NotificationRegistration
+                });
+
+            #endregion
+
+            //#region 1035.3 отказ в регистрации сертификат сопровождение
+
+            //context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            //{
+            //    Id = (long)StatusEnum.RegistrationDecline + 1000000,
+            //    StatusActionId = (long)StatusEnum.RegistrationDecline,
+            //    IsFirstCompany = true
+            //});
+
+            //context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            //{
+            //    Id = ++id,
+            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
+            //    Status = 1040,
+            //    Name = "заявление доставлено в ведомство",
+            //    Commentary = string.Empty,
+            //    OrderField = id,
+            //    SendEmail = false
+            //}, new RequestStatusForMpgu
+            //{
+            //    Id = ++id,
+            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
+            //    Status = 1035,
+            //    ReasonCode = "3",
+            //    Name = "отказ в регистрации заявления",
+            //    Commentary =
+            //        "Заявление является повторным. \n\r На указанное(ые) в заявлении сопровождающее(ие) лицо(а) уже подано заявление о предоставлении сертификата на отдых и оздоровление.",
+            //    OrderField = id,
+            //    SendEmail = true
+            //});
+
+            //context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+            //    new RequestStatusCshedSendAndSignDocument
+            //    {
+            //        MpguStatusId = id,
+            //        SignNeed = true,
+            //        DocumentPath = DocumentGenerationEnum.NotificationRegistration
+            //    });
+
+            //#endregion
+
+            //#region 1035.5 отказ в регистрации сертификат сопровождение
+
+            //context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            //{
+            //    Id = (long)StatusEnum.RegistrationDecline + 1000000,
+            //    StatusActionId = (long)StatusEnum.RegistrationDecline,
+            //    IsFirstCompany = true
+            //});
+
+            //context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            //{
+            //    Id = ++id,
+            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
+            //    Status = 1040,
+            //    Name = "заявление доставлено в ведомство",
+            //    Commentary = string.Empty,
+            //    OrderField = id,
+            //    SendEmail = false
+            //}, new RequestStatusForMpgu
+            //{
+            //    Id = ++id,
+            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
+            //    Status = 1035,
+            //    ReasonCode = "5",
+            //    Name = "отказ в регистрации заявления",
+            //    Commentary =
+            //        "Заявление является повторным. \n\r Заявление о предоставлении бесплатной путёвки для отдыха и оздоровления от имени родителя (законного представителя) уже подано.",
+            //    OrderField = id,
+            //    SendEmail = true
+            //});
+
+            //context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+            //    new RequestStatusCshedSendAndSignDocument
+            //    {
+            //        MpguStatusId = id,
+            //        SignNeed = true,
+            //        DocumentPath = DocumentGenerationEnum.NotificationRegistration
+            //    });
+
+            //#endregion
+
+            //#region 1035.6 отказ в регистрации сертификат сопровождение
+
+            //context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            //{
+            //    Id = (long)StatusEnum.RegistrationDecline + 1000000,
+            //    StatusActionId = (long)StatusEnum.RegistrationDecline,
+            //    IsFirstCompany = true
+            //});
+
+            //context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            //{
+            //    Id = ++id,
+            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
+            //    Status = 1040,
+            //    Name = "заявление доставлено в ведомство",
+            //    Commentary = string.Empty,
+            //    OrderField = id,
+            //    SendEmail = false
+            //}, new RequestStatusForMpgu
+            //{
+            //    Id = ++id,
+            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
+            //    Status = 1035,
+            //    ReasonCode = "6",
+            //    Name = "отказ в регистрации заявления",
+            //    Commentary =
+            //        "Заявление является повторным. \n\r Заявление о предоставлении сертификата на отдых и оздоровление от имени родителя (законного представителя) уже подано.",
+            //    OrderField = id,
+            //    SendEmail = true
+            //});
+
+            //context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+            //    new RequestStatusCshedSendAndSignDocument
+            //    {
+            //        MpguStatusId = id,
+            //        SignNeed = true,
+            //        DocumentPath = DocumentGenerationEnum.NotificationRegistration
+            //    });
+
+            //#endregion
+
             #region 1169
 
             context.RequestEvent.AddOrUpdate(e => e.Id, new RequestEvent
@@ -1328,7 +1492,7 @@ namespace RestChild.DAL.Configurations
                 Status = 1046,
                 Name = "Ожидание прихода заявителя",
                 Commentary =
-                    @"Для подтверждения сведений, указанных в заявлении, Вам необходимо явиться в течение 10 рабочих дней с момента получения этого уведомления по адресу: г. Москва, Малый Харитоньевский переулок д. 6 стр. 3 с 8:00 до 20:00 ежедневно (кроме государственных праздников). Предварительно необходимо  <a href=""https://www.mos.ru/pgu/ru/services/link/2242/"">записаться на приём</a>.
+                    @"Для подтверждения сведений, указанных в заявлении, Вам необходимо явиться в течение 10 рабочих дней с момента получения этого уведомления по адресу: г. Москва, пер. Огородная слобода, д. 9 стр.1 с 8:00 до 20:00 ежедневно (кроме государственных праздников). Предварительно необходимо  <a href=""https://www.mos.ru/pgu/ru/services/link/2242/"">записаться на приём</a>.
 При себе необходимо иметь:
 - Документ, удостоверяющий личность ребёнка;
 - Документ, удостоверяющий личность заявителя;
