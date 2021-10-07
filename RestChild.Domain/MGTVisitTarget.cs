@@ -26,7 +26,7 @@ namespace RestChild.Domain
       [Display(Description = "Уникальный идетификатор")]
       [Required(ErrorMessage = "\"Уникальный идетификатор\" должно быть заполнено")]
       [Key]
-      [DatabaseGenerated(DatabaseGeneratedOption.None)]
+      //[DatabaseGenerated(DatabaseGeneratedOption.None)]
       [DataMember(Name = "id", EmitDefaultValue = false)]
       public virtual long Id { get; set; }
       
@@ -98,6 +98,22 @@ namespace RestChild.Domain
       /// </summary>
       [Display(Description = "Дата синхронизации")]
       [DataMember(Name = "eidSyncDate", EmitDefaultValue = false)]
-      public virtual DateTime? EidSyncDate { get; set; }      
-   }
+      public virtual DateTime? EidSyncDate { get; set; }
+
+        /// <summary>
+        ///  Отдел МГТ
+        /// </summary>
+        [ForeignKey("Department")]
+        [DataMember(Name = "departmentId")]
+        [Display(Description = "Отдел МГТ")]
+        public virtual long? DepartmentId { get; set; }
+
+
+        /// <summary>
+        /// Связь визита и цели визита
+        /// </summary>
+        [Display(Description = "Связь визита и цели визита")]
+        [DataMember(Name = "department", EmitDefaultValue = false)]
+        public virtual MGTDepartment Department { get; set; }
+    }
 }

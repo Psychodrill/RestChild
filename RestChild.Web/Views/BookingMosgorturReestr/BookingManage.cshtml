@@ -65,6 +65,7 @@
 </div>
 @using (Html.BeginForm("SaveBooking", "BookingMosgorturReestr", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
+    @Html.HiddenFor(m => m.DepartmentId)
     @Html.HiddenFor(m => m.Id)
     <legend>Сведения о записи на приём</legend>
     <div class="error">
@@ -88,7 +89,7 @@
 
 
     <div class="visitGrid">
-        <div class="form-group">
+       <div class="form-group">
             <label class="col-sm-2 control-label">Цель обращения <span class="requared">*</span></label>
             <div class="col-md-10">
                 @Html.DropDownListFor(m => m.SelectedTarget, new SelectList(((ICollection<RestChild.Web.Models.MGTWorkingDayWindowModel.BookingTargets>)ViewBag.Targets).Select(ss => new { Val = (long?)ss.Id, Txt = ss.Name }).InsertAt(new { Val = (long?)null, Txt = "-- Не выбрано -- " }), "Val", "Txt"), new { @class = "form-control select2", @tabindex = "3", }).DisableIf(Model.Id > 0)

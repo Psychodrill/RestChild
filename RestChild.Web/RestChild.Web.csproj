@@ -35,7 +35,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>true</UseVSHostingProcess>
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
@@ -256,6 +256,7 @@
     <Compile Include="Controllers\BookingMosgorturReestrController.cs" />
     <Compile Include="Controllers\BookingMosgorturReestrController.Excel.cs" />
     <Compile Include="Controllers\BookingMosgorturTargetsController.cs" />
+    <Compile Include="Controllers\CertificateSearchController.cs" />
     <Compile Include="Controllers\ChildTransferController.cs" />
     <Compile Include="Controllers\CounselorTaskController.cs" />
     <Compile Include="Controllers\CounselorTestController.cs" />
@@ -301,6 +302,7 @@
     <Compile Include="Controllers\WebApi\NewBoutController.cs" />
     <Compile Include="Controllers\WebApi\WebBookingMosgorturReestrController.cs" />
     <Compile Include="Controllers\WebApi\WebBookingMosgorturTargetsController.cs" />
+    <Compile Include="Controllers\WebApi\WebCertificateSearchController.cs" />
     <Compile Include="Controllers\WebApi\WebExchangeController.Br.cs" />
     <Compile Include="Controllers\WebApi\WebFIASController.cs" />
     <Compile Include="Controllers\WebApi\WebFunctioningTypeController.cs">
@@ -356,6 +358,7 @@
     <Compile Include="Models\IdentificationModel.cs" />
     <Compile Include="Models\LimitEditModel.cs" />
     <Compile Include="Models\Limits\ListofLimitsToCopy.cs" />
+    <Compile Include="Models\MGTDepartmentModel.cs" />
     <Compile Include="Models\MGTWorkingDayWindowModel.cs" />
     <Compile Include="Models\MGTWorkingDayWindowTimeIntervalModel.cs" />
     <Compile Include="Models\MGTWorkingDayInfo.cs" />
@@ -2219,6 +2222,8 @@
     <Content Include="Views\Monitoring\EditorTemplates\SmallLeisureInfoGBU.cshtml" />
     <Content Include="Views\Monitoring\SmallLeisureInfo\Table.cshtml" />
     <Content Include="Views\Monitoring\EditorTemplates\Files.cshtml" />
+    <Content Include="Views\CertificateSearch\CertificateList.cshtml" />
+    <Content Include="Views\CertificateSearch\CertificateView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

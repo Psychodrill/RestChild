@@ -75,5 +75,10 @@ namespace RestChild.Web.Models
         ///     Кол-во активных броней
         /// </summary>
         public long BookingCount { get; set; }
+
+        /// <summary>
+        ///     Идентификатор отдела МГТ
+        /// </summary>
+        public long? DepartmentId { get; set; }
     }
 }

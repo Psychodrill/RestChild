@@ -115,30 +115,5 @@ namespace RestChild.Web.Controllers
                 return View(certificate);
             }
 
-        private string OrderString(TypeOfRest t)
-        {
-            var res = string.Empty;
-            while (t != null)
-            {
-                res = t.Name + "\\" + res;
-                t = t.Parent;
-            }
-
-            return res;
-        }
-
-        private TypeOfRest GetLeveled(HashSet<long> ids, TypeOfRest t)
-        {
-            var item = t;
-            var level = 0;
-            while (item != null)
-            {
-                level++;
-                item = item.Parent;
-            }
-
-            return t != null ? new TypeOfRest(t) { MaxAge = level, IsActive = ids.Contains(t.Id) } : null;
-        }
-
     }
 }

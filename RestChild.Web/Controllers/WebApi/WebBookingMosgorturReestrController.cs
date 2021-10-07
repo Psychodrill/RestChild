@@ -114,6 +114,7 @@ namespace RestChild.Web.Controllers.WebApi
                 query.Select(ss => new BookingMosgorturReestrFilterResultModel
                 {
                     Id = ss.Id,
+                    DepartmentId = ss.DepartmentId,
                     Target = ss.Target.Name,
                     Status = ss.Status.Name,
                     DateShedule = ss.VisitCell,
@@ -269,7 +270,7 @@ namespace RestChild.Web.Controllers.WebApi
             var pageNumber = filter?.PageNumber ?? 1;
             var startRecord = (pageNumber - 1) * pageSize;
 
-            var query = UnitOfWork.GetSet<MGTWorkingDay>().AsQueryable().Where(d => !d.IsDeleted);
+            var query = UnitOfWork.GetSet<MGTWorkingDay>().AsQueryable().Where(d => !d.IsDeleted && d.DepartmentId == filter.DepartmentId);
             if (filter != null)
             {
                 var df = new DateTime(filter.Date.Year, filter.Date.Month, 1);
@@ -332,9 +333,9 @@ namespace RestChild.Web.Controllers.WebApi
             return Json(messages);
         }
 
-        internal MGTWorkingDayModel GetModel(long id = 0)
+        internal MGTWorkingDayModel GetModel(long id = 0, long DepartId = 1)
         {
-            var day = UnitOfWork.GetSet<MGTWorkingDay>().FirstOrDefault(ss => ss.Id == id) ?? new MGTWorkingDay();
+            var day = UnitOfWork.GetSet<MGTWorkingDay>().FirstOrDefault(ss => ss.Id == id && ss.DepartmentId == DepartId) ?? new MGTWorkingDay();
 
             var result = new MGTWorkingDayModel
             {
@@ -342,6 +343,7 @@ namespace RestChild.Web.Controllers.WebApi
                 Date = day.Date,
                 TimeInterval = day.WorkingInterval,
                 IsDeleted = day.IsDeleted,
+                DepartmentId = DepartId,
                 BookingCount = day.VisitBookings?.Count(ss =>
                     !(ss.StatusId == (long) MGTVisitBookingStatuses.PrebookingRegistered ||
                       ss.StatusId == (long) MGTVisitBookingStatuses.BookingRegistered ||
@@ -377,10 +379,10 @@ namespace RestChild.Web.Controllers.WebApi
             return result;
         }
 
-        internal bool CheckMgtDayExists(DateTime date)
+        internal bool CheckMgtDayExists(DateTime date, long DepartmentId)
         {
             var d = date.Date;
-            return UnitOfWork.GetSet<MGTWorkingDay>().Any(ss => ss.Date == d && !ss.IsDeleted);
+            return UnitOfWork.GetSet<MGTWorkingDay>().Any(ss => ss.Date == d && !ss.IsDeleted && ss.DepartmentId==DepartmentId);
         }
 
         internal bool CheckMgtDayExistsAndIsBussy(DateTime date)
@@ -406,6 +408,7 @@ namespace RestChild.Web.Controllers.WebApi
                 day.IsDeleted = model.IsDeleted;
                 day.SuoVisitTooEarly = model.SuoVisitTooEarly;
                 day.SuoVisitTooLate = model.SuoVisitTooLate;
+                day.DepartmentId = model.DepartmentId;
 
                 var currentUser = Security.GetCurrentAccount();
 
@@ -513,7 +516,34 @@ namespace RestChild.Web.Controllers.WebApi
                     IsSet = false
                 }).ToList();
         }
+        /// <summary>
+        ///     Извлечь список целей визита по одному отделу
+        /// </summary>
+        /// <returns></returns>
+        internal ICollection<MGTWorkingDayWindowModel.BookingTargets> GetDayTargets(long DepartId)
+        {
+            return UnitOfWork.GetSet<MGTVisitTarget>().Where(sx => sx.IsActive && sx.DepartmentId == DepartId).ToList().Select(sx =>
+                new MGTWorkingDayWindowModel.BookingTargets
+                {
+                    Id = sx.Id,
+                    Name = sx.Name,
+                    IsSet = false
+                }).ToList();
+        }
 
+        /// <summary>
+        ///     Извлечь список отделов
+        /// </summary>
+        internal ICollection<MGTDepartmentModel> GetDepartments()
+        {
+            return UnitOfWork.GetSet<MGTDepartment>().Where(sx=>!sx.IsDeleted).Select(sx =>
+                new MGTDepartmentModel
+                {
+                    Id = sx.Id,
+                    Name = sx.Name,
+                    Description = sx.Description
+                }).ToList();
+        }
         /// <summary>
         ///     Извлечь список льгот
         /// </summary>
@@ -605,6 +635,7 @@ namespace RestChild.Web.Controllers.WebApi
             booking.PINCode = Utils.GeneratePin(result);
             booking.ServiceNumber = serviceNumber;
             booking.MPGURegDate = DateTime.Now;
+            booking.DepartmentId = model.DepartmentId;
             UnitOfWork.SaveChanges();
 
             var declarant = UnitOfWork.GetSet<MGTVisitBookingPerson>().First(d =>
@@ -671,6 +702,7 @@ namespace RestChild.Web.Controllers.WebApi
                 Date = booking.VisitCell.Date,
                 Id = booking.Id,
                 Time = booking.VisitCell.TimeOfDay,
+                DepartmentId = booking.DepartmentId,
                 Children = children,
                 DateOfBirth = declarant.DateOfBirth,
                 Email = declarant.Email,

@@ -101,7 +101,7 @@
         <label class="col-md-2 control-label text-right input-label date-interval-label date-interval-label">Дата выдачи сертификата</label>
         <div class="col-md-3">
             <div class='input-group date datepicker-anytime'>
-                @Html.TextBoxFor(r => r.Request.CertificateDate, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.Request.CertificateDate).FormatEx(string.Empty, string.Empty) })
+                @Html.TextBoxFor(r => r.Request.CertificateDate, new { @class = "form-control input-mask-date-anytime", autocomplete = "off"})
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -145,7 +145,7 @@
                 </span>
             </div>
             <label class="control-label text-right input-label date-interval-label date-interval-label"> по </label>
-            <div class="input-group date datepicker-anytime">
+            <div class='input-group date datepicker-anytime'>
                 @Html.TextBoxFor(m => m.RestDateFromTo, new { @class = "form-control input-mask-date-anytime" })
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>

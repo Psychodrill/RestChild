@@ -6,7 +6,7 @@ namespace RestChild.DAL.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
             CommandTimeout = int.MaxValue;
         }
 

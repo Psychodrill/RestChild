@@ -31,8 +31,8 @@ namespace RestChild.Web.Controllers
         /// <summary>
         ///     Рабочии дни
         /// </summary>
-        [Route("BookingMosgorturReestr/WorkingDays/{Year}/{Month}")]
-        public ActionResult WorkingDays(int Year = 0, int Month = 0, int Page = 1)
+        [Route("BookingMosgorturReestr/WorkingDays/{Year}/{Month}/{DepartmentId}")]
+        public ActionResult WorkingDays(int Year = 0, int Month = 0, int Page = 1, int DepartmentId = 2)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
             if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysView))
@@ -45,9 +45,10 @@ namespace RestChild.Web.Controllers
             {
                 filter.Date = new DateTime(Year, Month, 1);
             }
+            filter.DepartmentId = DepartmentId;
             filter.PageNumber = Page;
             filter.Result = ApiController.GetDays(filter);
-
+            ViewBag.Departments = ApiController.GetDepartments();
             return View(filter);
         }
 
@@ -55,7 +56,7 @@ namespace RestChild.Web.Controllers
         ///     Изменить рабочий день
         /// </summary>
         [HttpGet]
-        public ActionResult DayManage(long id = 0)
+        public ActionResult DayManage(long id = 0, long DepartmentId = 2)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
             if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit))
@@ -63,8 +64,9 @@ namespace RestChild.Web.Controllers
                 return RedirectToAvalibleAction();
             }
 
-            ViewBag.Targets = ApiController.GetDayTargets();
-            var result = ApiController.GetModel(id);
+            ViewBag.Targets = ApiController.GetDayTargets(DepartmentId);
+            ViewBag.Departments = ApiController.GetDepartments();
+            var result = ApiController.GetModel(id, DepartmentId);
             return View(result);
         }
 
@@ -86,7 +88,7 @@ namespace RestChild.Web.Controllers
             if (ApiController.CheckMgtDayExistsAndIsBussy(result.Date))
             {
                 result.ErrorMessage = "<ul><li>Рабочий день не может быть удален. На данный день уже есть записи на прием</li></ul>";
-                ViewBag.Targets = ApiController.GetDayTargets();
+                ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
                 return View("DayManage", result);
             }
 
@@ -114,9 +116,10 @@ namespace RestChild.Web.Controllers
             {
 
             }
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
+            if (true)
             {
-                if (result.Id < 1 && ApiController.CheckMgtDayExists(result.Date))
+                if (result.Id < 1 && ApiController.CheckMgtDayExists(result.Date,(long)result.DepartmentId))
                 {
                     result.ErrorMessage = "<ul><li>На данный день режим работы уже заведён</li></ul>";
                     haserror = true;
@@ -203,9 +206,10 @@ namespace RestChild.Web.Controllers
                 }
             }
 
-            var tgs = ApiController.GetDayTargets();
-            ViewBag.Targets = tgs;
 
+            var tgs = ApiController.GetDayTargets((long)result.DepartmentId);
+            ViewBag.Targets = tgs;
+            UnitOfWork.SaveChanges();
             return View("DayManage", result);
         }
 
@@ -213,13 +217,13 @@ namespace RestChild.Web.Controllers
         ///     Добавить окно
         /// </summary>
         [HttpPost]
-        public ActionResult AddWindow(int index)
+        public ActionResult AddWindow(int index, long Id)
         {
             var newWindow = new Models.MGTWorkingDayWindowModel();
             ViewData.TemplateInfo.HtmlFieldPrefix = string.Format("Windows[{0}]", index);
             ViewBag.Benefits = ApiController.GetChildrenBenefits();
 
-            var tgs = ApiController.GetDayTargets();
+            var tgs = ApiController.GetDayTargets(Id);
             ViewBag.Targets = tgs;
             //newWindow.SelectedTargets = tgs.Select(ss => ss.Id).ToList();
 
@@ -272,11 +276,11 @@ namespace RestChild.Web.Controllers
             result.Date = tdate.Date;
             result.IsDeleted = false;
 
-            if (ApiController.CheckMgtDayExists(result.Date))
+            if (ApiController.CheckMgtDayExists(result.Date,(long)result.DepartmentId))
             {
                 result.ErrorMessage = "<ul><li>На данный день режим работы уже заведён</li></ul>";
 
-                ViewBag.Targets = ApiController.GetDayTargets();
+                ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
                 ViewBag.Benefits = ApiController.GetChildrenBenefits();
 
                 return View(nameof(DayManage), result);
@@ -311,7 +315,7 @@ namespace RestChild.Web.Controllers
             filter.Result = ApiController.Get(filter);
             ViewBag.Targets = ApiController.GetTargets();
             ViewBag.Statuses = ApiController.GetStatuses();
-
+            ViewBag.Departments = ApiController.GetDepartments();
 
             return View("BookingMosgorturReestrList", filter);
         }
@@ -320,7 +324,7 @@ namespace RestChild.Web.Controllers
         /// Вывод view добавления записи на приём
         /// </summary>
         /// <returns></returns>
-        public ActionResult InsertBooking()
+        public ActionResult InsertBooking(long DepartmentId)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
             if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreate))
@@ -329,7 +333,8 @@ namespace RestChild.Web.Controllers
             }
 
             var booking = new Models.BookingMosgorturReestrBooking();
-            ViewBag.Targets = ApiController.GetDayTargets();
+            booking.DepartmentId = DepartmentId;
+            ViewBag.Targets = ApiController.GetDayTargets(DepartmentId);
             ViewBag.Benefits = ApiController.GetChildrenBenefits();
             return View("BookingManage", booking);
         }
@@ -496,7 +501,7 @@ namespace RestChild.Web.Controllers
             var br = new Models.VisitQueue.BookingRepository(UnitOfWork, null);
             model.Times = br.GetVisitGrid(
                 new Models.VisitQueue.BookingVisitGridFilter { DateFrom = model.Date, DateTo = model.Date, VisitSlotsCount = model.SlotsCount, VisitTargetId = model.SelectedTarget })
-                .Where(ss => ss.Date == model.Date)
+                .Where(ss => ss.Date == model.Date && model.Date < DateTime.Now.AddDays(15))
                 .SelectMany(s => s.Cells)
                 .ToDictionary(x => x.TimeOfDay, x => string.Format("{0:HH:mm}", x));
 

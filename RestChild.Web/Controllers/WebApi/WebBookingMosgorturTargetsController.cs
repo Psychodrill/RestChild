@@ -43,5 +43,18 @@ namespace RestChild.Web.Controllers.WebApi
 
             return new CommonPagedList<MGTVisitTarget>(entity, pageNumber, pageSize, totalCount);
         }
+        /// <summary>
+        ///     Извлечь список отделов
+        /// </summary>
+        internal ICollection<MGTDepartmentModel> GetDepartments()
+        {
+            return UnitOfWork.GetSet<MGTDepartment>().Where(sx => !sx.IsDeleted).Select(sx =>
+                  new MGTDepartmentModel
+                  {
+                      Id = sx.Id,
+                      Name = sx.Name,
+                      Description = sx.Description
+                  }).ToList();
+        }
     }
 }

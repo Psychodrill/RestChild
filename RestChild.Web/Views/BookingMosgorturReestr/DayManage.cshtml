@@ -2,82 +2,89 @@
 @using RestChild.Comon.Enumeration
 @using RestChild.Web.Controllers
 @using RestChild.Web.Extensions
+@using RestChild.Web.Models
 @model RestChild.Web.Models.MGTWorkingDayModel
 @{
-   /**/
+    /**/
 
-   ViewBag.Title = "Изменение рабочих дней";
-   Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Изменение рабочих дней";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<MGTDepartmentModel> Departments = ViewBag.Departments;
+    long DepartId = (long)Model.DepartmentId;
 }
 @section styles
 {
-   @Styles.Render("~/Content/css/select2.css")
-   @Styles.Render("~/Content/css/select2-bootstrap.css")
-   @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
 }
 @section scripts
 {
-   <script type="text/javascript" src="~/Scripts/moment.js"></script>
-   <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
-   <script type="text/javascript">
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
       moment.locale('ru');
 
       window.BookingMosgorturWorkDayManageGetObjectHistory = '@Url.Action("GetObjectHistory", "BookingMosgorturReestr")';
-      window.BookingMosgorturWorkDayManageAddWindow = '@Url.Action("AddWindow", "BookingMosgorturReestr")';
+      window.BookingMosgorturWorkDayManageAddWindow = '@Url.Action("AddWindow", "BookingMosgorturReestr",new {Id=Model.DepartmentId})';
       window.BookingMosgorturWorkDayManageAddTimeInterval = '@Url.Action("AddTimeInterval", "BookingMosgorturReestr")';
       window.GetDayInfo = '/api/bookingmosgortur/dayinfo';
 
-   </script>
-   <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
-   @Scripts.Render("~/Scripts/select2.min.js")
-   @Scripts.Render("~/Scripts/select2_locale_ru.js")
-   <script type="text/javascript" src="~/Scripts/Vocabulary/BookingMosgorturWorkDayManage.js"></script>
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/Vocabulary/BookingMosgorturWorkDayManage.js"></script>
 }
 
 <div class="row">
-   <div class="col-md-12">
-      <h2>Изменение рабочих дней</h2>
-      @Html.ActionLink("Вернуться", "WorkingDays")
-   </div>
+    <div class="col-md-12">
+        <h2>
+            Изменение рабочих дней <br />
+            @Departments[(int)DepartId - 1].Name
+        </h2>
+        @Html.ActionLink("Вернуться", "WorkingDays")
+    </div>
 </div>
 
 @if (Model.Id > 0)
 {
-<div class="row form-group">
-   <div class="col-md-4">
-      <button type="button" class="btn btn-default history-button" historyId="@Model.Id"><span class="glyphicon glyphicon-list-alt"></span> История</button>
-      <button type="button" class="btn btn-default transfer-button"><span class="glyphicon glyphicon-copy"></span> Копировать</button>
-   </div>
-   <div class="col-md-offset-6 col-md-2">
-      <div class="well well-sm" style="max-width: 300px; float: right;">
-         Статус: <strong>@(!Model.IsDeleted ? "Активен" : "Удалён")</strong>
-      </div>
-   </div>
-</div>
+    <div class="row form-group">
+        <div class="col-md-4">
+            <button type="button" class="btn btn-default history-button" historyId="@Model.Id"><span class="glyphicon glyphicon-list-alt"></span> История</button>
+            <button type="button" class="btn btn-default transfer-button"><span class="glyphicon glyphicon-copy"></span> Копировать</button>
+        </div>
+        <div class="col-md-offset-6 col-md-2">
+            <div class="well well-sm" style="max-width: 300px; float: right;">
+                Статус: <strong>@(!Model.IsDeleted ? "Активен" : "Удалён")</strong>
+            </div>
+        </div>
+    </div>
 }
 
 @using (Html.BeginForm("SaveDay", "BookingMosgorturReestr", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
-   @Html.HiddenFor(m => m.Id)
-   <legend>Общие сведения о рабочем дне</legend>
-   <div class="error">
-      <div class="error-ul-block">
-         @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-         {<text>@Html.Raw(Model.ErrorMessage)</text>}
-      </div>
-   </div>
-   <div class="form-group">
-      <label class="col-sm-2 control-label">Дата работы <span class="requared">*</span></label>
-      <div class="col-md-10">
-         <div class='input-group date datepicker-anytime'>
-            @Html.TextBoxFor(r => r.Date, new { @class = "form-control input-mask-date-anytime day-date", autocomplete = "off", @Value = Model.NullSafe(m => m.Date).FormatEx(string.Empty, string.Empty) }).ReadOnlyIf(Model.IsDeleted || Model.BookingCount > 0)
-            <span class="input-group-addon">
-               <span class="glyphicon glyphicon-calendar"></span>
-            </span>
-         </div>
-         @Html.ValidationMessageFor(m => m.Date)
-      </div>
-   </div>
+    @Html.HiddenFor(m => m.DepartmentId);
+    @Html.HiddenFor(m => m.Id)
+    <legend>Общие сведения о рабочем дне</legend>
+    <div class="error">
+        <div class="error-ul-block">
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {<text>@Html.Raw(Model.ErrorMessage)</text>}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Дата работы <span class="requared">*</span></label>
+        <div class="col-md-10">
+            <div class='input-group date datepicker-anytime'>
+                @Html.TextBoxFor(r => r.Date, new { @class = "form-control input-mask-date-anytime day-date", autocomplete = "off", @Value = Model.NullSafe(m => m.Date).FormatEx(string.Empty, string.Empty) }).ReadOnlyIf(Model.IsDeleted || Model.BookingCount > 0)
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+            @Html.ValidationMessageFor(m => m.Date)
+        </div>
+    </div>
     <div class="form-group">
         <label class="col-sm-2 control-label">Интервал приёма (минут)</label>
         <div class="col-md-4">
@@ -90,106 +97,106 @@
         </div>
     </div>
 
-   for (int i = 0; i < Model.Windows.Count(); i++)
-   {
-      @Html.EditorFor(m => m.Windows[i], "Window", new { HasBookings = Model.IsDeleted })
-   }
+    for (int i = 0; i < Model.Windows.Count(); i++)
+    {
+        @Html.EditorFor(m => m.Windows[i], "Window", new { HasBookings = Model.IsDeleted })
+    }
 
-   if (!Model.IsDeleted)
-   {
-      <div class="row add-child-row" style="margin-bottom: 8px;">
-         <div class="col-md-offset-2 col-md-3">
-            <button type="button" class="btn btn-primary btn-success add-window"> <i class="glyphicon glyphicon-plus"></i> Добавить окно</button>
-         </div>
-      </div>
-   }
-   if (!Model.IsDeleted)
-   {
-      <div class="row form-group">
-         <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-default btn-primary">
-               <i class="glyphicon glyphicon-ok"></i> Сохранить
-            </button>
-            @if (Model.Id > 0 && !Model.IsDeleted)
-            {
-               <a class="btn btn-default btn-danger" href="@Url.Action("DeleteDay", "BookingMosgorturReestr", new { @Id = Model.Id })">
-                  <i class="glyphicon glyphicon-remove"></i> Удалить
-               </a>
-            }
-         </div>
-      </div>
-   }
+    if (!Model.IsDeleted)
+    {
+        <div class="row add-child-row" style="margin-bottom: 8px;">
+            <div class="col-md-offset-2 col-md-3">
+                <button type="button" class="btn btn-primary btn-success add-window"> <i class="glyphicon glyphicon-plus"></i> Добавить окно</button>
+            </div>
+        </div>
+    }
+    if (!Model.IsDeleted)
+    {
+        <div class="row form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="submit" class="btn btn-default btn-primary">
+                    <i class="glyphicon glyphicon-ok"></i> Сохранить
+                </button>
+                @if (Model.Id > 0 && !Model.IsDeleted)
+                {
+                    <a class="btn btn-default btn-danger" href="@Url.Action("DeleteDay", "BookingMosgorturReestr", new { @Id = Model.Id })">
+                        <i class="glyphicon glyphicon-remove"></i> Удалить
+                    </a>
+                }
+            </div>
+        </div>
+    }
 }
 
-      <div class="modal fade" id="HistoryModal">
-         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-               <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">
-                     <span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span>
-                  </button>
-                  <h4 class="modal-title">История</h4>
-               </div>
-               <div class="modal-body">
-                  <div id="HistoryModalError" align="center" class="hidden">
-                     Ошибка загрузки
-                  </div>
-                  <div id="HistoryModalLoading" align="center">
-                     <img src="~/Content/images/spinner.gif" /> Загрузка истории
-                  </div>
-                  <div id="HistoryModalTable" class="hidden">
-                     <table class="table table-striped table-hover">
+<div class="modal fade" id="HistoryModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span>
+                </button>
+                <h4 class="modal-title">История</h4>
+            </div>
+            <div class="modal-body">
+                <div id="HistoryModalError" align="center" class="hidden">
+                    Ошибка загрузки
+                </div>
+                <div id="HistoryModalLoading" align="center">
+                    <img src="~/Content/images/spinner.gif" /> Загрузка истории
+                </div>
+                <div id="HistoryModalTable" class="hidden">
+                    <table class="table table-striped table-hover">
                         <thead>
-                           <tr>
-                              <th class="text-center" width="5%">№</th>
-                              <th>Событие</th>
-                              <th>Описание</th>
-                              <th>Дата</th>
-                              <th>Автор</th>
-                           </tr>
+                            <tr>
+                                <th class="text-center" width="5%">№</th>
+                                <th>Событие</th>
+                                <th>Описание</th>
+                                <th>Дата</th>
+                                <th>Автор</th>
+                            </tr>
                         </thead>
                         <tbody></tbody>
-                     </table>
-                  </div>
-               </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-               </div>
+                    </table>
+                </div>
             </div>
-         </div>
-      </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-      <div class="modal fade" id="TransferModal">
-         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-               <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">
-                     <span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span>
-                  </button>
-                  <h4 class="modal-title">Перенос</h4>
-               </div>
-               <div class="modal-body">
-                  @using (Html.BeginForm("TransferDay", "BookingMosgorturReestr", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                  {
-                  @Html.Hidden("DayId", Model.Id)
-                  <div class="form-group">
-                     <div class="col-md-offset-2 col-md-4">
-                        <div class='input-group date datepicker-anytime-tdate'>
-                           @Html.TextBox("tdate", null, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off" })
-                           <span class="input-group-addon">
-                              <span class="glyphicon glyphicon-calendar"></span>
-                           </span>
-                        </div>
-                     </div>
-                     <div class="col-md-3">
-                        <button type="submit" class="btn btn-default btn-primary" disabled="disabled"> <i class="glyphicon glyphicon-ok"></i> Копировать</button>
-                     </div>
-                  </div>
-                  }
-                  </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-               </div>
+<div class="modal fade" id="TransferModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span><span class="sr-only">Закрыть</span>
+                </button>
+                <h4 class="modal-title">Перенос</h4>
             </div>
-         </div>
-      </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("TransferDay", "BookingMosgorturReestr", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.Hidden("DayId", Model.Id)
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-4">
+                            <div class='input-group date datepicker-anytime-tdate'>
+                                @Html.TextBox("tdate", null, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off" })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-default btn-primary" disabled="disabled"> <i class="glyphicon glyphicon-ok"></i> Копировать</button>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
