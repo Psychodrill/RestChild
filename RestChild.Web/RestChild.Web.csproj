@@ -331,6 +331,7 @@
     <Compile Include="Logic\AnalyticReport\BenefitsLogic.cs" />
     <Compile Include="Logic\AnalyticReport\ByResidenceServices.cs" />
     <Compile Include="Logic\AnalyticReport\ByTransportServices.cs" />
+    <Compile Include="Logic\AnalyticReport\NotRespondedRequests.cs" />
     <Compile Include="Logic\AnalyticReport\RestWithChildTypeOfRooms.cs" />
     <Compile Include="Logic\AnalyticReport\RoomsFund.cs" />
     <Compile Include="Logic\AnalyticReport\SpecializedCampsByAgeAndRegions.cs" />

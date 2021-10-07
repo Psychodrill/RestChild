@@ -710,6 +710,8 @@ namespace RestChild.Comon.Enumeration
             [Display(Name = "Номерной фонд")] public const string RoomsFund = "B09DFB1D-3CA9-43C1-9616-47883F9CD652";
 
             [Display(Name = "ЕГИССО")] public const string EGISO = "9F94888C-43F9-4422-A7A2-E013EE35849A";
+
+            [Display(Name = "Неудовлетворённые запросы")] public const string NotRespondedRequests = "EF04214C-276B-11EC-9621-0242AC130002";
         }
 
         /// <summary>
