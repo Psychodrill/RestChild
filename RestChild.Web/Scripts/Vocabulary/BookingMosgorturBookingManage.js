@@ -1,5 +1,5 @@
 $(function () {
-    $('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
+    $('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY', maxDate: new Date(new Date().setDate(new Date().getDate() + 15)) });
     $('select').select2();
     $("form").on("click", ".delete-child", function () {
         $(this).closest('div.child').hide();

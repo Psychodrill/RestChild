@@ -175,7 +175,7 @@ namespace RestChild.DAL.Configurations
             //    Id = ++id,
             //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
             //    Status = 1035,
-            //    ReasonCode = null,
+            //    ReasonCode = "2",
             //    Name = "отказ в регистрации заявления",
             //    Commentary =
             //        "Заявление является повторным. \n\r На указанное(ые) в заявлении сопровождающее(ие) лицо(а) уже подано заявление о предоставлении бесплатной путёвки для отдыха и оздоровления.",
@@ -2229,6 +2229,49 @@ namespace RestChild.DAL.Configurations
                 });
 
             #endregion
+
+            //#region Отказ 1080.14
+
+            //context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            //{
+            //    Id = (long)StatusEnum.Reject + 20000,
+            //    IsFirstCompany = true,
+            //    StatusId = (long)StatusEnum.Reject,
+            //    DeclineReasonId = 201904
+            //});
+
+            //context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            //{
+            //    Id = ++id,
+            //    ChainId = (long)StatusEnum.Reject + 20000,
+            //    Status = 10190,
+            //    Name = "Отзыв заявления недоступен",
+            //    Commentary = string.Empty,
+            //    OrderField = id,
+            //    SendEmail = false
+            //},
+            //    new RequestStatusForMpgu
+            //    {
+            //        Id = ++id,
+            //        ChainId = (long)StatusEnum.Reject + 20000,
+            //        Status = 1080,
+            //        ReasonCode = "2",
+            //        Name = "Отказ в предоставление услуги",
+            //        Commentary =
+            //            "Нарушение правил подачи заявления о предоставлении услуг отдыха и оздоровления.",
+            //        OrderField = id,
+            //        SendEmail = true
+            //    });
+
+            //context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+            //    new RequestStatusCshedSendAndSignDocument
+            //    {
+            //        MpguStatusId = id,
+            //        SignNeed = true,
+            //        DocumentPath = DocumentGenerationEnum.NotificationRefuse
+            //    });
+
+           // #endregion
 
             #region Отказ 1075.1 (Путёвка выбрана ПГУ)
 
