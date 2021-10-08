@@ -26,7 +26,6 @@ namespace RestChild.Domain
       [Display(Description = "Уникальный идетификатор")]
       [Required(ErrorMessage = "\"Уникальный идетификатор\" должно быть заполнено")]
       [Key]
-      [DatabaseGenerated(DatabaseGeneratedOption.None)]
       [DataMember(Name = "id", EmitDefaultValue = false)]
       public virtual long Id { get; set; }
       
