@@ -273,7 +273,7 @@ namespace RestChild.Web.Controllers.WebApi
             if (filter != null)
             {
                 var df = new DateTime(filter.Date.Year, filter.Date.Month, 1);
-                var dt = new DateTime(filter.Date.Year, filter.Date.Month, 1).AddDays(15);
+                var dt = new DateTime(filter.Date.Year, filter.Date.Month, 1).AddMonths(1);
                 query = query.Where(ss => ss.Date >= df && ss.Date < dt);
             }
 
