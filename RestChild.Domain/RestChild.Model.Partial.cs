@@ -9364,6 +9364,12 @@ namespace RestChild.Domain
 			Eid = entity.Eid;
 			EidSendStatus = entity.EidSendStatus;
 			EidSyncDate = entity.EidSyncDate;
+			DepartmentId = entity.DepartmentId;
+			if (deep > 0 && entity.Department != null)
+			{
+				Department = new MGTDepartment(entity.Department, deep - 1);
+			}
+
 		}
 
 		public MGTBookingVisit CreateCopy()
@@ -9389,6 +9395,10 @@ namespace RestChild.Domain
 			{
 				res.HistoryLink = new HistoryLink{Id=HistoryLink.Id, Eid=HistoryLink.Eid};
 			}
+			if (Department != null)
+			{
+				res.Department = new MGTDepartment{Id=Department.Id, Eid=Department.Eid};
+			}
 			res.Children = Children?.Select(p=>new MGTBookingVisit {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
 			res.Persons = Persons?.Select(p=>new MGTVisitBookingPerson {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
 			return res;
@@ -9407,6 +9417,46 @@ namespace RestChild.Domain
 			TargetId = entity.TargetId;
 			ParrentId = entity.ParrentId;
 			HistoryLinkId = entity.HistoryLinkId;
+			LastUpdateTick = entity.LastUpdateTick;
+			DepartmentId = entity.DepartmentId;
+		}
+	}
+	public partial class MGTDepartment : ILastUpdateTick
+	{
+		public MGTDepartment()
+		{
+		}
+
+		public MGTDepartment(MGTDepartment entity) : this(entity, null)
+		{
+		}
+
+		public MGTDepartment(MGTDepartment entity, int? deep)
+		{
+			if (entity == null) return;
+
+			Id = entity.Id;
+			Name = entity.Name;
+			Description = entity.Description;
+			IsDeleted = entity.IsDeleted;
+			LastUpdateTick = entity.LastUpdateTick;
+			Eid = entity.Eid;
+			EidSendStatus = entity.EidSendStatus;
+			EidSyncDate = entity.EidSyncDate;
+		}
+
+		public MGTDepartment CreateCopy()
+		{
+			var res = new MGTDepartment(this);
+			return res;
+		}
+
+		public void CopyEntity(MGTDepartment entity)
+		{
+			Id = entity.Id;
+			Name = entity.Name;
+			Description = entity.Description;
+			IsDeleted = entity.IsDeleted;
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
@@ -9701,11 +9751,21 @@ namespace RestChild.Domain
 			Eid = entity.Eid;
 			EidSendStatus = entity.EidSendStatus;
 			EidSyncDate = entity.EidSyncDate;
+			DepartmentId = entity.DepartmentId;
+			if (deep > 0 && entity.Department != null)
+			{
+				Department = new MGTDepartment(entity.Department, deep - 1);
+			}
+
 		}
 
 		public MGTVisitTarget CreateCopy()
 		{
 			var res = new MGTVisitTarget(this);
+			if (Department != null)
+			{
+				res.Department = new MGTDepartment{Id=Department.Id, Eid=Department.Eid};
+			}
 			res.Window = Window?.Select(p=>new MGTWorkingDayWindow {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
 			return res;
 		}
@@ -9718,6 +9778,7 @@ namespace RestChild.Domain
 			Description = entity.Description;
 			IsForMPGU = entity.IsForMPGU;
 			LastUpdateTick = entity.LastUpdateTick;
+			DepartmentId = entity.DepartmentId;
 		}
 	}
 	public partial class MGTWindowWorkingPeriod : ILastUpdateTick
@@ -9792,6 +9853,12 @@ namespace RestChild.Domain
 			Eid = entity.Eid;
 			EidSendStatus = entity.EidSendStatus;
 			EidSyncDate = entity.EidSyncDate;
+			DepartmentId = entity.DepartmentId;
+			if (deep > 0 && entity.Department != null)
+			{
+				Department = new MGTDepartment(entity.Department, deep - 1);
+			}
+
 			WindowCount = entity.WindowCount;
 			BookingCount = entity.BookingCount;
 			BookingMaximum = entity.BookingMaximum;
@@ -9802,6 +9869,10 @@ namespace RestChild.Domain
 		public MGTWorkingDay CreateCopy()
 		{
 			var res = new MGTWorkingDay(this);
+			if (Department != null)
+			{
+				res.Department = new MGTDepartment{Id=Department.Id, Eid=Department.Eid};
+			}
 			res.Windows = Windows?.Select(p=>new MGTWorkingDayWindow {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
 			res.VisitBookings = VisitBookings?.Select(p=>new MGTBookingVisit {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
 			res.WorkingDayHistory = WorkingDayHistory?.Select(p=>new MGTWorkingDaysHistory {Id = p.Id, Eid = p.Eid, EidSyncDate = p.EidSyncDate, EidSendStatus = p.EidSendStatus})?.ToList();
@@ -9817,6 +9888,7 @@ namespace RestChild.Domain
 			SuoVisitTooEarly = entity.SuoVisitTooEarly;
 			SuoVisitTooLate = entity.SuoVisitTooLate;
 			LastUpdateTick = entity.LastUpdateTick;
+			DepartmentId = entity.DepartmentId;
 			WindowCount = entity.WindowCount;
 			BookingCount = entity.BookingCount;
 			BookingMaximum = entity.BookingMaximum;

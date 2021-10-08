@@ -97,6 +97,22 @@ namespace RestChild.Domain
       /// </summary>
       [Display(Description = "Дата синхронизации")]
       [DataMember(Name = "eidSyncDate", EmitDefaultValue = false)]
-      public virtual DateTime? EidSyncDate { get; set; }      
-   }
+      public virtual DateTime? EidSyncDate { get; set; }
+
+        /// <summary>
+        ///  Отдел МГТ
+        /// </summary>
+        [ForeignKey("Department")]
+        [DataMember(Name = "departmentId")]
+        [Display(Description = "Отдел МГТ")]
+        public virtual long? DepartmentId { get; set; }
+
+
+        /// <summary>
+        /// Связь визита и цели визита
+        /// </summary>
+        [Display(Description = "Связь визита и цели визита")]
+        [DataMember(Name = "department", EmitDefaultValue = false)]
+        public virtual MGTDepartment Department { get; set; }
+    }
 }

@@ -126,6 +126,8 @@ namespace RestChild.DAL.Configurations
 
             SecurityJournalType(context);
 
+            MgtDepartment(context);
+
             MgtVisitBookingVisitStatus(context);
 
             MgtVisitTargets(context);
