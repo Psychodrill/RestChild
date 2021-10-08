@@ -274,7 +274,7 @@ namespace RestChild.Web.Controllers.WebApi
             if (filter != null)
             {
                 var df = new DateTime(filter.Date.Year, filter.Date.Month, 1);
-                var dt = new DateTime(filter.Date.Year, filter.Date.Month, 1).AddDays(15);
+                var dt = new DateTime(filter.Date.Year, filter.Date.Month, 1).AddMonths(1);
                 query = query.Where(ss => ss.Date >= df && ss.Date < dt);
             }
 
@@ -559,7 +559,7 @@ namespace RestChild.Web.Controllers.WebApi
         internal string ValidateBookingDay(DateTime date, TimeSpan time, long targetId, int clotCount = 1)
         {
             var d = date.Date;
-            var day = UnitOfWork.GetSet<MGTWorkingDay>().Where(ss => ss.Date == d && !ss.IsDeleted).AsQueryable();
+            var day = UnitOfWork.GetSet<MGTWorkingDay>().Where(ss => ss.Date == d && ss.Date<DateTime.Now.AddDays(15) && !ss.IsDeleted).AsQueryable();
             if (day.Count() != 1)
             {
                 return "Для данной даты бронирования не задано рабочее расписание";

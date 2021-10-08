@@ -25,9 +25,9 @@
 </div>
 <div class="row">
     <div class="col-md-12 form-group">
-        <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(-1).Year, @Month = Model.Date.AddMonths(-1).Month })"><i class="glyphicon glyphicon-chevron-left"></i></a>
+        <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(-1).Year, @Month = Model.Date.AddMonths(-1).Month, @DepartmentId = DepartId })"><i class="glyphicon glyphicon-chevron-left"></i></a>
         <div class="btn btn-default">@_month[Model.Date.Month - 1] @Model.Date.Year</div>
-        <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(1).Year, @Month = Model.Date.AddMonths(1).Month })"><i class="glyphicon glyphicon-chevron-right"></i></a>
+        <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(1).Year, @Month = Model.Date.AddMonths(1).Month, @DepartmentId = DepartId })"><i class="glyphicon glyphicon-chevron-right"></i></a>
     </div>
     <div class="col-md-12 form-group">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -38,7 +38,7 @@
             {
                 if (d.Id > 1)
                 {
-            <li><a href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @DepartmentId = d.Id })">@d.Name</a></li>
+            <li><a href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.Year, @Month = Model.Date.Month, @DepartmentId = d.Id })">@d.Name</a></li>
                 }
             }
         </ul>
