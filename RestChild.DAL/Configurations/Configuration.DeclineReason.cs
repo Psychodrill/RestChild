@@ -54,6 +54,20 @@ namespace RestChild.DAL.Configurations
 
             context.SaveChanges();
 
+            //2021-2022
+            context.DeclineReason.AddOrUpdate(a => a.Id, new DeclineReason
+            {
+                Id = 202101,
+                IsActive = true,
+                Name =
+                        "Нарушение правил подачи заявления о предоставлении услуг отдыха и оздоровления",
+                IsManual = true,
+                FirstStage = true,
+                SecondStage = true,
+                StatusId = (long)StatusEnum.Reject
+            });
+            context.SaveChanges();
+
             // 2020 - 2021
             context.DeclineReason.AddOrUpdate(a => a.Id, new DeclineReason
                 {
@@ -1052,7 +1066,8 @@ namespace RestChild.DAL.Configurations
                 d.Id >= 201751 && d.Id <= 201758 ||
                 d.Id > 201800 && d.Id <= 201912 ||
                 d.Id > 201918 && d.Id <= 201919 ||
-                d.Id > 202000 && d.Id <= 202006
+                d.Id > 202000 && d.Id <= 202006 ||
+                d.Id > 202100 && d.Id <= 202110
             ).ToList();
             foreach (var tr in trs)
             {

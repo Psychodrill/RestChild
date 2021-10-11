@@ -2228,50 +2228,7 @@ namespace RestChild.DAL.Configurations
                     DocumentPath = DocumentGenerationEnum.NotificationRefuse
                 });
 
-            #endregion
-
-            //#region Отказ 1080.14
-
-            //context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
-            //{
-            //    Id = (long)StatusEnum.Reject + 20000,
-            //    IsFirstCompany = true,
-            //    StatusId = (long)StatusEnum.Reject,
-            //    DeclineReasonId = 201904
-            //});
-
-            //context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
-            //{
-            //    Id = ++id,
-            //    ChainId = (long)StatusEnum.Reject + 20000,
-            //    Status = 10190,
-            //    Name = "Отзыв заявления недоступен",
-            //    Commentary = string.Empty,
-            //    OrderField = id,
-            //    SendEmail = false
-            //},
-            //    new RequestStatusForMpgu
-            //    {
-            //        Id = ++id,
-            //        ChainId = (long)StatusEnum.Reject + 20000,
-            //        Status = 1080,
-            //        ReasonCode = "2",
-            //        Name = "Отказ в предоставление услуги",
-            //        Commentary =
-            //            "Нарушение правил подачи заявления о предоставлении услуг отдыха и оздоровления.",
-            //        OrderField = id,
-            //        SendEmail = true
-            //    });
-
-            //context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
-            //    new RequestStatusCshedSendAndSignDocument
-            //    {
-            //        MpguStatusId = id,
-            //        SignNeed = true,
-            //        DocumentPath = DocumentGenerationEnum.NotificationRefuse
-            //    });
-
-           // #endregion
+            #endregion           
 
             #region Отказ 1075.1 (Путёвка выбрана ПГУ)
 
@@ -2724,6 +2681,48 @@ namespace RestChild.DAL.Configurations
                 OrderField = id,
                 SendEmail = false
             });
+
+            #endregion
+
+            #region Отказ 1080.14
+
+            context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            {
+                Id = (long)StatusEnum.Reject + 160000,
+                StatusId = (long)StatusEnum.Reject,
+                DeclineReasonId = 202101
+            });
+
+            context.RequestStatusForMpgu.AddOrUpdate(a => a.Id,  new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.Ranging,
+                Status = 10190,
+                Name = "Отзыв заявления недоступен",
+                Commentary = string.Empty,
+                OrderField = id,
+                SendEmail = false
+            },
+                new RequestStatusForMpgu
+                {
+                    Id = ++id,
+                    ChainId = (long)StatusEnum.Reject + 160000,
+                    Status = 1080,
+                    ReasonCode = "14",
+                    Name = "Отказ в предоставление услуги",
+                    Commentary =
+                        "Нарушение правил подачи заявления о предоставлении услуг отдыха и оздоровления.",
+                    OrderField = id,
+                    SendEmail = true
+                });
+
+            context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+                new RequestStatusCshedSendAndSignDocument
+                {
+                    MpguStatusId = id,
+                    SignNeed = true,
+                    DocumentPath = DocumentGenerationEnum.NotificationRefuse
+                });
 
             #endregion
         }
