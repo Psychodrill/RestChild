@@ -30,6 +30,7 @@ namespace RestChild.Web.Logic
 			BenefitFamilyRestByBoutCompleteness,
 			ByResidenceServices,
 			ByTransportServices
+
 		};
 
 		public HashSet<string> DistrictFilter => new HashSet<string>
@@ -126,12 +127,19 @@ namespace RestChild.Web.Logic
 
         public HashSet<string> DateFormingFilter => new HashSet<string>
         {
-            EGISO
+            EGISO,
+            NotRespondedRequests
         };
 
         public HashSet<string> NextYearsIncludedFilter => new HashSet<string>
         {
             RoomsFund
         };
+
+        public HashSet<string> ExchangeRequestsFilter => new HashSet<string>
+        {
+            NotRespondedRequests
+        };
+
     }
 }

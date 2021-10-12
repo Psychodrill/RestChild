@@ -308,7 +308,7 @@
             </ul>
         </li>
     }
-    @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.AnalyticReports.EGISO, AccessRightEnum.AnalyticReports.BenefitRestChildByAgeAndSex, AccessRightEnum.AnalyticReports.BenefitFamilyRestByAgeAndSex, AccessRightEnum.AnalyticReports.BenefitRestChildByCategoryAndDistrict, AccessRightEnum.AnalyticReports.BenefitFamilyRestByCategoryAndDistrict, AccessRightEnum.AnalyticReports.BenefitRestChildByBoutCompleteness, AccessRightEnum.AnalyticReports.BenefitFamilyRestByBoutCompleteness, AccessRightEnum.AnalyticReports.ByTransportServices, AccessRightEnum.AnalyticReports.ByResidenceServices, AccessRightEnum.AnalyticReports.SpecializedCampsByOrganizations, AccessRightEnum.AnalyticReports.SpecializedCampsByVedomstvo, AccessRightEnum.AnalyticReports.SpecializedCampsByAgeAndRegions, AccessRightEnum.AnalyticReports.RestWithChildTypeOfRooms}))
+    @if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.AnalyticReports.EGISO, AccessRightEnum.AnalyticReports.BenefitRestChildByAgeAndSex, AccessRightEnum.AnalyticReports.BenefitFamilyRestByAgeAndSex, AccessRightEnum.AnalyticReports.BenefitRestChildByCategoryAndDistrict, AccessRightEnum.AnalyticReports.BenefitFamilyRestByCategoryAndDistrict, AccessRightEnum.AnalyticReports.BenefitRestChildByBoutCompleteness, AccessRightEnum.AnalyticReports.BenefitFamilyRestByBoutCompleteness, AccessRightEnum.AnalyticReports.ByTransportServices, AccessRightEnum.AnalyticReports.ByResidenceServices, AccessRightEnum.AnalyticReports.SpecializedCampsByOrganizations, AccessRightEnum.AnalyticReports.SpecializedCampsByVedomstvo, AccessRightEnum.AnalyticReports.SpecializedCampsByAgeAndRegions, AccessRightEnum.AnalyticReports.RestWithChildTypeOfRooms, AccessRightEnum.AnalyticReports.NotRespondedRequests}))
     {
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Отчеты <span class="caret"></span></a>
@@ -369,7 +369,7 @@
                 {
                     <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.RoomsFund), "BaseReport", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.RoomsFund }, new { })</li>
                 }
-                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.NotRespondedRequests))
+                @if (true@*Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.NotRespondedRequests)*@)
                 {
                     <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.NotRespondedRequests), "BaseReport", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.NotRespondedRequests }, new { })</li>
                 }

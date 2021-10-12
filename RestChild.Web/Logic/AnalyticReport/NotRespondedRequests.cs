@@ -22,8 +22,8 @@ namespace RestChild.Web.Logic.AnalyticReport
         public static BaseExcelTable GetNotRespondedRequests(this IUnitOfWork unitOfWork, AnalyticReportFilter filter)
         {
 
-            var requests = unitOfWork.GetSet<ExchangeBaseRegistry>().Where(row => (row.ResponseGuid == null || row.ResponseGuid == string.Empty) &&
-                                                                                  (row.ExchangeBaseRegistryTypeId == -1 || //Запрос наличия заключения ЦПМПК
+            var requests = unitOfWork.GetSet<ExchangeBaseRegistry>().Where(row => row.ResponseGuid != null && (
+                                                                                  row.ExchangeBaseRegistryTypeId == -1 || //Запрос наличия заключения ЦПМПК
                                                                                   row.ExchangeBaseRegistryTypeId == 10209 || //Запрос паспортного досье по СНИЛС
                                                                                   row.ExchangeBaseRegistryTypeId == 8255 ||// Запрос СНИЛС по ФИО
                                                                                   row.ExchangeBaseRegistryTypeId == 260 ||//Наличие льготной категории
@@ -34,7 +34,7 @@ namespace RestChild.Web.Logic.AnalyticReport
                                                                                   row.ExchangeBaseRegistryTypeId == 22 ||//Проверка родства
                                                                                   row.ExchangeBaseRegistryTypeId == 10244))// Проверка СНИЛС
                                                                                   .AsQueryable();
-            
+
             if (filter?.DateFormingBegin.HasValue ?? false)
             {
                 requests = requests.Where(row => row.SendDate >= filter.DateFormingBegin.Value);
@@ -43,161 +43,36 @@ namespace RestChild.Web.Logic.AnalyticReport
             {
                 requests = requests.Where(row => row.SendDate <= filter.DateFormingEnd.Value);
             }
+            if (filter?.ExchangeBaseRegistryTypeId.HasValue ??false)
+            {
+                requests = requests.Where(row => row.ExchangeBaseRegistryTypeId == filter.ExchangeBaseRegistryTypeId);
+            }
 
-            var applicants = unitOfWork.GetSet<Applicant>().Where(a => requests.Any(r => r.ApplicantId==a.Id)).ToList();
-            
-            var childs = unitOfWork.GetSet<Child>().Where(c => requests.Any(r => r.ChildId == c.Id)).ToList();
-            var applications = unitOfWork.GetSet<Request>().Where(app => applicants.Any(a => a.Id==app.Id)).ToList();
+            var applicants = unitOfWork.GetSet<Applicant>().Where(a => requests.Any(r => r.ApplicantId == a.Id)).AsQueryable();
 
+            var childs = unitOfWork.GetSet<Child>().Where(c => requests.Any(r => r.ChildId == c.Id)).AsQueryable();
+            var applications = unitOfWork.GetSet<Request>().Where(app => applicants.Any(a => a.Id == app.ApplicantId)).AsQueryable();
 
+            var requestTypes = unitOfWork.GetSet<ExchangeBaseRegistryType>();
 
-            //var results = requests.Join(childs, r => r.ChildId, c => c.Id, (r, c) => new NotRespondedRequestsRow { RequestId = r.Id, Names = c.FirstName })
-            //                      .Join(applicants, r => r.ApplicantId, a => a.Id, (r, a) => new NotRespondedRequestsRow { RequestId = r.RequestId, Names = a.FirstName, })
-            //                      .Join(applications, r => r.ApplicantId, a => a.ApplicantId, (r, a) => new NotRespondedRequestsRow { RequestId = r.RequestId, Names = a.FirstName, })
+            //int checkr = requests.Count();
+            //int checka = applicants.Count();
+            //int checkapps = applications.Count();
 
-
-            //var results = requests.Join(applicants, r => r.ApplicantId, a => a.Id, (r, a) => new NotRespondedRequestsRow { RequestId = r.Id,RequestNumber=a.RequestN, Names = a.FirstName,  });
-            //var results = requests.
+            var results = requests.Join(applicants, r => r.ApplicantId, a => a.Id, (r, a) => new NotRespondedRequestsRow { RequestId = r.Id, Child = r.Child, Applicant = r.Applicant, ApplicantId= a.Id, RequestNumber = null, TypeOfRest = null, ExchangeBaseRegistryTypeName = r.ExchangeBaseRegistryType.Name, RequestDateTime = r.SendDate })
+                                  .Join(applications, re => re.ApplicantId, ap => ap.ApplicantId, (re, ap) => new NotRespondedRequestsRow { RequestId = re.RequestId, Child = re.Child, Applicant = re.Applicant, ApplicantId =re.ApplicantId, RequestNumber = ap.RequestNumber, TypeOfRest = ap.TypeOfRest.Name, ExchangeBaseRegistryTypeName = re.ExchangeBaseRegistryTypeName, RequestDateTime = re.RequestDateTime }).ToList();
 
             var columns = new List<ExcelColumn<NotRespondedRequestsRow>>
             {
+
                 new ExcelColumn<NotRespondedRequestsRow> {Title = "Номер заявления", Func = r => r.RequestNumber},
                 new ExcelColumn<NotRespondedRequestsRow> {Title = "Цель обращения", Func = r => r.TypeOfRest},
                 new ExcelColumn<NotRespondedRequestsRow> {Title = "ФИО(того, на кого запрос)", Func = r => r.Names},
-                new ExcelColumn<NotRespondedRequestsRow> {Title = "Запрос", Func = r => r.ExchangeBaseRegistryType},
-                new ExcelColumn<NotRespondedRequestsRow> {Title = "Дата запроса", Func = r => r.RequestDateTime}
+                new ExcelColumn<NotRespondedRequestsRow> {Title = "Запрос", Func = r => r.ExchangeBaseRegistryTypeName},
+                new ExcelColumn<NotRespondedRequestsRow> {Title = "Дата запроса", Func = r => r.RequestDateTime},
+
 
             };
-
-
-            var results = new List<NotRespondedRequestsRow>();
-
-            foreach (var req in requests)
-            {
-
-            }
-            //foreach (var req in requsts.ToList())
-            //{
-            //    if (req.Child?.Any() ?? false)
-            //    {
-            //        foreach (var c in req.Child)
-            //        {
-            //            var summ = string.Empty;
-            //            if (comps.Contains(req.TypeOfRestId.Value))
-            //            {
-            //                summ = c.AmountOfCompensation?.ToString("C");
-            //            }
-            //            else
-            //            {
-            //                summ = unitOfWork.GetSet<AverageRestPrice>()
-            //                    .Where(ss => ss.YearOfRestId == req.YearOfRestId && ss.TypeOfRestId == req.TypeOfRestId)
-            //                    .Select(ss => ss.Price).FirstOrDefault().ToString("C");
-            //            }
-
-            //            results.Add(new EGISORow
-            //            {
-            //                RequestNumber = req.RequestNumber,
-            //                RequestDate = req.DateRequest,
-            //                RequestStatus = req.Status.Name,
-            //                RequestDateIssured = req.DateChangeStatus,
-            //                TypeOfRest = req.TypeOfRest.Name,
-            //                FirstName = c.FirstName,
-            //                LastName = c.LastName,
-            //                MiddleName = c.MiddleName,
-            //                Sex = c.Male ? "Мужской" : "Женский",
-            //                DateOfBirth = c.DateOfBirth,
-            //                SNILS = c.Snils,
-            //                DocumentType = c.DocumentType.Name,
-            //                DocumentSeria = c.DocumentSeria,
-            //                DocumentNumber = c.DocumentNumber,
-            //                DocumentDate = c.DocumentDateOfIssue,
-            //                DocumentIssured = c.DocumentSubjectIssue,
-            //                TypeOfRestriction = c.TypeOfRestriction?.Name,
-            //                TypeOfSubRestriction = c.TypeOfSubRestriction?.Name,
-            //                BenefitType = c.BenefitType?.Name,
-            //                RequestSumm = summ
-            //            });
-            //        }
-            //    }
-
-            //    if (req.InformationVouchers?.Any() ?? false)
-            //    {
-            //        foreach (var iv in req.InformationVouchers)
-            //        {
-            //            foreach (var ap in iv.AttendantsPrice)
-            //            {
-            //                if (req.ApplicantId == ap.ApplicantId)
-            //                {
-            //                    var summ = string.Empty;
-            //                    if (comps.Contains(req.TypeOfRestId.Value))
-            //                    {
-            //                        summ = ap.AmountOfCompensation?.ToString("C");
-            //                    }
-
-            //                    results.Add(new EGISORow
-            //                    {
-            //                        RequestNumber = req.RequestNumber,
-            //                        RequestDate = req.DateRequest,
-            //                        RequestStatus = req.Status.Name,
-            //                        RequestDateIssured = req.DateChangeStatus,
-            //                        TypeOfRest = req.TypeOfRest.Name,
-            //                        FirstName = req.Applicant.FirstName,
-            //                        LastName = req.Applicant.LastName,
-            //                        MiddleName = req.Applicant.MiddleName,
-            //                        Sex = (req.Applicant.Male ?? true) ? "Мужской" : "Женский",
-            //                        DateOfBirth = req.Applicant.DateOfBirth,
-            //                        SNILS = req.Applicant.Snils,
-            //                        DocumentType = req.Applicant.DocumentType?.Name,
-            //                        DocumentSeria = req.Applicant.DocumentSeria,
-            //                        DocumentNumber = req.Applicant.DocumentNumber,
-            //                        DocumentDate = req.Applicant.DocumentDateOfIssue,
-            //                        DocumentIssured = req.Applicant.DocumentSubjectIssue,
-            //                        BenefitType = req.Applicant.BenefitType?.Name,
-            //                        RequestSumm = summ
-            //                    });
-            //                    break;
-            //                }
-            //            }
-            //        }
-            //    }
-
-
-            //    if (req.Attendant?.Any() ?? false)
-            //    {
-            //        foreach (var a in req.Attendant)
-            //        {
-            //            var summ = string.Empty;
-            //            if (comps.Contains(req.TypeOfRestId.Value))
-            //            {
-            //                summ = req.InformationVouchers.SelectMany(sx => sx.AttendantsPrice)
-            //                    .Where(sx => sx.ApplicantId == a.Id).Select(sx => sx.AmountOfCompensation)
-            //                    .FirstOrDefault()?.ToString("C");
-            //            }
-
-            //            results.Add(new EGISORow
-            //            {
-            //                RequestNumber = req.RequestNumber,
-            //                RequestDate = req.DateRequest,
-            //                RequestStatus = req.Status.Name,
-            //                RequestDateIssured = req.DateChangeStatus,
-            //                TypeOfRest = req.TypeOfRest.Name,
-            //                FirstName = a.FirstName,
-            //                LastName = a.LastName,
-            //                MiddleName = a.MiddleName,
-            //                Sex = (a.Male ?? true) ? "Мужской" : "Женский",
-            //                DateOfBirth = a.DateOfBirth,
-            //                SNILS = a.Snils,
-            //                DocumentType = a.DocumentType?.Name,
-            //                DocumentSeria = a.DocumentSeria,
-            //                DocumentNumber = a.DocumentNumber,
-            //                DocumentDate = a.DocumentDateOfIssue,
-            //                DocumentIssured = a.DocumentSubjectIssue,
-            //                BenefitType = a.BenefitType?.Name,
-            //                RequestSumm = summ
-            //            });
-            //        }
-            //    }
-            //}
 
             return new ExcelTable<NotRespondedRequestsRow>(columns, results.OrderBy(ss => ss.RequestNumber));
         }
@@ -209,13 +84,28 @@ namespace RestChild.Web.Logic.AnalyticReport
 
             public string TypeOfRest { get; set; }
 
-            public string Names { get; set; }
+            public string Names
+            {
+                get
+                {
+                    return string.Concat(Applicant?.LastName,
+                                        Applicant?.FirstName,
+                                        Applicant?.MiddleName,
+                                        Child?.LastName,
+                                        Child?.FirstName,
+                                        Child?.MiddleName);
+                }
+            }
 
-            public string ExchangeBaseRegistryType { get; set; }
+            public Child Child {get; set;}
 
-            public DateTime RequestDateTime { get; set; }
+            public Applicant Applicant {get; set;}
 
-            public int ApplicantId { get; set; }
+            public string ExchangeBaseRegistryTypeName { get; set; }
+
+            public DateTime? RequestDateTime { get; set; }
+
+            public long ApplicantId { get; set; }
 
             public int ChildId { get; set; }
 

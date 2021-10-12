@@ -29,10 +29,10 @@ namespace RestChild.Web.Controllers
         [Route("AnalyticReport/{ReportType}")]
         public ActionResult BaseReport(string ReportType)
         {
-            if (!ReportHasAccess(ReportType))
-            {
-                return RedirectToAvalibleAction();
-            }
+            //if (!ReportHasAccess(ReportType))
+            //{
+            //    return RedirectToAvalibleAction();
+            //}
 
             ApiRestTypeController.SetUnitOfWorkInRefClass(UnitOfWork);
             var years = UnitOfWork.GetSet<YearOfRest>().ToArray().Select(i => new YearOfRest(i)).ToArray();
@@ -50,7 +50,17 @@ namespace RestChild.Web.Controllers
                     UnitOfWork.GetSet<TypeOfTransport>().OrderBy(c => c.Name).ToList()
                         .Select(c => new TypeOfTransport(c)).ToList(),
                 TypeOfRests = ApiRestTypeController.GetForTour().ToList(),
-                Statuses = UnitOfWork.GetSet<Status>().OrderBy(c => c.Id).ToList()
+                Statuses = UnitOfWork.GetSet<Status>().OrderBy(c => c.Id).ToList(),
+                ExchangeBaseRegistryTypes=UnitOfWork.GetSet<ExchangeBaseRegistryType>().Where(row => row.Id == -1 || //Запрос наличия заключения ЦПМПК
+                                                                                                      row.Id == 10209 || //Запрос паспортного досье по СНИЛС
+                                                                                                      row.Id == 8255 ||// Запрос СНИЛС по ФИО
+                                                                                                      row.Id == 260 ||//Наличие льготной категории
+                                                                                                      row.Id == 10211 ||//Получение регистрации по месту жительства
+                                                                                                      row.Id == 3091 ||//Предоставление из ЕГР ЗАГС сведений об актах гражданского состояния
+                                                                                                      row.Id == 10214 ||//Проверка адреса регистрации ребенка (МВД)
+                                                                                                      row.Id == -2 ||//Проверка законного представительства внутри АИС ДО
+                                                                                                      row.Id == 22 ||//Проверка родства
+                                                                                                      row.Id == 10244).ToList()// Проверка СНИЛС.ToList()
             };
 
             FilterVisibility(analyticReportFilter);
@@ -142,6 +152,11 @@ namespace RestChild.Web.Controllers
             {
                 return Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.AnalyticReports.RoomsFund});
             }
+            else if (string.Equals(reportType, AccessRightEnum.AnalyticReports.NotRespondedRequests,
+                System.StringComparison.OrdinalIgnoreCase))
+            {
+                return Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.AnalyticReports.NotRespondedRequests });
+            }
 
             return true;
         }
@@ -185,6 +200,9 @@ namespace RestChild.Web.Controllers
 
             if (FilterRepository.NextYearsIncludedFilter.Contains(filter.ReportType))
                 filter.NextYearsIncludedVisibility = true;
+
+            if (FilterRepository.ExchangeRequestsFilter.Contains(filter.ReportType))
+                filter.ExchangeRequestVisibility = true;
 
             filter.TypeOfRestVisibility = FilterRepository.TypeOfRestFilter.Contains(filter.ReportType);
             filter.ArrivalVisibility = FilterRepository.ArrivalFilter.Contains(filter.ReportType);
