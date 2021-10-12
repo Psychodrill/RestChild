@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using RestChild.Comon.Enumeration;
+using RestChild.Comon.Exchange.EGRZagz;
 using RestChild.Comon.Exchange.Passport;
 using RestChild.Comon.Exchange.PassportRegistration;
 using RestChild.Comon.Exchange.Snils;
@@ -88,6 +89,11 @@ namespace RestChild.Comon.Dto
         ///     ответ по ЗАГС от СМЭВ
         /// </summary>
         public informResponse SmevZagzResponse { get; set; }
+
+        /// <summary>
+        ///     ответ по ЗАГС от СМЭВ v3
+        /// </summary>
+        public ROGDINFResponse EGRZagzResponse { get; set; }
 
         /// <summary>
         ///     ответ по паспортам

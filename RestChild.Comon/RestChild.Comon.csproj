@@ -262,6 +262,7 @@
       <DependentUpon>camps.xsd</DependentUpon>
     </Compile>
     <Compile Include="Exchange\Cpmpk\CpmpkResponseDto.cs" />
+    <Compile Include="Exchange\EGRZagz\zags-rogdinf-types.cs" />
     <Compile Include="Exchange\ExchangePacket.cs" />
     <Compile Include="Exchange\FRI\FRIResponse.cs" />
     <Compile Include="Exchange\FRI\personDataRequest.cs" />
@@ -278,6 +279,7 @@
     <Compile Include="Exchange\StatusMessage.cs" />
     <Compile Include="Exchange\Zagz\zags-inform-types.cs" />
     <Compile Include="Extensions\DbSetExtensions.cs" />
+    <Compile Include="Extensions\EGRZagzExtension.cs" />
     <Compile Include="Extensions\RequestHelpers.cs" />
     <Compile Include="Extensions\SmevZagzExtension.cs" />
     <Compile Include="GeneralExtensions.cs" />
@@ -341,6 +343,12 @@
     <EmbeddedResource Include="Exchange\camps.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="Exchange\EGRZagz\commons\zags-rogdinf-types.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Exchange\EGRZagz\zags-rogdinf-ru-root.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Exchange\NSIDeltaService.xsd">
       <SubType>Designer</SubType>
     </None>

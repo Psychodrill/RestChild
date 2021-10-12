@@ -9,6 +9,7 @@ using RestChild.Comon;
 using RestChild.Comon.Dto;
 using RestChild.Comon.Enumeration;
 using RestChild.Comon.Exchange.Cpmpk;
+using RestChild.Comon.Exchange.EGRZagz;
 using RestChild.Comon.Exchange.Passport;
 using RestChild.Comon.Exchange.PassportRegistration;
 using RestChild.Comon.Exchange.Snils;
@@ -625,6 +626,67 @@ namespace RestChild.Extensions.Extensions
                                 res.Approved = res.SmevZagzResponse.СведРегРожд?.СвидетРожд?.Any(d =>
                                     d.СерияСвидет?.Trim().ToLower() == child.DocumentSeria?.Trim().ToLower()
                                     && d.НомерСвидет?.Trim().ToLower() == child.DocumentNumber?.Trim().ToLower());
+                            }
+                        }
+                    }
+                }
+
+                //проверка на родство по СМЭВ v3
+                if (res.Type == ExchangeBaseRegistryTypeEnum.GetEGRZAGS)
+                {
+                    var xmlData = resultData.FirstOrDefault()?.OuterXml;
+                    if (!string.IsNullOrWhiteSpace(xmlData))
+                    {
+                        res.EGRZagzResponse = Serialization.Deserialize<ROGDINFResponse>(xmlData);
+                        if (res.Child is Child child)
+                        {
+                            //если есть ребенок то это заявление и по дефолту не подтверждено
+                            res.Approved = false;
+                            var requestChild = child.Request;
+
+                            // если есть доверенность то дальше можно не проверять
+                            if (requestChild.AgentApplicant == true
+                                || requestChild.Attendant.Any(a => a.IsProxy))
+                            {
+                                return res;
+                            }
+
+                            // получили ФИО отца и матери
+                            var parents = res.EGRZagzResponse.СведОтветАГС[0]?.СведРегРожд[0]?.ПрдСведРег;
+                            var father = parents?.Item2?.GetFather();
+                            var mother = parents?.Item1?.GetMother();
+
+                            var fatherName = father?.ФИО?.GetFio().ToLower();
+                            var motherName = mother?.ФИО?.GetFio().ToLower();
+
+                            // фио заявителя
+                            var applicantName =
+                                $"{requestChild.Applicant.LastName} {requestChild.Applicant.FirstName} {requestChild.Applicant.MiddleName}"
+                                    .Trim().ToLower();
+                            if (applicantName != fatherName && applicantName != motherName)
+                            {
+                                //если заявитель не папа и не мама то не подтвердили
+                                return res;
+                            }
+
+                            foreach (var attendant in requestChild.Attendant.ToList())
+                            {
+                                // фио сопровождающего
+                                var attendantName = $"{attendant.LastName} {attendant.FirstName} {attendant.MiddleName}"
+                                    .Trim().ToLower();
+                                //если сопровождающие не папа и не мама то не подтвердили
+                                if (attendantName != fatherName && attendantName != motherName)
+                                {
+                                    return res;
+                                }
+                            }
+
+                            if (child.DocumentTypeId == (long)DocumentTypeEnum.CertOfBirth)
+                            {
+                                // если нашли документ удостоверяющий личность то не подтвердили
+                                res.Approved = res.EGRZagzResponse.СведОтветАГС[0]?.СведРегРожд[0]?.СвидетРожд.Any(d =>
+                                   ((string)d.Item)?.Trim().ToLower() == child.DocumentSeria?.Trim().ToLower()
+                                   && ((string)d.Item1)?.Trim().ToLower() == child.DocumentNumber?.Trim().ToLower());
                             }
                         }
                     }
