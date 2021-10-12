@@ -60,7 +60,7 @@ namespace RestChild.Web.Controllers
             {
                 return RedirectToAvalibleAction();
             }
-
+            ViewBag.Departments = ApiController.GetDepartments();
             return View("BookingTargetEdit", new MGTVisitTarget());
         }
 
@@ -74,7 +74,7 @@ namespace RestChild.Web.Controllers
             {
                 return RedirectToAvalibleAction();
             }
-
+            ViewBag.Departments = ApiController.GetDepartments();
             return View("BookingTargetEdit", UnitOfWork.GetById<MGTVisitTarget>(id));
         }
 
@@ -100,14 +100,13 @@ namespace RestChild.Web.Controllers
             if (b == null)
             {
                 b = new MGTVisitTarget();
-                b.Id = UnitOfWork.GetSet<MGTVisitTarget>().Max(s => s.Id) + 1;
+                //b.Id = UnitOfWork.GetSet<MGTVisitTarget>().Max(s => s.Id) + 1;
             }
-
             b.Name = VisitTarget.Name;
             b.IsActive = VisitTarget.IsActive;
             b.Description = VisitTarget.Description;
             b.IsForMPGU = VisitTarget.IsForMPGU;
-
+            b.DepartmentId = VisitTarget.DepartmentId;
             if (VisitTarget.Id < 1)
             {
                 UnitOfWork.AddEntity(b);

@@ -2,186 +2,205 @@
 @using PagedList.Mvc
 @using RestChild.Comon
 @using RestChild.Domain
+@using RestChild.Web.Models
 @model RestChild.Extensions.Filter.BookingMosgorturReestrFilterModel
 @{
-   ViewBag.Title = "Реестр записи на прием";
-   Layout = "~/Views/Shared/_SearchLayout.cshtml";
-   ViewBag.SearchAction = "Search";
-   ViewBag.Controller = "BookingMosgorturReestr";
-   ViewBag.Caption = "Реестр записи на прием";
-   ViewBag.SearchPanelCaption = "Поиск";
-   ViewBag.NeedInsertButton = RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCreate);
-   ViewBag.InsertButtonCaption = "Произвести запись";
-   ViewBag.InsertAction = "InsertBooking";
+    ViewBag.Title = "Реестр записи на прием";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.SearchAction = "Search";
+    ViewBag.Controller = "BookingMosgorturReestr";
+    ViewBag.Caption = "Реестр записи на прием";
+    ViewBag.SearchPanelCaption = "Поиск";
+    bool NeedInsertButton = RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCreate);
+    ViewBag.NeedInsertButton = false;
+    List<MGTDepartmentModel> Departments = ViewBag.Departments;
+   // long DepartId = (long)Model.DepartmentId;
+    //ViewBag.InsertButtonCaption = "Произвести запись";
+    //ViewBag.InsertAction = "InsertBooking";
 }
 
 
 @section searchForm
 {
-   <div class="form-group">
-      <label class="col-md-2 control-label text-right">ФИО посетителя</label>
-      <div class="col-md-10">
-         @Html.TextBoxFor(m => m.FIO, new { @class = "form-control" })
-      </div>
-   </div>
-   <div class="form-group">
-      <label class="col-md-2 control-label text-right">Дата посещения с</label>
-      <div class="col-md-2">
-         <div class='input-group date datetimepicker-anytime'>
-            @Html.TextBoxFor(m => m.DateFrom, new { @class = "form-control input-mask-datetime-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(r => r.DateFrom).FormatEx(string.Empty, string.Empty) })
-            <span class="input-group-addon">
-               <span class="glyphicon glyphicon-calendar"></span>
-            </span>
-         </div>
-      </div>
-      <label class="col-md-2 control-label text-right">Дата посещения по</label>
-      <div class="col-md-2">
-         <div class='input-group date datetimepicker-anytime'>
-            @Html.TextBoxFor(m => m.DateTo, new { @class = "form-control input-mask-datetime-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(r => r.DateTo).FormatEx(string.Empty, string.Empty) })
-            <span class="input-group-addon">
-               <span class="glyphicon glyphicon-calendar"></span>
-            </span>
-         </div>
-      </div>
-      <label class="col-md-1 control-label text-right">Статус</label>
-      <div class="col-md-3">
-         @Html.DropDownListFor(m => m.Status, new SelectList(((ICollection<RestChild.Web.Models.VisitQueue.IVisitStatus>)ViewBag.Statuses).InsertAt<RestChild.Web.Models.VisitQueue.IVisitStatus>(new RestChild.Web.Models.VisitQueue.VisitStatus() { Id = -1, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control select2" })
-      </div>
-   </div>
-   <div class="form-group">
-      <label class="col-md-2 control-label text-right">Дата подачи с</label>
-      <div class="col-md-2">
-         <div class='input-group date datepicker-anytime'>
-            @Html.TextBoxFor(m => m.DateRegFrom, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(r => r.DateRegFrom).FormatEx(string.Empty, string.Empty) })
-            <span class="input-group-addon">
-               <span class="glyphicon glyphicon-calendar"></span>
-            </span>
-         </div>
-      </div>
-      <label class="col-md-2 control-label text-right">Дата подачи по</label>
-      <div class="col-md-2">
-         <div class='input-group date datepicker-anytime'>
-            @Html.TextBoxFor(m => m.DateRegTo, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(r => r.DateRegTo).FormatEx(string.Empty, string.Empty) })
-            <span class="input-group-addon">
-               <span class="glyphicon glyphicon-calendar"></span>
-            </span>
-         </div>
-      </div>
-      <label class="col-md-1 control-label text-right">Источник</label>
-      <div class="col-md-3">
-         @Html.DropDownListFor(m => m.Source, new SelectList(new List<object>() { new { Id = 0, Name = "-- Не выбрано --" }, new { Id = 1, Name = "МПГУ" }, new { Id = 2, Name = "Оператор" } }, "Id", "Name"), new { @class = "form-control select2" })
-      </div>
-   </div>
-   <div class="form-group">
-      <label class="col-md-2 control-label text-right">Номер заявления</label>
-      <div class="col-md-4">
-         @Html.TextBoxFor(m => m.ServiceNumber, new { @class = "form-control" })
-      </div>
-      <label class="col-md-2 control-label text-right">Цель обращения</label>
-      <div class="col-md-4">
-         @Html.DropDownListFor(m => m.Target, new SelectList(((ICollection<RestChild.Web.Models.VisitQueue.IVisitTarget>)ViewBag.Targets).InsertAt<RestChild.Web.Models.VisitQueue.IVisitTarget>(new RestChild.Web.Models.VisitQueue.VisitTarget() { Id = -1, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control select2" })
-      </div>
+    <div class="row form-group">
+        <label class="col-md-2 control-label text-right">ФИО посетителя</label>
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.FIO, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Дата посещения с</label>
+        <div class="col-md-2">
+            <div class='input-group date datetimepicker-anytime'>
+                @Html.TextBoxFor(m => m.DateFrom, new { @class = "form-control input-mask-datetime-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(r => r.DateFrom).FormatEx(string.Empty, string.Empty) })
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        <label class="col-md-2 control-label text-right">Дата посещения по</label>
+        <div class="col-md-2">
+            <div class='input-group date datetimepicker-anytime'>
+                @Html.TextBoxFor(m => m.DateTo, new { @class = "form-control input-mask-datetime-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(r => r.DateTo).FormatEx(string.Empty, string.Empty) })
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        <label class="col-md-1 control-label text-right">Статус</label>
+        <div class="col-md-3">
+            @Html.DropDownListFor(m => m.Status, new SelectList(((ICollection<RestChild.Web.Models.VisitQueue.IVisitStatus>)ViewBag.Statuses).InsertAt<RestChild.Web.Models.VisitQueue.IVisitStatus>(new RestChild.Web.Models.VisitQueue.VisitStatus() { Id = -1, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control select2" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Дата подачи с</label>
+        <div class="col-md-2">
+            <div class='input-group date datepicker-anytime'>
+                @Html.TextBoxFor(m => m.DateRegFrom, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(r => r.DateRegFrom).FormatEx(string.Empty, string.Empty) })
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        <label class="col-md-2 control-label text-right">Дата подачи по</label>
+        <div class="col-md-2">
+            <div class='input-group date datepicker-anytime'>
+                @Html.TextBoxFor(m => m.DateRegTo, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(r => r.DateRegTo).FormatEx(string.Empty, string.Empty) })
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+            </div>
+        </div>
+        <label class="col-md-1 control-label text-right">Источник</label>
+        <div class="col-md-3">
+            @Html.DropDownListFor(m => m.Source, new SelectList(new List<object>() { new { Id = 0, Name = "-- Не выбрано --" }, new { Id = 1, Name = "МПГУ" }, new { Id = 2, Name = "Оператор" } }, "Id", "Name"), new { @class = "form-control select2" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Номер заявления</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.ServiceNumber, new { @class = "form-control" })
+        </div>
+        <label class="col-md-2 control-label text-right">Цель обращения</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(m => m.Target, new SelectList(((ICollection<RestChild.Web.Models.VisitQueue.IVisitTarget>)ViewBag.Targets).InsertAt<RestChild.Web.Models.VisitQueue.IVisitTarget>(new RestChild.Web.Models.VisitQueue.VisitTarget() { Id = -1, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control select2" })
+        </div>
 
-   </div>
+    </div>
 }
 
 @section additionalFilters
 {
-   <a class="btn btn-default" href="@Url.Action("ExportToExcel", "BookingMosgorturReestr", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
+    @if (NeedInsertButton)
+    {
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Произвести запись</button>
+        <ul class="dropdown-menu">
+            @foreach (MGTDepartmentModel d in Departments)
+            {
+                if (d.Id > 1)
+                {
+                    <li><a href="@Url.Action("InsertBooking", "BookingMosgorturReestr", new { @DepartmentId = d.Id })">@d.Name</a></li>
+                }
+            }
+        </ul>
+    }
+    <a class="btn btn-default" href="@Url.Action("ExportToExcel", "BookingMosgorturReestr", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
 }
 
 @section searchResult
 {
-   @if (Model.Result != null && Model.Result.Any())
-   {
-      <table class="table table-striped table-hover">
-         <thead>
-            <tr>
-               <th class="text-center" width="5%">№</th>
-               @*<th>Номер</th>*@
-               <th>Дата посещения</th>
-               <th>Время</th>
-               <th>ФИО посетителя</th>
-               <th>Цель посещения</th>
-               <th>Номер заявления</th>
-               <th>Статус</th>
-               <th>ПИН код</th>
-               <th></th>
-            </tr>
-         </thead>
-         <tbody>
-            @{int rowNumber = Model.Result.FirstItemOnPage;}
-            @foreach (var booking in Model.Result)
-            {
-               <tr>
-                  <td class="text-center">@(rowNumber++)</td>
-                  <td>@string.Format("{0:dd.MM.yyyy}", booking.DateShedule)</td>
-                  <td>
-                      @string.Format("{0:HH:mm}", booking.DateShedule)
-                      <br />
-                      <i><small style="color: #666; white-space: nowrap">@string.Format("x{0}", booking.SlotsCount)</small></i>
-                  </td>
-                  <td>@booking.AplicantFIO</td>
-                  <td>@booking.Target</td>
-                  <td>
-                     @if (booking.StatementId.HasValue && booking.StatementId > 0)
-                     {
-                        <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new { @id = booking.StatementId.Value })" target="_blank">@booking.BookingNumber</a>
-                     }
-                     else
-                     {
-                        @(booking.BookingNumber)
-                     }
-                     <br /><i><small style="color: #666; white-space: nowrap">@booking.Source</small></i>
-                     <br /><i><small style="color: #666; white-space: nowrap">@string.Format("{0:dd.MM.yyyy}", booking.RegDate)</small></i>
+    @if (Model.Result != null && Model.Result.Any())
+    {
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center" width="5%">№</th>
+                    @*<th>Номер</th>*@
+                    <th>Дата посещения</th>
+                    <th>Время</th>
+                    <th>ФИО посетителя</th>
+                    <th>Цель посещения</th>
+                    <th>Номер заявления</th>
+                    <th>Статус</th>
+                    <th>ПИН код</th>
+                    <th>Отдел</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int rowNumber = Model.Result.FirstItemOnPage;}
+                @foreach (var booking in Model.Result)
+                {
+                    <tr>
+                        <td class="text-center">@(rowNumber++)</td>
+                        <td>@string.Format("{0:dd.MM.yyyy}", booking.DateShedule)</td>
+                        <td>
+                            @string.Format("{0:HH:mm}", booking.DateShedule)
+                            <br />
+                            <i><small style="color: #666; white-space: nowrap">@string.Format("x{0}", booking.SlotsCount)</small></i>
+                        </td>
+                        <td>@booking.AplicantFIO</td>
+                        <td>@booking.Target</td>
+                        <td>
+                            @if (booking.StatementId.HasValue && booking.StatementId > 0)
+                            {
+                                <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new { @id = booking.StatementId.Value })" target="_blank">@booking.BookingNumber</a>
+                            }
+                            else
+                            {
+                                @(booking.BookingNumber)
+                            }
+                            <br /><i><small style="color: #666; white-space: nowrap">@booking.Source</small></i>
+                            <br /><i><small style="color: #666; white-space: nowrap">@string.Format("{0:dd.MM.yyyy}", booking.RegDate)</small></i>
 
-                  </td>
-                  <td>@booking.Status</td>
-                  <td>@booking.PINCode</td>
-                  <td class="text-center">@Html.ActionLink(" ", "Update", new { id = booking.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
-               </tr>
-            }
-         </tbody>
-      </table>
-      <div class="row">
-         <div class="col-md-12">
-            @Html.PagedListPager(Model.Result, page =>
-                  {
-                     Model.Result = null;
-                     Model.PageNumber = page;
-                     return Url.Action("Search", Model);
-                  }, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
-         </div>
-      </div>
-   }
-   else
-   {
-      <div class="row">
-         <div class="col-md-12">
-            <p>Поиск не дал результатов</p>
-         </div>
-      </div>
-   }
+                        </td>
+                        <td>@booking.Status</td>
+                        <td>@booking.PINCode</td>
+                        <td>@(!booking.DepartmentId.IsNullOrEmpty() ? Departments[(int)booking.DepartmentId-1].Name : "-") </td>
+                        <td class="text-center">@Html.ActionLink(" ", "Update", new { id = booking.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.PagedListPager(Model.Result, page =>
+                      {
+                         Model.Result = null;
+                         Model.PageNumber = page;
+                         return Url.Action("Search", Model);
+                      }, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
 }
 
 
 
 @section styles
 {
-   @Styles.Render("~/Content/css/select2.css")
-   @Styles.Render("~/Content/css/select2-bootstrap.css")
-   @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
 }
 
 @section scripts
 {
-   <script type="text/javascript" src="~/Scripts/moment.js"></script>
-   <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
-   <script type="text/javascript">
-      moment.locale('ru');
-   </script>
-   <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
-   @Scripts.Render("~/Scripts/select2.min.js")
-   @Scripts.Render("~/Scripts/select2_locale_ru.js")
-   <script type="text/javascript" src="~/Scripts/Vocabulary/BookingMosgorturReestrList.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale('ru');
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/Vocabulary/BookingMosgorturReestrList.js"></script>
 }

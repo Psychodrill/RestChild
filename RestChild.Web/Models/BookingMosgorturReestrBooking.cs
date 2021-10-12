@@ -184,5 +184,9 @@ namespace RestChild.Web.Models
         ///     Ссылка на историю
         /// </summary>
         public long? HistoryLinkId { get; set; }
+        /// <summary>
+        ///     Идентификатор отдела МГТ
+        /// </summary>
+        public long? DepartmentId { get; set; }
     }
 }

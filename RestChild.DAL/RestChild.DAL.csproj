@@ -74,6 +74,7 @@
     <Compile Include="Configurations\Configuration.FormOfRest.cs" />
     <Compile Include="Configurations\Configuration.MgtVisitBookingPersonType.cs" />
     <Compile Include="Configurations\Configuration.MgtVisitBookingVisitStatus.cs" />
+    <Compile Include="Configurations\Configuration.MgtDepartment.cs" />
     <Compile Include="Configurations\Configuration.MgtVisitTargets.cs" />
     <Compile Include="Configurations\Configuration.MonitoringFinancialSource.cs" />
     <Compile Include="Configurations\Configuration.NotNeedTicketReason.cs" />

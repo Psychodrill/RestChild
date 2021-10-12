@@ -2,7 +2,7 @@
 declare var BookingMosgorturReestrChooseGridUrl: string;
 
 $(() => {
-    $('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
+    $('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY', maxDate: new Date(new Date().setDate(new Date().getDate() + 15)) });
     $('select').select2();
 
 

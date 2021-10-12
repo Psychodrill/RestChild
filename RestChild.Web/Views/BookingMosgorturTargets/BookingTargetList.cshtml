@@ -36,25 +36,27 @@
                     <th class="text-center">Название</th>
                     <th class="text-center">Для МПГУ</th>
                     <th class="text-center">Используется</th>
+                    <th class="text-center">Отдел МГТ</th>
                 </tr>
             </thead>
             <tbody>
                 @{int rowNumber = Model.Targets.FirstItemOnPage;}
                 @foreach (var target in Model.Targets)
                 {
-                    <tr>
-                        <td class="text-center">@(rowNumber++)</td>
-                        @if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturBookingTargetsEdit))
-                        {
-                            <td>@Html.ActionLink(target.Name, "Update", new { id = target.Id }, new { target = "_blank" })</td>
-                        }
-                        else
-                        {
-                            <td>@target.Name</td>
-                        }
-                        <td class="text-center">@(target.IsForMPGU ? "Да" : "Нет")</td>
-                        <td class="text-center">@(target.IsActive ? "Да" : "Нет")</td>
-                    </tr>
+                <tr>
+                    <td class="text-center">@(rowNumber++)</td>
+                    @if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturBookingTargetsEdit))
+                    {
+                        <td>@Html.ActionLink(target.Name, "Update", new { id = target.Id }, new { target = "_blank" })</td>
+                    }
+                    else
+                    {
+                        <td>@target.Name</td>
+                    }
+                    <td class="text-center">@(target.IsForMPGU ? "Да" : "Нет")</td>
+                    <td class="text-center">@(target.IsActive ? "Да" : "Нет")</td>
+                    <td class="text-center">@(!target.Department.IsNullOrEmpty() ? target.Department.Name : "Информация отсутствует") </td>
+                </tr>
                 }
             </tbody>
         </table>

@@ -72,5 +72,10 @@ namespace RestChild.Extensions.Filter
         ///     Номер страницы
         /// </summary>
         public int PageNumber { get; set; }
+
+        /// <summary>
+        ///     Идентификатор отдела 
+        /// </summary>
+        public long? DepartmentId { get; set; }
     }
 }

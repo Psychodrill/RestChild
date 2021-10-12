@@ -488,6 +488,11 @@
         public DbSet<MGTWindowWorkingPeriod> MGTWindowWorkingPeriod { get; set; }
 
         /// <summary>
+        ///     RestChild.Domain.MGTDepartment
+        /// </summary>
+        public DbSet<MGTDepartment> MGTDepartment { get; set; }
+
+        /// <summary>
         ///     RestChild.Domain.MGTWorkingDay
         /// </summary>
         public DbSet<MGTWorkingDay> MGTWorkingDay { get; set; }

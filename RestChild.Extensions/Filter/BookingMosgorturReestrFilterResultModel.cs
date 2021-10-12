@@ -91,5 +91,10 @@ namespace RestChild.Extensions.Filter
         ///     Дата регистрации брони
         /// </summary>
         public DateTime? RegDate { get; set; }
+
+        /// <summary>
+        ///     Идентификатор отдела 
+        /// </summary>
+        public long? DepartmentId { get; set; }
     }
 }
