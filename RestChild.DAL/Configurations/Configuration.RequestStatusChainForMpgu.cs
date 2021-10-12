@@ -95,7 +95,7 @@ namespace RestChild.DAL.Configurations
                 ReasonCode = "1",
                 Name = "отказ в регистрации заявления",
                 Commentary =
-                    "Заявление является повторным. \n\r Вы уже подали заявление о предоставлении услуг отдыха и оздоровления.",
+                    "Заявление является повторным. \n\r На указанных в заявлении детей уже подано заявление о предоставлении услуг отдыха и оздоровления.",
                     //"Заявление является повторным. \n\r На следующих лиц уже подано заявление о предоставлении услуг отдыха и оздоровления:",
                 OrderField = id,
                 SendEmail = true
@@ -150,171 +150,7 @@ namespace RestChild.DAL.Configurations
                     DocumentPath = DocumentGenerationEnum.NotificationRegistration
                 });
 
-            #endregion
-
-            //#region 1035.2 отказ в регистрации путёвка сопровождение
-
-            //context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
-            //{
-            //    Id = (long)StatusEnum.RegistrationDecline + 1000000,
-            //    StatusActionId = (long)StatusEnum.RegistrationDecline,
-            //    IsFirstCompany = true
-            //});
-
-            //context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
-            //{
-            //    Id = ++id,
-            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
-            //    Status = 1040,
-            //    Name = "заявление доставлено в ведомство",
-            //    Commentary = string.Empty,
-            //    OrderField = id,
-            //    SendEmail = false
-            //}, new RequestStatusForMpgu
-            //{
-            //    Id = ++id,
-            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
-            //    Status = 1035,
-            //    ReasonCode = "2",
-            //    Name = "отказ в регистрации заявления",
-            //    Commentary =
-            //        "Заявление является повторным. \n\r На указанное(ые) в заявлении сопровождающее(ие) лицо(а) уже подано заявление о предоставлении бесплатной путёвки для отдыха и оздоровления.",
-            //    OrderField = id,
-            //    SendEmail = true
-            //});
-
-            //context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
-            //    new RequestStatusCshedSendAndSignDocument
-            //    {
-            //        MpguStatusId = id,
-            //        SignNeed = true,
-            //        DocumentPath = DocumentGenerationEnum.NotificationRegistration
-            //    });
-
-            //#endregion
-
-            //#region 1035.3 отказ в регистрации сертификат сопровождение
-
-            //context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
-            //{
-            //    Id = (long)StatusEnum.RegistrationDecline + 1000000,
-            //    StatusActionId = (long)StatusEnum.RegistrationDecline,
-            //    IsFirstCompany = true
-            //});
-
-            //context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
-            //{
-            //    Id = ++id,
-            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
-            //    Status = 1040,
-            //    Name = "заявление доставлено в ведомство",
-            //    Commentary = string.Empty,
-            //    OrderField = id,
-            //    SendEmail = false
-            //}, new RequestStatusForMpgu
-            //{
-            //    Id = ++id,
-            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
-            //    Status = 1035,
-            //    ReasonCode = "3",
-            //    Name = "отказ в регистрации заявления",
-            //    Commentary =
-            //        "Заявление является повторным. \n\r На указанное(ые) в заявлении сопровождающее(ие) лицо(а) уже подано заявление о предоставлении сертификата на отдых и оздоровление.",
-            //    OrderField = id,
-            //    SendEmail = true
-            //});
-
-            //context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
-            //    new RequestStatusCshedSendAndSignDocument
-            //    {
-            //        MpguStatusId = id,
-            //        SignNeed = true,
-            //        DocumentPath = DocumentGenerationEnum.NotificationRegistration
-            //    });
-
-            //#endregion
-
-            //#region 1035.5 отказ в регистрации сертификат сопровождение
-
-            //context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
-            //{
-            //    Id = (long)StatusEnum.RegistrationDecline + 1000000,
-            //    StatusActionId = (long)StatusEnum.RegistrationDecline,
-            //    IsFirstCompany = true
-            //});
-
-            //context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
-            //{
-            //    Id = ++id,
-            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
-            //    Status = 1040,
-            //    Name = "заявление доставлено в ведомство",
-            //    Commentary = string.Empty,
-            //    OrderField = id,
-            //    SendEmail = false
-            //}, new RequestStatusForMpgu
-            //{
-            //    Id = ++id,
-            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
-            //    Status = 1035,
-            //    ReasonCode = "5",
-            //    Name = "отказ в регистрации заявления",
-            //    Commentary =
-            //        "Заявление является повторным. \n\r Заявление о предоставлении бесплатной путёвки для отдыха и оздоровления от имени родителя (законного представителя) уже подано.",
-            //    OrderField = id,
-            //    SendEmail = true
-            //});
-
-            //context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
-            //    new RequestStatusCshedSendAndSignDocument
-            //    {
-            //        MpguStatusId = id,
-            //        SignNeed = true,
-            //        DocumentPath = DocumentGenerationEnum.NotificationRegistration
-            //    });
-
-            //#endregion
-
-            //#region 1035.6 отказ в регистрации сертификат сопровождение
-
-            //context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
-            //{
-            //    Id = (long)StatusEnum.RegistrationDecline + 1000000,
-            //    StatusActionId = (long)StatusEnum.RegistrationDecline,
-            //    IsFirstCompany = true
-            //});
-
-            //context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
-            //{
-            //    Id = ++id,
-            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
-            //    Status = 1040,
-            //    Name = "заявление доставлено в ведомство",
-            //    Commentary = string.Empty,
-            //    OrderField = id,
-            //    SendEmail = false
-            //}, new RequestStatusForMpgu
-            //{
-            //    Id = ++id,
-            //    ChainId = (long)StatusEnum.RegistrationDecline + 1000000,
-            //    Status = 1035,
-            //    ReasonCode = "6",
-            //    Name = "отказ в регистрации заявления",
-            //    Commentary =
-            //        "Заявление является повторным. \n\r Заявление о предоставлении сертификата на отдых и оздоровление от имени родителя (законного представителя) уже подано.",
-            //    OrderField = id,
-            //    SendEmail = true
-            //});
-
-            //context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
-            //    new RequestStatusCshedSendAndSignDocument
-            //    {
-            //        MpguStatusId = id,
-            //        SignNeed = true,
-            //        DocumentPath = DocumentGenerationEnum.NotificationRegistration
-            //    });
-
-            //#endregion
+            #endregion            
 
             #region 1169
 
@@ -1751,7 +1587,7 @@ namespace RestChild.DAL.Configurations
                 IsFirstCompany = true,
                 StatusId = (long) StatusEnum.Reject,
                 DeclineReasonId = 201705,
-                YearOfRestId = year2020
+                YearOfRestId = null
             });
 
             context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
@@ -2722,6 +2558,175 @@ namespace RestChild.DAL.Configurations
                     MpguStatusId = id,
                     SignNeed = true,
                     DocumentPath = DocumentGenerationEnum.NotificationRefuse
+                });
+
+            #endregion
+
+            #region 1035.2 отказ в регистрации путёвка сопровождение
+
+            context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            {
+                Id = (long)StatusEnum.RegistrationDecline + 1100000,
+                StatusActionId = (long)StatusEnum.RegistrationDecline,
+                IsFirstCompany = true,
+                DeclineReasonId = 202102
+
+            });
+
+            context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.RegistrationDecline + 1100000,
+                Status = 1040,
+                Name = "заявление доставлено в ведомство",
+                Commentary = string.Empty,
+                OrderField = id,
+                SendEmail = false
+            }, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.RegistrationDecline + 1100000,
+                Status = 1035,
+                ReasonCode = "2",
+                Name = "отказ в регистрации заявления",
+                Commentary =
+                    "Заявление является повторным. \n\r На указанное(ые) в заявлении сопровождающее(ие) лицо(а) уже подано заявление о предоставлении бесплатной путёвки для отдыха и оздоровления.",
+                OrderField = id,
+                SendEmail = true
+            });
+
+            context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+                new RequestStatusCshedSendAndSignDocument
+                {
+                    MpguStatusId = id,
+                    SignNeed = true,
+                    DocumentPath = DocumentGenerationEnum.NotificationRegistration
+                });
+
+            #endregion
+
+            #region 1035.3 отказ в регистрации сертификат сопровождение
+
+            context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            {
+                Id = (long)StatusEnum.RegistrationDecline + 1200000,
+                StatusActionId = (long)StatusEnum.RegistrationDecline,
+                IsFirstCompany = true,
+                DeclineReasonId = 202103
+            });
+
+            context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.RegistrationDecline + 1200000,
+                Status = 1040,
+                Name = "заявление доставлено в ведомство",
+                Commentary = string.Empty,
+                OrderField = id,
+                SendEmail = false
+            }, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.RegistrationDecline + 1200000,
+                Status = 1035,
+                ReasonCode = "3",
+                Name = "отказ в регистрации заявления",
+                Commentary =
+                    "Заявление является повторным. \n\r На указанное(ые) в заявлении сопровождающее(ие) лицо(а) уже подано заявление о предоставлении сертификата на отдых и оздоровление.",
+                OrderField = id,
+                SendEmail = true
+            });
+
+            context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+                new RequestStatusCshedSendAndSignDocument
+                {
+                    MpguStatusId = id,
+                    SignNeed = true,
+                    DocumentPath = DocumentGenerationEnum.NotificationRegistration
+                });
+
+            #endregion
+
+            #region 1035.5 отказ в регистрации сертификат сопровождение
+
+            context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            {
+                Id = (long)StatusEnum.RegistrationDecline + 1300000,
+                StatusActionId = (long)StatusEnum.RegistrationDecline,
+                IsFirstCompany = true,
+                DeclineReasonId = 202105
+            });
+
+            context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.RegistrationDecline + 1300000,
+                Status = 1040,
+                Name = "заявление доставлено в ведомство",
+                Commentary = string.Empty,
+                OrderField = id,
+                SendEmail = false
+            }, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.RegistrationDecline + 1300000,
+                Status = 1035,
+                ReasonCode = "5",
+                Name = "отказ в регистрации заявления",
+                Commentary =
+                    "Заявление является повторным. \n\r Заявление о предоставлении бесплатной путёвки для отдыха и оздоровления от имени родителя (законного представителя) уже подано.",
+                OrderField = id,
+                SendEmail = true
+            });
+
+            context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+                new RequestStatusCshedSendAndSignDocument
+                {
+                    MpguStatusId = id,
+                    SignNeed = true,
+                    DocumentPath = DocumentGenerationEnum.NotificationRegistration
+                });
+
+            #endregion
+
+            #region 1035.6 отказ в регистрации сертификат сопровождение
+
+            context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            {
+                Id = (long)StatusEnum.RegistrationDecline + 1400000,
+                StatusActionId = (long)StatusEnum.RegistrationDecline,
+                IsFirstCompany = true,
+                DeclineReasonId = 202106
+            });
+
+            context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.RegistrationDecline + 1400000,
+                Status = 1040,
+                Name = "заявление доставлено в ведомство",
+                Commentary = string.Empty,
+                OrderField = id,
+                SendEmail = false
+            }, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.RegistrationDecline + 1400000,
+                Status = 1035,
+                ReasonCode = "6",
+                Name = "отказ в регистрации заявления",
+                Commentary =
+                    "Заявление является повторным. \n\r Заявление о предоставлении сертификата на отдых и оздоровление от имени родителя (законного представителя) уже подано.",
+                OrderField = id,
+                SendEmail = true
+            });
+
+            context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+                new RequestStatusCshedSendAndSignDocument
+                {
+                    MpguStatusId = id,
+                    SignNeed = true,
+                    DocumentPath = DocumentGenerationEnum.NotificationRegistration
                 });
 
             #endregion

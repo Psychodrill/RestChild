@@ -1778,6 +1778,8 @@ namespace RestChild.Web.Controllers.WebApi
                         if (vm.ApplicantDouble.Any())
                         {
                             status = StatusEnum.RegistrationDecline;
+                            if (entity.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor) decline = 202105;
+                            if (entity.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7) decline = 202106;
                         }
 
                         ApiRequest.CheckChildren(vm, true);
@@ -1806,6 +1808,8 @@ namespace RestChild.Web.Controllers.WebApi
                         {
                             status = StatusEnum.RegistrationDecline;
                             action = AccessRightEnum.Status.ToRegistrationDeclineAttendant;
+                            if (entity.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor) decline = 202102;
+                            if (entity.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7) decline = 202103;
                         }
                     }
 

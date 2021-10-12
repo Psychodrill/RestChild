@@ -55,7 +55,7 @@
                     }
                     <td class="text-center">@(target.IsForMPGU ? "Да" : "Нет")</td>
                     <td class="text-center">@(target.IsActive ? "Да" : "Нет")</td>
-                    <td class="text-center">@(target.Department.Name)</td>
+                    <td class="text-center">@(!target.Department.IsNullOrEmpty() ? target.Department.Name : "Информация отсутствует") </td>
                 </tr>
                 }
             </tbody>
