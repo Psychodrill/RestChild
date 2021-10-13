@@ -1,0 +1,1 @@
+ef6.exe database update --assembly RestChild.DAL.dll --connection-string-name RestChild --config MailingDemon.exe.config --verbose
