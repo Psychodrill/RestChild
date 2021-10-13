@@ -7,6 +7,7 @@ using RestChild.Domain;
 using RestChild.Comon.ToExcel;
 using RestChild.Extensions.Filter;
 
+
 namespace RestChild.Web.Logic.AnalyticReport
 {
 
@@ -39,14 +40,25 @@ namespace RestChild.Web.Logic.AnalyticReport
             {
                 requests = requests.Where(row => row.SendDate >= filter.DateFormingBegin.Value);
             }
+            else
+            {
+                DateTime innerDate = new DateTime(DateTime.Now.Year, 1, 1);
+                requests = requests.Where(row => row.SendDate >= innerDate);
+            }
             if (filter?.DateFormingEnd.HasValue ?? false)
             {
                 requests = requests.Where(row => row.SendDate <= filter.DateFormingEnd.Value);
+            }
+            else
+            {
+                DateTime innerDate = new DateTime(DateTime.Now.Year, 12, 31);
+                requests = requests.Where(row => row.SendDate <=innerDate );
             }
             if (filter?.ExchangeBaseRegistryTypeId.HasValue ??false)
             {
                 requests = requests.Where(row => row.ExchangeBaseRegistryTypeId == filter.ExchangeBaseRegistryTypeId);
             }
+
 
             var applicants = unitOfWork.GetSet<Applicant>().Where(a => requests.Any(r => r.ApplicantId == a.Id)).AsQueryable();
 
@@ -89,10 +101,15 @@ namespace RestChild.Web.Logic.AnalyticReport
                 get
                 {
                     return string.Concat(Applicant?.LastName,
+                                        " ",
                                         Applicant?.FirstName,
+                                        " ",
                                         Applicant?.MiddleName,
+                                        ", ",
                                         Child?.LastName,
+                                        " ",
                                         Child?.FirstName,
+                                        " ",
                                         Child?.MiddleName);
                 }
             }

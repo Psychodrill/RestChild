@@ -29,10 +29,10 @@ namespace RestChild.Web.Controllers
         [Route("AnalyticReport/{ReportType}")]
         public ActionResult BaseReport(string ReportType)
         {
-            //if (!ReportHasAccess(ReportType))
-            //{
-            //    return RedirectToAvalibleAction();
-            //}
+            if (!ReportHasAccess(ReportType))
+            {
+                return RedirectToAvalibleAction();
+            }
 
             ApiRestTypeController.SetUnitOfWorkInRefClass(UnitOfWork);
             var years = UnitOfWork.GetSet<YearOfRest>().ToArray().Select(i => new YearOfRest(i)).ToArray();

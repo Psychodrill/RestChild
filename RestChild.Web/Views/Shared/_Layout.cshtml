@@ -369,7 +369,7 @@
                 {
                     <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.RoomsFund), "BaseReport", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.RoomsFund }, new { })</li>
                 }
-                @if (true@*Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.NotRespondedRequests)*@)
+                @if (Security.HasRightForSomeOrganization(AccessRightEnum.AnalyticReports.NotRespondedRequests))
                 {
                     <li>@Html.ActionLink(AnalyticReportFilterRepository.GetReportName(AccessRightEnum.AnalyticReports.NotRespondedRequests), "BaseReport", "AnalyticReport", new { ReportType = AccessRightEnum.AnalyticReports.NotRespondedRequests }, new { })</li>
                 }

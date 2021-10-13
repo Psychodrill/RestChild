@@ -26,7 +26,8 @@ namespace RestChild.Extensions.Filter
 
         public ICollection<ExchangeBaseRegistryType> ExchangeBaseRegistryTypes { get; set; }
 
-        public long? ExchangeBaseRegistryTypeId { get; set; }
+        
+        public virtual long? ExchangeBaseRegistryTypeId { get; set; }
         public DateTime? DateStartBegin { get; set; }
         public DateTime? DateStartEnd { get; set; }
         public ICollection<Status> Statuses { get; set; }
