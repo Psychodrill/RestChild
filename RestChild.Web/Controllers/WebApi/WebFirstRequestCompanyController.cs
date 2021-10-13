@@ -1053,7 +1053,9 @@ namespace RestChild.Web.Controllers.WebApi
                                      || r.Child.Any(m => m.Snils == snils)
                                      && r.ParentRequestId == null
                                      && (r.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor ||
-                                         r.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7))
+                                         r.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 ||
+                                         r.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps ||
+                                         r.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps))
                     .ToList();
             }
 

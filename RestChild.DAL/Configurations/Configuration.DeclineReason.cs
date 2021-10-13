@@ -105,6 +105,16 @@ namespace RestChild.DAL.Configurations
                     FirstStage = true,
                     SecondStage = true,
                     StatusId = (long)StatusEnum.Reject
+                },
+                new DeclineReason
+                {
+                    Id = 202104,
+                    IsActive = true,
+                    Name = "Заявление является повторным. \n\r Заявление на указанное в заявлении лицо из числа детей-сирот и детей, оставшихся без попечения родителей уже было подано.",
+                    IsManual = true,
+                    FirstStage = true,
+                    SecondStage = true,
+                    StatusId = (long)StatusEnum.Reject
                 });
             context.SaveChanges();
 

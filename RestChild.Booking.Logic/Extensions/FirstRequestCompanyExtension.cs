@@ -513,6 +513,11 @@ namespace RestChild.Booking.Logic.Extensions
                         SendEmailOnChangeStatus(unitOfWork, entity, s.Name, message.Note, planDate, s, accountId);
                     }
 
+                    if ((s.Chain?.StatusId ?? -1) == (long)StatusEnum.RegistrationDecline && s.Status == (long)StatusEnum.RegistrationDeclineBecauseDuplicate && !s.ReasonCode.IsNullOrEmpty())
+                    {
+                        message.Note = comment;
+                    }
+
                     message.Note = message.Note?.Replace("\n", "<br/>") ?? string.Empty;
 
                     unitOfWork.AddEntity(new ExchangeUTS

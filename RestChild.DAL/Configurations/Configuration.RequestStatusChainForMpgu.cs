@@ -2730,6 +2730,48 @@ namespace RestChild.DAL.Configurations
                 });
 
             #endregion
+
+            #region 1035.4 отказ в регистрации сертификат сопровождение
+
+            context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
+            {
+                Id = (long)StatusEnum.RegistrationDecline + 1500000,
+                StatusActionId = (long)StatusEnum.RegistrationDecline,
+                IsFirstCompany = true,
+                DeclineReasonId = 202104
+            });
+
+            context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.RegistrationDecline + 1500000,
+                Status = 1040,
+                Name = "заявление доставлено в ведомство",
+                Commentary = string.Empty,
+                OrderField = id,
+                SendEmail = false
+            }, new RequestStatusForMpgu
+            {
+                Id = ++id,
+                ChainId = (long)StatusEnum.RegistrationDecline + 1500000,
+                Status = 1035,
+                ReasonCode = "4",
+                Name = "отказ в регистрации заявления",
+                Commentary =
+                    "Заявление является повторным. \n\r Заявление на указанное в заявлении лицо из числа детей-сирот и детей, оставшихся без попечения родителей уже было подано.",
+                OrderField = id,
+                SendEmail = true
+            });
+
+            context.RequestStatusCshedSendAndSignDocument.AddOrUpdate(a => a.Id,
+                new RequestStatusCshedSendAndSignDocument
+                {
+                    MpguStatusId = id,
+                    SignNeed = true,
+                    DocumentPath = DocumentGenerationEnum.NotificationRegistration
+                });
+
+            #endregion
         }
     }
 }
