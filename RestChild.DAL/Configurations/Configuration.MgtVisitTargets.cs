@@ -19,7 +19,8 @@ namespace RestChild.DAL.Configurations
                 LastUpdateTick = DateTime.Now.Ticks,
                 IsForMPGU = true,
                 IsActive = true,
-                Eid = 1
+                Eid = 1,
+                DepartmentId = 2,
             }, r => r.Id == 1);
 
             context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
@@ -30,7 +31,8 @@ namespace RestChild.DAL.Configurations
                 LastUpdateTick = DateTime.Now.Ticks,
                 IsForMPGU = true,
                 IsActive = true,
-                Eid = 2
+                Eid = 2,
+                DepartmentId = 2,
             }, r => r.Id == 2);
 
             context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
@@ -41,7 +43,8 @@ namespace RestChild.DAL.Configurations
                 LastUpdateTick = DateTime.Now.Ticks,
                 IsForMPGU = true,
                 IsActive = true,
-                Eid = 3
+                Eid = 3,
+                DepartmentId = 2,
             }, r => r.Id == 3);
 
             context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
@@ -51,7 +54,8 @@ namespace RestChild.DAL.Configurations
                 Description = string.Empty,
                 LastUpdateTick = DateTime.Now.Ticks,
                 IsActive = true,
-                Eid = 4
+                Eid = 4,
+                DepartmentId = 2,
             }, r => r.Id == 4);
 
             context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
@@ -62,7 +66,8 @@ namespace RestChild.DAL.Configurations
                 LastUpdateTick = DateTime.Now.Ticks,
                 IsForMPGU = true,
                 IsActive = true,
-                Eid = 5
+                Eid = 5,
+                DepartmentId = 2,
             }, r => r.Id == 5);
 
             context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
@@ -73,8 +78,57 @@ namespace RestChild.DAL.Configurations
                 LastUpdateTick = DateTime.Now.Ticks,
                 IsForMPGU = true,
                 IsActive = true,
-                Eid = 6
+                Eid = 6,
+                DepartmentId = 2,
             }, r => r.Id == 6);
+
+            context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
+            {
+                Id = 7,
+                Name = "Приобрести дополнительное место к бесплатной путевке для отдыха и оздоровления / получить консультацию по указанному вопросу",
+                Description = string.Empty,
+                LastUpdateTick = DateTime.Now.Ticks,
+                IsForMPGU = true,
+                IsActive = true,
+                Eid = 7,
+                DepartmentId = 2,
+            }, r => r.Id == 7);
+
+            context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
+            {
+                Id = 8,
+                Name = "Приобрести семейный тур или путевку в детский лагерь, в том числе с использованием сертификата на отдых и оздоровление / получить консультацию по указанному вопросу",
+                Description = string.Empty,
+                LastUpdateTick = DateTime.Now.Ticks,
+                IsForMPGU = true,
+                IsActive = true,
+                Eid = 8,
+                DepartmentId = 3,
+            }, r => r.Id == 8);
+
+            context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
+            {
+                Id = 8,
+                Name = "Приобрести семейный тур или путевку в детский лагерь, в том числе с использованием сертификата на отдых и оздоровление / получить консультацию по указанному вопросу",
+                Description = string.Empty,
+                LastUpdateTick = DateTime.Now.Ticks,
+                IsForMPGU = true,
+                IsActive = true,
+                Eid = 8,
+                DepartmentId = 4,
+            }, r => r.Id == 8);
+
+            context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
+            {
+                Id = 9,
+                Name = "Консультация у работника офиса",
+                Description = string.Empty,
+                LastUpdateTick = DateTime.Now.Ticks,
+                IsForMPGU = false,
+                IsActive = true,
+                Eid = 9,
+                DepartmentId = 1,
+            }, r => r.Id == 8);
 
             context.SaveChanges();
         }

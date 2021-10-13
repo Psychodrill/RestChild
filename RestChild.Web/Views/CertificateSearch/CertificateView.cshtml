@@ -1,0 +1,53 @@
+﻿@using RestChild.Comon
+@model RestChild.Domain.Certificate
+
+
+
+@if (Model.Id != 0)
+{
+    var cert = Model;
+
+    <fieldset class="bs-callout bs-callout-info">
+        <h3 id="RequestCertificates" class="anchor bs-callout-info">Сведения о погашенном сертификате</h3>
+        <div class="row form-group">
+            <label class="col-md-2 control-label">Номер договора с отдыхающим</label>
+            <div class="col-md-4 line-height35">
+                @cert.ContractNumber.FormatEx()
+            </div>
+            <label class="col-md-2 control-label">Дата заключения договора с отдыхающим</label>
+            <div class="col-md-4 line-height35">
+                @cert.ContractDate.FormatEx()
+            </div>
+        </div>
+        <div class="row form-group">
+            <label class="col-md-2 control-label">Период отдыха c</label>
+            <div class="col-md-4 line-height35">
+                @cert.RestDateFrom.FormatEx()
+            </div>
+            <label class="col-md-2 control-label">Период отдыха по</label>
+            <div class="col-md-4 line-height35">
+                @cert.RestDateTo.FormatEx()
+            </div>
+        </div>
+        <div class="row form-group">
+            <label class="col-md-2 control-label">Наименование организации отдыха и оздоровления</label>
+            <div class="col-md-4 line-height35">
+                @Html.Raw(cert.Place.FormatEx())
+            </div>
+            <label class="col-md-2 control-label">Место отдыха (регион)</label>
+            <div class="col-md-4 line-height35">
+                @Html.Raw(cert.Region.FormatEx())
+            </div>
+        </div>
+        <div class="row form-group">
+            <label class="col-md-2 control-label">Стоимость договора общая</label>
+            <div class="col-md-4 line-height35">
+                @cert.FullPrice.FormatEx() &#8381;
+            </div>
+            <label class="col-md-2 control-label">Сумма отдыха ребёнка согласно калькуляции</label>
+            <div class="col-md-4 line-height35">
+                @cert.PriceForChild.FormatEx() &#8381;
+            </div>
+        </div>
+    </fieldset>
+}

@@ -40,6 +40,14 @@ namespace RestChild.Extensions.Filter
 
         public IEnumerable<YearOfRest> ListOfYears { get; set; }
 
+        public DateTime? RestDateFromFrom { get; set; }
+
+        public DateTime? RestDateFromTo { get; set; }
+
+        public DateTime? RestDateToFrom { get; set; }
+
+        public DateTime? RestDateToTo { get; set; }
+
         public DateTime? StartRequestDate { get; set; }
 
         public DateTime? EndRequestDate { get; set; }

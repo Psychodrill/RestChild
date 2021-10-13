@@ -3,39 +3,59 @@
 @using System.Linq
 @using RestChild.Comon
 @using RestChild.Domain
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Models
 @model RestChild.Extensions.Filter.BookingMosgorturReestrWorkingDaysFilterModel
 @{
-   ViewBag.Title = "Рабочие дни";
-   Layout = "~/Views/Shared/_Layout.cshtml";
-   string[] _days = new string[7] { "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота" };
-   string[] _month = new string[12] { "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" };
-}
+    ViewBag.Title = "Рабочие дни";
+    List<MGTDepartmentModel> Departments = ViewBag.Departments;
+    long DepartId = (long)Model.DepartmentId;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string[] _days = new string[7] { "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота" };
+    string[] _month = new string[12] { "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" };
+            }
 
 
 <div class="row">
    <div class="col-md-12">
-      <h2>Рабочие дни</h2>
+      <h2>Рабочие дни <br />
+       @Departments[(int)DepartId-1].Name
+       </h2>
    </div>
 </div>
 <div class="row">
-   <div class="col-md-12 form-group">
-      <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(-1).Year, @Month = Model.Date.AddMonths(-1).Month })"><i class="glyphicon glyphicon-chevron-left"></i></a>
-      <div class="btn btn-default">@_month[Model.Date.Month - 1] @Model.Date.Year</div>
-      <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(1).Year, @Month = Model.Date.AddMonths(1).Month })"><i class="glyphicon glyphicon-chevron-right"></i></a>
-   </div>
+    <div class="col-md-12 form-group">
+        <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(-1).Year, @Month = Model.Date.AddMonths(-1).Month, @DepartmentId = DepartId })"><i class="glyphicon glyphicon-chevron-left"></i></a>
+        <div class="btn btn-default">@_month[Model.Date.Month - 1] @Model.Date.Year</div>
+        <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(1).Year, @Month = Model.Date.AddMonths(1).Month, @DepartmentId = DepartId })"><i class="glyphicon glyphicon-chevron-right"></i></a>
+    </div>
+    <div class="col-md-12 form-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Выбор отдела
+        </button>
+        <ul class="dropdown-menu">
+            @foreach (MGTDepartmentModel d in Departments)
+            {
+                if (d.Id > 1)
+                {
+            <li><a href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.Year, @Month = Model.Date.Month, @DepartmentId = d.Id })">@d.Name</a></li>
+                }
+            }
+        </ul>
+    </div>
 </div>
 @if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEdit))
-{
+            {
    <div class="row">
       <div class="col-md-12 form-group">
-         <a class="btn btn-primary" href="@Url.Action("DayManage", "BookingMosgorturReestr")" target="_blank">
+         <a class="btn btn-primary" href="@Url.Action("DayManage", "BookingMosgorturReestr", new { @DepartmentId = Model.DepartmentId })" target="_blank">
             <i class="glyphicon glyphicon-plus"></i> Создать рабочий день
          </a>
       </div>
    </div>
 }
-@if (Model.Result != null && Model.Result.Any())
-{
+        @if (Model.Result != null && Model.Result.Any())
+        {
    <table class="table table-striped table-hover">
       <thead>
          <tr>
@@ -52,15 +72,15 @@
       <tbody>
          @{
             int rowNumber = Model.Result.FirstItemOnPage;
-            
-         }
 
-         @foreach (var day in Model.Result)
-         {
+        }
+
+        @foreach (var day in Model.Result)
+        {
             <tr>
                <td class="text-center">@(rowNumber++)</td>
                @if(RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEdit))
-               {
+        {
                   <td><a href="@Url.Action("DayManage", "BookingMosgorturReestr", new { @id = day.Id })" target="_blank">@string.Format("{0:dd.MM.yyyy}", day.Date)</a></td>
                }
                else

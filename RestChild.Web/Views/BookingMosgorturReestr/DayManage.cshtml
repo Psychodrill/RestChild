@@ -2,12 +2,15 @@
 @using RestChild.Comon.Enumeration
 @using RestChild.Web.Controllers
 @using RestChild.Web.Extensions
+@using RestChild.Web.Models
 @model RestChild.Web.Models.MGTWorkingDayModel
 @{
     /**/
 
     ViewBag.Title = "Изменение рабочих дней";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    List<MGTDepartmentModel> Departments = ViewBag.Departments;
+    long DepartId = (long)Model.DepartmentId;
 }
 @section styles
 {
@@ -23,7 +26,7 @@
       moment.locale('ru');
 
       window.BookingMosgorturWorkDayManageGetObjectHistory = '@Url.Action("GetObjectHistory", "BookingMosgorturReestr")';
-      window.BookingMosgorturWorkDayManageAddWindow = '@Url.Action("AddWindow", "BookingMosgorturReestr")';
+      window.BookingMosgorturWorkDayManageAddWindow = '@Url.Action("AddWindow", "BookingMosgorturReestr",new {Id=Model.DepartmentId})';
       window.BookingMosgorturWorkDayManageAddTimeInterval = '@Url.Action("AddTimeInterval", "BookingMosgorturReestr")';
       window.GetDayInfo = '/api/bookingmosgortur/dayinfo';
 
@@ -36,7 +39,10 @@
 
 <div class="row">
     <div class="col-md-12">
-        <h2>Изменение рабочих дней</h2>
+        <h2>
+            Изменение рабочих дней <br />
+            @Departments[(int)DepartId - 1].Name
+        </h2>
         @Html.ActionLink("Вернуться", "WorkingDays")
     </div>
 </div>
@@ -58,6 +64,7 @@
 
 @using (Html.BeginForm("SaveDay", "BookingMosgorturReestr", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
+    @Html.HiddenFor(m => m.DepartmentId);
     @Html.HiddenFor(m => m.Id)
     <legend>Общие сведения о рабочем дне</legend>
     <div class="error">

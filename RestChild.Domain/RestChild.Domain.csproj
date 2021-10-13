@@ -177,6 +177,7 @@
     <Compile Include="MGTVisitBookingStatus.cs" />
     <Compile Include="MGTVisitTarget.cs" />
     <Compile Include="MGTWindowWorkingPeriod.cs" />
+    <Compile Include="MGTDepartment.cs" />
     <Compile Include="MGTWorkingDay.cs" />
     <Compile Include="MGTWorkingDay.partial.cs" />
     <Compile Include="MGTWorkingDaysHistory.cs" />

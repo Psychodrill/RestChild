@@ -14,6 +14,7 @@ namespace RestChild.Extensions.Filter
         public DateTime Date { get; set; }
 
         public int PageNumber { get; set; }
+        public long? DepartmentId { get; set; }
 
         public CommonPagedList<MGTWorkingDay> Result { get; set; }
     }

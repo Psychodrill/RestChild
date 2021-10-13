@@ -1053,7 +1053,9 @@ namespace RestChild.Web.Controllers.WebApi
                                      || r.Child.Any(m => m.Snils == snils)
                                      && r.ParentRequestId == null
                                      && (r.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor ||
-                                         r.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7))
+                                         r.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 ||
+                                         r.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps ||
+                                         r.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps))
                     .ToList();
             }
 
@@ -1115,8 +1117,7 @@ namespace RestChild.Web.Controllers.WebApi
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
 
-            if (model.Data.ParentRequestId != null)
-               
+            if (model.Data.ParentRequestId != null)               
             {
                 return;
             }
@@ -1160,11 +1161,12 @@ namespace RestChild.Web.Controllers.WebApi
                 .ToList();
             //if (attendants.Any(a => string.IsNullOrWhiteSpace(a.Snils)))
             //{
-                model.SameAttendants = attendants
-                    .Where(a => !model.SameAttendantSnils.Contains(a.Snils ?? string.Empty)
-                            || applicants.Any(s => s.Applicant.Snils == a.Snils))
-                    .GroupBy(g => (g.DocumentSeria ?? string.Empty) + "---" + (g.DocumentNumber ?? string.Empty))
-                    .Where(g => g.Count() > 1).SelectMany(g => g.Select(f => f).ToList()).ToList();
+            model.SameAttendants = attendants
+                .Where(a => !model.SameAttendantSnils.Contains(a.Snils ?? string.Empty)
+                        && applicants.Any(s => s.Applicant.Snils == a.Snils || s.Attendant.Any(at => at.Snils == a.Snils)))
+                //.GroupBy(g => (g.DocumentSeria ?? string.Empty) + "---" + (g.DocumentNumber ?? string.Empty))
+                //.Where(g => g.Count() > 1).SelectMany(g => g.Select(f => f).ToList())
+                .ToList();
             //}
         }
 

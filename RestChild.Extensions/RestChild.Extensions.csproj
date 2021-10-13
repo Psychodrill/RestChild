@@ -98,7 +98,9 @@
     <Compile Include="Filter\CoworkersFilterModel.cs" />
     <Compile Include="Filter\DirectoryFlightsFilterModel.cs" />
     <Compile Include="Filter\HotelsFilterModel.cs" />
+    <Compile Include="Filter\CertificateFilterModel.cs" />
     <Compile Include="Filter\RequestFilterModel.cs" />
+    <Compile Include="Filter\CertificateSearchFilterModel.cs" />
     <Compile Include="Filter\RequestSearchFilterModel.cs" />
     <Compile Include="Filter\RestManFilterModel.cs" />
     <Compile Include="Filter\SubjectOfRestClassificationFilterModel.cs" />

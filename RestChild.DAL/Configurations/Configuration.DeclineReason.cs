@@ -54,6 +54,70 @@ namespace RestChild.DAL.Configurations
 
             context.SaveChanges();
 
+            //2021-2022
+            context.DeclineReason.AddOrUpdate(a => a.Id, new DeclineReason
+            {
+                Id = 202101,
+                IsActive = true,
+                Name =
+                        "Нарушение правил подачи заявления о предоставлении услуг отдыха и оздоровления",
+                IsManual = true,
+                FirstStage = true,
+                SecondStage = true,
+                StatusId = (long)StatusEnum.Reject
+            },
+                new DeclineReason
+                {
+                    Id = 202103,
+                    IsActive = true,
+                    Name = "Заявление является повторным. \n\r На указанное(ые) в заявлении сопровождающее(ие) лицо(а) уже подано заявление о предоставлении сертификата на отдых и оздоровление.",
+                    IsManual = true,
+                    FirstStage = true,
+                    SecondStage = true,
+                    StatusId = (long)StatusEnum.Reject
+                },
+                new DeclineReason
+                {
+                    Id = 202102,
+                    IsActive = true,
+                    Name = "Заявление является повторным. \n\r На указанное(ые) в заявлении сопровождающее(ие) лицо(а) уже подано заявление о предоставлении бесплатной путёвки для отдыха и оздоровления.",
+                    IsManual = true,
+                    FirstStage = true,
+                    SecondStage = true,
+                    StatusId = (long)StatusEnum.Reject
+                },
+                new DeclineReason
+                {
+                    Id = 202105,
+                    IsActive = true,
+                    Name = "Заявление является повторным. \n\r Заявление о предоставлении бесплатной путёвки для отдыха и оздоровления от имени родителя (законного представителя) уже подано.",
+                    IsManual = true,
+                    FirstStage = true,
+                    SecondStage = true,
+                    StatusId = (long)StatusEnum.Reject
+                },
+                new DeclineReason
+                {
+                    Id = 202106,
+                    IsActive = true,
+                    Name = "Заявление является повторным. \n\r Заявление о предоставлении сертификата на отдых и оздоровление от имени родителя (законного представителя) уже подано.",
+                    IsManual = true,
+                    FirstStage = true,
+                    SecondStage = true,
+                    StatusId = (long)StatusEnum.Reject
+                },
+                new DeclineReason
+                {
+                    Id = 202104,
+                    IsActive = true,
+                    Name = "Заявление является повторным. \n\r Заявление на указанное в заявлении лицо из числа детей-сирот и детей, оставшихся без попечения родителей уже было подано.",
+                    IsManual = true,
+                    FirstStage = true,
+                    SecondStage = true,
+                    StatusId = (long)StatusEnum.Reject
+                });
+            context.SaveChanges();
+
             // 2020 - 2021
             context.DeclineReason.AddOrUpdate(a => a.Id, new DeclineReason
                 {
@@ -1052,7 +1116,8 @@ namespace RestChild.DAL.Configurations
                 d.Id >= 201751 && d.Id <= 201758 ||
                 d.Id > 201800 && d.Id <= 201912 ||
                 d.Id > 201918 && d.Id <= 201919 ||
-                d.Id > 202000 && d.Id <= 202006
+                d.Id > 202000 && d.Id <= 202006 ||
+                d.Id > 202100 && d.Id <= 202110
             ).ToList();
             foreach (var tr in trs)
             {

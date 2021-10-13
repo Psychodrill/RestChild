@@ -39,6 +39,11 @@ namespace RestChild.Comon.Enumeration
         /// <summary>
         ///     Компенсация за путевку лицу из числа детей-сирот и детей, оставшихся без попечения родителей
         /// </summary>
-        CompensationYouthRest = 6
+        CompensationYouthRest = 6,
+
+        /// <summary>
+        ///     Сертификат на отдых и оздоровление ребенка и сопровождающего лица
+        /// </summary>
+        FreeRestChildAndApplicant = 7
     }
 }
