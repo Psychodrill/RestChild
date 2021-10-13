@@ -150,6 +150,7 @@ namespace RestChild.DAL.Configurations
                     {
                         Id = (long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS,
                         Name = "Предоставление из ЕГР ЗАГС сведений об актах гражданского состояния (11827)",
+                        SendMessage = true,
                         Eid = (long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS
                     }
                 );
