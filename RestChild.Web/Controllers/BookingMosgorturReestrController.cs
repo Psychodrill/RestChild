@@ -501,7 +501,7 @@ namespace RestChild.Web.Controllers
             var br = new Models.VisitQueue.BookingRepository(UnitOfWork, null);
             model.Times = br.GetVisitGrid(
                 new Models.VisitQueue.BookingVisitGridFilter { DateFrom = model.Date, DateTo = model.Date, VisitSlotsCount = model.SlotsCount, VisitTargetId = model.SelectedTarget })
-                .Where(ss => ss.Date == model.Date && model.Date < DateTime.Now.AddDays(15))
+                .Where(ss => ss.Date == model.Date && model.Date < DateTime.Now.AddDays(15d))
                 .SelectMany(s => s.Cells)
                 .ToDictionary(x => x.TimeOfDay, x => string.Format("{0:HH:mm}", x));
 
