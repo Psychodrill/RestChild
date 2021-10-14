@@ -301,7 +301,8 @@ namespace RestChild.Web.Models
                     }
                 if (age >= 14 && age <= 20)
                 {
-                    if (dateOfIssueInDays < dateAge20.Value.Add(new TimeSpan(90, 0, 0, 0)))
+                    if (dateOfIssueInDays < dateAge20.Value.Add(new TimeSpan(90, 0, 0, 0))
+                            && !(dateOfIssueInDays > dateAge20))
                     {
                         DocumentTypeEm = "Паспорт гражданина РФ не соответствует возрасту";
                         IsValid = false;
@@ -309,8 +310,9 @@ namespace RestChild.Web.Models
                 }
                 if (age >= 20 && age <= 45)
                 {
-                    if (dateOfIssueInDays >= dateAge45.Value.Add(new TimeSpan(90, 0, 0, 0))
+                    if ((dateOfIssueInDays >= dateAge45.Value.Add(new TimeSpan(90, 0, 0, 0))
                         || dateOfIssueInDays < dateAge20)
+                        && !(dateOfIssueInDays > dateAge45))
                     {
                         DocumentTypeEm = "Паспорт гражданина РФ не соответствует возрасту";
                         IsValid = false;
@@ -318,7 +320,7 @@ namespace RestChild.Web.Models
                 }
                 if (age >= 45)
                 {
-                    if (dateOfIssueInDays < dateAge45.Value.Add(new TimeSpan(90, 0, 0, 0)))
+                    if (dateOfIssueInDays < dateAge45)
                     {
                         DocumentTypeEm = "Паспорт гражданина РФ не соответствует возрасту";
                         IsValid = false;
