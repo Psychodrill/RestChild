@@ -2569,6 +2569,7 @@ namespace RestChild.DAL.Configurations
             context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
             {
                 Id = (long)StatusEnum.RegistrationDecline + 1100000,
+                StatusId = (long)StatusEnum.RegistrationDecline,
                 StatusActionId = (long)StatusEnum.RegistrationDecline,
                 IsFirstCompany = true,
                 DeclineReasonId = 202102
@@ -2612,6 +2613,7 @@ namespace RestChild.DAL.Configurations
             context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
             {
                 Id = (long)StatusEnum.RegistrationDecline + 1200000,
+                StatusId = (long)StatusEnum.RegistrationDecline,
                 StatusActionId = (long)StatusEnum.RegistrationDecline,
                 IsFirstCompany = true,
                 DeclineReasonId = 202103
@@ -2654,6 +2656,7 @@ namespace RestChild.DAL.Configurations
             context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
             {
                 Id = (long)StatusEnum.RegistrationDecline + 1300000,
+                StatusId = (long)StatusEnum.RegistrationDecline,
                 StatusActionId = (long)StatusEnum.RegistrationDecline,
                 IsFirstCompany = true,
                 DeclineReasonId = 202105
@@ -2696,6 +2699,7 @@ namespace RestChild.DAL.Configurations
             context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
             {
                 Id = (long)StatusEnum.RegistrationDecline + 1400000,
+                StatusId = (long)StatusEnum.RegistrationDecline,
                 StatusActionId = (long)StatusEnum.RegistrationDecline,
                 IsFirstCompany = true,
                 DeclineReasonId = 202106
@@ -2738,6 +2742,7 @@ namespace RestChild.DAL.Configurations
             context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
             {
                 Id = (long)StatusEnum.RegistrationDecline + 1500000,
+                StatusId = (long)StatusEnum.RegistrationDecline,
                 StatusActionId = (long)StatusEnum.RegistrationDecline,
                 IsFirstCompany = true,
                 DeclineReasonId = 202104

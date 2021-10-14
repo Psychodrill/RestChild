@@ -1033,13 +1033,12 @@ namespace RestChild.Web.Controllers.WebApi
             }
 
             model.ApplicantDouble = new List<Request>();
-
+            var snils = model.Applicant?.Data?.Snils;
             if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor ||
                 model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 ||
                 model.Data.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps ||
                 model.Data.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps)
-            {
-                var snils = model.Applicant?.Data?.Snils;
+            {                
                 model.ApplicantDouble = UnitOfWork.GetSet<Request>().Where(r =>
                         !r.IsDeleted && r.Applicant.Snils == snils
                                      && r.Id != model.Data.Id
@@ -1049,15 +1048,31 @@ namespace RestChild.Web.Controllers.WebApi
                                      && r.StatusId != (long)StatusEnum.CancelByApplicant
                                      && r.StatusId != (long)StatusEnum.Denial
                                      && r.YearOfRestId == model.Data.YearOfRestId
-                                     || r.Attendant.Any(m => m.Snils == snils)
-                                     || r.Child.Any(m => m.Snils == snils)
                                      && r.ParentRequestId == null
-                                     && r.TypeOfRestId == model.Data.TypeOfRestId
-                                     && (r.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor ||
-                                         r.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 ||
-                                         r.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps ||
-                                         r.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps))
+                                     && r.TypeOfRestId == model.Data.TypeOfRestId)
                     .ToList();
+                if (model.ApplicantDouble.Count<1)
+                model.ApplicantDouble=UnitOfWork.GetSet<Request>().Where(r =>
+                        !r.IsDeleted && r.Attendant.Any(m => m.Snils == snils
+                                     && m.Request.StatusId != (long)StatusEnum.Draft
+                                     && m.Request.StatusId != (long)StatusEnum.RegistrationDecline
+                                     && m.Request.StatusId != (long)StatusEnum.Reject
+                                     && m.Request.StatusId != (long)StatusEnum.CancelByApplicant
+                                     && m.Request.StatusId != (long)StatusEnum.Denial
+                                     && m.Request.YearOfRestId == model.Data.YearOfRestId
+                                     && r.TypeOfRestId == model.Data.TypeOfRestId
+                                     )).ToList();
+                if (model.ApplicantDouble.Count < 1)
+                    model.ApplicantDouble=UnitOfWork.GetSet<Request>().Where(r =>
+                       !r.IsDeleted && r.Child.Any(m => m.Snils == snils
+                                    && m.Request.StatusId != (long)StatusEnum.Draft
+                                    && m.Request.StatusId != (long)StatusEnum.RegistrationDecline
+                                    && m.Request.StatusId != (long)StatusEnum.Reject
+                                    && m.Request.StatusId != (long)StatusEnum.CancelByApplicant
+                                    && m.Request.StatusId != (long)StatusEnum.Denial
+                                    && m.Request.YearOfRestId == model.Data.YearOfRestId
+                                    && r.TypeOfRestId == model.Data.TypeOfRestId)
+                                    ).ToList();
             }
 
 
