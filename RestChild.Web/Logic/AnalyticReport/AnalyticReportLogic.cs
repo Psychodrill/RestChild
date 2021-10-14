@@ -140,6 +140,9 @@ namespace RestChild.Web.Logic.AnalyticReport
                 case AccessRightEnum.AnalyticReports.RoomsFund:
                     excelTable = UnitOfWork.GetRoomsFund(filter);
                     break;
+                case AccessRightEnum.AnalyticReports.NotRespondedRequests:
+                    excelTable = UnitOfWork.GetNotRespondedRequests(filter);
+                    break;
                 default:
 					throw new ArgumentOutOfRangeException(nameof(filter.ReportType));
 			}

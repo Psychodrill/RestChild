@@ -23,6 +23,11 @@ namespace RestChild.Extensions.Filter
         public ICollection<City> Cities { get; set; }
         public ICollection<TypeOfTransport> TypeOfTransports { get; set; }
         public ICollection<TypeOfRest> TypeOfRests { get; set; }
+
+        public ICollection<ExchangeBaseRegistryType> ExchangeBaseRegistryTypes { get; set; }
+
+        
+        public virtual long? ExchangeBaseRegistryTypeId { get; set; }
         public DateTime? DateStartBegin { get; set; }
         public DateTime? DateStartEnd { get; set; }
         public ICollection<Status> Statuses { get; set; }
@@ -93,6 +98,9 @@ namespace RestChild.Extensions.Filter
         public bool TypeOfRestVisibility { get; set; }
         public bool FlightNumberVisibility { get; set; }
         public bool TypeOfTransportVisibility { get; set; }
+
+        public bool ExchangeRequestVisibility { get; set; }
+
 
         /// <summary>
         ///     Показывать возможность выбора опции "и последующие годы"
