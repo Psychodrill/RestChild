@@ -1052,6 +1052,7 @@ namespace RestChild.Web.Controllers.WebApi
                                      || r.Attendant.Any(m => m.Snils == snils)
                                      || r.Child.Any(m => m.Snils == snils)
                                      && r.ParentRequestId == null
+                                     && r.TypeOfRestId == model.Data.TypeOfRestId
                                      && (r.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor ||
                                          r.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 ||
                                          r.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps ||
@@ -1153,6 +1154,7 @@ namespace RestChild.Web.Controllers.WebApi
                                      && r.StatusId != (long)StatusEnum.Denial
                                      && r.YearOfRestId == model.Data.YearOfRestId
                                      && r.ParentRequestId == null
+                                     && r.TypeOfRestId == model.Data.TypeOfRestId
                                      && (r.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor ||
                                          r.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7))
                     .ToList();

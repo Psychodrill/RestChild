@@ -75,7 +75,8 @@ namespace RestChild.DAL.Configurations
             {
                 Id = (long) StatusEnum.RegistrationDecline,
                 StatusId = (long) StatusEnum.RegistrationDecline,
-                IsFirstCompany = true
+                IsFirstCompany = true,
+                DeclineReasonId = 202107
             });
 
             context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
@@ -117,7 +118,8 @@ namespace RestChild.DAL.Configurations
             {
                 Id = (long) StatusEnum.RegistrationDecline + 1000000,
                 StatusActionId = (long) StatusEnum.RegistrationDecline,
-                IsFirstCompany = true
+                IsFirstCompany = true,
+                DeclineReasonId = 202101
             });
 
             context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
