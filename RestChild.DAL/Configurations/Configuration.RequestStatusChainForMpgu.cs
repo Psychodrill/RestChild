@@ -1496,9 +1496,9 @@ namespace RestChild.DAL.Configurations
             context.RequestStatusChainForMpgu.AddOrUpdate(a => a.Id, new RequestStatusChainForMpgu
             {
                 Id = (long) StatusEnum.Reject + 30000,
-                IsFirstCompany = true,
+                IsFirstCompany = false,
                 StatusId = (long) StatusEnum.Reject,
-                DeclineReasonId = null
+                DeclineReasonId = 8
             });
 
             context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
@@ -2528,9 +2528,10 @@ namespace RestChild.DAL.Configurations
             {
                 Id = (long)StatusEnum.Reject + 160000,
                 StatusId = (long)StatusEnum.Reject,
-                DeclineReasonId = 202101
+                DeclineReasonId = 202101,
+                IsFirstCompany = true,
+                RequestOnMoney = false,
             });
-
             context.RequestStatusForMpgu.AddOrUpdate(a => a.Id,  new RequestStatusForMpgu
             {
                 Id = ++id,
