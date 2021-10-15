@@ -1782,6 +1782,7 @@ namespace RestChild.Web.Controllers.WebApi
                             sb.Append($"{vm.Applicant.LastNameEm} {vm.Applicant.FirstNameEm} {vm.Applicant.MiddleNameEm},");                            
                             var msg = sb.ToString();
                             msg = msg.Substring(0, msg.Length - 1);
+                            action = AccessRightEnum.Status.ToRegistrationDeclineAttendant;
                             if (entity.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor)
                             {
                                 decline = 202105;
@@ -1806,6 +1807,7 @@ namespace RestChild.Web.Controllers.WebApi
                         {
                             bool plural = vm.SameChildren.Count > 1;
                             status = StatusEnum.RegistrationDecline;
+                            action = AccessRightEnum.Status.ToRegistrationDeclineAttendant;
                             if (vm.SameChildren.Select(ss => ss.Request.SsoId).Any(ss => entity.SsoId != ss))
                             {
                                 action = AccessRightEnum.Status.ToRegistrationDeclineChildDiffSSOId;
