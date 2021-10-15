@@ -1779,7 +1779,7 @@ namespace RestChild.Web.Controllers.WebApi
                         {
                             status = StatusEnum.RegistrationDecline;
                             var sb = new StringBuilder();                            
-                            sb.Append($"{vm.Applicant.LastNameEm} {vm.Applicant.FirstNameEm} {vm.Applicant.MiddleNameEm},");                            
+                            sb.Append($"{vm.Applicant.Data.LastName} {vm.Applicant.Data.FirstName} {vm.Applicant.Data.MiddleName},");                            
                             var msg = sb.ToString();
                             msg = msg.Substring(0, msg.Length - 1);
                             action = AccessRightEnum.Status.ToRegistrationDeclineAttendant;

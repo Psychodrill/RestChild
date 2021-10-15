@@ -2532,7 +2532,8 @@ namespace RestChild.DAL.Configurations
                 StatusId = (long)StatusEnum.Reject,
                 DeclineReasonId = 202101,
                 IsFirstCompany = true,
-                RequestOnMoney = false,
+
+                //RequestOnMoney = true,
             });
             context.RequestStatusForMpgu.AddOrUpdate(a => a.Id,  new RequestStatusForMpgu
             {
