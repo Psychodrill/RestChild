@@ -2538,7 +2538,7 @@ namespace RestChild.DAL.Configurations
             context.RequestStatusForMpgu.AddOrUpdate(a => a.Id,  new RequestStatusForMpgu
             {
                 Id = ++id,
-                ChainId = (long)StatusEnum.Ranging,
+                ChainId = (long)StatusEnum.Reject + 160000,
                 Status = 10190,
                 Name = "Отзыв заявления недоступен",
                 Commentary = string.Empty,
