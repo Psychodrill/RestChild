@@ -74,7 +74,7 @@ namespace RestChild.DAL.Configurations
                     IsManual = true,
                     FirstStage = true,
                     SecondStage = true,
-                    StatusId = (long)StatusEnum.Reject
+                    StatusId = (long)StatusEnum.RegistrationDecline
                 },
                 new DeclineReason
                 {
@@ -84,7 +84,7 @@ namespace RestChild.DAL.Configurations
                     IsManual = true,
                     FirstStage = true,
                     SecondStage = true,
-                    StatusId = (long)StatusEnum.Reject
+                    StatusId = (long)StatusEnum.RegistrationDecline
                 },
                 new DeclineReason
                 {
@@ -94,7 +94,7 @@ namespace RestChild.DAL.Configurations
                     IsManual = true,
                     FirstStage = true,
                     SecondStage = true,
-                    StatusId = (long)StatusEnum.Reject
+                    StatusId = (long)StatusEnum.RegistrationDecline
                 },
                 new DeclineReason
                 {
@@ -104,7 +104,7 @@ namespace RestChild.DAL.Configurations
                     IsManual = true,
                     FirstStage = true,
                     SecondStage = true,
-                    StatusId = (long)StatusEnum.Reject
+                    StatusId = (long)StatusEnum.RegistrationDecline
                 },
                 new DeclineReason
                 {
@@ -114,7 +114,7 @@ namespace RestChild.DAL.Configurations
                     IsManual = true,
                     FirstStage = true,
                     SecondStage = true,
-                    StatusId = (long)StatusEnum.Reject
+                    StatusId = (long)StatusEnum.RegistrationDecline
                 },
                 new DeclineReason
                 {
@@ -124,7 +124,7 @@ namespace RestChild.DAL.Configurations
                     IsManual = true,
                     FirstStage = true,
                     SecondStage = true,
-                    StatusId = (long)StatusEnum.Reject
+                    StatusId = (long)StatusEnum.RegistrationDecline
                 });
             context.SaveChanges();
 
