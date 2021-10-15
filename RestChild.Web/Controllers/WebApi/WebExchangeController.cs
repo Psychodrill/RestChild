@@ -145,7 +145,10 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 using (var tran = UnitOfWork.GetTransactionScope())
                 {
-                    var request = exchangeBaseRegistry.Child?.Request ?? exchangeBaseRegistry.Applicant?.Request;
+                    var request = exchangeBaseRegistry.Child?.Request
+                                  ?? exchangeBaseRegistry.Applicant?.Request
+                                  ?? UnitOfWork.GetSet<Request>().FirstOrDefault(r => r.ApplicantId == exchangeBaseRegistry.ApplicantId);
+
                     if (exchangeBaseRegistry.Applicant != null)
                     {
                         request = UnitOfWork.GetSet<Request>()
@@ -162,6 +165,12 @@ namespace RestChild.Web.Controllers.WebApi
                         {
                             return;
                         }
+                    }
+
+                    if (request == null)
+                    {
+                        Logger.Info($"Ошибка в SendAcknowledgement (Заявитель или сопровождающий по которому сформирован запрос не связан ни с каким заявлением) = {exchangeBaseRegistry?.Id}");
+                        return;
                     }
 
                     if (request.IsFirstCompany)
