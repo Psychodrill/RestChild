@@ -292,41 +292,44 @@ namespace RestChild.Web.Models
             {
                 var dateRequest = Data.Request?.DateRequest ?? DateTime.Today;
                 var dateOfIssueInDays = Data.DocumentDateOfIssue - Data.DateOfBirth;
+                var dateAgeDays = dateRequest - Data.DateOfBirth;
+                var dateAge14 = Data.DateOfBirth.Value.AddYears(14) - Data.DateOfBirth;
                 var dateAge20 = Data.DateOfBirth.Value.AddYears(20) - Data.DateOfBirth;
                 var dateAge45 = Data.DateOfBirth.Value.AddYears(45) - Data.DateOfBirth;
-                if (age <= 14)
+                if (age < 14)
                 {
-                        DocumentTypeEm = "Паспорт гражданина РФ не соответствует возрасту";
+                        DocumentTypeEm = "Паспорт гражданина РФ не соответствует возрасту "; //1
                         IsValid = false;
-                    }
+                }
                 if (age >= 14 && age <= 20)
                 {
-                    if (dateOfIssueInDays < dateAge20.Value.Add(new TimeSpan(90, 0, 0, 0))
-                            && !(dateOfIssueInDays > dateAge20))
+                    if ((dateOfIssueInDays > dateAge20.Value.Add(new TimeSpan(90, 0, 0, 0))
+                        || dateOfIssueInDays < dateAge14)
+                        && !(dateOfIssueInDays > dateAge20))
                     {
-                        DocumentTypeEm = "Паспорт гражданина РФ не соответствует возрасту";
+                        DocumentTypeEm = "Паспорт гражданина РФ не соответствует возрасту  "; //2
                         IsValid = false;
                     }
                 }
                 if (age >= 20 && age <= 45)
                 {
                     if ((dateOfIssueInDays >= dateAge45.Value.Add(new TimeSpan(90, 0, 0, 0))
-                        || dateOfIssueInDays < dateAge20)
+                        || (dateOfIssueInDays < dateAge20 && dateAgeDays > dateAge20.Value.Add(new TimeSpan(90, 0, 0, 0))))
                         && !(dateOfIssueInDays > dateAge45))
                     {
-                        DocumentTypeEm = "Паспорт гражданина РФ не соответствует возрасту";
+                        DocumentTypeEm = "Паспорт гражданина РФ не соответствует возрасту   "; //3
                         IsValid = false;
                     }
                 }
                 if (age >= 45)
                 {
-                    if (dateOfIssueInDays < dateAge45)
+                    if (dateOfIssueInDays < dateAge45
+                            && !(dateAgeDays < dateAge45.Value.Add(new TimeSpan(90, 0, 0, 0))))
                     {
-                        DocumentTypeEm = "Паспорт гражданина РФ не соответствует возрасту";
+                        DocumentTypeEm = "Паспорт гражданина РФ не соответствует возрасту    "; //4
                         IsValid = false;
                     }
                 }
-
             }
 
             if (age < 18 && !Data.RequestId.HasValue && !(RequestModel?.Data?.AgentApplicant ?? false))
