@@ -1067,7 +1067,7 @@ namespace RestChild.DAL.Configurations
             {
                 Id = ++id,
                 ChainId = (long) StatusEnum.CertificateIssued + 3000000,
-                Status = 7700,
+                Status = 1075,
                 Name = "Результат выдан заявителю",
                 Commentary = "",
                 OrderField = id,
@@ -1320,7 +1320,7 @@ namespace RestChild.DAL.Configurations
             {
                 Id = (long) StatusEnum.WaitApplicantMoney,
                 IsFirstCompany = true,
-                StatusId = null //(long) StatusEnum.WaitApplicantMoney
+                StatusId = (long) StatusEnum.WaitApplicantMoney
             });
 
             context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
@@ -1348,9 +1348,9 @@ namespace RestChild.DAL.Configurations
             {
                 Id = (long) StatusEnum.CertificateIssued + 2000000,
                 IsFirstCompany = true,
-                StatusId = null, //(long) StatusEnum.CertificateIssued,
-                StatusActionId = null, //(long) StatusEnum.CertificateIssued + 100000,
-                RequestOnMoney = null //true
+                StatusId = (long) StatusEnum.CertificateIssued,                                           //null
+                StatusActionId = (long) StatusEnum.CertificateIssued + 100000,                                           //null
+                RequestOnMoney = true                                           //null
             });
 
             context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
@@ -1373,9 +1373,9 @@ namespace RestChild.DAL.Configurations
             {
                 Id = (long) StatusEnum.CertificateIssued + 4000000,
                 IsFirstCompany = true,
-                StatusId = null, //(long) StatusEnum.CertificateIssued,
-                StatusActionId = null, //(long) StatusEnum.CertificateIssued + 300000,
-                RequestOnMoney = null //true
+                StatusId = (long) StatusEnum.CertificateIssued,                                           //null
+                StatusActionId = (long) StatusEnum.CertificateIssued + 300000,                                           //null
+                RequestOnMoney = true                                           //null
             });
 
             context.RequestStatusForMpgu.AddOrUpdate(a => a.Id, new RequestStatusForMpgu
