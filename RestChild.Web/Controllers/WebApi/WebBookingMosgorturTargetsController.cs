@@ -30,8 +30,11 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 if (!string.IsNullOrWhiteSpace(filter.Name))
                 {
-
                     query = query.Where(sx => sx.Name.ToLower().Contains(filter.Name.ToLower()));
+                }
+                if (filter.DepartmentId>1)
+                {
+                    query = query.Where(sx => sx.DepartmentId == filter.DepartmentId);
                 }
             }
 

@@ -21,6 +21,6 @@ namespace RestChild.Web.Services.Contract
       BookingResult PrebookingCancellation(long BookingId);
 
       [OperationContract]
-      bool PrebookingSNILSCheck(string SNILS);
+      bool PrebookingSNILSCheck(string SNILS, long DepartId);
    }
 }

@@ -31,14 +31,15 @@ namespace RestChild.Web.Models.VisitQueue
         /// <summary>
         ///     Техническая проверка существования активной брони с таким же СНИЛС
         /// </summary>
-        internal static bool PrebookingSnilsCheck(IUnitOfWork unitOfWork, string snils)
+        internal static bool PrebookingSnilsCheck(IUnitOfWork unitOfWork, string snils, long DepartId)
         {
             var q = unitOfWork.GetSet<MGTBookingVisit>().Where(ss => ss.VisitCell >= DateTime.Now).AsQueryable();
             q = q.Where(ss =>
-                ss.StatusId == (long)MGTVisitBookingStatuses.PrebookingRegistered
+                (ss.StatusId == (long)MGTVisitBookingStatuses.PrebookingRegistered
                 || ss.StatusId == (long)MGTVisitBookingStatuses.BookingRegistered
                 || ss.StatusId == (long)MGTVisitBookingStatuses.BookingVisited
-                || ss.StatusId == (long)MGTVisitBookingStatuses.BookingUnvisited
+                || ss.StatusId == (long)MGTVisitBookingStatuses.BookingUnvisited)
+                && ss.DepartmentId == DepartId
             );
             q = q.Where(ss => ss.Persons.Any(sx => sx.Snils.ToLower() == snils.ToLower()));
             return q.Any();
@@ -47,9 +48,9 @@ namespace RestChild.Web.Models.VisitQueue
         /// <summary>
         ///     Проверка существования активной брони с таким же СНИЛС
         /// </summary>
-        public bool PrebookingSnilsCheck(string snils)
+        public bool PrebookingSnilsCheck(string snils, long departId)
         {
-            return PrebookingSnilsCheck(UnitOfWork, snils);
+            return PrebookingSnilsCheck(UnitOfWork, snils, departId);
         }
 
         /// <summary>
@@ -178,6 +179,7 @@ namespace RestChild.Web.Models.VisitQueue
                     || ss.StatusId == (long)MGTVisitBookingStatuses.BookingRegistered
                     || ss.StatusId == (long)MGTVisitBookingStatuses.BookingVisited
                     || ss.StatusId == (long)MGTVisitBookingStatuses.BookingUnvisited
+                    && ss.DepartmentId == day.DepartmentId
                 )
                 && ss.VisitCell == dd).AsQueryable();
             if (ignoreBookingId > 0)
@@ -251,11 +253,11 @@ namespace RestChild.Web.Models.VisitQueue
         /// <summary>
         ///     Техническое создание пред брони
         /// </summary>
-        internal static BookingResult Prebooking(IUnitOfWork unitOfWork, Booking booking, bool mpgu, ILogger logger = null)
+        internal static BookingResult Prebooking(IUnitOfWork unitOfWork, Booking booking, bool mpgu, long departId = 1, ILogger logger = null)
         {
             try
             {
-                if (PrebookingSnilsCheck(unitOfWork, booking.SNILS))
+                if (PrebookingSnilsCheck(unitOfWork, booking.SNILS, departId))
                 {
                     return new BookingResult
                     {
@@ -263,7 +265,15 @@ namespace RestChild.Web.Models.VisitQueue
                         Messeage = "Пребронь на данного человека уже существует"
                     };
                 }
-
+                if (unitOfWork.GetSet<MGTBookingVisit>()
+                    .Any(d => (d.StatusId == 1 || d.StatusId == 3) && d.VisitCell == booking.VisitSlot && d.Persons.Any(s => s.Snils == booking.SNILS)))
+                {
+                    return new BookingResult
+                    {
+                        Code = (long)MGTVisitBookingPrebookingStatuses.PrebookingExists,
+                        Messeage = "Вы уже записались на приём в это время"
+                    };
+                }
                 if (booking.VisitSlot < DateTime.Now)
                 {
                     throw new Exception("нельзя забронировать слот в прошлом");
@@ -273,7 +283,7 @@ namespace RestChild.Web.Models.VisitQueue
                 var currentVisitSlotDay = new DateTime(booking.VisitSlot.Date.Ticks);
 
                 var day = unitOfWork.GetSet<MGTWorkingDay>()
-                    .FirstOrDefault(d => !d.IsDeleted && d.Date == currentVisitSlotDay);
+                    .FirstOrDefault(d => !d.IsDeleted && d.Date == currentVisitSlotDay && d.DepartmentId == departId);
                 if (day == null)
                 {
                     throw new Exception("рабочий день не найден");
@@ -298,6 +308,7 @@ namespace RestChild.Web.Models.VisitQueue
                                 WorkingDayId = day.Id,
                                 HistoryLink = historyLink,
                                 HistoryLinkId = historyLink.Id,
+                                DepartmentId = departId,
                                 Persons = new List<MGTVisitBookingPerson>
                                 {
                                     new MGTVisitBookingPerson
@@ -381,7 +392,7 @@ namespace RestChild.Web.Models.VisitQueue
         /// </summary>
         public BookingResult Prebooking(Booking booking, bool mpgu = false)
         {
-            return Prebooking(UnitOfWork, booking, mpgu, Logger);
+            return Prebooking(UnitOfWork, booking, mpgu, 1 ,Logger);
         }
 
         /// <summary>

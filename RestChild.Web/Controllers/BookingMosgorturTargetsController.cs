@@ -46,6 +46,7 @@ namespace RestChild.Web.Controllers
 
             if (filter == null)
                 filter = new BookingMosgorturTargetsFilterModel();
+            ViewBag.Organizations = ApiController.GetDepartments();
             filter.Targets = ApiController.Get(filter);
             return View("BookingTargetList", filter);
         }
