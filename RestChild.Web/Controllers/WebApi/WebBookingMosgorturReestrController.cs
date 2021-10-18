@@ -28,8 +28,6 @@ namespace RestChild.Web.Controllers.WebApi
         ///     Список возможных целей визита
         /// </summary>
         [Route("api/bookingmosgortur/dayinfo")]
-        [HttpGet]
-        [HttpPost]
         public MGTWorkningDayInfo GetDayInfo(DateTime day)
         {
             return new MGTWorkningDayInfo
