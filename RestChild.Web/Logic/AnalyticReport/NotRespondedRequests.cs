@@ -45,22 +45,24 @@ namespace RestChild.Web.Logic.AnalyticReport
             }
 
 
+
             var exUTS = unitOfWork.GetSet<ExchangeUTS>().Where(ex => requests.Any(r => r.ServiceNumber.Contains(ex.ServiceNumber))).AsQueryable();
 
 
-            var results = requests.Join(exUTS, re => re.ServiceNumber.Substring(0, 30), ex => ex.ServiceNumber, (re, ex) => new NotRespondedRequestsRow { RequestId = re.Id, Child = re.Child, Applicant = re.Applicant, RequestNumber = ex.ServiceNumber, TypeOfRest = null, ExchangeBaseRegistryTypeName = re.ExchangeBaseRegistryType.Name, RequestDateTime = null, ApplicationId = ex.RequestId })
-                                  .Join(applications, r => r.ApplicationId, a => a.Id, (r, a) => new NotRespondedRequestsRow { RequestId = r.RequestId, Child = r.Child, Applicant = r.Applicant, RequestNumber = a.RequestNumber, TypeOfRest = a.TypeOfRest.Name, ExchangeBaseRegistryTypeName = r.ExchangeBaseRegistryTypeName, RequestDateTime = a.DateRequest, ApplicationId=r.ApplicationId }).Distinct().ToList();
+            var results = requests.Join(exUTS, re => re.ServiceNumber.Substring(0, 30), ex => ex.ServiceNumber, (re, ex) => new NotRespondedRequestsRow { RequestId = re.Id, Child = re.Child, Applicant = re.Applicant, RequestNumber = ex.ServiceNumber, TypeOfRest = null, ExchangeBaseRegistryTypeName = re.ExchangeBaseRegistryType.Name, RequestDateTime = null,TimeOfRest=null, ApplicationId = ex.RequestId })
+                                  .Join(applications, r => r.ApplicationId, a => a.Id, (r, a) => new NotRespondedRequestsRow { RequestId = r.RequestId, Child = r.Child, Applicant = r.Applicant, RequestNumber = a.RequestNumber, TypeOfRest = a.TypeOfRest.Name, ExchangeBaseRegistryTypeName = r.ExchangeBaseRegistryTypeName, RequestDateTime = a.DateRequest, TimeOfRest = a.TimeOfRest, ApplicationId=r.ApplicationId }).Distinct().ToList();
 
 
-
+            results.RemoveAll(x => x.TimeOfRest == null);//удаление записей с нарушенной целостностью данных
             if (filter?.DateFormingBegin.HasValue ?? false)
             {
                 results = results.Where(res => res.RequestDateTime >= filter.DateFormingBegin.Value).ToList();
             }
             else
             {
-                DateTime innerDate = new DateTime(DateTime.Now.Year, 1, 1);
-                results = results.Where(res => res.RequestDateTime >= innerDate).ToList();
+                //DateTime innerDate = new DateTime(DateTime.Now.Year, 1, 1);
+                int innerYear = DateTime.Now.Year;
+                results = results.Where(res => res.TimeOfRest.Year >= innerYear).ToList();
             }
             if (filter?.DateFormingEnd.HasValue ?? false)
             {
@@ -68,8 +70,8 @@ namespace RestChild.Web.Logic.AnalyticReport
             }
             else
             {
-                DateTime innerDate = new DateTime(DateTime.Now.Year, 12, 31);
-                results = results.Where(res => res.RequestDateTime <= innerDate).ToList();
+                int innerYear = DateTime.Now.Year;
+                results = results.Where(res => res.TimeOfRest.Year <= innerYear).ToList();
             }
 
 
@@ -122,7 +124,7 @@ namespace RestChild.Web.Logic.AnalyticReport
 
             public DateTime? RequestDateTime { get; set; }
                        
-
+            public TimeOfRest TimeOfRest{ get; set; }
 
         }
     }
