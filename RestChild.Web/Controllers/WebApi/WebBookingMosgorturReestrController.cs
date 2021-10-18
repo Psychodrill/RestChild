@@ -563,7 +563,8 @@ namespace RestChild.Web.Controllers.WebApi
         internal string ValidateBookingDay(DateTime date, TimeSpan time, long targetId, int clotCount = 1)
         {
             var d = date.Date;
-            var day = UnitOfWork.GetSet<MGTWorkingDay>().Where(ss => ss.Date == d && ss.Date<DateTime.Now.AddDays(15d) && !ss.IsDeleted).AsQueryable();
+            var exDate = DateTime.Now.AddDays(15d);
+            var day = UnitOfWork.GetSet<MGTWorkingDay>().Where(ss => ss.Date == d && ss.Date<exDate && !ss.IsDeleted).AsQueryable();
             if (day.Count() != 1)
             {
                 return "Для данной даты бронирования не задано рабочее расписание";
