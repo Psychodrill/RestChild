@@ -28,6 +28,8 @@ namespace RestChild.Web.Controllers.WebApi
         ///     Список возможных целей визита
         /// </summary>
         [Route("api/bookingmosgortur/dayinfo")]
+        [HttpGet]
+        [HttpPost]
         public MGTWorkningDayInfo GetDayInfo(DateTime day)
         {
             return new MGTWorkningDayInfo
@@ -335,7 +337,9 @@ namespace RestChild.Web.Controllers.WebApi
 
         internal MGTWorkingDayModel GetModel(long id = 0, long DepartId = 1)
         {
-            var day = UnitOfWork.GetSet<MGTWorkingDay>().FirstOrDefault(ss => ss.Id == id && ss.DepartmentId == DepartId) ?? new MGTWorkingDay();
+            // Отключил проверку на отдел пока не реализован функционал заполнения расписания рабочих дней Мосгортура с разбивкой по отделами (18.10.2021 Utkin D)
+            //var day = UnitOfWork.GetSet<MGTWorkingDay>().FirstOrDefault(ss => ss.Id == id && ss.DepartmentId == DepartId) ?? new MGTWorkingDay();
+            var day = UnitOfWork.GetSet<MGTWorkingDay>().FirstOrDefault(ss => ss.Id == id) ?? new MGTWorkingDay();
 
             var result = new MGTWorkingDayModel
             {
@@ -343,7 +347,9 @@ namespace RestChild.Web.Controllers.WebApi
                 Date = day.Date,
                 TimeInterval = day.WorkingInterval,
                 IsDeleted = day.IsDeleted,
-                DepartmentId = DepartId,
+                // Отключил проверку на отдел пока не реализован функционал заполнения расписания рабочих дней Мосгортура с разбивкой по отделами (18.10.2021 Utkin D)
+                //DepartmentId = DepartId,
+                DepartmentId = day.DepartmentId,
                 BookingCount = day.VisitBookings?.Count(ss =>
                     !(ss.StatusId == (long) MGTVisitBookingStatuses.PrebookingRegistered ||
                       ss.StatusId == (long) MGTVisitBookingStatuses.BookingRegistered ||
