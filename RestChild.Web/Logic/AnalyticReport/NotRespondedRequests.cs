@@ -23,7 +23,10 @@ namespace RestChild.Web.Logic.AnalyticReport
         public static BaseExcelTable GetNotRespondedRequests(this IUnitOfWork unitOfWork, AnalyticReportFilter filter)
         {
 
-            var requests = unitOfWork.GetSet<ExchangeBaseRegistry>().Where(row => row.ResponseGuid != null && (
+
+            var applications = unitOfWork.GetSet<Request>().AsQueryable();
+
+            var requests = unitOfWork.GetSet<ExchangeBaseRegistry>().Where(row => row.ResponseGuid == null && (
                                                                                   row.ExchangeBaseRegistryTypeId == -1 || //Запрос наличия заключения ЦПМПК
                                                                                   row.ExchangeBaseRegistryTypeId == 10209 || //Запрос паспортного досье по СНИЛС
                                                                                   row.ExchangeBaseRegistryTypeId == 8255 ||// Запрос СНИЛС по ФИО
@@ -36,43 +39,39 @@ namespace RestChild.Web.Logic.AnalyticReport
                                                                                   row.ExchangeBaseRegistryTypeId == 10244))// Проверка СНИЛС
                                                                                   .AsQueryable();
 
-            if (filter?.DateFormingBegin.HasValue ?? false)
-            {
-                requests = requests.Where(row => row.SendDate >= filter.DateFormingBegin.Value);
-            }
-            else
-            {
-                DateTime innerDate = new DateTime(DateTime.Now.Year, 1, 1);
-                requests = requests.Where(row => row.SendDate >= innerDate);
-            }
-            if (filter?.DateFormingEnd.HasValue ?? false)
-            {
-                requests = requests.Where(row => row.SendDate <= filter.DateFormingEnd.Value);
-            }
-            else
-            {
-                DateTime innerDate = new DateTime(DateTime.Now.Year, 12, 31);
-                requests = requests.Where(row => row.SendDate <=innerDate );
-            }
-            if (filter?.ExchangeBaseRegistryTypeId.HasValue ??false)
+            if (filter?.ExchangeBaseRegistryTypeId.HasValue ?? false)
             {
                 requests = requests.Where(row => row.ExchangeBaseRegistryTypeId == filter.ExchangeBaseRegistryTypeId);
             }
 
 
-            var applicants = unitOfWork.GetSet<Applicant>().Where(a => requests.Any(r => r.ApplicantId == a.Id)).AsQueryable();
+            var exUTS = unitOfWork.GetSet<ExchangeUTS>().Where(ex => requests.Any(r => r.ServiceNumber.Contains(ex.ServiceNumber))).AsQueryable();
 
-            var childs = unitOfWork.GetSet<Child>().Where(c => requests.Any(r => r.ChildId == c.Id)).AsQueryable();
-            var applications = unitOfWork.GetSet<Request>().Where(app => applicants.Any(a => a.Id == app.ApplicantId)).AsQueryable();
 
-            var requestTypes = unitOfWork.GetSet<ExchangeBaseRegistryType>();
+            var results = requests.Join(exUTS, re => re.ServiceNumber.Substring(0, 30), ex => ex.ServiceNumber, (re, ex) => new NotRespondedRequestsRow { RequestId = re.Id, Child = re.Child, Applicant = re.Applicant, RequestNumber = ex.ServiceNumber, TypeOfRest = null, ExchangeBaseRegistryTypeName = re.ExchangeBaseRegistryType.Name, RequestDateTime = null, ApplicationId = ex.RequestId })
+                                  .Join(applications, r => r.ApplicationId, a => a.Id, (r, a) => new NotRespondedRequestsRow { RequestId = r.RequestId, Child = r.Child, Applicant = r.Applicant, RequestNumber = a.RequestNumber, TypeOfRest = a.TypeOfRest.Name, ExchangeBaseRegistryTypeName = r.ExchangeBaseRegistryTypeName, RequestDateTime = a.DateRequest, ApplicationId=r.ApplicationId }).Distinct().ToList();
 
-            //int checkr = requests.Count();
-            //int checka = applicants.Count();
-            //int checkapps = applications.Count();
 
-            var results = requests.Join(applicants, r => r.ApplicantId, a => a.Id, (r, a) => new NotRespondedRequestsRow { RequestId = r.Id, Child = r.Child, Applicant = r.Applicant, ApplicantId= a.Id, RequestNumber = null, TypeOfRest = null, ExchangeBaseRegistryTypeName = r.ExchangeBaseRegistryType.Name, RequestDateTime = r.SendDate })
-                                  .Join(applications, re => re.ApplicantId, ap => ap.ApplicantId, (re, ap) => new NotRespondedRequestsRow { RequestId = re.RequestId, Child = re.Child, Applicant = re.Applicant, ApplicantId =re.ApplicantId, RequestNumber = ap.RequestNumber, TypeOfRest = ap.TypeOfRest.Name, ExchangeBaseRegistryTypeName = re.ExchangeBaseRegistryTypeName, RequestDateTime = re.RequestDateTime }).ToList();
+
+            if (filter?.DateFormingBegin.HasValue ?? false)
+            {
+                results = results.Where(res => res.RequestDateTime >= filter.DateFormingBegin.Value).ToList();
+            }
+            else
+            {
+                DateTime innerDate = new DateTime(DateTime.Now.Year, 1, 1);
+                results = results.Where(res => res.RequestDateTime >= innerDate).ToList();
+            }
+            if (filter?.DateFormingEnd.HasValue ?? false)
+            {
+                results = results.Where(res => res.RequestDateTime <= filter.DateFormingEnd.Value).ToList();
+            }
+            else
+            {
+                DateTime innerDate = new DateTime(DateTime.Now.Year, 12, 31);
+                results = results.Where(res => res.RequestDateTime <= innerDate).ToList();
+            }
+
 
             var columns = new List<ExcelColumn<NotRespondedRequestsRow>>
             {
@@ -91,7 +90,8 @@ namespace RestChild.Web.Logic.AnalyticReport
 
         public class NotRespondedRequestsRow
         {
-            public long RequestId { get; set; }
+            public long? ApplicationId { get; set; }
+            public long? RequestId { get; set; }
             public string RequestNumber { get; set; }
 
             public string TypeOfRest { get; set; }
@@ -121,10 +121,8 @@ namespace RestChild.Web.Logic.AnalyticReport
             public string ExchangeBaseRegistryTypeName { get; set; }
 
             public DateTime? RequestDateTime { get; set; }
+                       
 
-            public long ApplicantId { get; set; }
-
-            public int ChildId { get; set; }
 
         }
     }
