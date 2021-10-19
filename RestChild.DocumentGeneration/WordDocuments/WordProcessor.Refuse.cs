@@ -471,8 +471,11 @@ namespace RestChild.DocumentGeneration
             {
                 using (var wordDocument = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document))
                 {
-                    var isCert = request.TypeOfRestId == (long) TypeOfRestEnum.MoneyOn3To7 ||
-                                 request.TypeOfRestId == (long) TypeOfRestEnum.MoneyOn7To15;
+                    var isCert = request.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 ||
+                                 request.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn7To15 ||
+                                 request.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsInvalid ||
+                                 request.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsInvalidOrphanComplex ||
+                                 request.TypeOfRestId == (long)TypeOfRestEnum.MoneyOnInvalidOn4To17;
 
                     var mainPart = wordDocument.AddMainDocumentPart();
                     var doc = new Document(new Body());
@@ -598,7 +601,7 @@ namespace RestChild.DocumentGeneration
                                         new ParagraphProperties(new Justification {Val = JustificationValues.Left},
                                             new SpacingBetweenLines {After = Size20}),
                                         new Run(titleRequestRunPropertiesBold.CloneNode(true),
-                                            new Text("Данные ребенка, на которого был выдан сертификат: ")
+                                            new Text("Данные лиц, указанных в сертификате: ")
                                                 {Space = SpaceProcessingModeValues.Preserve},
                                             new Break()),
                                         new Run(titleRequestRunPropertiesItalic.CloneNode(true),
@@ -677,10 +680,17 @@ namespace RestChild.DocumentGeneration
                                     new Text("Основание: ") {Space = SpaceProcessingModeValues.Preserve}),
                                 new Run(titleRequestRunProperties.CloneNode(true),
                                     new Text(
-                                        "постановление Правительства Москвы от 22 февраля 2017 г. № 56-ПП "),
+                                        //"постановление Правительства Москвы от 22 февраля 2017 г. № 56-ПП "
+                                        "пункт 8(1).10 Порядка организации отдыха и оздоровления детей, находящихся"),
                                     new Break(),
                                     new Text(
-                                        "\"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\"."))));
+                                        "в трудной жизненной ситуации, утверждённого постановлением Правительства Москвы "),
+                                    new Break(),
+                                    new Text(
+                                        "от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся "),
+                                    new Break(),
+                                    new Text(
+                                        "жизненной ситуации\"."))));
                     }
                     else
                     {
