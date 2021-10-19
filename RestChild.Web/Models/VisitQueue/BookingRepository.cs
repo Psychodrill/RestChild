@@ -31,7 +31,7 @@ namespace RestChild.Web.Models.VisitQueue
         /// <summary>
         ///     Техническая проверка существования активной брони с таким же СНИЛС
         /// </summary>
-        internal static bool PrebookingSnilsCheck(IUnitOfWork unitOfWork, string snils, long DepartId = 2)
+        internal static bool PrebookingSnilsCheck(IUnitOfWork unitOfWork, string snils, long? DepartId)
         {
             var q = unitOfWork.GetSet<MGTBookingVisit>().Where(ss => ss.VisitCell >= DateTime.Now).AsQueryable();
             q = q.Where(ss =>
@@ -48,7 +48,7 @@ namespace RestChild.Web.Models.VisitQueue
         /// <summary>
         ///     Проверка существования активной брони с таким же СНИЛС
         /// </summary>
-        public bool PrebookingSnilsCheck(string snils, long departId = 2)
+        public bool PrebookingSnilsCheck(string snils, long departId)
         {
             return PrebookingSnilsCheck(UnitOfWork, snils, departId);
         }
@@ -64,13 +64,13 @@ namespace RestChild.Web.Models.VisitQueue
             {
                 d1 = DateTime.Now.Date;
             }
-
-            var q = UnitOfWork.GetSet<MGTWorkingDay>().Where(ss => ss.Date >= d1 && !ss.IsDeleted).AsQueryable();
+            var departId = UnitOfWork.GetSet<MGTVisitTarget>().Where(vt => vt.Id == filter.VisitTargetId).FirstOrDefault().DepartmentId;
+            var q = UnitOfWork.GetSet<MGTWorkingDay>().Where(ss => ss.Date >= d1 && !ss.IsDeleted && ss.DepartmentId == departId).AsQueryable();
 
             if (filter.DateTo.HasValue)
             {
                 //максимальное число дней в выгрузке сетки рабочих дней
-                var days = 30;
+                var days = 15;
                 var d2 = filter.DateTo.Value.Date;
                 if (d2 < d1)
                 {
@@ -175,10 +175,10 @@ namespace RestChild.Web.Models.VisitQueue
             //общее кол-во активных (не отменённых) броней на данное время
             var bookingsQuery = unitOfWork.GetSet<MGTBookingVisit>().Where(ss =>
                 (
-                    ss.StatusId == (long)MGTVisitBookingStatuses.PrebookingRegistered
+                    (ss.StatusId == (long)MGTVisitBookingStatuses.PrebookingRegistered
                     || ss.StatusId == (long)MGTVisitBookingStatuses.BookingRegistered
                     || ss.StatusId == (long)MGTVisitBookingStatuses.BookingVisited
-                    || ss.StatusId == (long)MGTVisitBookingStatuses.BookingUnvisited
+                    || ss.StatusId == (long)MGTVisitBookingStatuses.BookingUnvisited)
                     && ss.DepartmentId == day.DepartmentId
                 )
                 && ss.VisitCell == dd).AsQueryable();
@@ -253,7 +253,7 @@ namespace RestChild.Web.Models.VisitQueue
         /// <summary>
         ///     Техническое создание пред брони
         /// </summary>
-        internal static BookingResult Prebooking(IUnitOfWork unitOfWork, Booking booking, bool mpgu, long departId = 1, ILogger logger = null)
+        internal static BookingResult Prebooking(IUnitOfWork unitOfWork, Booking booking, bool mpgu, long departId, ILogger logger = null)
         {
             try
             {
@@ -266,7 +266,10 @@ namespace RestChild.Web.Models.VisitQueue
                     };
                 }
                 if (unitOfWork.GetSet<MGTBookingVisit>()
-                    .Any(d => (d.StatusId == 1 || d.StatusId == 3) && d.VisitCell == booking.VisitSlot && d.Persons.Any(s => s.Snils == booking.SNILS)))
+                    .Any(d => (d.StatusId == (long)MGTVisitBookingStatuses.PrebookingRegistered
+                    || d.StatusId == (long)MGTVisitBookingStatuses.BookingRegistered
+                    || d.StatusId == (long)MGTVisitBookingStatuses.BookingVisited
+                    || d.StatusId == (long)MGTVisitBookingStatuses.BookingUnvisited) && d.VisitCell == booking.VisitSlot && d.Persons.Any(s => s.Snils == booking.SNILS)))
                 {
                     return new BookingResult
                     {
@@ -392,7 +395,8 @@ namespace RestChild.Web.Models.VisitQueue
         /// </summary>
         public BookingResult Prebooking(Booking booking, bool mpgu = false)
         {
-            return Prebooking(UnitOfWork, booking, mpgu, 1 ,Logger);
+            var departId = UnitOfWork.GetSet<MGTVisitTarget>().Where(vt => vt.Id == booking.VisitTargetId).FirstOrDefault().DepartmentId;
+            return Prebooking(UnitOfWork, booking, mpgu, (long)departId ,Logger);
         }
 
         /// <summary>

@@ -33,7 +33,7 @@ namespace RestChild.Web.Services.Implementation
             using (var uw = WindsorHolder.Resolve<IUnitOfWork>())
             {
                 var br = new BookingRepository(uw, lg);
-                return br.PrebookingSnilsCheck(SNILS);  //, DepartId);
+                return br.PrebookingSnilsCheck(SNILS,2); //, DepartId);  чудовищная затычка
             }
         }
 
