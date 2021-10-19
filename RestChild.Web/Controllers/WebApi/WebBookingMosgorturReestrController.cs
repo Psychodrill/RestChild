@@ -254,6 +254,11 @@ namespace RestChild.Web.Controllers.WebApi
                         query = query.Where(ss => ss.MPGURegNum == null);
                     }
                 }
+                if (filter.DepartmentId.HasValue)
+                {
+                    if (filter.DepartmentId>1)
+                    query = query.Where(ss => ss.DepartmentId == filter.DepartmentId);
+                }
             }
 
             return query;

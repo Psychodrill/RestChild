@@ -23,9 +23,9 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-md-3 control-label text-right">Организация</label>
+        <label class="col-md-3 control-label text-right">Отдел МГТ</label>
         <div class="col-md-4">
-            @Html.DropDownListFor(m => m.DepartmentId, new SelectList(ViewBag.Organizations, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+            @Html.DropDownListFor(m => m.DepartmentId, new SelectList(ViewBag.Departments, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
         </div>
     </div>
 

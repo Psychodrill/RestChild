@@ -87,18 +87,16 @@ namespace RestChild.Web.Controllers
                 return RedirectToAvalibleAction();
             }
             var result = ApiController.GetModel(Id, DepartmentId);
-
+            ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
+            ViewBag.Benefits = ApiController.GetChildrenBenefits();
+            ViewBag.Departments = ApiController.GetDepartments();
             if (ApiController.CheckMgtDayExistsAndIsBussy(result.Date, (long)result.DepartmentId))
             {
                 result.ErrorMessage = "<ul><li>Рабочий день не может быть удален. На данный день уже есть записи на прием</li></ul>";
-                ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
                 return View("DayManage", result);
             }
 
             result.IsDeleted = true;
-            ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
-            ViewBag.Benefits = ApiController.GetChildrenBenefits();
-            ViewBag.Departments = ApiController.GetDepartments();
             var id = ApiController.SetModel(result);
 
             return RedirectToAction(nameof(DayManage), new { id, @DepartmentId = result.DepartmentId });
@@ -115,7 +113,9 @@ namespace RestChild.Web.Controllers
             {
                 return RedirectToAvalibleAction();
             }
-
+            ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
+            ViewBag.Benefits = ApiController.GetChildrenBenefits();
+            ViewBag.Departments = ApiController.GetDepartments();
             bool haserror = false;
 
             if (result.Id > 0)
@@ -210,11 +210,7 @@ namespace RestChild.Web.Controllers
                     var id = ApiController.SetModel(result);
                     return RedirectToAction(nameof(DayManage), new { @Id = id , @DepartmentId = result.DepartmentId});
                 }
-            }
-
-
-            var tgs = ApiController.GetDayTargets((long)result.DepartmentId);
-            ViewBag.Targets = tgs;
+            }            
             UnitOfWork.SaveChanges();
             return View("DayManage", result);
         }

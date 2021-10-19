@@ -14,7 +14,7 @@
     bool NeedInsertButton = RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCreate);
     ViewBag.NeedInsertButton = false;
     List<MGTDepartmentModel> Departments = ViewBag.Departments;
-   // long DepartId = (long)Model.DepartmentId;
+    // long DepartId = (long)Model.DepartmentId;
     //ViewBag.InsertButtonCaption = "Произвести запись";
     //ViewBag.InsertAction = "InsertBooking";
 }
@@ -85,7 +85,12 @@
         <div class="col-md-4">
             @Html.DropDownListFor(m => m.Target, new SelectList(((ICollection<RestChild.Web.Models.VisitQueue.IVisitTarget>)ViewBag.Targets).InsertAt<RestChild.Web.Models.VisitQueue.IVisitTarget>(new RestChild.Web.Models.VisitQueue.VisitTarget() { Id = -1, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control select2" })
         </div>
-
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Отдел МГТ</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(m => m.DepartmentId, new SelectList(ViewBag.Departments, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+        </div>
     </div>
 }
 
