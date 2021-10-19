@@ -335,6 +335,7 @@ namespace RestChild.Web.Controllers
             booking.DepartmentId = DepartmentId;
             ViewBag.Targets = ApiController.GetDayTargets(DepartmentId);
             ViewBag.Benefits = ApiController.GetChildrenBenefits();
+            ViewBag.Departments = ApiController.GetDepartments();
             return View("BookingManage", booking);
         }
 
@@ -367,6 +368,7 @@ namespace RestChild.Web.Controllers
 
             ViewBag.Targets = ApiController.GetDayTargets();
             ViewBag.Benefits = ApiController.GetChildrenBenefits();
+            ViewBag.Departments = ApiController.GetDepartments();
 
             for (int i = 0; i < booking.Children.Count(); i++)
             {
@@ -454,6 +456,7 @@ namespace RestChild.Web.Controllers
             var booking = ApiController.GetBooking(Id);
             ViewBag.Targets = ApiController.GetDayTargets();
             ViewBag.Benefits = ApiController.GetChildrenBenefits();
+            ViewBag.Departments = ApiController.GetDepartments();
             return View("BookingManage", booking);
         }
 
