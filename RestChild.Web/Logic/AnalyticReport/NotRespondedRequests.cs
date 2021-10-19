@@ -61,8 +61,8 @@ namespace RestChild.Web.Logic.AnalyticReport
             else
             {
                 //DateTime innerDate = new DateTime(DateTime.Now.Year, 1, 1);
-                int innerYear = DateTime.Now.Year+1;
-                results = results.Where(res => res.TimeOfRest.Year >= innerYear).ToList();
+                int maxYear = results.Max(x => x.TimeOfRest.Year);
+                results = results.Where(res => res.TimeOfRest.Year >= maxYear).ToList();
             }
             if (filter?.DateFormingEnd.HasValue ?? false)
             {
@@ -70,8 +70,8 @@ namespace RestChild.Web.Logic.AnalyticReport
             }
             else
             {
-                int innerYear = DateTime.Now.Year+1;
-                results = results.Where(res => res.TimeOfRest.Year <= innerYear).ToList();
+                int maxYear = results.Max(x => x.TimeOfRest.Year);
+                results = results.Where(res => res.TimeOfRest.Year <= maxYear).ToList();
             }
 
 
