@@ -56,7 +56,7 @@ new { Id = false, Text = "Не подтверждено" }
 <div class="form-group">
     <label class="col-md-2 control-label text-right">Цель обращения</label>
     <div class="col-md-4">
-        @Html.HiddenFor(r => r.TypeOfRestId, new { @class = "form-control type-of-rest select2", autocomplete = "off" })
+        @Html.HiddenFor(r => r.TypeOfRestId, new { @class = "form-control type-of-rest select2", autocomplete = "off", onChange = "enableCheckboxHasAttendant()" })
     </div>
     <label class="col-md-2 control-label text-right">Время отдыха</label>
     <div class="col-md-4">
@@ -226,6 +226,18 @@ new { Id = (int)AggregatedStatusEnum.Complete, Text = "Обработка зав
             @Html.CheckBoxFor(m => m.CertificateRepaid) Сертификат погашен
         </div>
     }
+
+    <div class="col-md-4 col-md-offset-2">
+        @if (Model.HasAttendant | Model.TypeOfRestId > 0)
+        {
+            @Html.CheckBoxFor(m => m.HasAttendant, new { id = "hasAttendantCheckBox" }) <span>Присутствует сопровождающее лицо</span>
+        }
+        else
+        {
+            @Html.CheckBoxFor(m => m.HasAttendant, new { id = "hasAttendantCheckBox", disabled = "true" }) <span>Присутствует сопровождающее лицо</span>
+        }
+    </div>
+
 </div>
 
 @if (ViewBag.NeedStatus)
@@ -350,4 +362,22 @@ new {Id = (long)1, Name = "Оплачено"},
 </script>
 <script type="text/javascript">
 	var typeOfRest = @Html.Raw(Json.Encode(ViewBag.TypesOfRest));
+</script>
+
+<script type="text/javascript">
+    function enableCheckboxHasAttendant() {
+
+        // Выбранная пользователем цель обращения.
+        var selectedRequestType = $('.select2-hidden-accessible').text();
+
+        // Цели обращения из группы "Сертификат на отдых и оздоровление", которые могут быть отфильтрованы по наличию сопровождающего лица.
+        var typesOfRestForFiltering = @Html.Raw(Json.Encode(ViewBag.TypesOfRestForAttendantFilter));
+
+        if (typesOfRestForFiltering.indexOf(selectedRequestType) > -1) {
+            $('#hasAttendantCheckBox').removeAttr('disabled');
+        } else {
+            $('#hasAttendantCheckBox').attr('disabled', true);
+            $('#hasAttendantCheckBox').prop('checked', false);
+        }
+    }
 </script>
