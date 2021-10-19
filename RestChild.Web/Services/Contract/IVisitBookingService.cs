@@ -10,17 +10,17 @@ namespace RestChild.Web.Services.Contract
 {
    [ServiceContract]
    public interface IVisitBookingService
-   {
-      [OperationContract]
-      IEnumerable<BookingVisitGrid> GetVisitGrid(BookingVisitGridFilter filter);
+    {
+        [OperationContract]
+        IEnumerable<BookingVisitGrid> GetVisitGrid(BookingVisitGridFilter filter);
 
-      [OperationContract]
-      BookingResult Prebooking(Models.VisitQueue.Booking booking);
+        [OperationContract]
+        BookingResult Prebooking(Models.VisitQueue.Booking booking);
 
-      [OperationContract]
-      BookingResult PrebookingCancellation(long BookingId);
+        [OperationContract]
+        BookingResult PrebookingCancellation(long BookingId);
 
-      [OperationContract]
-      bool PrebookingSNILSCheck(string SNILS, long DepartId);
-   }
+        [OperationContract]
+        bool PrebookingSNILSCheck(string SNILS);//, long DepartId);
+    }
 }

@@ -31,7 +31,7 @@ namespace RestChild.Web.Models.VisitQueue
         /// <summary>
         ///     Техническая проверка существования активной брони с таким же СНИЛС
         /// </summary>
-        internal static bool PrebookingSnilsCheck(IUnitOfWork unitOfWork, string snils, long DepartId)
+        internal static bool PrebookingSnilsCheck(IUnitOfWork unitOfWork, string snils, long DepartId = 2)
         {
             var q = unitOfWork.GetSet<MGTBookingVisit>().Where(ss => ss.VisitCell >= DateTime.Now).AsQueryable();
             q = q.Where(ss =>
@@ -48,7 +48,7 @@ namespace RestChild.Web.Models.VisitQueue
         /// <summary>
         ///     Проверка существования активной брони с таким же СНИЛС
         /// </summary>
-        public bool PrebookingSnilsCheck(string snils, long departId)
+        public bool PrebookingSnilsCheck(string snils, long departId = 2)
         {
             return PrebookingSnilsCheck(UnitOfWork, snils, departId);
         }
