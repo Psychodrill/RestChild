@@ -338,7 +338,7 @@ namespace RestChild.Web.Controllers.WebApi
             return Json(messages);
         }
 
-        internal MGTWorkingDayModel GetModel(long DepartId, long id = 0)
+        internal MGTWorkingDayModel GetModel(long id = 0, long DepartId = 2)
         {
             var day = UnitOfWork.GetSet<MGTWorkingDay>().FirstOrDefault(ss => ss.Id == id && ss.DepartmentId == DepartId) ?? new MGTWorkingDay();
 

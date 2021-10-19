@@ -32,7 +32,7 @@ namespace RestChild.Web.Controllers
         ///     Рабочии дни
         /// </summary>
         [Route("BookingMosgorturReestr/WorkingDays/{Year}/{Month}/{DepartmentId}")]
-        public ActionResult WorkingDays(int Year = 0, int Month = 0, int Page = 1, int DepartmentId = 1)
+        public ActionResult WorkingDays(int Year = 0, int Month = 0, int Page = 1, long DepartmentId = 1)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
             if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysView))
