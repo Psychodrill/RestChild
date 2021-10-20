@@ -582,7 +582,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                         {
                             PdfAddParagraph(document, 0, 1, Element.ALIGN_LEFT, 0,
                                 new Chunk(
-                                    "Данные ребёнка/лица из числа детей-сирот и детей, оставшихся без попечения родителей: ",
+                                    "Данные лиц, указанных в путевке: ",
                                     HeaderFont),
                                 new Chunk(
                                     $"{child.LastName} {child.FirstName} {child.MiddleName}, {child.DateOfBirth.FormatExGR(string.Empty)}",
@@ -598,7 +598,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     {
                         PdfAddParagraph(document, 0, 1, Element.ALIGN_LEFT, 0,
                             new Chunk(
-                                "Данные ребёнка/лица из числа детей-сирот и детей, оставшихся без попечения родителей: ",
+                                "Данные лиц, указанных в путевке: ",
                                 HeaderFont),
                             new Chunk(
                                 $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DateOfBirth.FormatExGR(string.Empty)}",
@@ -686,7 +686,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                         {
                             PdfAddParagraph(document, 0, 1, Element.ALIGN_LEFT, 0,
                                 new Chunk(
-                                    "Данные ребенка: ",
+                                    "Данные лиц, указанных в сертификате: ",
                                     HeaderFont),
                                 new Chunk(
                                     $"{child.LastName} {child.FirstName} {child.MiddleName}, {child.DateOfBirth.FormatExGR(string.Empty)}",
@@ -1204,8 +1204,8 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                     PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, 0,
                         new Chunk("Причина отказа в регистрации заявления: ", HeaderFont),
-                        new Chunk("пункт 5.11.1 Порядка: \"Наличие в отношении одного и того же ребёнка, лица из числа детей - сирот и детей, оставшихся без попечения родителей, другого заявления о предоставлении услуг отдыха и оздоровления в текущем календарном году\".", MainText));
-
+                        //new Chunk("пункт 5.11.1 Порядка: \"Наличие в отношении одного и того же ребёнка, лица из числа детей - сирот и детей, оставшихся без попечения родителей, другого заявления о предоставлении услуг отдыха и оздоровления в текущем календарном году\".", MainText));
+                        new Chunk(request.DeclineReason.Name, MainText));
                     document.Close();
                 }
 
