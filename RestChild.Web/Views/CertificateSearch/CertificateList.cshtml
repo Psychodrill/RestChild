@@ -6,29 +6,16 @@
 @using RestChild.Domain
 @using RestChild.Web.Controllers
 @using RestChild.Web.App_Code
+@using System.Collections
 @model RestChild.Extensions.Filter.CertificateFilterModel
 @{
     ViewBag.Title = "Реестр сертификатов";
     Layout = "~/Views/Shared/_SearchLayout.cshtml";
     ViewBag.SearchAction = "CertificateList";
-    ViewBag.InsertAction = "SelectPlace";
-    ViewBag.SaveAction = "Save";
     ViewBag.Controller = "CertificateSearch";
     ViewBag.Caption = "Реестр сертификатов";
     ViewBag.SearchPanelCaption = "Поиск сертификатов";
-    ViewBag.NeedStatus = true;
     ViewBag.NeedInsertButton = false;
-    ViewBag.NeedTypeOfRestriction = false;
-    ViewBag.NeedDepartmentSearchAndFilter = false;
-    ViewBag.NeedSpecializedCampFilter = false;
-
-    ViewBag.NeedBRPCC = true;
-    ViewBag.NeedBRRC = true;
-    ViewBag.NeedBRSC = true;
-    ViewBag.NeedCheckSnils = true;
-    ViewBag.NeedTTI = true;
-    ViewBag.NeedTFI = true;
-    ViewBag.NeedPC = true;
 }
 
 @section searchForm
@@ -53,41 +40,11 @@
             @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
         </div>
     </div>
-    @*<div class="form-group">
-            <label class="col-md-2 control-label text-right">Имя заявителя</label>
-            <div class="col-md-4">
-                @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
-            </div>
-            <label class="col-md-2 control-label text-right">Имя ребенка</label>
-            <div class="col-md-4">
-                @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-md-2 control-label text-right">Отчество заявителя</label>
-            <div class="col-md-4">
-                @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
-            </div>
-            <label class="col-md-2 control-label text-right">Отчество ребенка</label>
-            <div class="col-md-4">
-                @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
-            </div>
-        </div>*@
     <div class="form-group">
         <label class="col-md-2 control-label text-right">ФИО сопровождающего</label>
         <div class="col-md-4">
             @Html.TextBoxFor(m => m.AttendantFio, (string)Model.AttendantFio, new { @class = "form-control" })
         </div>
-        @*<label class="col-md-2 control-label text-right">Имя сопровождающего</label>
-                <div class="col-md-4">
-                    @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-2 control-label text-right">Отчество сопровождающего</label>
-                <div class="col-md-4">
-                    @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
-                </div>*@
         <label class="col-md-2 control-label text-right">СНИЛС (поиск по всем лицам укзанным в сертификате)</label>
         <div class="col-md-4">
             @Html.TextBoxFor(m => m.SNILS, (string)Model.SNILS, new { @class = "form-control" })
@@ -99,9 +56,9 @@
             @Html.TextBoxFor(m => m.CertificateNumber, (string)Model.CertificateNumber, new { @class = "form-control" })
         </div>
         <label class="col-md-2 control-label text-right input-label date-interval-label date-interval-label">Дата выдачи сертификата</label>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class='input-group date datepicker-anytime'>
-                @Html.TextBoxFor(r => r.Request.CertificateDate, new { @class = "form-control input-mask-date-anytime", autocomplete = "off"})
+                @Html.TextBoxFor(r => r.Request.CertificateDate, new { @class = "form-control input-mask-date-anytime" })
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -115,7 +72,7 @@
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label text-right input-label date-interval-label date-interval-label">Дата заключения договора с отдыхающим</label>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="input-group date datepicker-anytime">
                     @Html.TextBoxFor(m => m.ContractDate, new { @class = "form-control input-mask-date-anytime" })
                     <span class="input-group-addon">
@@ -137,7 +94,7 @@
     </div>
     <div class="form-group">
         <div class="form-inline">
-            <label class="col-md-3 control-label text-right input-label date-interval-label date-interval-label">Дата начала отдыха с</label>
+            <label class="col-md-3 control-label text-right">Дата начала отдыха с</label>
             <div class="input-group date datepicker-anytime">
                 @Html.TextBoxFor(m => m.RestDateFromFrom, new { @class = "form-control input-mask-date-anytime" })
                 <span class="input-group-addon">
@@ -222,8 +179,8 @@
                     <th>Период отдыха</th>
                     @*<th>Статус</th>*@
                     @*<th>Отчётность сдана</th>
-                    <th>Отчётность принята</th>
-                    <th>Оплачен</th>*@
+                        <th>Отчётность принята</th>
+                        <th>Оплачен</th>*@
                     @*<th></th>*@
                 </tr>
             </thead>
@@ -234,7 +191,7 @@
                     Certificate cert = Model.Certificates[i];
 
                     <text>
-                        <tr class="row-clicable" onclick="openRequest('@Url.Action("CertificateView", new {id=cert.Id})');">
+                        <tr class="row-clicable" onclick="openCertificate('@Url.Action("CertificateView", new {id=cert.Id})');">
 
                             <!--td>@(Model.Certificates.FirstItemOnPage + index)</td-->
                             <td>
@@ -339,14 +296,14 @@
                                 }
                             </td>
                             @*<td>
-                                <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
-                            </td>
-                            <td>
-                                <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
-                            </td>
-                            <td>
-                                <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
-                            </td>*@
+                                    <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
+                                </td>
+                                <td>
+                                    <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
+                                </td>
+                                <td>
+                                    <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
+                                </td>*@
                             @*<td>
                                     <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
                                 </td>*@
@@ -388,7 +345,6 @@
     @Styles.Render("~/Content/css/select2.css")
     @Styles.Render("~/Content/css/select2-bootstrap.css")
     @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
-    @Styles.Render("~/Content/RequestList.css")
 }
 
 @section scripts
@@ -402,5 +358,6 @@
     <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
     @Scripts.Render("~/Scripts/select2.min.js")
     @Scripts.Render("~/Scripts/select2_locale_ru.js")
-    <script type="text/javascript" src="~/Scripts/RequestList.js"></script>
+    <script type="text/javascript" src="~/Scripts/Vocabulary/CertificateList.js"></script>
+    @*<script type="text/javascript" src="~/Scripts/RequestList.js"></script>*@
 }
