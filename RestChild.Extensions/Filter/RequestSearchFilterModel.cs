@@ -124,5 +124,10 @@ namespace RestChild.Extensions.Filter
         ///     Комментарий сотрудника
         /// </summary>
         public bool? WithKC { get; set; }
+
+        /// <summary>
+        /// Присутствует сопровождающее лицо.  
+        /// </summary>
+        public bool HasAttendant { get; set; }
     }
 }

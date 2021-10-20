@@ -1895,6 +1895,11 @@ namespace RestChild.Web.Controllers.WebApi
                     (ss.InternalCommentary != null && ss.InternalCommentary != "") == search.WithKC.Value);
             }
 
+            if (search.HasAttendant)
+            {
+                query = query.Where(x => x.Attendant.Count > 0 | x.Applicant.IsAccomp);
+            }
+
             return query;
         }
 
