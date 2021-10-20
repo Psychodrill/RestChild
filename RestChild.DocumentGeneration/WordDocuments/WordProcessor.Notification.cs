@@ -204,9 +204,9 @@ namespace RestChild.DocumentGeneration
                             new Run(titleRequestRunProperties.CloneNode(true),
                                 new Text("пункт 6.4 Порядка организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденного постановлением Правительства Москвы") { Space = SpaceProcessingModeValues.Preserve },
                                 new Break(),
-                                new Text("от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\" (далее – Порядок): \"Необходимость личной явки заявителя") { Space = SpaceProcessingModeValues.Preserve },
-                                new Break(),
-                                new Text("в ГАУК \"МОСГОРТУР\".") { Space = SpaceProcessingModeValues.Preserve }
+                                new Text("от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\": \"Необходимость личной явки заявителя в ГАУК \"МОСГОРТУР\".") { Space = SpaceProcessingModeValues.Preserve }
+                               // new Break(),
+                                //new Text("в ГАУК \"МОСГОРТУР\".") { Space = SpaceProcessingModeValues.Preserve }
                                 )));
 
                     doc.AppendChild(
@@ -226,7 +226,7 @@ namespace RestChild.DocumentGeneration
                                     {Space = SpaceProcessingModeValues.Preserve}),
                             new Run(titleRequestRunProperties.CloneNode(true),
                                 new Text(
-                                        " Вам необходимо явиться в офис ГАУК \"МОСГОРТУР\" по адресу: г. Москва, Малый Харитоньевский переулок д. 6 стр. 3.")
+                                        " Вам необходимо явиться в офис ГАУК \"МОСГОРТУР\" по адресу: г. Москва, Малый Харитоньевский переулок, дом 6 строение 3.")
                                     {Space = SpaceProcessingModeValues.Preserve})));
 
 
@@ -1287,6 +1287,9 @@ namespace RestChild.DocumentGeneration
             var dr4 = ConfigurationManager.AppSettings["NotificationRefuseDeclineDiscardingOptions"].LongParse() ?? 201902;
             // неучастие в выборе альтернативного варианта (мини ЛОК 2020)
             var dr5 = ConfigurationManager.AppSettings["NotificationRefuseDeclineDiscardingChoose"].LongParse() ?? 201911;
+            //неучастие заявителя во втором этапе заявочной кампании
+            var dr6 = ConfigurationManager.AppSettings["NotParticipateInSecondStage"].LongParse() ?? 201704;
+
 
             var request = unitOfWork.GetById<Request>(requestId);
 
@@ -1313,6 +1316,13 @@ namespace RestChild.DocumentGeneration
             {
                 var doc = NotificationRefuse10805(unitOfWork, request);
                 doc.RequestFileTypeId = (long) RequestFileTypeEnum.NotificationRefuse;
+                return doc;
+            }
+
+            if (request.StatusId == (long)StatusEnum.Reject && request.DeclineReasonId == dr6)
+            {
+                var doc = NotificationRefuse108013(unitOfWork, request, account);
+                doc.RequestFileTypeId = (long)RequestFileTypeEnum.NotificationRefuse;
                 return doc;
             }
 
