@@ -23,7 +23,7 @@ namespace RestChild.DAL.Configurations
             context.MGTDepartment.AddIfNotExists(new MGTDepartment
             {
                 Id = 2,
-                Name = "Отдел по приему документов",
+                Name = "Отдел приема документов",
                 Description = string.Empty,
                 LastUpdateTick = DateTime.Now.Ticks,
                 Eid = 2,

@@ -13,22 +13,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     string[] _days = new string[7] { "Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота" };
     string[] _month = new string[12] { "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" };
-            }
+}
 
 
 <div class="row">
-   <div class="col-md-12">
-      <h2>Рабочие дни <br />
-       @Departments[(int)DepartId-1].Name
-       </h2>
-   </div>
+    <div class="col-md-12">
+        <h2>
+            Рабочие дни <br />
+            @Departments[(int)DepartId - 1].Name
+        </h2>
+    </div>
 </div>
 <div class="row">
-    <div class="col-md-12 form-group">
-        <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(-1).Year, @Month = Model.Date.AddMonths(-1).Month, @DepartmentId = DepartId })"><i class="glyphicon glyphicon-chevron-left"></i></a>
-        <div class="btn btn-default">@_month[Model.Date.Month - 1] @Model.Date.Year</div>
-        <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(1).Year, @Month = Model.Date.AddMonths(1).Month, @DepartmentId = DepartId })"><i class="glyphicon glyphicon-chevron-right"></i></a>
-    </div>
     <div class="col-md-12 form-group">
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Выбор отдела
@@ -38,102 +34,116 @@
             {
                 if (d.Id > 1)
                 {
-            <li><a href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.Year, @Month = Model.Date.Month, @DepartmentId = d.Id })">@d.Name</a></li>
+                    <li><a href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.Year, @Month = Model.Date.Month, @DepartmentId = d.Id })">@d.Name</a></li>
                 }
             }
         </ul>
     </div>
-</div>
-@if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEdit))
-            {
-   <div class="row">
-      <div class="col-md-12 form-group">
-         <a class="btn btn-primary" href="@Url.Action("DayManage", "BookingMosgorturReestr", new { @DepartmentId = Model.DepartmentId })" target="_blank">
-            <i class="glyphicon glyphicon-plus"></i> Создать рабочий день
-         </a>
-      </div>
-   </div>
-}
-        @if (Model.Result != null && Model.Result.Any() && Model.DepartmentId>1)
-        {
-   <table class="table table-striped table-hover">
-      <thead>
-         <tr>
-            <th class="text-center" width="5%">№</th>
-            <th>Дата работы</th>
-            <th>День недели</th>
-            <th>Статус</th>
-            <th>Режим работы</th>
-            <th>Длительность</th>
-            <th>Кол-во окон</th>
-            <th>Записалось / Всего</th>
-         </tr>
-      </thead>
-      <tbody>
-         @{
-            int rowNumber = Model.Result.FirstItemOnPage;
-
-        }
-
-        @foreach (var day in Model.Result)
-        {
-            <tr>
-               <td class="text-center">@(rowNumber++)</td>
-               @if(RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEdit))
-        {
-                  <td><a href="@Url.Action("DayManage", "BookingMosgorturReestr", new { @id = day.Id, @DepartmentId = Model.DepartmentId})" target="_blank">@string.Format("{0:dd.MM.yyyy}", day.Date)</a></td>
-               }
-               else
-               {
-                  <td>@string.Format("{0:dd.MM.yyyy}", day.Date)</td>
-               }
-               <td>@_days[(int)day.Date.DayOfWeek]</td>
-               <td>@(day.IsDeleted ? "Удален" : "Активен")</td>
-               <td>@string.Format("{0:HH:mm}-{1:HH:mm}", day.Windows.Min(sx => sx.WorkingPeriods.Min(sa => sa.TimeFrom)), day.Windows.Max(sx => sx.WorkingPeriods.Max(ss => ss.TimeTo)))</td>
-               <td>@day.WorkingInterval минут</td>
-               <td>@day.WindowCount</td>
-               <td>@string.Format("{0}/{1}", day.BookingCount, day.BookingMaximum)</td>
-            </tr>
-         }
-      </tbody>
-   </table>
-   <div class="row">
-      <div class="col-md-12">
-         @Html.PagedListPager(Model.Result, page =>
+    @if (Model.DepartmentId > 1)
     {
-        Model.Result = null;
-        Model.PageNumber = page;
-        return Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.Year, @Month = Model.Date.Month, @Page = page, @DepartmentId = DepartId });
-    }, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
-      </div>
-   </div>
+        <div class="col-md-12 form-group">
+            <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(-1).Year, @Month = Model.Date.AddMonths(-1).Month, @DepartmentId = DepartId })"><i class="glyphicon glyphicon-chevron-left"></i></a>
+            <div class="btn btn-default">@_month[Model.Date.Month - 1] @Model.Date.Year</div>
+            <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(1).Year, @Month = Model.Date.AddMonths(1).Month, @DepartmentId = DepartId })"><i class="glyphicon glyphicon-chevron-right"></i></a>
+        </div>
+    }
+</div>
+@if (Model.DepartmentId > 1)
+{
+    if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEdit))
+    {
+        <div class="row">
+            <div class="col-md-12 form-group">
+                <a class="btn btn-primary" href="@Url.Action("DayManage", "BookingMosgorturReestr", new { @DepartmentId = Model.DepartmentId })" target="_blank">
+                    <i class="glyphicon glyphicon-plus"></i> Создать рабочий день
+                </a>
+            </div>
+        </div>
+    }
+}
+@if (Model.Result != null && Model.Result.Any() && Model.DepartmentId > 1)
+{
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th class="text-center" width="5%">№</th>
+                <th>Дата работы</th>
+                <th>День недели</th>
+                <th>Статус</th>
+                <th>Режим работы</th>
+                <th>Длительность</th>
+                <th>Кол-во окон</th>
+                <th>Записалось / Всего</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int rowNumber = Model.Result.FirstItemOnPage;
+
+            }
+
+            @foreach (var day in Model.Result)
+            {
+                <tr>
+                    <td class="text-center">@(rowNumber++)</td>
+                    @if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEdit))
+                    {
+                        <td><a href="@Url.Action("DayManage", "BookingMosgorturReestr", new { @id = day.Id, @DepartmentId = Model.DepartmentId})" target="_blank">@string.Format("{0:dd.MM.yyyy}", day.Date)</a></td>
+                    }
+                    else
+                    {
+                        <td>@string.Format("{0:dd.MM.yyyy}", day.Date)</td>
+                    }
+                    <td>@_days[(int)day.Date.DayOfWeek]</td>
+                    <td>@(day.IsDeleted ? "Удален" : "Активен")</td>
+                    <td>@string.Format("{0:HH:mm}-{1:HH:mm}", day.Windows.Min(sx => sx.WorkingPeriods.Min(sa => sa.TimeFrom)), day.Windows.Max(sx => sx.WorkingPeriods.Max(ss => ss.TimeTo)))</td>
+                    <td>@day.WorkingInterval минут</td>
+                    <td>@day.WindowCount</td>
+                    <td>@string.Format("{0}/{1}", day.BookingCount, day.BookingMaximum)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-12">
+            @Html.PagedListPager(Model.Result, page =>
+       {
+           Model.Result = null;
+           Model.PageNumber = page;
+           return Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.Year, @Month = Model.Date.Month, @Page = page, @DepartmentId = DepartId });
+       }, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+        </div>
+    </div>
 }
 else
 {
-   <div class="row">
-      <div class="col-md-12">
-         <p>Поиск не дал результатов</p>
-      </div>
-   </div>
+    if (Model.DepartmentId > 1)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
 }
 
 
 
 @section styles
 {
-   @Styles.Render("~/Content/css/select2.css")
-   @Styles.Render("~/Content/css/select2-bootstrap.css")
-   @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
 }
 
 @section scripts
 {
-   <script type="text/javascript" src="~/Scripts/moment.js"></script>
-   <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
-   <script type="text/javascript">
-      moment.locale('ru');
-   </script>
-   <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
-   @Scripts.Render("~/Scripts/select2.min.js")
-   @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale('ru');
+    </script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
 }
