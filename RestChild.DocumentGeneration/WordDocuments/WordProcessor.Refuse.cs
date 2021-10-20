@@ -930,7 +930,7 @@ namespace RestChild.DocumentGeneration
                             new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                 new Text("Причина отказа: ") {Space = SpaceProcessingModeValues.Preserve}),
                             new Run(titleRequestRunProperties.CloneNode(true),
-                                new Text($"пункт ____ Порядка: ({request.DeclineReason?.Name})"/*request.DeclineReason?.Name*/))));
+                                new Text(request.DeclineReason?.Name))));
 
 
                     SignBlockNotification2020(doc, account, "Исполнитель:");
