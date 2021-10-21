@@ -32,7 +32,7 @@ namespace RestChild.Web.Controllers
         ///     Рабочии дни
         /// </summary>
         [Route("BookingMosgorturReestr/WorkingDays/{Year}/{Month}/{DepartmentId}")]
-        public ActionResult WorkingDays(int Year = 0, int Month = 0, int Page = 1, int DepartmentId = 2)
+        public ActionResult WorkingDays(int Year = 0, int Month = 0, int Page = 1, long DepartmentId = 1)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
             if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysView))
@@ -47,7 +47,10 @@ namespace RestChild.Web.Controllers
             }
             filter.DepartmentId = DepartmentId;
             filter.PageNumber = Page;
-            filter.Result = ApiController.GetDays(filter);
+            if (DepartmentId > 1)
+            {               
+                filter.Result = ApiController.GetDays(filter);
+            }
             ViewBag.Departments = ApiController.GetDepartments();
             return View(filter);
         }
@@ -76,26 +79,27 @@ namespace RestChild.Web.Controllers
         /// <param name="Id">Идентификатор рабочего дня</param>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult DeleteDay(long Id = 0)
+        public ActionResult DeleteDay(long Id = 0, long DepartmentId = 2)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
             if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit))
             {
                 return RedirectToAvalibleAction();
             }
-            var result = ApiController.GetModel(Id);
-
-            if (ApiController.CheckMgtDayExistsAndIsBussy(result.Date))
+            var result = ApiController.GetModel(Id, DepartmentId);
+            ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
+            ViewBag.Benefits = ApiController.GetChildrenBenefits();
+            ViewBag.Departments = ApiController.GetDepartments();
+            if (ApiController.CheckMgtDayExistsAndIsBussy(result.Date, (long)result.DepartmentId))
             {
                 result.ErrorMessage = "<ul><li>Рабочий день не может быть удален. На данный день уже есть записи на прием</li></ul>";
-                ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
                 return View("DayManage", result);
             }
 
             result.IsDeleted = true;
             var id = ApiController.SetModel(result);
 
-            return RedirectToAction(nameof(DayManage), new { Id });
+            return RedirectToAction(nameof(DayManage), new { id, @DepartmentId = result.DepartmentId });
         }
 
         /// <summary>
@@ -109,7 +113,9 @@ namespace RestChild.Web.Controllers
             {
                 return RedirectToAvalibleAction();
             }
-
+            ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
+            ViewBag.Benefits = ApiController.GetChildrenBenefits();
+            ViewBag.Departments = ApiController.GetDepartments();
             bool haserror = false;
 
             if (result.Id > 0)
@@ -202,13 +208,9 @@ namespace RestChild.Web.Controllers
                 if (!haserror)
                 {
                     var id = ApiController.SetModel(result);
-                    return RedirectToAction(nameof(DayManage), new { @Id = id });
+                    return RedirectToAction(nameof(DayManage), new { @Id = id , @DepartmentId = result.DepartmentId});
                 }
-            }
-
-
-            var tgs = ApiController.GetDayTargets((long)result.DepartmentId);
-            ViewBag.Targets = tgs;
+            }            
             UnitOfWork.SaveChanges();
             return View("DayManage", result);
         }
@@ -263,7 +265,7 @@ namespace RestChild.Web.Controllers
         ///     Скопировать день
         /// </summary>
         [HttpPost]
-        public ActionResult TransferDay(long DayId, DateTime tdate)
+        public ActionResult TransferDay(long DayId, DateTime tdate, long DepartmentId)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
             if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView))
@@ -271,25 +273,22 @@ namespace RestChild.Web.Controllers
                 return RedirectToAvalibleAction();
             }
 
-            var result = ApiController.GetModel(DayId);
+            var result = ApiController.GetModel(DayId, DepartmentId);
 
             result.Date = tdate.Date;
             result.IsDeleted = false;
-
+            ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
+            ViewBag.Benefits = ApiController.GetChildrenBenefits();
+            ViewBag.Departments = ApiController.GetDepartments();
             if (ApiController.CheckMgtDayExists(result.Date,(long)result.DepartmentId))
             {
                 result.ErrorMessage = "<ul><li>На данный день режим работы уже заведён</li></ul>";
-
-                ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
-                ViewBag.Benefits = ApiController.GetChildrenBenefits();
-
                 return View(nameof(DayManage), result);
             }
 
             result.Id = -1;
-
             var id = ApiController.SetModel(result);
-            return RedirectToAction(nameof(DayManage), new { @Id = id });
+            return RedirectToAction(nameof(DayManage), new { @Id = id, @DepartmentId = result.DepartmentId });
         }
 
         #endregion
@@ -336,6 +335,7 @@ namespace RestChild.Web.Controllers
             booking.DepartmentId = DepartmentId;
             ViewBag.Targets = ApiController.GetDayTargets(DepartmentId);
             ViewBag.Benefits = ApiController.GetChildrenBenefits();
+            ViewBag.Departments = ApiController.GetDepartments();
             return View("BookingManage", booking);
         }
 
@@ -368,6 +368,7 @@ namespace RestChild.Web.Controllers
 
             ViewBag.Targets = ApiController.GetDayTargets();
             ViewBag.Benefits = ApiController.GetChildrenBenefits();
+            ViewBag.Departments = ApiController.GetDepartments();
 
             for (int i = 0; i < booking.Children.Count(); i++)
             {
@@ -418,7 +419,7 @@ namespace RestChild.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                var error = ApiController.ValidateBookingDay(booking.Date, booking.Time, booking.SelectedTarget, booking.SlotsCount);
+                var error = ApiController.ValidateBookingDay(booking.Date, booking.Time, booking.SelectedTarget, (long)booking.DepartmentId, booking.Snils, booking.SlotsCount);
                 if (!string.IsNullOrWhiteSpace(error))
                 {
                     booking.ErrorMessage = error;
@@ -455,6 +456,7 @@ namespace RestChild.Web.Controllers
             var booking = ApiController.GetBooking(Id);
             ViewBag.Targets = ApiController.GetDayTargets();
             ViewBag.Benefits = ApiController.GetChildrenBenefits();
+            ViewBag.Departments = ApiController.GetDepartments();
             return View("BookingManage", booking);
         }
 

@@ -2344,6 +2344,7 @@
     <TypeScriptCompile Include="Scripts\Vocabulary\AddonServiceEdit.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\AddonServiceList.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\AdministratorTourEdit.ts" />
+    <TypeScriptCompile Include="Scripts\Vocabulary\CertificateList.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\BookingMosgorturBookingManage.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\BookingMosgorturReestrList.ts" />
     <TypeScriptCompile Include="Scripts\Vocabulary\BookingMosgorturWorkDayManage.ts" />
