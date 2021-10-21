@@ -125,8 +125,7 @@ namespace RestChild.DAL.Configurations
                     FirstStage = true,
                     SecondStage = true,
                     StatusId = (long)StatusEnum.RegistrationDecline
-                });
-                    StatusId = (long)StatusEnum.Reject
+
                 },
                 new DeclineReason
                 {
@@ -136,7 +135,7 @@ namespace RestChild.DAL.Configurations
                     IsManual = true,
                     FirstStage = true,
                     SecondStage = true,
-                    StatusId = (long)StatusEnum.Reject
+                    StatusId = (long)StatusEnum.RegistrationDecline
                 },
                 new DeclineReason
                 {
