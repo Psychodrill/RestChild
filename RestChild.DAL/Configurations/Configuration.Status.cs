@@ -260,7 +260,19 @@ namespace RestChild.DAL.Configurations
                     ExternalUid = ((long) StatusEnum.WaitApplicantMoney).ToString(CultureInfo.InvariantCulture),
                     ForCommerce = false,
                     ForPreferential = true
-                });
+                }, new Status
+                {
+                    Id = (long)StatusEnum.RegistrationDeclineBecauseDuplicate,
+                    Name = "Отказ в регистрации по причине дубликата",
+                    MpguName = "Отказ в регистрации по причине дубликата",
+                    MpguDescription = "Отказ в регистрации по причине дубликата",
+                    MpguComment = "",
+                    ExternalUid = ((long)StatusEnum.RegistrationDeclineBecauseDuplicate).ToString(CultureInfo.InvariantCulture),
+                    ForCommerce = false,
+                    ForPreferential = true
+                }
+
+                );
 
             SetEidAndLastUpdateTicks(context.Status.ToList());
             context.SaveChanges();
