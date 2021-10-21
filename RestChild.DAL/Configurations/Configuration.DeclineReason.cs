@@ -74,7 +74,7 @@ namespace RestChild.DAL.Configurations
                     IsManual = true,
                     FirstStage = true,
                     SecondStage = true,
-                    StatusId = (long)StatusEnum.Reject
+                    StatusId = (long)StatusEnum.RegistrationDecline
                 },
                 new DeclineReason
                 {
@@ -84,7 +84,7 @@ namespace RestChild.DAL.Configurations
                     IsManual = true,
                     FirstStage = true,
                     SecondStage = true,
-                    StatusId = (long)StatusEnum.Reject
+                    StatusId = (long)StatusEnum.RegistrationDecline
                 },
                 new DeclineReason
                 {
@@ -94,7 +94,7 @@ namespace RestChild.DAL.Configurations
                     IsManual = true,
                     FirstStage = true,
                     SecondStage = true,
-                    StatusId = (long)StatusEnum.Reject
+                    StatusId = (long)StatusEnum.RegistrationDecline
                 },
                 new DeclineReason
                 {
@@ -104,7 +104,7 @@ namespace RestChild.DAL.Configurations
                     IsManual = true,
                     FirstStage = true,
                     SecondStage = true,
-                    StatusId = (long)StatusEnum.Reject
+                    StatusId = (long)StatusEnum.RegistrationDecline
                 },
                 new DeclineReason
                 {
@@ -114,6 +114,18 @@ namespace RestChild.DAL.Configurations
                     IsManual = true,
                     FirstStage = true,
                     SecondStage = true,
+                    StatusId = (long)StatusEnum.RegistrationDecline
+                },
+                new DeclineReason
+                {
+                    Id = 202107,
+                    IsActive = true,
+                    Name = "Заявление является повторным. \n\r На указанного в заявлении ребёнка уже подано заявление о предоставлении услуг отдыха и оздоровления.",
+                    IsManual = true,
+                    FirstStage = true,
+                    SecondStage = true,
+                    StatusId = (long)StatusEnum.RegistrationDecline
+                });
                     StatusId = (long)StatusEnum.Reject
                 },
                 new DeclineReason

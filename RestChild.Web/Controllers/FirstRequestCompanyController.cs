@@ -605,6 +605,13 @@ namespace RestChild.Web.Controllers
             HashSet<long> hs = typeOfRests.Select(t => t.ParentId).Where(p => p.HasValue).Select(p => p.Value).ToHashSet<long>();
             ViewBag.TypesOfRest = typeOfRests.Select(t => GetLeveled(hs, t)).ToList();
 
+            // Цели обращений для которых возможна фильтрация по наличию сопровождающего.
+            long parentGroupId = 16;
+            ViewBag.TypesOfRestForAttendantFilter = typeOfRests
+                .Where(x => x.ParentId == parentGroupId || x.Id == parentGroupId)
+                .Select(x => x.Name)
+                .ToList();
+
             ViewBag.TimesOfRest =
                 VocController
                     .GetTimesOfRestWithoutFilter(request.NullSafe(r => r.TypeOfRestId) ??

@@ -335,7 +335,9 @@ namespace RestChild.Web.Controllers.WebApi
 
         internal MGTWorkingDayModel GetModel(long id = 0, long DepartId = 1)
         {
-            var day = UnitOfWork.GetSet<MGTWorkingDay>().FirstOrDefault(ss => ss.Id == id && ss.DepartmentId == DepartId) ?? new MGTWorkingDay();
+            // Отключил проверку на отдел пока не реализован функционал заполнения расписания рабочих дней Мосгортура с разбивкой по отделами (18.10.2021 Utkin D)
+            //var day = UnitOfWork.GetSet<MGTWorkingDay>().FirstOrDefault(ss => ss.Id == id && ss.DepartmentId == DepartId) ?? new MGTWorkingDay();
+            var day = UnitOfWork.GetSet<MGTWorkingDay>().FirstOrDefault(ss => ss.Id == id) ?? new MGTWorkingDay();
 
             var result = new MGTWorkingDayModel
             {
@@ -343,7 +345,9 @@ namespace RestChild.Web.Controllers.WebApi
                 Date = day.Date,
                 TimeInterval = day.WorkingInterval,
                 IsDeleted = day.IsDeleted,
-                DepartmentId = DepartId,
+                // Отключил проверку на отдел пока не реализован функционал заполнения расписания рабочих дней Мосгортура с разбивкой по отделами (18.10.2021 Utkin D)
+                //DepartmentId = DepartId,
+                DepartmentId = day.DepartmentId,
                 BookingCount = day.VisitBookings?.Count(ss =>
                     !(ss.StatusId == (long) MGTVisitBookingStatuses.PrebookingRegistered ||
                       ss.StatusId == (long) MGTVisitBookingStatuses.BookingRegistered ||
@@ -559,7 +563,8 @@ namespace RestChild.Web.Controllers.WebApi
         internal string ValidateBookingDay(DateTime date, TimeSpan time, long targetId, int clotCount = 1)
         {
             var d = date.Date;
-            var day = UnitOfWork.GetSet<MGTWorkingDay>().Where(ss => ss.Date == d && ss.Date<DateTime.Now.AddDays(15) && !ss.IsDeleted).AsQueryable();
+            var exDate = DateTime.Now.AddDays(15d);
+            var day = UnitOfWork.GetSet<MGTWorkingDay>().Where(ss => ss.Date == d && ss.Date<exDate && !ss.IsDeleted).AsQueryable();
             if (day.Count() != 1)
             {
                 return "Для данной даты бронирования не задано рабочее расписание";

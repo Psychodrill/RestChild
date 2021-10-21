@@ -145,7 +145,10 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 using (var tran = UnitOfWork.GetTransactionScope())
                 {
-                    var request = exchangeBaseRegistry.Child?.Request ?? exchangeBaseRegistry.Applicant?.Request;
+                    var request = exchangeBaseRegistry.Child?.Request
+                                  ?? exchangeBaseRegistry.Applicant?.Request
+                                  ?? UnitOfWork.GetSet<Request>().FirstOrDefault(r => r.ApplicantId == exchangeBaseRegistry.ApplicantId);
+
                     if (exchangeBaseRegistry.Applicant != null)
                     {
                         request = UnitOfWork.GetSet<Request>()
@@ -162,6 +165,12 @@ namespace RestChild.Web.Controllers.WebApi
                         {
                             return;
                         }
+                    }
+
+                    if (request == null)
+                    {
+                        Logger.Info($"Ошибка в SendAcknowledgement (Заявитель или сопровождающий по которому сформирован запрос не связан ни с каким заявлением) = {exchangeBaseRegistry?.Id}");
+                        return;
                     }
 
                     if (request.IsFirstCompany)
@@ -1779,23 +1788,26 @@ namespace RestChild.Web.Controllers.WebApi
                         {
                             status = StatusEnum.RegistrationDecline;
                             var sb = new StringBuilder();                            
-                            sb.Append($"{vm.Applicant.LastNameEm} {vm.Applicant.FirstNameEm} {vm.Applicant.MiddleNameEm},");                            
+                            sb.Append($"{vm.Applicant.Data.LastName} {vm.Applicant.Data.FirstName} {vm.Applicant.Data.MiddleName},");                            
                             var msg = sb.ToString();
                             msg = msg.Substring(0, msg.Length - 1);
+                            action = AccessRightEnum.Status.ToRegistrationDeclineAttendant;
                             if (entity.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor)
                             {
-                                decline = 202105;                               
-                                uts.ErrorText = $@"Заявление является повторным. Заявление о предоставлении бесплатной путёвки для отдыха и оздоровления от имени родителя (законного представителя) ({msg}) уже подано.";
+                                decline = 202105;
+                                uts.ErrorText = $@"Заявление является повторным. Заявление о предоставлении бесплатной путёвки для отдыха и оздоровления от имени родителя (законного представителя) ({msg}) уже подано. По указанной цели обращения не допускается подача отдельных заявлений о предоставлении бесплатной путевки для отдыха и оздоровления в отношении каждого ребенка.";
                             }
                             if (entity.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7)
                             {
                                 decline = 202106;
-                                uts.ErrorText = $@"Заявление является повторным. Заявление о предоставлении сертификата на отдых и оздоровления от имени родителя (законного представителя) ({msg}) уже подано.";
+                                uts.ErrorText = $@"Заявление является повторным. Заявление о предоставлении сертификата на отдых и оздоровления от имени родителя (законного представителя) ({msg}) уже подано. По указанной цели обращения не допускается подача отдельных заявлений о предоставлении сертификата на отдых и оздоровление в отношении каждого ребенка.";
                             }
                             if (entity.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps || entity.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps)
                             {
                                 decline = 202104;
+                                //uts.ErrorText = $@"Заявление является повторным. На указанное в заявлении лицо из числа детей-сирот и детей, оставшихся без попечения родителей ({msg}) уже подано заявление о предоставлении бесплатной путевки для отдыха и оздоровления.";
                                 uts.ErrorText = $@"Заявление является повторным. На указанное в заявлении лицо из числа детей-сирот и детей, оставшихся без попечения родителей ({msg}) уже подано заявление о предоставлении бесплатной путевки для отдыха и оздоровления.";
+
                             }
                         }
 
@@ -1804,6 +1816,7 @@ namespace RestChild.Web.Controllers.WebApi
                         {
                             bool plural = vm.SameChildren.Count > 1;
                             status = StatusEnum.RegistrationDecline;
+                            action = AccessRightEnum.Status.ToRegistrationDeclineAttendant;
                             if (vm.SameChildren.Select(ss => ss.Request.SsoId).Any(ss => entity.SsoId != ss))
                             {
                                 action = AccessRightEnum.Status.ToRegistrationDeclineChildDiffSSOId;
@@ -1815,9 +1828,10 @@ namespace RestChild.Web.Controllers.WebApi
                             }
                             var msg = sb.ToString();
                             msg = msg.Substring(0, msg.Length - 1);
-
+                            decline = 202107;
                             //uts.ErrorText = $@"Заявление является повторным. Вы уже подали заявление о предоставлении услуг отдыха и оздоровления на {(plural ? "детей" : "ребёнка")} ({msg})";
-                            uts.ErrorText = $@"Заявление является повторным. На указанн{(plural ? "ых" : "ого")} в заявлении {(plural ? "детей" : "ребёнка")} ({msg}) уже подано заявление о предоставлении услуг отдыха и оздоровления.";
+                            //uts.ErrorText = $@"Заявление является повторным. На указанн{(plural ? "ых" : "ого")} в заявлении {(plural ? "детей" : "ребёнка")} ({msg}) уже подано заявление о предоставлении услуг отдыха и оздоровления.";
+                            uts.ErrorText = $@"Заявление является повторным. На указанного(ых) в заявлении ребёнка(детей) ({msg}) уже подано заявление о предоставлении услуг отдыха и оздоровления.";
                         }
 
                         ApiRequest.CheckAttendants(vm);
@@ -1836,9 +1850,11 @@ namespace RestChild.Web.Controllers.WebApi
                                 var msg = sb.ToString();
                                 msg = msg.Substring(0, msg.Length - 1);
                                 if (entity.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor)
-                                    uts.ErrorText = $@"Заявление является повторным. На указанн{(plural ? "ых" : "ое")} в заявлении сопровождающ{(plural ? "их лиц" : "ее лицо")} ({msg}) уже подано заявление о предоставлении бесплатной путевки для отдыха и оздоровления.";
+                                    //uts.ErrorText = $@"Заявление является повторным. На указанн{(plural ? "ых" : "ое")} в заявлении сопровождающ{(plural ? "их лиц" : "ее лицо")} ({msg}) уже подано заявление о предоставлении бесплатной путевки для отдыха и оздоровления.";
+                                    uts.ErrorText = $@"Заявление является повторным. На указанное(ых) в заявлении сопровождающее(их) лицо(лиц) ({msg}) уже подано заявление о предоставлении бесплатной путевки для отдыха и оздоровления.";
                                 if (entity.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7)
-                                    uts.ErrorText = $@"Заявление является повторным. На указанн{(plural ? "ых" : "ое")} в заявлении сопровождающ{(plural ? "их лиц" : "ее лицо")} ({msg}) уже подано заявление о предоставлении сертификата на отдых и оздоровление.";
+                                    //uts.ErrorText = $@"Заявление является повторным. На указанн{(plural ? "ых" : "ое")} в заявлении сопровождающ{(plural ? "их лиц" : "ее лицо")} ({msg}) уже подано заявление о предоставлении сертификата на отдых и оздоровление.";
+                                    uts.ErrorText = $@"Заявление является повторным. На указанное(ых) в заявлении сопровождающее(их) лицо(лиц) ({msg}) уже подано заявление о предоставлении сертификата на отдых и оздоровление.";
                             }
                             if (entity.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor) decline = 202102;
                             if (entity.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7) decline = 202103;
