@@ -27,13 +27,13 @@ namespace RestChild.Web.Services.Implementation
         /// </summary>
         /// <param name="SNILS"></param>
         /// <returns></returns>
-        public bool PrebookingSNILSCheck(string SNILS)//, long DepartId)
+        public bool PrebookingSNILSCheck(string SNILS)
         {
             var lg = WindsorHolder.Resolve<ILogger>();
             using (var uw = WindsorHolder.Resolve<IUnitOfWork>())
             {
                 var br = new BookingRepository(uw, lg);
-                return br.PrebookingSnilsCheck(SNILS,2); //, DepartId);  чудовищная затычка
+                return br.PrebookingSnilsCheck(SNILS);
             }
         }
 

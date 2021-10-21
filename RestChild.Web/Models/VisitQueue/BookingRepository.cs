@@ -48,7 +48,7 @@ namespace RestChild.Web.Models.VisitQueue
         /// <summary>
         ///     Проверка существования активной брони с таким же СНИЛС
         /// </summary>
-        public bool PrebookingSnilsCheck(string snils, long departId)
+        public bool PrebookingSnilsCheck(string snils, long departId = 2)
         {
             return PrebookingSnilsCheck(UnitOfWork, snils, departId);
         }
