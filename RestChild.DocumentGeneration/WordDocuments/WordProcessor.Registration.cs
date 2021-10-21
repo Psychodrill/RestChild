@@ -23,7 +23,7 @@ namespace RestChild.DocumentGeneration
             var request = unitOfWork.GetById<Request>(requestId);
             if (request.StatusId == (long)StatusEnum.RegistrationDecline)
             {
-                return NotificationRegistrationDecline(request);
+                return NotificationRegistrationDecline(request, account);
             }
 
             if (request.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)
@@ -47,7 +47,7 @@ namespace RestChild.DocumentGeneration
         /// <summary>
         ///     Уведомление о отказе в регистрации заявления (1035)
         /// </summary>
-        private static IDocument NotificationRegistrationDecline(Request request)
+        private static IDocument NotificationRegistrationDecline(Request request, Account account)
         {
             var forMpguPortal = request.SourceId == (long)SourceEnum.Mpgu;
 
@@ -204,7 +204,10 @@ namespace RestChild.DocumentGeneration
                                     request.DeclineReason.Name
                                     ))));
 
+                    SignBlockNotification2020(doc, account, "Исполнитель:");
+
                     mainPart.Document = doc;
+
                 }
 
                 return new DocumentResult
