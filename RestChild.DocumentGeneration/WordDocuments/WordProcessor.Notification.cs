@@ -288,9 +288,9 @@ namespace RestChild.DocumentGeneration
                         docs.Clear();
                         docs.Add("документ, удостоверяющий личность заявителя;");
 
-                        docs.Add("документ, подтверждающий место жительства ребенка в городе Москве;");//11
-                        docs.Add("документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;");//10;
-                        docs.Add("документы, подтверждающие, что заявитель является родителем (законным представителем) ребенка: свидетельство о рождении ребенка*, договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие полномочия законного представителя ребенка;");//11
+                        docs.Add("документ, подтверждающий место жительства ребенка в городе Москве;");
+                        docs.Add("документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;");
+                        docs.Add("документы, подтверждающие, что заявитель является родителем (законным представителем) ребенка: свидетельство о рождении ребенка*, договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие полномочия законного представителя ребенка;");
                         docs.Add("документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);");
 
                         docs.Add("* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени");
@@ -460,7 +460,7 @@ namespace RestChild.DocumentGeneration
 
                     doc.AppendChild(
                         new Paragraph(
-                            new ParagraphProperties(new Justification { Val = JustificationValues.Center },
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Both },
                             new Run(titleRequestRunProperties.CloneNode(true),
                                 new Text($"Уважаемый(ая) {applicant.LastName} {applicant.FirstName} {applicant.MiddleName},")
                                     { Space = SpaceProcessingModeValues.Preserve }))));
@@ -1359,7 +1359,7 @@ namespace RestChild.DocumentGeneration
             // неучастие в выборе альтернативного варианта (мини ЛОК 2020)
             var dr5 = ConfigurationManager.AppSettings["NotificationRefuseDeclineDiscardingChoose"].LongParse() ?? 201911;
             //неучастие заявителя во втором этапе заявочной кампании
-            var dr6 = ConfigurationManager.AppSettings["NotParticipateInSecondStage"].LongParse() ?? 201704;
+            var dr6 = ConfigurationManager.AppSettings["NotParticipateInSecondStage"].LongParse() ?? 201911;
 
 
             var request = unitOfWork.GetById<Request>(requestId);
@@ -1373,19 +1373,19 @@ namespace RestChild.DocumentGeneration
 
             if (request.StatusId == (long)StatusEnum.CancelByApplicant)
             {
-                return NotificationRefuse1090(request);
+                return NotificationRefuse1090(request, account);
             }
 
             if (request.StatusId == (long)StatusEnum.Reject && request.DeclineReasonId == dr2)
             {
-                var doc = NotificationRefuse10802(request);
+                var doc = NotificationRefuse10802(request, account);
                 doc.RequestFileTypeId = (long) RequestFileTypeEnum.NotificationRefuse;
                 return doc;
             }
 
             if (request.StatusId == (long)StatusEnum.Reject && request.DeclineReasonId == dr3)
             {
-                var doc = NotificationRefuse10805(unitOfWork, request);
+                var doc = NotificationRefuse10805(unitOfWork, request, account);
                 doc.RequestFileTypeId = (long) RequestFileTypeEnum.NotificationRefuse;
                 return doc;
             }

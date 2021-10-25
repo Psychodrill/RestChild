@@ -96,7 +96,7 @@ namespace RestChild.DocumentGeneration
                     HighAnsi = "Times New Roman",
                     ComplexScript = "Times New Roman"
                 },
-                FontSize = new FontSize {Val = "16"},
+                FontSize = new FontSize {Val = "20"},
                 Italic = new Italic()
             };
 
@@ -540,6 +540,13 @@ namespace RestChild.DocumentGeneration
             var table = new Table();
             table.AppendChild(tblProp.CloneNode(true));
 
+
+            //отступ - нулевая строка
+            {
+                doc.AppendChild(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Both },
+                new SpacingBetweenLines { After = Size20 })));
+            }
             //первая строка
             {
                 var row = new TableRow();
@@ -549,7 +556,7 @@ namespace RestChild.DocumentGeneration
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = FirstColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}, new SpacingBetweenLines { After="1"}),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(Space))));
                 row.AppendChild(cell);
@@ -561,7 +568,7 @@ namespace RestChild.DocumentGeneration
                             {Val = new EnumValue<BorderValues>(BorderValues.Single)})),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(Space))));
                 row.AppendChild(cell);
@@ -570,7 +577,7 @@ namespace RestChild.DocumentGeneration
                 cell.Append(new TableCellProperties(
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = ThirdColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
-                cell.AppendChild(new Paragraph(new Run(new Text(Space))));
+                cell.AppendChild(new Paragraph(new ParagraphProperties( new SpacingBetweenLines { After = "1" }),new Run(new Text(Space))));
                 row.AppendChild(cell);
 
                 cell = new TableCell();
@@ -580,7 +587,7 @@ namespace RestChild.DocumentGeneration
                             {Val = new EnumValue<BorderValues>(BorderValues.Single)})),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Left}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Left}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(Space))));
                 row.AppendChild(cell);
@@ -589,7 +596,7 @@ namespace RestChild.DocumentGeneration
                 cell.Append(new TableCellProperties(
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = FifthColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
-                cell.AppendChild(new Paragraph(new Run(new Text(Space))));
+                cell.AppendChild(new Paragraph(new ParagraphProperties( new SpacingBetweenLines { After = "1" }), new Run(new Text(Space))));
                 row.AppendChild(cell);
 
                 cell = new TableCell();
@@ -599,7 +606,7 @@ namespace RestChild.DocumentGeneration
                             {Val = new EnumValue<BorderValues>(BorderValues.Single)})),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(DateTime.Now.Date.FormatEx()))));
                 row.AppendChild(cell);
@@ -675,7 +682,7 @@ namespace RestChild.DocumentGeneration
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = FirstColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(functionName))));
                 row.AppendChild(cell);
@@ -687,7 +694,7 @@ namespace RestChild.DocumentGeneration
                             {Val = new EnumValue<BorderValues>(BorderValues.Single)})),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(
                             $"{account.Name.FormatEx()}{(string.IsNullOrWhiteSpace(account.Position) ? string.Empty : $", {account.Position}")}"))));
@@ -697,7 +704,7 @@ namespace RestChild.DocumentGeneration
                 cell.Append(new TableCellProperties(
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = ThirdColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
-                cell.AppendChild(new Paragraph(new Run(new Text(Space))));
+                cell.AppendChild(new Paragraph(new ParagraphProperties(new SpacingBetweenLines { After = "1" }), new Run(new Text(Space))));
                 row.AppendChild(cell);
 
                 cell = new TableCell();
@@ -707,7 +714,7 @@ namespace RestChild.DocumentGeneration
                             {Val = new EnumValue<BorderValues>(BorderValues.Single)})),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Left}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Left}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(Space))));
                 row.AppendChild(cell);
@@ -716,7 +723,7 @@ namespace RestChild.DocumentGeneration
                 cell.Append(new TableCellProperties(
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = FifthColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
-                cell.AppendChild(new Paragraph(new Run(new Text(Space))));
+                cell.AppendChild(new Paragraph(new ParagraphProperties(new SpacingBetweenLines { After = "1" }), new Run(new Text(Space))));
                 row.AppendChild(cell);
 
                 cell = new TableCell();
@@ -724,7 +731,7 @@ namespace RestChild.DocumentGeneration
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = SixthColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(Space))));
                 row.AppendChild(cell);

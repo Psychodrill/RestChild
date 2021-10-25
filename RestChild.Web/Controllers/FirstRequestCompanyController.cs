@@ -1058,6 +1058,7 @@ namespace RestChild.Web.Controllers
 
                     SetupAttendants(request);
 
+
                     request = ApiController.SaveRequest(request, action == RequestActionEnum.EditAction,
                         requestModel.SaveFileOnly ?? false);
 
@@ -1067,11 +1068,21 @@ namespace RestChild.Web.Controllers
 
                     var model = new RequestViewModel(request);
 
+                    if (request.StatusId == 1030)
+                    {
+                        ApiController.CheckApplicant(model);
+                        ApiController.CheckChildren(model);
+                        ApiController.CheckAttendants(model);
+
+                        SetDeclineReason(model);
+                        request = ApiController.SaveRequestDeclineStatus(model);
+                        UnitOfWork.SaveChanges();
+                    }
 
                     if (string.IsNullOrWhiteSpace(action))
                     {
                         tran.Complete();
-                        return RedirectToAction("RequestEdit", new {id = request.Id, needCompeteionAlert = true});
+                        return RedirectToAction("RequestEdit", new { id = request.Id, needCompeteionAlert = true });
                     }
 
                     requestModel.Data.TypeOfRest = UnitOfWork.GetById<TypeOfRest>(requestModel.Data.TypeOfRestId ?? 0);
@@ -1128,6 +1139,36 @@ namespace RestChild.Web.Controllers
                 SetRedicted();
                 return RedirectToAction("RequestEdit", new {id = requestModel.Data.Id, needValidate = false});
             }
+        }
+
+        public void SetDeclineReason(RequestViewModel model)
+        {
+
+            if (model.SameChildren?.Any()??false)
+            {
+                model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202107);
+            }
+            if (model.SameChildren?.Any()??false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.YouthRestOrphanCamps)
+            {
+                model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202104);
+            }
+            if (model.ApplicantDouble?.Any()??false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.RestWithParentsPoor)
+            {
+                model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202105);
+            }
+            if (model.ApplicantDouble?.Any() ?? false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.MoneyOn3To7)
+            {
+                model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202106);
+            }
+            if (model.SameAttendants?.Any() ?? false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.RestWithParentsPoor)
+            {
+                model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202102);
+            }
+            if (model.SameAttendants?.Any()??false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.MoneyOn3To7)
+            {
+                model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202103);
+            }
+
         }
 
         /// <summary>
