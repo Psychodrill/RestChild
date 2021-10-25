@@ -1,0 +1,119 @@
+﻿@using RestChild.Comon
+@using RestChild.Web.Extensions
+@model RestChild.Web.Models.LeisureFacilltiesViewModel
+@{
+    ViewBag.Title = "Объект отдыха";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Объект отдыха</h2>
+    </div>
+    
+     <div class="col-md-12">
+        @Html.ActionLink("Вернуться", "Search")
+     </div>
+   
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("Save", "LeisureFacilities", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.HiddenFor(model => model.Data.Id)
+            @Html.HiddenFor(model => model.Data.LastUpdateTick)
+            @Html.HiddenFor(model => model.Data.HistoryLinkId)
+
+
+            if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @Html.ValidationSummary(false)
+                </div>
+            }
+    <fieldset class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-default btn-primary">
+                    Сохранить
+                </button>
+                @if (Model.Data.Id != 0)
+                {
+                    @Html.ActionLink("Удалить", "Delete", new { id = Model.Data.Id }, new { @class = "btn btn-default btn-danger", target = "_blank" })
+                }
+                @if (Model.Data.HistoryLinkId.HasValue)
+                {
+                    <a data-history-id="@Model.Data.HistoryLinkId" class="btn btn-default btn-hystory-link" href="#">История</a>
+                }
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">Сокращённое название<span class="requared">*</span></label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.Data.Abbreviated, new { @class = "form-control", autocomplete = "off" })
+                @Html.ValidationMessageFor(model => model.Data.Abbreviated, "Заполните поле")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">Полное название<span class="requared">*</span></label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.Data.Fullname, new { @class = "form-control", maxlength = 1000, autocomplete = "off" })
+                @Html.ValidationMessageFor(model => model.Data.Fullname, "Заполните поле")
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">Фактический адрес<span class="requared">*</span></label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.Data.ActualAdress, new { @class = "form-control", autocomplete = "off" })
+                @Html.ValidationMessageFor(model => model.Data.ActualAdress, "Заполните поле")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">ИНН<span class="requared">*</span></label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.Data.Inn, new { @class = "form-control integer", maxlength = 10, autocomplete = "off" })
+                @Html.ValidationMessageFor(model => model.Data.Inn, "Заполните поле")
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">Регион</label>
+            <div class="col-md-9" data-toggle="tooltip" data-placement="right" title="Выбор из справочника субъектов РФ">
+                @Html.DropDownListFor(model => model.Data.StateDistrictId, new SelectList(Model.StateDistricts.Select(t => new { Id = (long?)t.Id, t.Name }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off" })
+                @Html.ValidationMessageFor(model => model.Data.StateDistrictId, "Заполните поле")
+            </div>
+        </div>
+    </fieldset>
+        }
+    </div>
+</div>
+
+
+
+@section styles{
+    @Styles.Render("~/Content/jquery.Jcrop.css")
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+    @Styles.Render("~/Content/Vocabulary/VocabularyEdit.css")
+    @Styles.Render("~/Content/loading.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/StateScript.js")
+    @Scripts.Render("~/Scripts/jquery.Jcrop.min.js")
+    @Scripts.Render("~/Scripts/jquery.numeric.js")
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/Vocabulary/Country.js")
+    @Scripts.Render("~/Scripts/doT.js")
+    @Scripts.Render("~/Scripts/Vocabulary/Vocabulary.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Scripts.Render("~/bundles/moment")
+    <script type="text/javascript" language="javascript">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+    @Html.Partial("Assets/HistoryLinkTemplate")
+}

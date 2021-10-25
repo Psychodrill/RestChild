@@ -1,0 +1,1 @@
+ef6.exe database update --assembly "RestChild.DAL.dll" --connection-string "Data Source=localhost\SQLEXPRESS01;Initial Catalog=RestChildAiso; Persist Security Info = True; Uid=sa;Pwd=0000;" --verbose --connection-provider "System.Data.SqlClient"

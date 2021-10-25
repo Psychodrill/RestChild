@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -26,6 +27,8 @@
     <RestorePackages>true</RestorePackages>
     <Use64BitIISExpress>true</Use64BitIISExpress>
     <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -78,12 +81,10 @@
       <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="EPPlus">
       <HintPath>..\packages\EPPlus.4.0.1.1\lib\net20\EPPlus.dll</HintPath>
@@ -268,6 +269,7 @@
     <Compile Include="Controllers\HotelPlacementController.cs" />
     <Compile Include="Controllers\FunctioningTypeController.cs" />
     <Compile Include="Controllers\IdentificationController.cs" />
+    <Compile Include="Controllers\LeisureFacilitiesController.cs" />
     <Compile Include="Controllers\LimitsController.Request.cs" />
     <Compile Include="Controllers\MonitoringController.ChildrenNumberInformation.cs" />
     <Compile Include="Controllers\MonitoringController.ChildrenNumberInformation.Excel.cs" />
@@ -309,6 +311,7 @@
     <Compile Include="Controllers\WebApi\WebHotelPlacementController.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controllers\WebApi\WebLeisureFacilitiesController.cs" />
     <Compile Include="Controllers\WebApi\WebMobileVocabularyController.cs" />
     <Compile Include="Controllers\WebApi\WebMonitoringController.cs" />
     <Compile Include="Controllers\WebApi\WebOrphanController.cs" />
@@ -342,12 +345,15 @@
     <Compile Include="Models\BaseRegistry\BaseRegistrySearch.cs" />
     <Compile Include="Models\BookingMosgorturReestrBooking.cs" />
     <Compile Include="Models\BookingMosgorturReestrDayHistoryModel.cs" />
+    <Compile Include="Models\Business\Export\LeisureFacilitiesListExcelExport.cs" />
     <Compile Include="Models\FIASInegration\ETPToken.cs" />
     <Compile Include="Models\FIASInegration\FIASRequest.cs" />
     <Compile Include="Models\FIASInegration\FIASRequestLocation.cs" />
     <Compile Include="Models\GiftReserved\ListModel.cs" />
     <Compile Include="Models\Gift\ListModel.cs" />
     <Compile Include="Models\Gift\ManageModel.cs" />
+    <Compile Include="Models\LeisureFacilitiesListModels.cs" />
+    <Compile Include="Models\LeisureFacilltiesViewModel.cs" />
     <Compile Include="Models\MGTWorkingDayModel.cs" />
     <Compile Include="Models\BookingMosgorturTargetsFilterModel.cs" />
     <Compile Include="Models\Business\Export\TradeUnionListExcelExport.cs" />
@@ -2219,6 +2225,8 @@
     <Content Include="Views\Monitoring\EditorTemplates\SmallLeisureInfoGBU.cshtml" />
     <Content Include="Views\Monitoring\SmallLeisureInfo\Table.cshtml" />
     <Content Include="Views\Monitoring\EditorTemplates\Files.cshtml" />
+    <Content Include="Views\LeisureFacilities\LeisureFacilitiesList.cshtml" />
+    <Content Include="Views\LeisureFacilities\LeisureFacilltiesEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -2395,6 +2403,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -2475,12 +2484,15 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
   </Target>
   <Import Project="..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets')" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

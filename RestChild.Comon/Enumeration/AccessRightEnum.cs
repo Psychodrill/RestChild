@@ -8,7 +8,10 @@ namespace RestChild.Comon.Enumeration
         ///     комерческая часть
         /// </summary>
         public const string CommercialPart = "7A0D807F-FF62-4798-A4B7-93BF380BF2C1";
-
+        /// <summary>
+        ///     управление объектами отдыха
+        /// </summary>
+        public const string LeisureFacilitiesManagement = "18ECAhB0-4g06-4о81-8р51-B2C4C2535217";
         /// <summary>
         ///     управление пользователями
         /// </summary>

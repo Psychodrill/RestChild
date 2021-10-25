@@ -1,1 +1,0 @@
-ef6.exe database update --assembly "RestChild.DAL.dll" --connection-string "Data Source=LAPTOP-3HF06V14\SQLEXPRESS;Integrated Security=true; Initial Catalog=RestChildAiso;" --verbose --connection-provider "System.Data.SqlClient"

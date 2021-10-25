@@ -1377,8 +1377,12 @@
         /// </summary>
         public DbSet<Numerator> Numerator { get; set; }
 
+        /// <summary>
+        ///     RestChild.Domain.LeisureFacilities
+        /// </summary>
+        public DbSet<LeisureFacilities> leisureFacilities { get; set; }
 
-		protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
 			modelBuilder.Properties<decimal>().Configure(c => c.HasPrecision(32, 4));
 			modelBuilder.Properties<decimal>().Where(e => e.Name  == "Latitude" || e.Name == "Longitude").Configure(c => c.HasPrecision(32, 10));

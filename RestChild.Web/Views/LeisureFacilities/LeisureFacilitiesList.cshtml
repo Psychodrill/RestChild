@@ -1,0 +1,92 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@model RestChild.Web.Models.LeisureFacilitiesListModels
+@{
+    ViewBag.Title = "Справочник объектов отдыха для мониторинга";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.SearchAction = "Search";
+    ViewBag.InsertAction = "Insert";
+    ViewBag.SaveAction = "Save";
+    ViewBag.Controller = "LeisureFacilities";
+    ViewBag.Caption = "Справочник объектов отдыха для мониторинга";
+    ViewBag.InsertButtonCaption = "Добавить объекты отдыха";
+    ViewBag.SearchPanelCaption = "Поиск объектов отдыха";
+}
+
+@section searchForm
+{
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Название</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        </div>
+        <label class="col-md-1 control-label text-right">ИНН</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(m => m.Inn, new { @class = "form-control" })
+        </div>
+    </div>
+}
+@section additionalFilters
+{
+    <a class="btn btn-default" href="@Url.Action("ExportFacilltiesToExcel", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
+}
+@section searchResult
+{
+    @if (Model.Any())
+    {
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center">№</th>
+                    <th class="text-left">Сокращённое название</th>
+                    <th class="text-left">Полное название</th>
+                    <th class="text-left">ИНН</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{int rowNumber = Model.FirstItemOnPage;}
+                @foreach (var place in Model.Groups)
+                {
+                    <tr>
+                        <td class="text-center">@(rowNumber++)</td>
+                        <td class="text-left">@place.Abbreviated</td>
+                        <td class="text-left">@place.Fullname</td>
+                        <td class="text-left">@place.Inn</td>
+                        <td class="text-center"> @Html.ActionLink(" ", "Update", new { id = place.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.PagedListPager(Model, (page) => { Model.NewPageNumber = page; return Url.Action("Search", Model); }, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
+}
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript">
+        $(function () {
+            $('select.select2').select2();
+        });
+    </script>
+}

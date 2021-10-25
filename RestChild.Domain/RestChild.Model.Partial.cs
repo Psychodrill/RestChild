@@ -11692,7 +11692,40 @@ namespace RestChild.Domain
 			LastUpdateTick = entity.LastUpdateTick;
 		}
 	}
-	public partial class PlaceOfRest : ILastUpdateTick
+    public partial class LeisureFacilities : ILastUpdateTick
+    {
+        public LeisureFacilities()
+        {
+        }
+        public LeisureFacilities(LeisureFacilities entity) : this(entity, null)
+        {
+        }
+        public LeisureFacilities(LeisureFacilities entity, int? deep)
+        {
+            if (entity == null) return;
+
+            Id = entity.Id;
+            Abbreviated = entity.Abbreviated;
+            ActualAdress = entity.ActualAdress;
+            Fullname = entity.Fullname;
+            Inn = entity.Inn;
+            StateDistrict = entity.StateDistrict;
+            StateDistrictId = entity.StateDistrictId;
+            HistoryLinkId = entity.HistoryLinkId;
+           
+            if (deep > 0 && entity.HistoryLink != null)
+            {
+                HistoryLink = new HistoryLink(entity.HistoryLink, deep - 1);
+            }
+
+            LastUpdateTick = entity.LastUpdateTick;
+            Eid = entity.Eid;
+            EidSendStatus = entity.EidSendStatus;
+            EidSyncDate = entity.EidSyncDate;
+        }   
+    }
+
+    public partial class PlaceOfRest : ILastUpdateTick
 	{
 		public PlaceOfRest()
 		{
