@@ -2011,6 +2011,87 @@ namespace RestChild.Web.Controllers.WebApi
         }
 
         /// <summary>
+        /// Функция для стресс теста 25.10.2021, если найдено в коде после 10.11.2021 - УДАЛИТЬ
+        /// </summary>
+
+        internal long? RemoveStressTestVersion(long requestId)
+        {
+            SetUnitOfWorkInRefClass(UnitOfWork);
+
+            if (!Security.HasRight(AccessRightEnum.RemoveDraft))
+            {
+                return requestId;
+            }
+
+            var current = UnitOfWork.GetById<Request>(requestId);
+
+            if (current == null || current.IsDeleted)
+            {
+                return null;
+            }
+
+            current.IsDeleted = true;
+
+            foreach (var child in current.Child)
+            {
+                child.IsDeleted = true;
+                child.Key = null;
+                child.KeySame = null;
+                child.YearOfCompany = null;
+            }
+
+            foreach (var attendant in current.Attendant)
+            {
+                attendant.IsLast = false;
+                attendant.Key = string.Empty;
+            }
+
+            if (current.Applicant != null)
+            {
+                current.Applicant.IsLast = false;
+                current.Applicant.Key = string.Empty;
+            }
+
+            UnitOfWork.WriteHistory(requestId, "Удаление заявления", Security.GetCurrentAccountId());
+
+            UnitOfWork.SaveChanges();
+
+            if (current.BookingGuid.HasValue)
+            {
+                var booking = UnitOfWork.GetSet<Domain.Booking>().FirstOrDefault(b => b.Code == current.BookingGuid);
+                if (booking != null)
+                {
+                    var request = new BookingRequest
+                    {
+                        TypeOfRestId = current.TypeOfRestId ?? booking.TypeOfRestId ?? 0,
+                        BookingGuid = booking.Code,
+                        Places = booking.CountPlace ?? 0,
+                        Attendants = booking.CountAttendants ?? 0
+                    };
+
+                    var client = Booking.Logic.Booking.GetServiceClient(request);
+                    try
+                    {
+                        var res = client.ReleaseBooking(request);
+                        if (res.IsError)
+                        {
+                            Logger.ErrorFormat(
+                                "Не произошло снятие бронирования. BookingGuid={0}, requestId={1}, Error={2}",
+                                booking.Code,
+                                requestId, res.ErrorMessage);
+                        }
+                    }
+                    finally
+                    {
+                        Booking.Logic.Booking.CloseClient(client);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         ///     Загрузка истории заявления
         /// </summary>
         /// <returns></returns>

@@ -2276,5 +2276,36 @@ namespace RestChild.Web.Controllers
                 ErrorText = model.GetErrorDescription()
             });
         }
+
+        /// <summary>
+        /// Функция для стресс теста 25.10.2021, если найдено в коде после 10.11.2021 - УДАЛИТЬ
+        /// </summary>
+        ///
+        public ActionResult StressTestDeleteAll()
+        {
+            DateTime sdate = new DateTime();
+            DateTime edate = new DateTime();
+            var tp = DateTime.TryParse("22/10/2021 13:30:00", out sdate);
+            tp = DateTime.TryParse("23/10/2021 13:30:00", out edate);
+            var filter = new RequestFilterModel();
+            filter.StartRequestDate = sdate;
+            filter.EndRequestDate = edate;
+            filter.YearOfRestId = 5;
+            filter.SourceId = (long)SourceEnum.Mpgu;
+            //filter.ApplicantFio = "Удаление";
+            var query = ApiController.RequestListQuery(filter);
+            foreach (Request r in query)
+            {
+                using (var uw = new UnitOfWork())
+                {
+                    SetUnitOfWorkInRefClass(uw);
+                    var res = ApiController.RemoveStressTestVersion(r.Id);
+                }
+            }
+            return RedirectToAction("RequestList");
+        }
+
     }
+
+
 }
