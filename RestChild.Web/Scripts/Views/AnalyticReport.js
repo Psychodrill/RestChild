@@ -48,5 +48,49 @@ $(function () {
         setText("#placeOfRestName", selectedElement);
     });
     $('select.select2').select2();
+    $("#btnClearFields").click(function () {
+        //#region Ids
+        var select2DropDownIds = [
+            { nameId: '#timeOfRest', selectId: '#timeOfRestSelect' },
+            { nameId: '#districtName', selectId: '#districtSelect' },
+            { nameId: '#hotelName', selectId: '#hotelSelect' },
+            { nameId: '#benefitName', selectId: '#benefitSelect' },
+            { nameId: '#vedomstvoName', selectId: '#vedomstvoSelect' },
+            { nameId: '#agencyName', selectId: '#agencySelect' },
+            { nameId: '#supplierName', selectId: '#supplierSelect' },
+            { nameId: '#placeOfRestName', selectId: '#placeOfRestSelect' },
+        ];
+        var textboxIds = [
+            '#YearOfBirthDateBegin',
+            '#YearOfBirthDateEnd',
+            '#DateStartBegin',
+            '#DateStartEnd',
+            '#DateFormingBegin',
+            '#YearOfBDateFormingEndirthDateBegin',
+            '#FlightNumber'
+        ];
+        var dropdownListIds = [
+            '#SupplierId',
+            '#DepartureId',
+            '#ArrivalId',
+            '#TypeOfTransportId'
+        ];
+        //#endregion        
+        textboxIds.forEach(function (id) { return setDefaultTextboxValue(id); });
+        dropdownListIds.forEach(function (id) { return setDefaultDropDownListValue(id); });
+        select2DropDownIds.forEach(function (element) { return setDefaultSelect2DropDownValue(element.nameId, element.selectId); });
+        //#region Helpers
+        function setDefaultSelect2DropDownValue(nameId, selectId) {
+            setText(nameId, { id: '', text: '' });
+            $(selectId).select2('data', { id: '', text: '-- Не выбрано --' });
+        }
+        function setDefaultDropDownListValue(id) {
+            $(id).select2('data', { id: '', text: '-- Не выбрано --' });
+        }
+        function setDefaultTextboxValue(id) {
+            $(id).val('');
+        }
+        //#endregion        
+    });
 });
 //# sourceMappingURL=AnalyticReport.js.map
