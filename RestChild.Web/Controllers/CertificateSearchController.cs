@@ -68,7 +68,7 @@ namespace RestChild.Web.Controllers
 
             if (!model.HotelsId.IsNullOrEmpty())
             {
-                model.Hotels = UnitOfWork.GetById<Hotels>(model.HotelsId.Value);
+                model.HotelName = UnitOfWork.GetById<Hotels>(model.HotelsId.Value).Name;
             }
 
             return View(ApiController.CertificateList(model));
@@ -90,7 +90,7 @@ namespace RestChild.Web.Controllers
                     .InsertAt(new PlaceOfRest { Id = 0, Name = DefaultOptionValue });
 
             ViewBag.Contracts =
-                UnitOfWork.GetAll<Contract>().Where(c=>c.OrganizationId.HasValue && c.OnRest && c.StateId != null && c.StateId != StateMachineStateEnum.Deleted).OrderBy(p => p.Id)
+                UnitOfWork.GetAll<Contract>().Where(c => c.OrganizationId.HasValue && c.OnRest && c.StateId != null && c.StateId != StateMachineStateEnum.Deleted).OrderBy(p => p.Id)
                 .InsertAt(new Contract { Id = 0, SignNumber = DefaultOptionValue },0);
 
             ViewBag.StatusOfRest =

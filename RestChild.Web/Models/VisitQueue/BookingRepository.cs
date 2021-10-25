@@ -37,8 +37,9 @@ namespace RestChild.Web.Models.VisitQueue
             q = q.Where(ss =>
                 (ss.StatusId == (long)MGTVisitBookingStatuses.PrebookingRegistered
                 || ss.StatusId == (long)MGTVisitBookingStatuses.BookingRegistered
-                || ss.StatusId == (long)MGTVisitBookingStatuses.BookingVisited
-                || ss.StatusId == (long)MGTVisitBookingStatuses.BookingUnvisited)
+                //|| ss.StatusId == (long)MGTVisitBookingStatuses.BookingVisited
+                //|| ss.StatusId == (long)MGTVisitBookingStatuses.BookingUnvisited
+                )
                 && ss.DepartmentId == DepartId
             );
             q = q.Where(ss => ss.Persons.Any(sx => sx.Snils.ToLower() == snils.ToLower()));
@@ -268,8 +269,10 @@ namespace RestChild.Web.Models.VisitQueue
                 if (unitOfWork.GetSet<MGTBookingVisit>()
                     .Any(d => (d.StatusId == (long)MGTVisitBookingStatuses.PrebookingRegistered
                     || d.StatusId == (long)MGTVisitBookingStatuses.BookingRegistered
-                    || d.StatusId == (long)MGTVisitBookingStatuses.BookingVisited
-                    || d.StatusId == (long)MGTVisitBookingStatuses.BookingUnvisited) && d.VisitCell == booking.VisitSlot && d.Persons.Any(s => s.Snils == booking.SNILS)))
+                    //|| d.StatusId == (long)MGTVisitBookingStatuses.BookingVisited
+                    //|| d.StatusId == (long)MGTVisitBookingStatuses.BookingUnvisited
+                    )
+                    && d.VisitCell == booking.VisitSlot && d.Persons.Any(s => s.Snils == booking.SNILS)))
                 {
                     return new BookingResult
                     {

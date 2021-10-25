@@ -1186,7 +1186,7 @@ namespace RestChild.Web.Controllers
                             //	false);
 
                             UnitOfWork.RequestChangeStatusInternal(AccessRightEnum.Status.ToRegistrationDecline,
-                                request, null,
+                                request, 202107,
                                 false);
                             break;
                         }
@@ -1196,16 +1196,16 @@ namespace RestChild.Web.Controllers
                             if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor)
                                 UnitOfWork.RequestChangeStatusInternal(
                                     AccessRightEnum.Status.ToRegistrationDecline,
-                                    request, null, false);
+                                    request, 202105, false);
                             if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7)
                                 UnitOfWork.RequestChangeStatusInternal(
                                     AccessRightEnum.Status.ToRegistrationDecline,
-                                    request, null, false);
+                                    request, 202106, false);
                             if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps ||
                                 model.Data.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps)
                                 UnitOfWork.RequestChangeStatusInternal(
                                     AccessRightEnum.Status.ToRegistrationDecline,
-                                    request, null, false);
+                                    request, 202104, false);
                             break;
                         }
 
@@ -1214,11 +1214,11 @@ namespace RestChild.Web.Controllers
                             if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor)
                                 UnitOfWork.RequestChangeStatusInternal(
                                     AccessRightEnum.Status.ToRegistrationDeclineAttendant,
-                                    request, null, false);
+                                    request, 202102, false);
                             if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7)
                                 UnitOfWork.RequestChangeStatusInternal(
                                     AccessRightEnum.Status.ToRegistrationDeclineAttendant,
-                                    request, null, false);
+                                    request, 202103, false);
                             break;
                         }
 
