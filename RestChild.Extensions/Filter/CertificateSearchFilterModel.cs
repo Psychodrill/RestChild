@@ -101,7 +101,7 @@ namespace RestChild.Extensions.Filter
         public long DistrictId { get; set; }
         public long TimeOfRestId { get; set; }
         public long PlaceOfRestId { get; set; }
-        public Hotels Hotels { get; set; }        
+        public string HotelName { get; set; }        
         public long? HotelsId { get; set; }
         public long SourceId { get; set; }
 
