@@ -300,7 +300,7 @@ namespace RestChild.DocumentGeneration
         /// <summary>
         ///     Уведомление о прекращении рассмотрения поданного заявления (заявитель отказался сам)
         /// </summary>
-        private static IDocument NotificationRefuse1090(Request request)
+        private static IDocument NotificationRefuse1090(Request request, Account account)
         {
             var forMpguPortal = request.SourceId == (long) SourceEnum.Mpgu;
 
@@ -449,6 +449,8 @@ namespace RestChild.DocumentGeneration
                                     {Space = SpaceProcessingModeValues.Preserve}),
                             new Run(titleRequestRunPropertiesItalic.CloneNode(true),
                                 new Text(request.DateChangeStatus.FormatEx(string.Empty)))));
+
+                   SignBlockNotification(doc, account, $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}");
 
                     mainPart.Document = doc;
                 }
@@ -951,7 +953,7 @@ namespace RestChild.DocumentGeneration
         ///     Уведомление об отказе в предоставлении услуг отдыха и оздоровления в связи с представлением документов, не
         ///     соответствующих требованиям
         /// </summary>
-        private static IDocument NotificationRefuse10802(Request request)
+        private static IDocument NotificationRefuse10802(Request request, Account account)
         {
             var forMpguPortal = request.SourceId == (long) SourceEnum.Mpgu;
 
@@ -1187,7 +1189,7 @@ namespace RestChild.DocumentGeneration
                                         "Дополнительно сообщаем, что в случае обнаружения расхождений сведений в СНИЛС и документе, удостоверяющем личность, Вам необходимо актуализировать документы в соответствующих органах, приведя их к единообразию.")
                                     {Space = SpaceProcessingModeValues.Preserve})));
 
-
+                    SignBlockNotification(doc, account, $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}");
                     mainPart.Document = doc;
                 }
 
@@ -1204,7 +1206,7 @@ namespace RestChild.DocumentGeneration
         /// <summary>
         ///     Уведомление об отказе в предоставлении услуг отдыха (по квоте)
         /// </summary>
-        private static IDocument NotificationRefuse10805(IUnitOfWork unitOfWork, Request request)
+        private static IDocument NotificationRefuse10805(IUnitOfWork unitOfWork, Request request, Account account)
         {
             var forMpguPortal = request.SourceId == (long) SourceEnum.Mpgu;
 
@@ -1411,6 +1413,7 @@ namespace RestChild.DocumentGeneration
                         }
                     }
 
+                    SignBlockNotification(doc, account, $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}");
                     mainPart.Document = doc;
                 }
 
