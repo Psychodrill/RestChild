@@ -584,7 +584,7 @@ namespace RestChild.Web.Controllers.WebApi
                 return "Вы не можете забронировать дату в прошлом";
             }
 
-            var query = UnitOfWork.GetSet<MGTVisitBookingPerson>().Any(bv => bv.Snils == snils && bv.VisitBooking.StatusId != 1 && bv.VisitBooking.StatusId != 3 && (bv.VisitBooking.VisitCell == ndate || bv.VisitBooking.DepartmentId == DepartId));
+            var query = UnitOfWork.GetSet<MGTVisitBookingPerson>().Any(bv => bv.Snils == snils && (bv.VisitBooking.StatusId == 1 || bv.VisitBooking.StatusId == 3) && (bv.VisitBooking.VisitCell == ndate || bv.VisitBooking.DepartmentId == DepartId));
             if (query)
                 return "Вы уже забронировали это время в одном из отделов, или заявление в этот отдел является повторным";
 

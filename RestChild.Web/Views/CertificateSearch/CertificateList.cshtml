@@ -6,7 +6,6 @@
 @using RestChild.Domain
 @using RestChild.Web.Controllers
 @using RestChild.Web.App_Code
-@using System.Collections
 @model RestChild.Extensions.Filter.CertificateFilterModel
 @{
     ViewBag.Title = "Реестр сертификатов";
@@ -27,7 +26,7 @@
         </div>
         <label class="col-md-2 control-label text-right">Организация</label>
         <div class="col-md-4">
-            @Html.DropDownListFor(r => r.Hotels, new SelectList(ViewBag.Organizations, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+            @Html.DropDownListFor(r => r.HotelName, new SelectList(ViewBag.Organizations, "Name", "Name"), new { @class = "form-control select2", autocomplete = "off" })
         </div>
     </div>
     <div class="form-group">
@@ -40,11 +39,41 @@
             @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
         </div>
     </div>
+    @*<div class="form-group">
+            <label class="col-md-2 control-label text-right">Имя заявителя</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+            </div>
+            <label class="col-md-2 control-label text-right">Имя ребенка</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-2 control-label text-right">Отчество заявителя</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+            </div>
+            <label class="col-md-2 control-label text-right">Отчество ребенка</label>
+            <div class="col-md-4">
+                @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+            </div>
+        </div>*@
     <div class="form-group">
         <label class="col-md-2 control-label text-right">ФИО сопровождающего</label>
         <div class="col-md-4">
             @Html.TextBoxFor(m => m.AttendantFio, (string)Model.AttendantFio, new { @class = "form-control" })
         </div>
+        @*<label class="col-md-2 control-label text-right">Имя сопровождающего</label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label text-right">Отчество сопровождающего</label>
+                <div class="col-md-4">
+                    @Html.TextBoxFor(m => m.ChildFio, (string)Model.ChildFio, new { @class = "form-control" })
+                </div>*@
         <label class="col-md-2 control-label text-right">СНИЛС (поиск по всем лицам укзанным в сертификате)</label>
         <div class="col-md-4">
             @Html.TextBoxFor(m => m.SNILS, (string)Model.SNILS, new { @class = "form-control" })
@@ -55,10 +84,10 @@
         <div class="col-md-4">
             @Html.TextBoxFor(m => m.CertificateNumber, (string)Model.CertificateNumber, new { @class = "form-control" })
         </div>
-        <label class="col-md-2 control-label text-right input-label date-interval-label date-interval-label">Дата выдачи сертификата</label>
-        <div class="col-md-4">
+        <label class="col-md-2 control-label text-right input-label">Дата выдачи сертификата</label>
+        <div class="col-md-3">
             <div class='input-group date datepicker-anytime'>
-                @Html.TextBoxFor(r => r.Request.CertificateDate, new { @class = "form-control input-mask-date-anytime" })
+                @Html.TextBoxFor(r => r.Request.CertificateDate, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.Request.CertificateDate).FormatEx(string.Empty, string.Empty) })
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -72,7 +101,7 @@
         </div>
         <div class="form-group">
             <label class="col-md-2 control-label text-right input-label date-interval-label date-interval-label">Дата заключения договора с отдыхающим</label>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="input-group date datepicker-anytime">
                     @Html.TextBoxFor(m => m.ContractDate, new { @class = "form-control input-mask-date-anytime" })
                     <span class="input-group-addon">
@@ -94,7 +123,7 @@
     </div>
     <div class="form-group">
         <div class="form-inline">
-            <label class="col-md-3 control-label text-right">Дата начала отдыха с</label>
+            <label class="col-md-3 control-label text-right input-label date-interval-label date-interval-label">Дата начала отдыха с</label>
             <div class="input-group date datepicker-anytime">
                 @Html.TextBoxFor(m => m.RestDateFromFrom, new { @class = "form-control input-mask-date-anytime" })
                 <span class="input-group-addon">
@@ -198,10 +227,10 @@
                                 <div class="wordbreak">
                                     @cert.ContractNumber.FormatEx()
                                 </div>
-                                @if (cert.StateMachineStateId != RestChild.Comon.Enumeration.StateMachineStateEnum.Deleted)
-                                {
-                                    <img src="~/Content/images/patch-check.svg" alt="check" />
-                                }
+                                @*@if (cert.StateMachineStateId != RestChild.Comon.Enumeration.StateMachineStateEnum.Deleted)
+                                    {
+                                        <img src="~/Content/images/patch-check.svg" alt="check" />
+                                    }*@
 
                             </td>
                             <td>
@@ -209,7 +238,7 @@
                                     @cert.Place
                                 </div>
                             </td>
-                            <td>№@cert.ContractNumber.FormatEx() от @cert.Request.CertificateDate.FormatEx()</td>
+                            <td>№@cert.Request.CertificateNumber.FormatEx() от @cert.Request.CertificateDate.FormatEx()</td>
                             <td>
                                 @cert.Request.Applicant.NullSafe(a => a.LastName).FormatEx()
                                 @cert.Request.Applicant.NullSafe(a => a.FirstName).FormatEx()
@@ -238,9 +267,12 @@
                                 }
                             </td>
                             <td>
-                                @cert.Request.Applicant.NullSafe(a => a.LastName).FormatEx()
-                                @cert.Request.Applicant.NullSafe(a => a.FirstName).FormatEx()
-                                @cert.Request.Applicant.NullSafe(a => a.MiddleName).FormatEx()
+                                @if (cert.Request.Attendant.Any())
+                                {
+                                    cert.Request.Attendant.FirstOrDefault().LastName.FormatEx();
+                                    cert.Request.Attendant.FirstOrDefault().FirstName.FormatEx();
+                                    cert.Request.Attendant.FirstOrDefault().MiddleName.FormatEx();
+                                 }
                             </td>
                             <td style="min-width: 215px">
                                 @if (cert.Request.Tour != null)
@@ -345,10 +377,17 @@
     @Styles.Render("~/Content/css/select2.css")
     @Styles.Render("~/Content/css/select2-bootstrap.css")
     @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
+    @Styles.Render("~/Content/CertificatetList.css")
 }
 
 @section scripts
 {
+    <script>
+        function openCertificate(action) {
+        window.open(action, '_blank');
+        }
+    </script>
+
     <script type="text/javascript" src="~/Scripts/doT.js"></script>
     <script type="text/javascript" src="~/Scripts/moment.js"></script>
     <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
@@ -358,6 +397,5 @@
     <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.js"></script>
     @Scripts.Render("~/Scripts/select2.min.js")
     @Scripts.Render("~/Scripts/select2_locale_ru.js")
-    <script type="text/javascript" src="~/Scripts/Vocabulary/CertificateList.js"></script>
-    @*<script type="text/javascript" src="~/Scripts/RequestList.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/CertificateList.js"></script>
 }
