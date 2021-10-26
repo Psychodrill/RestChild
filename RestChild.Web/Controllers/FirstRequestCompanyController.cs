@@ -1068,17 +1068,6 @@ namespace RestChild.Web.Controllers
 
                     var model = new RequestViewModel(request);
 
-                    if (request.StatusId == 1030)
-                    {
-                        ApiController.CheckApplicant(model);
-                        ApiController.CheckChildren(model);
-                        ApiController.CheckAttendants(model);
-
-                        SetDeclineReason(model);
-                        request = ApiController.SaveRequestDeclineStatus(model);
-                        UnitOfWork.SaveChanges();
-                    }
-
                     if (string.IsNullOrWhiteSpace(action))
                     {
                         tran.Complete();
@@ -1124,12 +1113,25 @@ namespace RestChild.Web.Controllers
                     }
 
                     processed = ChangeStateOnSaveRequest(request, model, action, declineReason);
+
                     UnitOfWork.SaveChanges();
                     tran.Complete();
                 }
 
                 // обновление заявления
                 request = UnitOfWork.GetById<Request>(request.Id);
+
+                if (request.StatusId == (long)StatusEnum.RegistrationDecline)
+                {
+                    var model = new RequestViewModel(request);
+                    ApiController.CheckApplicant(model);
+                    ApiController.CheckChildren(model);
+                    ApiController.CheckAttendants(model);
+                    SetDeclineReason(model);
+                    ApiController.SaveRequestDeclineStatus(model, request);
+
+                    UnitOfWork.SaveChanges();
+                }
                 request.UpdateRequestInBooking();
                 return RedirectToAction("RequestEdit",
                     new {id = request.Id, needValidate = !processed, saveaction = processed ? string.Empty : action});

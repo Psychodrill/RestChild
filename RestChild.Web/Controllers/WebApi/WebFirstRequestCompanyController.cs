@@ -71,13 +71,13 @@ namespace RestChild.Web.Controllers.WebApi
         /// <summary>
         ///     сохранение статуса отказа заявления.
         /// </summary>
-        public Request SaveRequestDeclineStatus(RequestViewModel model)
+        public void SaveRequestDeclineStatus(RequestViewModel model, Request request)
         {
-            Request request = UnitOfWork.GetById<Request>(model.Data.Id);
-
+            //Request request = UnitOfWork.GetById<Request>(model.Data.Id);
+            SetUnitOfWorkInRefClass(UnitOfWork);
             request.DeclineReasonId = model.Data.DeclineReasonId;
             request.DeclineReason = model.Data.DeclineReason;
-            return request;
+            //return request;
         }
 
         /// <summary>

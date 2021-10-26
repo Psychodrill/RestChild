@@ -1189,7 +1189,8 @@ namespace RestChild.DocumentGeneration
                                         "Дополнительно сообщаем, что в случае обнаружения расхождений сведений в СНИЛС и документе, удостоверяющем личность, Вам необходимо актуализировать документы в соответствующих органах, приведя их к единообразию.")
                                     {Space = SpaceProcessingModeValues.Preserve})));
 
-                    SignBlockNotification(doc, account, $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}");
+                    //SignBlockNotification(doc, account, $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}");
+                    SignBlockNotification2020(doc, account, "Исполнитель");
                     mainPart.Document = doc;
                 }
 
@@ -1360,7 +1361,7 @@ namespace RestChild.DocumentGeneration
                             new Run(titleRequestRunProperties.CloneNode(true),
                                 new Text(
                                     "пункты 3.9. и 9.1.1. Порядка организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденного постановлением Правительства Москвы от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\"."))));
-
+                    IEnumerable<Request> requests = new List<Request>();
                     if ((request.Child?.Any(c => !c.IsDeleted) ?? false) && listTravelersRequest != null &&
                         listTravelersRequest.Details.Any(ss => ss.Detail != "[]"))
                     {
@@ -1376,7 +1377,7 @@ namespace RestChild.DocumentGeneration
                                 .ToArray();
                             if (requestIds.Length > 0)
                             {
-                                var requests = unitOfWork.GetSet<Request>().Where(ss =>
+                                 requests = unitOfWork.GetSet<Request>().Where(ss =>
                                     requestIds.Contains(ss.Id) && years.Contains((long) ss.YearOfRestId)).ToList();
                                 if (firstLine)
                                 {
@@ -1409,11 +1410,13 @@ namespace RestChild.DocumentGeneration
                                         )));
 
                                 AddTableChildTours(doc, requests);
+
                             }
                         }
                     }
-
-                    SignBlockNotification(doc, account, $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}");
+                    AddStaticTableChildTours(doc, requests);
+                    //SignBlockNotification(doc, account, $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}");
+                    SignWorkerBlock(doc, account,"Исполнитель");
                     mainPart.Document = doc;
                 }
 
@@ -1567,7 +1570,7 @@ namespace RestChild.DocumentGeneration
                                     new SpacingBetweenLines { After = Size20 }),
                                 new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                     new Text(
-                                            "Данные ребёнка/лица из числа детей-сирот и детей, оставшихся без попечения родителей: ")
+                                            "Данные ребёнка (детей) /лица из числа детей-сирот и детей, оставшихся без попечения родителей: ")
                                     { Space = SpaceProcessingModeValues.Preserve }),
                                 new Run(titleRequestRunPropertiesItalic.CloneNode(true),
                                     new Text(
@@ -1601,7 +1604,7 @@ namespace RestChild.DocumentGeneration
                             new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                 new Text("Основание отказа: ") { Space = SpaceProcessingModeValues.Preserve }),
                             new Run(titleRequestRunProperties.CloneNode(true),
-                                new Text(FederalLaw))));
+                                new Text(FederalLawReference))));
 
                     doc.AppendChild(
                         new Paragraph(
@@ -1610,7 +1613,7 @@ namespace RestChild.DocumentGeneration
                             new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                 new Text("Причина отказа: ") { Space = SpaceProcessingModeValues.Preserve }),
                             new Run(titleRequestRunProperties.CloneNode(true),
-                                new Text(request.DeclineReason?.Name))));
+                                new Text(ParticipateNotification))));
 
 
                     SignBlockNotification2020(doc, account, "Исполнитель:");

@@ -1176,7 +1176,7 @@ namespace RestChild.Web.Controllers
             return titleRequestRunProperties;
         }
 
-        private void SignSimpleBlockNotification(Document doc)
+        private void SignSimpleBlockNotification(Document doc, string sign = "Уведомление выдал:")
         {
             var account = Security.GetCurrentAccount() ?? new Account();
             var titleRequestRunProperties = new RunProperties();
@@ -2085,70 +2085,95 @@ namespace RestChild.Web.Controllers
                     doc.AppendChild(
                         new Paragraph(
                             new ParagraphProperties(new Justification { Val = JustificationValues.Left },
-                                new SpacingBetweenLines { After = "20" }),
-                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
-                                new Text("Дата и время регистрации заявления: ")
-                                { Space = SpaceProcessingModeValues.Preserve }),
-                            new Run(titleRequestRunPropertiesItalic.CloneNode(true),
-                                new Text(request.DateRequest.FormatEx()))));
-
-                    doc.AppendChild(
-                        new Paragraph(
-                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
-                                new SpacingBetweenLines { After = "20" }),
-                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
-                                new Text("Номер заявления: ") { Space = SpaceProcessingModeValues.Preserve }),
-                            new Run(titleRequestRunPropertiesItalic.CloneNode(true),
-                                new Text(request.RequestNumber.FormatEx()))));
-
-                    doc.AppendChild(
-                        new Paragraph(
-                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
-                                new SpacingBetweenLines { After = "20" }),
+                                new SpacingBetweenLines { After = "20"}),
                             new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                 new Text("Данные заявителя: ") { Space = SpaceProcessingModeValues.Preserve }),
                             new Run(titleRequestRunPropertiesItalic.CloneNode(true),
                                 new Text(
-                                    $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DateOfBirth.FormatEx(string.Empty)}"))));
-
+                                    $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DateOfBirth.FormatExGR(string.Empty)}"))));
+                    doc.AppendChild(
+                            new Paragraph(
+                                new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                    new SpacingBetweenLines { After = "20" }),
+                                new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                    new Text("Контактная информация: ") { Space = SpaceProcessingModeValues.Preserve }),
+                                new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                    new Text(applicant.Phone + ", " + applicant.Email))));
 
                     doc.AppendChild(
                         new Paragraph(
                             new ParagraphProperties(new Justification { Val = JustificationValues.Left },
                                 new SpacingBetweenLines { After = "20" }),
                             new Run(titleRequestRunPropertiesBold.CloneNode(true),
-                                new Text("Контактная информация: ") { Space = SpaceProcessingModeValues.Preserve }),
+                                new Text("Номер путевки: ") { Space = SpaceProcessingModeValues.Preserve }),
                             new Run(titleRequestRunPropertiesItalic.CloneNode(true),
-                                new Text(applicant.Phone + ", " + applicant.Email))));
+                                new Text(request.CertificateNumber))));
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = "20" }),
+                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                new Text("Организация отдыха и оздоровления: ")
+                                { Space = SpaceProcessingModeValues.Preserve }),
+                            new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                new Text(request.Tour?.Hotels?.Name))));
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = "20" }),
+                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                new Text("Время отдыха: ") { Space = SpaceProcessingModeValues.Preserve }),
+                            new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                new Text($"{request.TimeOfRest?.Name} ({request.Tour?.DateIncome.FormatEx()} - {request.Tour?.DateOutcome.FormatEx()})"))));
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Both },
+                                new SpacingBetweenLines { After = "20" }),
+                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                new Text("Основание приёма заявления: ") { Space = SpaceProcessingModeValues.Preserve }),
+                            new Run(titleRequestRunProperties.CloneNode(true),
+                                new Text("Порядок организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденный постановлением Правительства Москвы от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\" (далее - Порядок)."))));
+
+                    doc.AppendChild(
+                            new Paragraph(
+                                new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                    new SpacingBetweenLines { After = "20" }),
+                                new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                    new Text("Результат рассмотрения: ")
+                                    { Space = SpaceProcessingModeValues.Preserve }),
+                                new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                    new Text("Ваше заявление об отказе от предоставленной бесплатной путевки для отдыха и оздоровления по уважительной причине ее неиспользования(далее – заявление) рассмотрено."))));
 
                     var strings = new[]
                     {
-                        " ",
-                        "Ваше заявление об отказе от предоставленной бесплатной путевки для отдыха и оздоровления рассмотрено.",
-                        "В соответствии с постановлением Правительства Москвы от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\", отказ от осуществления выездного отдыха на основании предоставленной бесплатной путевки для отдыха и оздоровления подтверждается документами о наличии уважительных причин.",
-                        "К уважительным причинам относятся:",
-                        "заболевание, травма ребенка, лица из числа детей - сирот и детей, оставшихся без попечения родителей; ",
-                        "заболевание, травма сопровождающего лица (в случае организации совместного выездного отдыха); ",
-                        "необходимость осуществления сопровождающим лицом ухода за больным членом семьи (в случае организации совместного выездного отдыха); ",
-                        "карантин ребенка, карантин лица из числа детей-сирот и детей, оставшихся без попечения родителей, карантин лица, проживающего совместно с ребенком, лицом из числа детей-сирот и детей, оставшихся без попечения родителей, а также в случае организации совместного выездного отдыха карантин сопровождающего лица; ",
-                        "смерть близкого родственника (родителя, бабушки, дедушки, брата, сестры, дяди, тети).",
-                        "Предоставленный Вами документ не является документом, подтверждающим уважительную причину неиспользования предоставленной бесплатной путевки для отдыха и оздоровления.",
-                        $"Учитывая изложенное, оформить отказ от бесплатной путевки для отдыха и оздоровления № {request.CertificateNumber} в установленном порядке не представляется возможным.",
-                        " ",
-                        " ",
-                        " "
+                        "В соответствии с пунктом 10.2 Порядка отказ от осуществления выездного отдыха на основании предоставленной бесплатной путевки для отдыха и оздоровления (далее – бесплатная путевка) подтверждается документами о наличии уважительных причин.",
+                        "К уважительным причинам неосуществления отдыха относятся:",
+                        "заболевание, травма ребенка, лица из числа детей-сирот и детей, оставшихся без попечения родителей, на дату заезда в организацию отдыха и оздоровления ",
+                        "заболевание, травма, смерть сопровождающего лица (в случае организации совместного выездного отдыха) на дату заезда в организацию отдыха и оздоровления; ",
+                        "необходимость осуществления сопровождающим лицом ухода за больным членом семьи (в случае организации совместного выездного отдыха) на дату заезда в организацию отдыха и оздоровления; ",
+                        "карантин ребенка, карантин лица из числа детей-сирот и детей, оставшихся без попечения родителей, карантин лица, проживающего совместно с ребенком, лицом из числа детей-сирот и детей, оставшихся без попечения родителей, а также в случае организации совместного выездного отдыха карантин сопровождающего лица на дату заезда в организацию отдыха и оздоровления; ",
+                        "смерть близкого родственника ребенка (родителя, бабушки, дедушки, брата, сестры) в период с даты окончания заявочной кампании в целях организации отдыха и оздоровления до даты заезда в организацию отдыха и оздоровления; ",
+                        "получение детьми-инвалидами, детьми с ограниченными возможностями здоровья санаторно-курортного лечения или реабилитации в то же время, на которое предоставлена бесплатная путевка для отдыха и оздоровления; ",
+                        "выявление у ребенка, сопровождающего лица в период с даты окончания заявочной кампании в целях организации отдыха и оздоровления медицинских противопоказаний для пребывания в организации отдыха и оздоровления, смены климатической зоны, а также способа проезда в организацию отдыха и оздоровления.",
+                        "Прилагаемый к Вашему заявлению документ не является документом, подтверждающим уважительную причину неиспользования предоставленной бесплатной путевки.",
+                        $"Учитывая изложенное, в соответствии с пунктом 10.4.2 Порядка оформить отказ от бесплатной путевки № { request.CertificateNumber} в установленном порядке не представляется возможным."
+
                     };
 
-                    foreach (var s in strings)
-                    {
-                        doc.AppendChild(
-                            new Paragraph(
-                                new ParagraphProperties(new Justification { Val = JustificationValues.Both },
-                                    new SpacingBetweenLines { After = "20" }, new Indentation { FirstLine = "500" }),
-                                new Run(titleRequestRunPropertiesItalic.CloneNode(true), new Text(s))));
-                    }
+                foreach (var s in strings)
+                {
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Both },
+                                new SpacingBetweenLines { After = "20" }, new Indentation { FirstLine = "500" }),
+                            new Run(titleRequestRunPropertiesItalic.CloneNode(true), new Text(s))));
+                }
 
-                    SignSimpleBlockNotification(doc);
+                    SignSimpleBlockNotification(doc,"Исполнитель:");
+
                     mainPart.Document = doc;
                 }
 
