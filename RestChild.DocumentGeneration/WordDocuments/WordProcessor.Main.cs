@@ -225,7 +225,7 @@ namespace RestChild.DocumentGeneration
         /// <summary>
         ///     Формирование таблицы об услугах, оказанных ребенку\детям в течение последних 3-х лет
         /// </summary>
-        private static void AddTableChildTours(Document doc, IEnumerable<Request> Requests)
+        private static void AddTableChildTours(Document doc, IEnumerable<Request> requests, IEnumerable<int>years)
         {
             var titleRequestRunProperties = new RunProperties();
             titleRequestRunProperties.AppendChild(new RunFonts
@@ -279,7 +279,7 @@ namespace RestChild.DocumentGeneration
                     new TableCellWidth
                     {
                         Type = TableWidthUnitValues.Dxa,
-                        Width = (ThirdColumn + FourthColumn + FifthColumn + SixthColumn).ToString()
+                        Width = (ThirdColumn + FourthColumn + FifthColumn /*+ SixthColumn*/).ToString()
                     }),
                 new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
             cell.AppendChild(new Paragraph(
@@ -294,15 +294,25 @@ namespace RestChild.DocumentGeneration
                 (long?) TypeOfRestEnum.MoneyOn7To15, (long?) TypeOfRestEnum.MoneyOnInvalidOn4To17
             };
 
-            //данные о предоставленных льготах
-            foreach (var request in Requests)
+            //данные о предоставленных услугах
+
+            foreach (var year in years)
             {
-                var year = request.YearOfRest?.Name;
-                if (request.ParentRequestId.HasValue &&
-                    request.YearOfRest?.Year - 1 == request.ParentRequest.YearOfRest?.Year)
-                {
-                    year = $"{request.ParentRequest.YearOfRest?.Name} (дополнительная кампания)";
-                }
+
+                Request request = requests.FirstOrDefault(req => req.YearOfRest.Year == year);
+
+                //string year = request?.YearOfRest?.Name;
+                //if (request != null)
+                //{
+                //    if (request.ParentRequestId.HasValue && request.YearOfRest?.Year - 1 == request?.ParentRequest.YearOfRest?.Year)
+                //    {
+                //        year = $"{request.ParentRequest.YearOfRest?.Name} (дополнительная кампания)";
+                //    }
+                //}
+                //else if (request == null)
+                //{
+                //    year = $"{request.ParentRequest.YearOfRest?.Name} (дополнительная кампания)";
+                //}
 
                 row = new TableRow();
                 cell = new TableCell();
@@ -312,7 +322,7 @@ namespace RestChild.DocumentGeneration
                 cell.AppendChild(new Paragraph(
                     new ParagraphProperties(new Justification {Val = JustificationValues.Left}),
                     new Run(titleRequestRunProperties.CloneNode(true),
-                        new Text(year))));
+                        new Text(year.ToString()))));
                 row.AppendChild(cell);
 
                 cell = new TableCell();
@@ -324,7 +334,7 @@ namespace RestChild.DocumentGeneration
                 cell.AppendChild(new Paragraph(
                     new ParagraphProperties(new Justification {Val = JustificationValues.Left}),
                     new Run(titleRequestRunProperties.CloneNode(true),
-                        new Text(request.TypeOfRest?.Name))));
+                        new Text(request?.TypeOfRest?.Name))));
                 row.AppendChild(cell);
 
                 cell = new TableCell();
@@ -337,7 +347,8 @@ namespace RestChild.DocumentGeneration
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
                     new Run(titleRequestRunProperties.CloneNode(true),
-                        new Text(request.TourId.HasValue
+                        new Text(request == null? Space:
+                            request.TourId.HasValue
                             ? $"{request.Tour.Hotels?.Name}, c {request.Tour.DateIncome.FormatEx(string.Empty)} по {request.Tour.DateOutcome.FormatEx(string.Empty)}"
                             : (request.RequestOnMoney && !moneyTypes.Contains(request.TypeOfRestId)
                                 ? "Осуществлен выбор сертификата на втором этапе заявочной кампании"
@@ -352,10 +363,9 @@ namespace RestChild.DocumentGeneration
         /// <summary>
         ///     Формирование статической таблицы об услугах, оказанных ребенку\детям в течение последних 3-х лет
         /// </summary>
-        private static void AddStaticTableChildTours(Document doc, IEnumerable<Request> requests)
+        private static void AddStaticTableChildTours(Document doc, IEnumerable<Request> requests, IEnumerable<long> yearIds)
         {
-            //var years = IUnitOfWork
-            //List<int> lastRests = new List<int> { DateTime.Now.Year-1, DateTime.Now.Year-2, DateTime.Now.Year-3};// последние три года отдыха 
+
             var titleRequestRunProperties = new RunProperties();
             titleRequestRunProperties.AppendChild(new RunFonts
             {
@@ -1062,8 +1072,17 @@ namespace RestChild.DocumentGeneration
 
             var captionRunProperties = new RunProperties().SetFont().SetFontSizeSupperscript();
 
+
+
             var table = new Table();
             table.AppendChild(tblProp.CloneNode(true));
+
+            //отступ - нулевая строка
+            {
+                doc.AppendChild(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Both },
+                new SpacingBetweenLines { After = Size20 })));
+            }
 
             var row = new TableRow();
 
