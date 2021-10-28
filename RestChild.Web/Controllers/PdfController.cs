@@ -216,6 +216,8 @@ namespace RestChild.Web.Controllers
                             over.ShowTextAligned(Element.ALIGN_LEFT,
                                 $"{visitBooking.VisitCell:dd.MM.yyyy HH:mm}", 500, 675, 0);
 
+                            over.SetFontAndSize(BaseFont.CreateFont(fontPath + "The Northern Block - Acrom Bold.otf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED), 13);
                             over.ShowTextAligned(Element.ALIGN_LEFT,
                                 Utils.GeneratePin(visitBooking.Id), 450, 655, 0);
 

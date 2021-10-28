@@ -9,6 +9,7 @@
     ViewBag.Title = "Запись на приём";
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.MDisable = (Model.Id > 0);
+    var Departments = ViewBag.Departments;
 }
 @section styles
 {
@@ -38,7 +39,9 @@
 
 <div class="row">
     <div class="col-md-12">
-        <h2>Запись на приём</h2>
+        <h2>Запись на приём<br />
+            @Departments[(int)Model.DepartmentId - 1].Name
+        </h2>
     </div>
 </div>
 <div class="row form-group">

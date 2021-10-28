@@ -11,8 +11,9 @@ namespace RestChild.Web.Models
       {
          PageNumber = 1;
       }
+        public long DepartmentId { get; set; }
 
-      public string Name { get; set; }
+        public string Name { get; set; }
 
       public CommonPagedList<MGTVisitTarget> Targets { get; set; }
    }

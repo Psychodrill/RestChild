@@ -22,6 +22,12 @@
             @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
         </div>
     </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label text-right">Отдел МГТ</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(m => m.DepartmentId, new SelectList(ViewBag.Departments, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+        </div>
+    </div>
 
 }
 
@@ -43,20 +49,20 @@
                 @{int rowNumber = Model.Targets.FirstItemOnPage;}
                 @foreach (var target in Model.Targets)
                 {
-                <tr>
-                    <td class="text-center">@(rowNumber++)</td>
-                    @if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturBookingTargetsEdit))
-                    {
-                        <td>@Html.ActionLink(target.Name, "Update", new { id = target.Id }, new { target = "_blank" })</td>
-                    }
-                    else
-                    {
-                        <td>@target.Name</td>
-                    }
-                    <td class="text-center">@(target.IsForMPGU ? "Да" : "Нет")</td>
-                    <td class="text-center">@(target.IsActive ? "Да" : "Нет")</td>
-                    <td class="text-center">@(!target.Department.IsNullOrEmpty() ? target.Department.Name : "Информация отсутствует") </td>
-                </tr>
+                    <tr>
+                        <td class="text-center">@(rowNumber++)</td>
+                        @if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturBookingTargetsEdit))
+                        {
+                            <td>@Html.ActionLink(target.Name, "Update", new { id = target.Id }, new { target = "_blank" })</td>
+                        }
+                        else
+                        {
+                            <td>@target.Name</td>
+                        }
+                        <td class="text-center">@(target.IsForMPGU ? "Да" : "Нет")</td>
+                        <td class="text-center">@(target.IsActive ? "Да" : "Нет")</td>
+                        <td class="text-center">@(!target.Department.IsNullOrEmpty() ? target.Department.Name : "Информация отсутствует") </td>
+                    </tr>
                 }
             </tbody>
         </table>

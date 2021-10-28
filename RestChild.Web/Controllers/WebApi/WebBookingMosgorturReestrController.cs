@@ -254,6 +254,11 @@ namespace RestChild.Web.Controllers.WebApi
                         query = query.Where(ss => ss.MPGURegNum == null);
                     }
                 }
+                if (filter.DepartmentId.HasValue)
+                {
+                    if (filter.DepartmentId>1)
+                    query = query.Where(ss => ss.DepartmentId == filter.DepartmentId);
+                }
             }
 
             return query;
@@ -333,11 +338,9 @@ namespace RestChild.Web.Controllers.WebApi
             return Json(messages);
         }
 
-        internal MGTWorkingDayModel GetModel(long id = 0, long DepartId = 1)
+        internal MGTWorkingDayModel GetModel(long id = 0, long DepartId = 2)
         {
-            // Отключил проверку на отдел пока не реализован функционал заполнения расписания рабочих дней Мосгортура с разбивкой по отделами (18.10.2021 Utkin D)
-            //var day = UnitOfWork.GetSet<MGTWorkingDay>().FirstOrDefault(ss => ss.Id == id && ss.DepartmentId == DepartId) ?? new MGTWorkingDay();
-            var day = UnitOfWork.GetSet<MGTWorkingDay>().FirstOrDefault(ss => ss.Id == id) ?? new MGTWorkingDay();
+            var day = UnitOfWork.GetSet<MGTWorkingDay>().FirstOrDefault(ss => ss.Id == id && ss.DepartmentId == DepartId) ?? new MGTWorkingDay();
 
             var result = new MGTWorkingDayModel
             {
@@ -345,9 +348,7 @@ namespace RestChild.Web.Controllers.WebApi
                 Date = day.Date,
                 TimeInterval = day.WorkingInterval,
                 IsDeleted = day.IsDeleted,
-                // Отключил проверку на отдел пока не реализован функционал заполнения расписания рабочих дней Мосгортура с разбивкой по отделами (18.10.2021 Utkin D)
-                //DepartmentId = DepartId,
-                DepartmentId = day.DepartmentId,
+                DepartmentId = DepartId,
                 BookingCount = day.VisitBookings?.Count(ss =>
                     !(ss.StatusId == (long) MGTVisitBookingStatuses.PrebookingRegistered ||
                       ss.StatusId == (long) MGTVisitBookingStatuses.BookingRegistered ||
@@ -389,11 +390,11 @@ namespace RestChild.Web.Controllers.WebApi
             return UnitOfWork.GetSet<MGTWorkingDay>().Any(ss => ss.Date == d && !ss.IsDeleted && ss.DepartmentId==DepartmentId);
         }
 
-        internal bool CheckMgtDayExistsAndIsBussy(DateTime date)
+        internal bool CheckMgtDayExistsAndIsBussy(DateTime date, long DepartmentId)
         {
             var d = date.Date;
             return UnitOfWork.GetSet<MGTWorkingDay>()
-                .Any(ss => ss.Date == d && !ss.IsDeleted &&
+                .Any(ss => ss.Date == d && !ss.IsDeleted && ss.DepartmentId == DepartmentId &&
                            ss.VisitBookings.Any(sx =>
                                !(sx.StatusId == (long) MGTVisitBookingStatuses.PrebookingCanceled ||
                                  sx.StatusId == (long) MGTVisitBookingStatuses.BookingCanceled ||
@@ -560,11 +561,11 @@ namespace RestChild.Web.Controllers.WebApi
         /// <summary>
         ///     Проверка рабочего дня
         /// </summary>
-        internal string ValidateBookingDay(DateTime date, TimeSpan time, long targetId, int clotCount = 1)
+        internal string ValidateBookingDay(DateTime date, TimeSpan time, long targetId, long DepartId,string snils, int clotCount = 1)
         {
             var d = date.Date;
             var exDate = DateTime.Now.AddDays(15d);
-            var day = UnitOfWork.GetSet<MGTWorkingDay>().Where(ss => ss.Date == d && ss.Date<exDate && !ss.IsDeleted).AsQueryable();
+            var day = UnitOfWork.GetSet<MGTWorkingDay>().Where(ss => ss.Date == d && ss.Date<exDate && !ss.IsDeleted && ss.DepartmentId == DepartId).AsQueryable();
             if (day.Count() != 1)
             {
                 return "Для данной даты бронирования не задано рабочее расписание";
@@ -582,6 +583,10 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 return "Вы не можете забронировать дату в прошлом";
             }
+
+            var query = UnitOfWork.GetSet<MGTVisitBookingPerson>().Any(bv => bv.Snils == snils && bv.VisitBooking.StatusId != 1 && bv.VisitBooking.StatusId != 3 && (bv.VisitBooking.VisitCell == ndate || bv.VisitBooking.DepartmentId == DepartId));
+            if (query)
+                return "Вы уже забронировали это время в одном из отделов, или заявление в этот отдел является повторным";
 
             if (clotCount > 0)
             {
@@ -618,7 +623,7 @@ namespace RestChild.Web.Controllers.WebApi
                     VisitTargetId = model.SelectedTarget,
                     VisitSlotsCount = model.SlotsCount,
                     VisitSlot = model.Date.Date.AddTicks(model.Time.Ticks)
-                }, mpgu);
+                }, mpgu, (long)model.DepartmentId);
 
             if (prebookingResult.Code != (long) MGTVisitBookingPrebookingStatuses.PrebookingSucsess)
             {

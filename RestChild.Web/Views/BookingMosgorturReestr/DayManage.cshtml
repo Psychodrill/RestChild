@@ -43,7 +43,7 @@
             Изменение рабочих дней <br />
             @Departments[(int)DepartId - 1].Name
         </h2>
-        @Html.ActionLink("Вернуться", "WorkingDays")
+        @Html.ActionLink("Вернуться", "WorkingDays", "BookingMosgorturReestr", new { Year = Model.Date.Year, Month = Model.Date.Month, DepartmentId = Model.DepartmentId },null)
     </div>
 </div>
 
@@ -131,7 +131,7 @@
                 </button>
                 @if (Model.Id > 0 && !Model.IsDeleted)
                 {
-                    <a class="btn btn-default btn-danger" href="@Url.Action("DeleteDay", "BookingMosgorturReestr", new { @Id = Model.Id })">
+                    <a class="btn btn-default btn-danger" href="@Url.Action("DeleteDay", "BookingMosgorturReestr", new { @Id = Model.Id, @DepartmentId = Model.DepartmentId })">
                         <i class="glyphicon glyphicon-remove"></i> Удалить
                     </a>
                 }
@@ -191,6 +191,7 @@
                 @using (Html.BeginForm("TransferDay", "BookingMosgorturReestr", null, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
                 {
                     @Html.Hidden("DayId", Model.Id)
+                    @Html.Hidden("DepartmentId", Model.DepartmentId)
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-4">
                             <div class='input-group date datepicker-anytime-tdate'>

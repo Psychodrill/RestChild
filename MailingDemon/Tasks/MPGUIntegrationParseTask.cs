@@ -133,7 +133,7 @@ namespace MailingDemon.Tasks
                           d1)
                        {
                            Note = string.Format(ConfigurationManager.AppSettings["MqMPGUStatus1050Title"], b.VisitCell, b.Id,
-                             b.PINCode),
+                             b.PINCode, b.Target.Name),
                            PINCode = b.PINCode,
                            Cell = b.VisitCell,
                            BookingId = b.Id,

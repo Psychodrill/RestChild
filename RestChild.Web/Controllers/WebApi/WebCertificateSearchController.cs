@@ -134,11 +134,11 @@ namespace RestChild.Web.Controllers.WebApi
             }
             if (search.RestDateToFrom.HasValue)
             {
-                query = query.Where(q => q.RestDateFrom >= DbFunctions.TruncateTime(search.RestDateFromFrom.Value));
+                query = query.Where(q => q.RestDateTo >= DbFunctions.TruncateTime(search.RestDateToFrom.Value));
             }
             if (search.RestDateToTo.HasValue)
             {
-                query = query.Where(q => q.RestDateFrom <= DbFunctions.TruncateTime(search.RestDateFromTo.Value));
+                query = query.Where(q => q.RestDateTo <= DbFunctions.TruncateTime(search.RestDateToTo.Value));
             }
             if ((bool)search.WillRest)
             {

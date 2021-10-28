@@ -90,7 +90,7 @@ namespace RestChild.Web.Controllers
                     .InsertAt(new PlaceOfRest { Id = 0, Name = DefaultOptionValue });
 
             ViewBag.Contracts =
-                UnitOfWork.GetAll<Contract>().Where(c=>c.OrganizationId.HasValue).OrderBy(p => p.Id)
+                UnitOfWork.GetAll<Contract>().Where(c=>c.OrganizationId.HasValue && c.OnRest && c.StateId != null && c.StateId != StateMachineStateEnum.Deleted).OrderBy(p => p.Id)
                 .InsertAt(new Contract { Id = 0, SignNumber = DefaultOptionValue },0);
 
             ViewBag.StatusOfRest =
