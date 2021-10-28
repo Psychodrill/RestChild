@@ -1189,7 +1189,8 @@ namespace RestChild.DocumentGeneration
                                         "Дополнительно сообщаем, что в случае обнаружения расхождений сведений в СНИЛС и документе, удостоверяющем личность, Вам необходимо актуализировать документы в соответствующих органах, приведя их к единообразию.")
                                     {Space = SpaceProcessingModeValues.Preserve})));
 
-                    SignBlockNotification(doc, account, $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}");
+                    //SignBlockNotification(doc, account, $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}");
+                    SignBlockNotification2020(doc, account, "Исполнитель");
                     mainPart.Document = doc;
                 }
 
@@ -1211,13 +1212,12 @@ namespace RestChild.DocumentGeneration
             var forMpguPortal = request.SourceId == (long) SourceEnum.Mpgu;
 
             var lokYear = request.YearOfRest?.Year ?? 2021;
-            var years = unitOfWork.GetSet<YearOfRest>().Where(ss => ss.Year <= lokYear).OrderByDescending(ss => ss.Year)
-                .Take(4).Select(ss => ss.Id).ToList();
-
+            var yearIds = unitOfWork.GetSet<YearOfRest>().Where(ss => ss.Year < lokYear).OrderByDescending(ss => ss.Year)
+                .Take(3).Select(ss => ss.Id).ToList();
 
             if (forMpguPortal)
             {
-                return PdfProcessor.NotificationRefuse10805(unitOfWork, request, years);
+                return PdfProcessor.NotificationRefuse10805(unitOfWork, request, yearIds);
             }
 
             var listTravelersRequest = unitOfWork.GetSet<ListTravelersRequest>()
@@ -1361,59 +1361,51 @@ namespace RestChild.DocumentGeneration
                                 new Text(
                                     "пункты 3.9. и 9.1.1. Порядка организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденного постановлением Правительства Москвы от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\"."))));
 
-                    if ((request.Child?.Any(c => !c.IsDeleted) ?? false) && listTravelersRequest != null &&
-                        listTravelersRequest.Details.Any(ss => ss.Detail != "[]"))
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = Size20 }),
+                            new Run(new RunProperties().SetFont().SetFontSize(Size28).Bold(),
+                                new Text(Space))));
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = Size20 }),
+                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                new Text(
+                                        "Информация об услугах, оказанных ребёнку/детям в течение последних 3-х лет")
+                                { Space = SpaceProcessingModeValues.Preserve })));
+
+
+                    //if ((request.Child?.Any(c => !c.IsDeleted) ?? false) && listTravelersRequest != null &&
+                    //    listTravelersRequest.Details.Any(ss => ss.Detail != "[]"))
+                    //{
+                    var details = listTravelersRequest?.Details.Where(ss => ss.Detail != "[]")
+                        .Select(ss => ss.Detail).ToList().SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>)
+                        .ToArray();
+
+                    IEnumerable<int> years = unitOfWork.GetSet<YearOfRest>().Where(x => yearIds.Contains(x.Id)).Select(x => x.Year).OrderBy(x=>x).ToList();
+
+                    IEnumerable<Request> requests = new List<Request>();
+
+                    foreach (var child in request.Child.Where(c => !c.IsDeleted).ToList())
                     {
-                        var details = listTravelersRequest.Details.Where(ss => ss.Detail != "[]")
-                            .Select(ss => ss.Detail).ToList().SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>)
-                            .ToArray();
+                        var requestIds = details?.Where(ss => ss.ChildId == child.Id).Select(ss => ss.Id).Distinct().ToList()?? new List<long>();
 
-                        var firstLine = true;
+                        requests = unitOfWork.GetSet<Request>().Where(re => requestIds.Any(req => req == re.Id)).ToList();
 
-                        foreach (var child in request.Child.Where(c => !c.IsDeleted).ToList())
-                        {
-                            var requestIds = details.Where(ss => ss.ChildId == child.Id).Select(ss => ss.Id).Distinct()
-                                .ToArray();
-                            if (requestIds.Length > 0)
-                            {
-                                var requests = unitOfWork.GetSet<Request>().Where(ss =>
-                                    requestIds.Contains(ss.Id) && years.Contains((long) ss.YearOfRestId)).ToList();
-                                if (firstLine)
-                                {
-                                    doc.AppendChild(
-                                        new Paragraph(
-                                            new ParagraphProperties(new Justification {Val = JustificationValues.Left},
-                                                new SpacingBetweenLines {After = Size20}),
-                                            new Run(new RunProperties().SetFont().SetFontSize(Size28).Bold(),
-                                                new Text(Space))));
+                        doc.AppendChild(
+                            new Paragraph(new ParagraphProperties(new Justification {Val = JustificationValues.Left},
+                                          new SpacingBetweenLines {After = Size20}),
+                                          new Run(titleRequestRunProperties.CloneNode(true),
+                                                  new Text($"{child.LastName} {child.FirstName} {child.MiddleName}, {child.DateOfBirth.FormatExGR(string.Empty)}, {child.Snils}"))));
 
-                                    doc.AppendChild(
-                                        new Paragraph(
-                                            new ParagraphProperties(new Justification {Val = JustificationValues.Left},
-                                                new SpacingBetweenLines {After = Size20}),
-                                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
-                                                new Text(
-                                                        "Информация об услугах, оказанных ребёнку/детям в течение последних 3-х лет")
-                                                    {Space = SpaceProcessingModeValues.Preserve})));
+                        AddTableChildTours(doc, requests, years);
 
-                                    firstLine = false;
-                                }
-
-                                doc.AppendChild(
-                                    new Paragraph(
-                                        new ParagraphProperties(new Justification {Val = JustificationValues.Left},
-                                            new SpacingBetweenLines {After = Size20}),
-                                        new Run(titleRequestRunProperties.CloneNode(true),
-                                            new Text(
-                                                $"{child.LastName} {child.FirstName} {child.MiddleName}, {child.DateOfBirth.FormatExGR(string.Empty)}, {child.Snils}")
-                                        )));
-
-                                AddTableChildTours(doc, requests);
-                            }
-                        }
                     }
 
-                    SignBlockNotification(doc, account, $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}");
+                    SignWorkerBlock(doc, account,"Исполнитель:");
                     mainPart.Document = doc;
                 }
 
@@ -1567,7 +1559,7 @@ namespace RestChild.DocumentGeneration
                                     new SpacingBetweenLines { After = Size20 }),
                                 new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                     new Text(
-                                            "Данные ребёнка/лица из числа детей-сирот и детей, оставшихся без попечения родителей: ")
+                                            "Данные ребёнка (детей) /лица из числа детей-сирот и детей, оставшихся без попечения родителей: ")
                                     { Space = SpaceProcessingModeValues.Preserve }),
                                 new Run(titleRequestRunPropertiesItalic.CloneNode(true),
                                     new Text(
@@ -1601,7 +1593,7 @@ namespace RestChild.DocumentGeneration
                             new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                 new Text("Основание отказа: ") { Space = SpaceProcessingModeValues.Preserve }),
                             new Run(titleRequestRunProperties.CloneNode(true),
-                                new Text(FederalLaw))));
+                                new Text(FederalLawReference))));
 
                     doc.AppendChild(
                         new Paragraph(
@@ -1610,7 +1602,7 @@ namespace RestChild.DocumentGeneration
                             new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                 new Text("Причина отказа: ") { Space = SpaceProcessingModeValues.Preserve }),
                             new Run(titleRequestRunProperties.CloneNode(true),
-                                new Text(request.DeclineReason?.Name))));
+                                new Text(ParticipateNotification))));
 
 
                     SignBlockNotification2020(doc, account, "Исполнитель:");

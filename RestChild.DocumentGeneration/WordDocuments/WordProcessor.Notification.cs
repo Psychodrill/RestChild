@@ -563,7 +563,7 @@ namespace RestChild.DocumentGeneration
                             new Run(new RunProperties().SetFont().SetFontSize(Size28).Bold(), new Text(Space))));
 
 
-                    SignBlockNotification2020(doc, account, "Исполнитель:");
+                    SignWorkerBlock(doc, account, "Исполнитель:");
 
                     mainPart.Document = doc;
                 }
