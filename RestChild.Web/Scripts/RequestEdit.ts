@@ -1424,6 +1424,10 @@ $(() => {
         $('#CommentModal').modal('toggle');
     });
 
+    $('.copy-request').click(() => {
+        $('#copyRequestModal').modal('toggle');
+    });
+
 
     $('.history-button').click(() => {
         $('#HistoryModalError').addClass('hidden');
@@ -1941,17 +1945,19 @@ function CheckHandler(event, isParentNode) {
 
 function SelectAll() {
     var cond = $("[name='selectAll']").prop("checked");
-    if (cond) {
-        $.each($("#mainList").find("[type='checkbox']").not(":disabled"), function (i, val) {
-            $(val).prop("checked", true);
-        })
+        if (cond) {
+            $.each($("#copyRequestModal").find("[type='checkbox']").not(":disabled"), function (i, val) {
+                $(val).prop("checked", true);
+            });
+       
     } else {
-        $.each($("#mainList").find("[type='checkbox']").not(":disabled"), function (i, val) {
+            $.each($("#copyRequestModal").find("[type='checkbox']").not(":disabled"), function (i, val) {
             $(val).prop("checked", false);
         })
     }
 
 }
+
 
 const mapperDict = {
     "#GeneralInfo": {text: "Общие сведения", prop: "TransferGeneralData"},
