@@ -75,7 +75,7 @@ namespace RestChild.Web.Controllers.WebApi
         {
             //Request request = UnitOfWork.GetById<Request>(model.Data.Id);
             SetUnitOfWorkInRefClass(UnitOfWork);
-            request.DeclineReasonId = model.Data.DeclineReasonId;
+            request.DeclineReason.Id = model.Data.DeclineReason.Id;
             request.DeclineReason = model.Data.DeclineReason;
             //return request;
         }
