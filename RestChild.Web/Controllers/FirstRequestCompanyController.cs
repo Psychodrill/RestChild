@@ -1150,23 +1150,23 @@ namespace RestChild.Web.Controllers
             {
                 model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202107);
             }
-            if (model.SameChildren?.Any()??false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.YouthRestOrphanCamps)
+            if ((model.SameChildren?.Any()??false) && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.YouthRestOrphanCamps)
             {
                 model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202104);
             }
-            if (model.ApplicantDouble?.Any()??false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.RestWithParentsPoor)
+            if ((model.ApplicantDouble?.Any()??false) && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.RestWithParentsPoor)
             {
                 model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202105);
             }
-            if (model.ApplicantDouble?.Any() ?? false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.MoneyOn3To7)
+            if ((model.ApplicantDouble?.Any() ?? false) && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.MoneyOn3To7)
             {
                 model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202106);
             }
-            if (model.SameAttendants?.Any() ?? false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.RestWithParentsPoor)
+            if ((model.SameAttendants?.Any() ?? false) && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.RestWithParentsPoor)
             {
                 model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202102);
             }
-            if (model.SameAttendants?.Any()??false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.MoneyOn3To7)
+            if ((model.SameAttendants?.Any()??false) && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.MoneyOn3To7)
             {
                 model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202103);
             }

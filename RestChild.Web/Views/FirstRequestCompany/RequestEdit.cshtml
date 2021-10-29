@@ -389,28 +389,28 @@
                         <ul>
                             <li>
                                 <label>
-                                    <input name="generalInfo" onclick='SelectGeneralInfo()' type='checkbox'>
+                                    <input name="generalInfo" type='checkbox'>
                                     <input name="generalInfo" type='hidden' value='false'>
                                     Общие сведения
                                 </label>
                             </li>
                             <li>
                                 <label>
-                                    <input name="visitTargetAndTimeOfRest" onclick='SelectVisitTargetAndTimeOfRest()' type='checkbox'>
+                                    <input name="visitTargetAndTimeOfRest" type='checkbox'>
                                     <input name="visitTargetAndTimeOfRest" type='hidden' value='false'>
                                     Цель обращения
                                 </label>
                             </li>
                             <li>
                                 <label>
-                                    <input name="applicantInfo" @*onclick='SelectApplicantInfo()'*@ type='checkbox'>
+                                    <input name="applicantInfo" type='checkbox'>
                                     <input name="applicantInfo" type='hidden' value='false'>
                                     Сведения о заявителе
                                 </label>
                             </li>
                             <li>
                                 <label>
-                                    <input name="attendantInfo" onclick='SelectAttendantInfo()' type='checkbox'>
+                                    <input name="attendantInfo" type='checkbox'>
                                     <input name="attendantInfo" type='hidden' value='false'>
                                     Сведения о сопровождающих
                                 </label>
@@ -419,7 +419,7 @@
                                         {
                                             <li>
                                                 <label>
-                                                    <input name="attendant" onclick='SelectAttendant()' type='checkbox' >
+                                                    <input name="attendant" type='checkbox' >
                                                     <input name="attendant" type='hidden' value='false'>
                                                     @attendant.LastName @attendant.FirstName @attendant.MiddleName
                                                 </label>
@@ -431,7 +431,7 @@
 
                             <li>
                                 <label>
-                                    <input name="vouchers" @*onclick='SelectApplicantInfo()'*@ type='checkbox' disabled>
+                                    <input name="vouchers" type='checkbox' disabled>
                                     <input name="vouchers" type='hidden' value='false'>
                                     Путёвки
                                 </label>
@@ -439,7 +439,7 @@
 
                             <li>
                                 <label>
-                                    <input name="childInfo" onclick='SelectChildInfo()' type='checkbox'>
+                                    <input name="childInfo" type='checkbox'>
                                     <input name="childInfo" type='hidden' value='false'>
                                     Сведения о детях
                                 </label>
@@ -459,14 +459,14 @@
                             </li>
                             <li>
                                 <label>
-                                    <input name="bankDetails" onclick='SelectBankDetails()' type='checkbox'>
+                                    <input name="bankDetails" type='checkbox'>
                                     <input name="bankDetails" type='hidden' value='false'>
                                     Банковские реквизиты
                                 </label>
                             </li>
                             <li>
                                 <label>
-                                    <input name="documents" onclick='SelectDocuments()' type='checkbox'>
+                                    <input name="documents" type='checkbox'>
                                     <input name="documents" type='hidden' value='false'>
                                     Документы
                                 </label>
@@ -478,7 +478,9 @@
 
             </div>
             <div class="modal-footer">
-                <button id="submitRequestCopy" type="button" class="btn btn-default btn-primary">Копировать</button>
+                <button id="submitRequestCopy" type="button" class="btn btn-default btn-primary" @*onclick="@(Url.Action("CopyRequest", "FirstRequestCompany", new { requestId = Model.Data.Id }))"*@>
+                 Копировать
+                </button>
                 <input id="@Model.Data.Id" class="requestToCopy" type="hidden" />
                 @{
                     foreach (var attendant in Model.Data.Attendant)
