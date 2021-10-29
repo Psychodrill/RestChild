@@ -1585,6 +1585,8 @@ namespace RestChild.Web.Controllers.WebApi
 
                             if (child.benefit != null)
                             {
+                                item.IsCPMPK = child.benefit.cpmpcConclusion;
+
                                 var b = child.benefit;
                                 item.BenefitDate = b.benefitDate.XmlToDateTime();
                                 item.BenefitEndDate = b.benefitEndDate.XmlToDateTime();
