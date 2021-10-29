@@ -155,6 +155,19 @@ namespace RestChild.DAL.Configurations
                     }
                 );
             }
+            // новый вид проверки документов 11827
+            if (!context.ExchangeBaseRegistryType.Any(c => c.Id == (long)ExchangeBaseRegistryTypeEnum.GetFGISFRI))
+            {
+                context.ExchangeBaseRegistryType.AddOrUpdate(r => r.Id,
+                    new ExchangeBaseRegistryType
+                    {
+                        Id = (long)ExchangeBaseRegistryTypeEnum.GetFGISFRI,
+                        Name = "Предоставление из ФГИС ФРИ выписки сведений об инвалиде (11827)",
+                        SendMessage = true,
+                        Eid = (long)ExchangeBaseRegistryTypeEnum.GetFGISFRI
+                    }
+                );
+            }
 
         }
     }

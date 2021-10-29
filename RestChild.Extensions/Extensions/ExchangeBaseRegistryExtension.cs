@@ -261,6 +261,7 @@ namespace RestChild.Extensions.Extensions
                     return "получение СНИЛС";
                 case ExchangeBaseRegistryTypeEnum.PassportDataBySNILS:
                     return "получение паспортного досье";
+                case ExchangeBaseRegistryTypeEnum.GetEGRZAGS:
                 case ExchangeBaseRegistryTypeEnum.RelationshipSmev:
                     return "проверку свидетельства о рождении";
                 case ExchangeBaseRegistryTypeEnum.Snils:
@@ -278,6 +279,8 @@ namespace RestChild.Extensions.Extensions
                     return "проверку законного представительства";
                 case ExchangeBaseRegistryTypeEnum.FRIExchange:
                     return "проверку сведений ФРИ";
+                case ExchangeBaseRegistryTypeEnum.GetFGISFRI:
+                    return "проверку выписки сведеней об инвалиде";
             }
 
             return "-";
@@ -711,8 +714,16 @@ namespace RestChild.Extensions.Extensions
                         res.FRIResponse = Serialization.Deserialize<DisabilityExtractResponse>(xmlData);
                     }
                 }
-            }
 
+                //Получение выписки сведеней об инвалиде
+                //TODO
+                if (res.Type == ExchangeBaseRegistryTypeEnum.GetFGISFRI)
+                {
+
+
+                }
+
+            }
             return res;
         }
     }

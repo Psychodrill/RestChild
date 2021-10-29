@@ -1168,6 +1168,91 @@ namespace RestChild.Web.Controllers.WebApi
         }
 
         /// <summary>
+        ///     Выписка сведений из ФГИС ФРИ об инвалиде (12150)
+        /// </summary>
+        internal int ExtractFromFGISFRI(string requestNumber, Child child, int count)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(child?.Snils))
+                {
+                    return count;
+                }
+
+                ResetCheckChildInBaseRegistry(child.Id, ExchangeBaseRegistryTypeEnum.GetEGRZAGS);
+
+                var middlename = "";
+                var testmsg = "";
+
+                if (Settings.Default.SnilsTestRequest)
+                {
+                    testmsg = $"<testmsg/>";
+                }
+
+                var request =
+                    $@"<ServiceProperties>
+                        <base_code>01</base_code>
+                        <quantity_doc>1</quantity_doc>
+                        <rogdinflist>
+                            <rogdinf>
+                        	    <member_type>3</member_type>
+                                <snils>{child.Snils}</snils>
+                                <lastname>{child.LastName}</lastname>
+                                <firstname>{child.FirstName}</firstname>
+                                {middlename}
+                                <birthdate>{child.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
+                                <doc_type>{child.DocumentType?.BaseRegistryUid}</doc_type>
+                                <doc_series>{child.DocumentSeria}</doc_series>
+                                <doc_number>{child.DocumentNumber}</doc_number>
+                            </rogdinf>
+                        </rogdinflist>
+                        {testmsg}
+                    </ServiceProperties>";
+
+                request = $@"<ServiceProperties>
+                                    <snils>00000055500</snils>
+                                    <period_start>2014-08-13T00:00:00Z</period_start>
+                                    <period_end>2015-08-13T00:00:00Z</period_end>
+                                    <testmsg/>
+                                </ServiceProperties>";
+                if (Settings.Default.SnilsTestRequest)
+                {
+                    request = $@"<ServiceProperties>
+                                    <snils>00000055500</snils>
+                                    <period_start>2014-08-13T00:00:00Z</period_start>
+                                    <period_end>2015-08-13T00:00:00Z</period_end>
+                                    <testmsg/>
+                                </ServiceProperties>";
+                }
+
+
+                var messageV6 = GetCoordinateMessageV6(request,
+                    ((long)ExchangeBaseRegistryTypeEnum.GetFGISFRI).ToString(),
+                    requestNumber + $"/{count++}", requestNumber);
+
+                UnitOfWork.AddEntity(new ExchangeBaseRegistry
+                {
+                    IsIncoming = false,
+                    RequestText = Serialization.Serializer(messageV6),
+                    OperationType = "SendTask",
+                    RequestGuid = messageV6.CoordinateTaskDataMessage.Task.TaskId,
+                    ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
+                    Child = child,
+                    ChildId = child.Id,
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.GetFGISFRI
+                });
+
+                UnitOfWork.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Ошибка отправки в базовый регистр по выписки сведений из ФГИС ФРИ", ex);
+            }
+
+            return count;
+        }
+
+        /// <summary>
         ///     проверка ребёнка на свидетельство о рождении СМЭВ
         /// </summary>
         internal int CheckChildForRelationshipSmev(string requestNumber, Child child, int count)
@@ -1582,6 +1667,54 @@ namespace RestChild.Web.Controllers.WebApi
         }
 
         /// <summary>
+        ///     отправка запроса в ФГИС ФРИ
+        /// </summary>
+        [HttpPost]
+        [HttpGet]
+        public void RequestInBaseRegistryInvalid(long requestId)
+        {
+            var req = UnitOfWork.GetById<Request>(requestId);
+
+            BaseRegistryExtractFromFGISFRI(req);
+        }
+
+        /// <summary>
+        ///     отправка запроса в ФГИС ФРИ
+        /// </summary>
+        private void BaseRegistryExtractFromFGISFRI(Request req)
+        {
+            if (req?.Child == null)
+            {
+                return;
+            }
+
+            //req.NeedSendToRelative = false;
+
+            var count = UnitOfWork.GetSet<ExchangeBaseRegistry>().Count(v =>
+                v.ApplicantId == req.ApplicantId || v.Applicant.RequestId == req.Id ||
+                v.Child.RequestId == req.Id) + 1;
+            var requestNumber = req.RequestNumber;
+            //if (req.TypeOfRestId == (long)TypeOfRestEnum.Compensation ||
+            //    req.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)
+            //{
+            //    var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
+            //    requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
+            //    count = 1;
+            //}
+
+            //if (req.SourceId == (long)SourceEnum.Mpgu //|| req.SourceId == (long)SourceEnum.Operator //Удалить || req.SourceId == (long)SourceEnum.Operator
+            //    && req.TypeOfRestId != (long)TypeOfRestEnum.ChildRestFederalCamps)
+            //{
+                foreach (var child in req.Child)
+                {
+                    count = ExtractFromFGISFRI(requestNumber, child, count);
+                }
+            //}
+
+            UnitOfWork.SaveChanges();
+        }
+
+        /// <summary>
         ///     отправка проверки по свидетельству о рождении (исполнение)
         /// </summary>
         private void CheckRequestInBaseRegistryRelativesReq(Request req)
@@ -1659,5 +1792,7 @@ namespace RestChild.Web.Controllers.WebApi
                 UnitOfWork.SendChangeStatusByEvent(req, RequestEventEnum.SendRequestBase);
             }
         }
+
+
     }
 }
