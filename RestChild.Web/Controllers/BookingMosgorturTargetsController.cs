@@ -101,7 +101,7 @@ namespace RestChild.Web.Controllers
             if (b == null)
             {
                 b = new MGTVisitTarget();
-                //b.Id = UnitOfWork.GetSet<MGTVisitTarget>().Max(s => s.Id) + 1;
+                b.Id = UnitOfWork.GetSet<MGTVisitTarget>().Max(s => s.Id) + 1;
             }
             b.Name = VisitTarget.Name;
             b.IsActive = VisitTarget.IsActive;

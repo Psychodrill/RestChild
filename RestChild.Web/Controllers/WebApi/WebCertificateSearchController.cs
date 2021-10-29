@@ -105,9 +105,14 @@ namespace RestChild.Web.Controllers.WebApi
                 query = query.Where(r => r.ContractNumber == search.ContractNumber);
             }
 
-            if (!search.Hotels.IsNullOrEmpty())
+            if (!string.IsNullOrWhiteSpace(search.CertificateNumber))
             {
-                query = query.Where(r => r.Place == search.Hotels.NameOrganization);
+                query = query.Where(r => r.Request.CertificateNumber == search.CertificateNumber);
+            }
+
+            if (!search.HotelName.IsNullOrEmpty() && search.HotelName != "-- Не выбрано --")
+            {
+                query = query.Where(r => r.Place == search.HotelName);
             }
 
             if (search.PlaceOfRestId > 0)
@@ -122,35 +127,36 @@ namespace RestChild.Web.Controllers.WebApi
             if (!search.Request.IsNullOrEmpty())
                 if (search.Request.CertificateDate.HasValue)
             {
-                query = query.Where(q => DbFunctions.TruncateTime(q.Request.CertificateDate) == DbFunctions.TruncateTime(search.Request.CertificateDate.Value));
+                 //   var test = DbFunctions.TruncateTime(search.Request.CertificateDate);
+                query = query.Where(q => DbFunctions.TruncateTime(q.Request.CertificateDate.Value).ToString() == DbFunctions.TruncateTime(search.Request.CertificateDate.Value).ToString());
             }
             if (search.RestDateFromFrom.HasValue)
             {
-                query = query.Where(q => q.RestDateFrom >= DbFunctions.TruncateTime(search.RestDateFromFrom.Value));
+                query = query.Where(q => DbFunctions.TruncateTime(q.RestDateFrom) >= DbFunctions.TruncateTime(search.RestDateFromFrom.Value));
             }
             if (search.RestDateFromTo.HasValue)
             {
-                query = query.Where(q => q.RestDateFrom <= DbFunctions.TruncateTime(search.RestDateFromTo.Value));
+                query = query.Where(q => DbFunctions.TruncateTime(q.RestDateFrom) <= DbFunctions.TruncateTime(search.RestDateFromTo.Value));
             }
             if (search.RestDateToFrom.HasValue)
             {
-                query = query.Where(q => q.RestDateTo >= DbFunctions.TruncateTime(search.RestDateToFrom.Value));
+                query = query.Where(q => DbFunctions.TruncateTime(q.RestDateTo) >= DbFunctions.TruncateTime(search.RestDateToFrom.Value));
             }
             if (search.RestDateToTo.HasValue)
             {
-                query = query.Where(q => q.RestDateTo <= DbFunctions.TruncateTime(search.RestDateToTo.Value));
+                query = query.Where(q => DbFunctions.TruncateTime(q.RestDateTo) <= DbFunctions.TruncateTime(search.RestDateToTo.Value));
             }
             if ((bool)search.WillRest)
             {
-                query = query.Where(q => q.RestDateFrom >= DateTime.Now);
+                query = query.Where(q => DbFunctions.TruncateTime(q.RestDateFrom) >= DbFunctions.TruncateTime(DateTime.Now));
             }
             if ((bool)search.Resting)
             {
-                query = query.Where(q => q.RestDateFrom <= DateTime.Now && q.RestDateTo >= DateTime.Now);
+                query = query.Where(q => DbFunctions.TruncateTime(q.RestDateFrom) <= DbFunctions.TruncateTime(DateTime.Now) && DbFunctions.TruncateTime(q.RestDateTo) >= DbFunctions.TruncateTime(DateTime.Now));
             }
             if ((bool)search.Rested)
             {
-                query = query.Where(q => q.RestDateTo <= DateTime.Now);
+                query = query.Where(q => DbFunctions.TruncateTime(q.RestDateTo) <= DbFunctions.TruncateTime(DateTime.Now));
             }
             if ((bool)search.AttendantWith)
             {
