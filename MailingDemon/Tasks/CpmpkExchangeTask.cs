@@ -113,7 +113,7 @@ namespace MailingDemon.Tasks
 
                     foreach (var request in requests)
                     {
-                        var children = request.Child.Where(c => c.TypeOfRestrictionId == Config.TypeOfRestrictionId)
+                        var children = request.Child.Where(c => c.TypeOfRestrictionId == Config.TypeOfRestrictionId || c.IsCPMPK)
                             .ToList();
 
                         if (children.Any())
