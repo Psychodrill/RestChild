@@ -17,13 +17,13 @@ namespace RestChild.DAL.Configurations
                 new TypeOfTransportInRequest
                 {
                     Id = (long) TypeOfTransportInRequestEnum.Plane,
-                    Name = "Самолет",
+                    Name = "Воздушный транспорт (самолет)",
                     IsActive = true
                 },
                 new TypeOfTransportInRequest
                 {
                     Id = (long) TypeOfTransportInRequestEnum.Train,
-                    Name = "Поезд",
+                    Name = "Назменый транспорт (поезд)",
                     IsActive = true
                 });
 

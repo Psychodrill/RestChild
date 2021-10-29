@@ -2319,5 +2319,63 @@ namespace RestChild.Web.Controllers
                 ErrorText = model.GetErrorDescription()
             });
         }
+
+        /// <summary>
+        /// Функция для стресс теста 25.10.2021, если найдено в коде после 10.11.2021 - УДАЛИТЬ
+        /// </summary>
+        ///
+        public ActionResult StressTest()
+        {
+            DateTime sdate = new DateTime();
+            DateTime edate = new DateTime();
+            var tp = DateTime.TryParse("26/10/2021 13:30:00", out sdate);
+            tp = DateTime.TryParse("27/10/2021 13:30:00", out edate);
+            var filter = new RequestFilterModel();
+            filter.StartRequestDate = sdate;
+            filter.EndRequestDate = edate;
+            filter.YearOfRestId = 5;
+            filter.SourceId = (long)SourceEnum.Mpgu;
+            filter.ApplicantFio = "фам";
+            var query = ApiController.RequestListQuery(filter);
+            foreach (Request r in query)
+            {
+                using (var uw = new UnitOfWork())
+                {
+                    SetUnitOfWorkInRefClass(uw);
+                    ApiController.RequestChangeStatus(r.Id, "33039E99-9360-47B2-AF29-6707EC0AFF01");
+                    ApiController.RequestChangeStatus(r.Id, "4407104C-99FD-4667-A4EB-D654C264F34E");
+                    ApiController.RequestChangeStatus(r.Id, "27D4DBFA-0B91-4D94-A2CE-A5F973414DA4");
+                }
+            }
+            return RedirectToAction("RequestList");
+        }
+
+        public ActionResult StressTestDeleteAll()
+        {
+            DateTime sdate = new DateTime();
+            DateTime edate = new DateTime();
+            var tp = DateTime.TryParse("26/10/2021 13:30:00", out sdate);
+            tp = DateTime.TryParse("27/10/2021 13:30:00", out edate);
+            var filter = new RequestFilterModel();
+            filter.StartRequestDate = sdate;
+            filter.EndRequestDate = edate;
+            filter.YearOfRestId = 5;
+            filter.SourceId = (long)SourceEnum.Mpgu;
+            filter.ApplicantFio = "фам";
+            //filter.ApplicantFio = "Удаление";
+            var query = ApiController.RequestListQuery(filter);
+            foreach (Request r in query)
+            {
+                using (var uw = new UnitOfWork())
+                {
+                    SetUnitOfWorkInRefClass(uw);
+                    var res = ApiController.RemoveStressTestVersion(r.Id);
+                }
+            }
+            return RedirectToAction("RequestList");
+        }
+
     }
+
+
 }
