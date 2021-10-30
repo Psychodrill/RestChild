@@ -76,9 +76,9 @@
                                     </button>
                                 }
 
-                                <button type="button" class="btn btn-default btn-primary copy-request">
+                                @*<button type="button" class="btn btn-default btn-primary copy-request">
                                     Скопировать данные в новое заявление
-                                </button> 
+                                </button>*@
 
                                 if (Model.Data.StatusId == (long)StatusEnum.Draft && Security.HasRight(AccessRightEnum.RemoveDraft))
                                 {
@@ -86,10 +86,10 @@
                                         Удалить
                                     </button>
                                 }
-                                @*if (Model.Data.StatusId == (long)StatusEnum.CertificateIssued /*&& (Model.Data.TypeOfRestId != (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationGroup || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationYouthRest)*/)
-                                    {
-                                        <a class="btn btn-default btn-primary edit-control" target="_blank" href="@Url.Action("RequestEdit", "FirstRequestCompany", new { requestId = Model.Data.Id, reApply = true })"> Тестовое заявление </a>
-                                    }*@
+                                if (Model.Data.StatusId.HasValue && Model.Data.StatusId != (long)StatusEnum.Draft && Model.Data.StatusId != (long)StatusEnum.RegistrationDecline && Model.Data.StatusId != (long)StatusEnum.RegistrationDeclineBecauseDuplicate/*&& (Model.Data.TypeOfRestId != (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationGroup || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationYouthRest)*/)
+                                {
+                                    <a class="btn btn-default btn-primary edit-control" target="_blank" href="@Url.Action("RequestEdit", "FirstRequestCompany", new { requestId = Model.Data.Id, reApply = true })">Копировать заявление в черновик</a>
+                                }
                                 foreach (StatusAction action in Model.Actions)
                                 {
                                     <button type="button" class="btn btn-default edit-control" onclick="@(new[] { AccessRightEnum.Status.FcToReject, AccessRightEnum.Status.ToRejectFromCertificateIssued, AccessRightEnum.Status.ToReject, AccessRightEnum.Status.ToRejectNormal, AccessRightEnum.Status.ToCancelByApplicant }.Contains(action.Code) ? " confirmButtonWithDecline" : "confirmButton")('@action.Name', '@action.Code', '@action.ToStatusId') ">
