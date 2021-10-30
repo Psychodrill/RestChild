@@ -1833,9 +1833,15 @@ namespace RestChild.Web.Controllers.WebApi
                             //uts.ErrorText = $@"Заявление является повторным. На указанн{(plural ? "ых" : "ого")} в заявлении {(plural ? "детей" : "ребёнка")} ({msg}) уже подано заявление о предоставлении услуг отдыха и оздоровления.";
                             uts.ErrorText = $@"Заявление является повторным. На указанного(ых) в заявлении ребёнка(детей) ({msg}) уже подано заявление о предоставлении услуг отдыха и оздоровления.";
                         }
-
+                                                
                         ApiRequest.CheckAttendants(vm);
-                        if (vm.SameAttendantSnils.Any() || vm.SameAttendants.Any())
+                        // чудовищный костыль, связаннаый с косячным отправлением из МПГУ в случае с наличием доверенного лица, им достаточно проставить у себя галочку isagent 
+                        if (!vm.Data.Agent.IsNullOrEmpty() && vm.Data.SourceId == (long)SourceEnum.Mpgu)
+                        {
+                            vm.SameAttendants.Clear();
+                            vm.SameAttendantSnils.Clear();
+                        }
+                            if (vm.SameAttendantSnils.Any() || vm.SameAttendants.Any())
                         {
                             status = StatusEnum.RegistrationDecline;
                             action = AccessRightEnum.Status.ToRegistrationDeclineAttendant;
