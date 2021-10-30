@@ -10,6 +10,7 @@ using RestChild.Comon.Dto;
 using RestChild.Comon.Enumeration;
 using RestChild.Comon.Exchange.Cpmpk;
 using RestChild.Comon.Exchange.EGRZagz;
+using RestChild.Comon.Exchange.FGISFRI;
 using RestChild.Comon.Exchange.Passport;
 using RestChild.Comon.Exchange.PassportRegistration;
 using RestChild.Comon.Exchange.Snils;
@@ -719,8 +720,11 @@ namespace RestChild.Extensions.Extensions
                 //TODO
                 if (res.Type == ExchangeBaseRegistryTypeEnum.GetFGISFRI)
                 {
-
-
+                    var xmlData = resultData.FirstOrDefault()?.OuterXml;
+                    if (!string.IsNullOrWhiteSpace(xmlData))
+                    {
+                        res.FGISFRIResponse = Serialization.Deserialize<ExtractionInvalidDataResponse>(xmlData);
+                    }
                 }
 
             }

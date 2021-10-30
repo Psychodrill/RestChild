@@ -674,6 +674,7 @@ namespace RestChild.Web.Controllers.WebApi
             CheckRequestInBaseRegistryPassportReq(req);
             CheckRequestInBaseRegistryRelativesReq(req);
             CheckRequestInBaseRegistryRegistrationByPassportReq(req);
+            CheckBaseRegistryExtractFromFGISFRIReq(req);
         }
 
         /// <summary>

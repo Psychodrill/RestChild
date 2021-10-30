@@ -35,48 +35,162 @@
     {
         additionalString = string.Format(" между {0} {1} {2} и {3} {4} {5}", child.LastName, child.FirstName, child.MiddleName, applicant.LastName, applicant.FirstName, applicant.MiddleName);
     }
+<div>
+    По@(Model.Type == ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck ? " внутрисистемному" : "") запросу <span style="font-weight: bold">@(Model.RequestDate.HasValue ? Model.RequestNumber : "-")</span> от <span style="font-weight: bold">@Model.RequestDate.FormatEx()</span> на <b>@(Model.Type.GetNameCheck())</b> @Html.Raw(additionalString)@(Model.Type != ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck ? " из Базового регистра " : string.Empty)<b>@(Model.ResultAbsent ? "не получен ответ" : " получен ответ:")</b>
+    @if (Model.ApprovedLowIncome.HasValue)
+    {
+        <div>Льгота <b>"Ребёнок из малообеспеченной семьи"</b> - <b>@(Model.ApprovedLowIncome == false ? "не " : "")подтверждена.</b></div>
+    }
+    @if (Model.Approved.HasValue && !Model.ResultAbsent && Model.Type == ExchangeBaseRegistryTypeEnum.Benefit)
+    {
+        <div>Выбранная льгота - <b>@(Model.Approved == false ? "не " : "")подтверждена.</b></div>
+    }
     <div>
-        По@(Model.Type == ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck ? " внутрисистемному" : "") запросу <span style="font-weight: bold">@(Model.RequestDate.HasValue ? Model.RequestNumber : "-")</span> от <span style="font-weight: bold">@Model.RequestDate.FormatEx()</span> на <b>@(Model.Type.GetNameCheck())</b> @Html.Raw(additionalString)@(Model.Type != ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck ? " из Базового регистра " : string.Empty)<b>@(Model.ResultAbsent ? "не получен ответ" : " получен ответ:")</b>
-        @if (Model.ApprovedLowIncome.HasValue)
+        @if ((Model.Type != ExchangeBaseRegistryTypeEnum.Benefit && Model.Type != ExchangeBaseRegistryTypeEnum.PassportDataBySNILS) || Model.Approved != false)
         {
-            <div>Льгота <b>"Ребёнок из малообеспеченной семьи"</b> - <b>@(Model.ApprovedLowIncome == false ? "не " : "")подтверждена.</b></div>
+            @Html.Raw(Model.Note.FormatEx(string.Empty))
         }
-        @if (Model.Approved.HasValue && !Model.ResultAbsent && Model.Type == ExchangeBaseRegistryTypeEnum.Benefit)
+        else if (Model.Type == ExchangeBaseRegistryTypeEnum.PassportDataBySNILS && !Model.ResultAbsent)
         {
-            <div>Выбранная льгота - <b>@(Model.Approved == false ? "не " : "")подтверждена.</b></div>
+            @("Запрашиваемые сведения не подтверждены")
         }
-        <div>
-            @if ((Model.Type != ExchangeBaseRegistryTypeEnum.Benefit && Model.Type != ExchangeBaseRegistryTypeEnum.PassportDataBySNILS) || Model.Approved != false)
+    </div>
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.Benefit && Model.BenefitCheckResult != null && Model.BenefitCheckResult.Any())
+    {
+        <div style="font-style: italic">Список льгот:</div>
+        <ol>
+            @foreach (var category in Model.BenefitCheckResult)
             {
-                @Html.Raw(Model.Note.FormatEx(string.Empty))
+                var result = new StringBuilder();
+                if (category.CanUse || category.LowIncome)
+                {
+                    result.AppendLine("<b>");
+                }
+                result.Append(category.Preferentical);
+
+                if (isDateValid(category.StartDate) || isDateValid(category.EndDate))
+                {
+                    result.Append(", срок действия:");
+                    result.Append(isDateValid(category.StartDate) ? " с " + category.StartDate.FormatEx() : string.Empty);
+                    result.Append(isDateValid(category.EndDate) ? " по " + category.EndDate.FormatEx() : string.Empty);
+                }
+                result.Append(".");
+
+                if (category.CanUse || category.LowIncome)
+                {
+                    result.AppendLine("</b>");
+                }
+
+                <li>
+                    @Html.Raw(result.ToString())
+                </li>
             }
-            else if (Model.Type == ExchangeBaseRegistryTypeEnum.PassportDataBySNILS && !Model.ResultAbsent)
-            {
-                @("Запрашиваемые сведения не подтверждены")
-            }
+        </ol>
+    }
+
+    @if ((Model.Type == ExchangeBaseRegistryTypeEnum.Snils || Model.Type == ExchangeBaseRegistryTypeEnum.Snils2040) && Model.SnilsCheckResult != null)
+    {
+        <div style="font-weight: bold">
+            @Model.SnilsCheckResult.CheckResult
         </div>
-        @if (Model.Type == ExchangeBaseRegistryTypeEnum.Benefit && Model.BenefitCheckResult != null && Model.BenefitCheckResult.Any())
+    }
+
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck && !Model.ResultAbsent)
+    {
+        <div style="font-weight: bold">
+            @(Model.Approved ?? false ? "Запрашиваемые сведения подтверждены" : string.IsNullOrWhiteSpace(Model.Note) ? "Запрашиваемые сведения не подтверждены" : string.Empty)
+        </div>
+        if (!string.IsNullOrWhiteSpace(Model.AisoLegalRepresentationCheck) && Model.Approved == true)
         {
-            <div style="font-style: italic">Список льгот:</div>
+            <div>
+                @Html.Raw(Model.AisoLegalRepresentationCheck)
+            </div>
+        }
+    }
+
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.PassportRegistration && !Model.ResultAbsent)
+    {
+        <div style="font-weight: bold">
+            @(Model.Approved ?? false ? "Запрашиваемые сведения подтверждены" : string.IsNullOrWhiteSpace(Model.Note) ? "Запрашиваемые сведения не подтверждены" : string.Empty)
+        </div>
+    }
+
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.GetPassportRegistration && !Model.ResultAbsent)
+    {
+        <div style="font-weight: bold">
+            @(Model.Approved ?? false ? "Подтвержден г. Москва как регион постоянной регистрации" : string.IsNullOrWhiteSpace(Model.Note) ? "г. Москва не подтвержден как регион постоянной регистрации" : string.Empty)
+        </div>
+        if (Model.PassportRegistrationResponse != null)
+        {
+            <div>
+                Адрес по сведениям МВД:
+                @if (!string.IsNullOrWhiteSpace(Model.PassportRegistrationResponse.LocationCity))
+                {
+                    <span>
+                        @Model.PassportRegistrationResponse.LocationCity,
+                    </span>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.PassportRegistrationResponse.LocationStreet))
+                {
+                    <span>
+                        @Model.PassportRegistrationResponse.LocationStreet,
+                    </span>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.PassportRegistrationResponse.LocationHouse))
+                {
+                    <span>
+                        @Model.PassportRegistrationResponse.LocationHouse
+                    </span>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.PassportRegistrationResponse.LocationBuilding))
+                {
+                    <span>
+                        @Model.PassportRegistrationResponse.LocationBuilding
+                    </span>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.PassportRegistrationResponse.LocationFlat))
+                {
+                    <span>
+                        @Model.PassportRegistrationResponse.LocationFlat
+                    </span>
+                }
+            </div>
+        }
+    }
+
+    @if ((Model.Type == ExchangeBaseRegistryTypeEnum.SNILSByFio) && Model.SnilsInfo != null)
+    {
+        <ul>
+            <li>
+                <div>
+                    СНИЛС: <b>@Model.SnilsInfo.Snils</b>
+                </div>
+            </li>
+        </ul>
+    }
+
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.Payments && Model.PaymentCheckResults != null && Model.PaymentCheckResults.Any())
+    {
+        <div>
+            <div style="font-style: italic">Список назначенных выплат:</div>
             <ol>
-                @foreach (var category in Model.BenefitCheckResult)
+                @foreach (var category in Model.PaymentCheckResults)
                 {
                     var result = new StringBuilder();
-                    if (category.CanUse || category.LowIncome)
+                    if (category.CanUse)
                     {
                         result.AppendLine("<b>");
                     }
-                    result.Append(category.Preferentical);
+                    result.Append(category.SocialSupportName);
 
-                    if (isDateValid(category.StartDate) || isDateValid(category.EndDate))
+                    if (category.Volumes != null && category.Volumes.Any(v => v.AssignmentDate.HasValue))
                     {
-                        result.Append(", срок действия:");
-                        result.Append(isDateValid(category.StartDate) ? " с " + category.StartDate.FormatEx() : string.Empty);
-                        result.Append(isDateValid(category.EndDate) ? " по " + category.EndDate.FormatEx() : string.Empty);
+                        var lastDate = category.Volumes.Where(a => a.AssignmentDate.HasValue).Select(a => a.AssignmentDate.Value).Max();
+
+                        result.Append(" (последняя выплата " + lastDate.FormatEx() + ")");
                     }
                     result.Append(".");
-
-                    if (category.CanUse || category.LowIncome)
+                    if (category.CanUse)
                     {
                         result.AppendLine("</b>");
                     }
@@ -86,280 +200,186 @@
                     </li>
                 }
             </ol>
-        }
-
-        @if ((Model.Type == ExchangeBaseRegistryTypeEnum.Snils || Model.Type == ExchangeBaseRegistryTypeEnum.Snils2040) && Model.SnilsCheckResult != null)
-        {
-            <div style="font-weight: bold">
-                @Model.SnilsCheckResult.CheckResult
-            </div>
-        }
-
-        @if (Model.Type == ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck && !Model.ResultAbsent)
-        {
-            <div style="font-weight: bold">
-                @(Model.Approved ?? false ? "Запрашиваемые сведения подтверждены" : string.IsNullOrWhiteSpace(Model.Note) ? "Запрашиваемые сведения не подтверждены" : string.Empty)
-            </div>
-            if (!string.IsNullOrWhiteSpace(Model.AisoLegalRepresentationCheck) && Model.Approved == true)
-            {
-                <div>
-                    @Html.Raw(Model.AisoLegalRepresentationCheck)
-                </div>
-            }
-        }
-
-        @if (Model.Type == ExchangeBaseRegistryTypeEnum.PassportRegistration && !Model.ResultAbsent)
-        {
-            <div style="font-weight: bold">
-                @(Model.Approved ?? false ? "Запрашиваемые сведения подтверждены" : string.IsNullOrWhiteSpace(Model.Note) ? "Запрашиваемые сведения не подтверждены" : string.Empty)
-            </div>
-        }
-
-        @if (Model.Type == ExchangeBaseRegistryTypeEnum.GetPassportRegistration && !Model.ResultAbsent)
-        {
-            <div style="font-weight: bold">
-                @(Model.Approved ?? false ? "Подтвержден г. Москва как регион постоянной регистрации" : string.IsNullOrWhiteSpace(Model.Note) ? "г. Москва не подтвержден как регион постоянной регистрации" : string.Empty)
-            </div>
-            if (Model.PassportRegistrationResponse != null)
-            {
-                <div>
-                    Адрес по сведениям МВД:
-                    @if (!string.IsNullOrWhiteSpace(Model.PassportRegistrationResponse.LocationCity))
-                    {
-                        <span>
-                            @Model.PassportRegistrationResponse.LocationCity,
-                        </span>
-                    }
-                    @if (!string.IsNullOrWhiteSpace(Model.PassportRegistrationResponse.LocationStreet))
-                    {
-                        <span>
-                            @Model.PassportRegistrationResponse.LocationStreet,
-                        </span>
-                    }
-                    @if (!string.IsNullOrWhiteSpace(Model.PassportRegistrationResponse.LocationHouse))
-                    {
-                        <span>
-                            @Model.PassportRegistrationResponse.LocationHouse
-                        </span>
-                    }
-                    @if (!string.IsNullOrWhiteSpace(Model.PassportRegistrationResponse.LocationBuilding))
-                    {
-                        <span>
-                            @Model.PassportRegistrationResponse.LocationBuilding
-                        </span>
-                    }
-                    @if (!string.IsNullOrWhiteSpace(Model.PassportRegistrationResponse.LocationFlat))
-                    {
-                        <span>
-                            @Model.PassportRegistrationResponse.LocationFlat
-                        </span>
-                    }
-                </div>
-            }
-        }
-
-        @if ((Model.Type == ExchangeBaseRegistryTypeEnum.SNILSByFio) && Model.SnilsInfo != null)
-        {
-            <ul>
-                <li>
-                    <div>
-                        СНИЛС: <b>@Model.SnilsInfo.Snils</b>
-                    </div>
-                </li>
-            </ul>
-        }
-
-        @if (Model.Type == ExchangeBaseRegistryTypeEnum.Payments && Model.PaymentCheckResults != null && Model.PaymentCheckResults.Any())
-        {
-            <div>
-                <div style="font-style: italic">Список назначенных выплат:</div>
-                <ol>
-                    @foreach (var category in Model.PaymentCheckResults)
-                    {
-                        var result = new StringBuilder();
-                        if (category.CanUse)
-                        {
-                            result.AppendLine("<b>");
-                        }
-                        result.Append(category.SocialSupportName);
-
-                        if (category.Volumes != null && category.Volumes.Any(v => v.AssignmentDate.HasValue))
-                        {
-                            var lastDate = category.Volumes.Where(a => a.AssignmentDate.HasValue).Select(a => a.AssignmentDate.Value).Max();
-
-                            result.Append(" (последняя выплата " + lastDate.FormatEx() + ")");
-                        }
-                        result.Append(".");
-                        if (category.CanUse)
-                        {
-                            result.AppendLine("</b>");
-                        }
-
-                        <li>
-                            @Html.Raw(result.ToString())
-                        </li>
-                    }
-                </ol>
-            </div>
-        }
+        </div>
+    }
 
 
-        @if (Model.Type == ExchangeBaseRegistryTypeEnum.Relationship && Model.RelationshipCheckResults != null && Model.RelationshipCheckResults.Any())
-        {
-            <div style="font-style: italic">Сведения из свидетельства о рождении:</div>
-            <table>
-                <tbody>
-                    @foreach (var category in Model.RelationshipCheckResults)
-                    {
-                        <tr>
-                            <td>Отец:<b> @category.FatherLastName @category.FatherFirstName @category.FatherPatronymic - @category.FatherBirthDate.FormatEx(string.Empty)</b></td>
-                        </tr>
-                        <tr>
-                            <td>Мать: <b>@category.MotherLastName @category.MotherFirstName @category.MotherPatronymic - @category.MotherBirthDate.FormatEx(string.Empty)</b></td>
-                        </tr>
-                        <tr>
-                            <td>Ребёнок: <b>@category.ChildLastName @category.ChildFirstName @category.ChildPatronymic - @category.ChildBirthDate.FormatEx(string.Empty) </b></td>
-                        </tr>
-                        <tr>
-                            <td>Свидетельство о рождении: <b> @category.CertSeries @category.CertNumber от @category.CertlssueDate.FormatEx()</b></td>
-                        </tr>
-                        <tr>
-                            <td>Номер записи:<b> @category.ActRequisitesActNumber от @category.ActRequisitesActDate.FormatEx(), @category.ActRequisitesNameOfRegistrar</b></td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        @if (Model.Type == ExchangeBaseRegistryTypeEnum.RelationshipSmev)
-        {
-            if (Model.SmevZagzResponse != null && Model.SmevZagzResponse.СведРегРожд != null)
-            {
-                var info = Model.SmevZagzResponse.СведРегРожд;
-                var father = (info.ПрдСведРег != null ? info.ПрдСведРег.СведОтец : null) ?? new RestChild.Comon.Exchange.Zagz.СведРодитТип();
-                var mother = (info.ПрдСведРег != null ? info.ПрдСведРег.СведМать : null) ?? new RestChild.Comon.Exchange.Zagz.СведРодитТип();
-                var childInfo = (info.ПрдСведРег != null ? info.ПрдСведРег.СведРодившемся : null) ?? new RestChild.Comon.Exchange.Zagz.informResponseСведРегРождПрдСведРегСведРодившемся();
-                <div style="font-style: italic">Свидетельство о рождении:</div>
-                <ul>
-                    <li>Отец:<b> @(father.ФИО.GetFio()) @father.GetParentBirthDate()</b></li>
-                    <li>Мать: <b>@(mother.ФИО.GetFio()) @mother.GetParentBirthDate()</b></li>
-                    <li>Ребёнок: <b>@(childInfo.ФИОРожд.GetFio()) - @childInfo.GetChildBirthDate()</b></li>
-                    @if (info.СвидетРожд != null && info.СвидетРожд.Any())
-                    {
-                        <li>
-                            Свидетельство о рождении:
-                            <ul>
-                                @foreach (var i in info.СвидетРожд ?? new RestChild.Comon.Exchange.Zagz.СведСвидетТип[0])
-                                {
-                                    <li>
-                                        <b> @i.СерияСвидет @i.НомерСвидет от @i.ДатаВыдСвидет.FormatEx()</b>
-                                    </li>
-                                }
-                            </ul>
-                        </li>
-                    }
-                    else
-                    {
-                        <li>Свидетельства о рождении не переданы</li>
-                    }
-                    <li>Номер записи:<b> @info.НомерЗапис от @info.ДатаЗапис.FormatEx()</b></li>
-                </ul>
-            }
-        }
-
-        @if (Model.Type == ExchangeBaseRegistryTypeEnum.GetEGRZAGS)
-        {
-            if (Model.EGRZagzResponse != null && Model.EGRZagzResponse.СведОтветАГС[0].СведРегРожд != null)
-            {
-                var info = Model.EGRZagzResponse.СведОтветАГС[0].СведРегРожд[0];
-                var father = (info.ПрдСведРег != null ? info.ПрдСведРег.Item2 : null) ?? new RestChild.Comon.Exchange.EGRZagz.СведРодитТип();
-                var mother = (info.ПрдСведРег != null ? info.ПрдСведРег.Item1 : null) ?? new RestChild.Comon.Exchange.EGRZagz.СведРодитТип();
-                var childInfo = (info.ПрдСведРег != null ? info.ПрдСведРег.СведРодившемся : null) ?? new ROGDINFResponseСведОтветАГССведРегРождПрдСведРегСведРодившемся();
-                <div style="font-style: italic">Свидетельство о рождении:</div>
-                <ul>
-                    <li>Отец:<b> @(father.GetFather().ФИО.GetFio()) - @father.GetFather().GetParentBirthDate()</b></li>
-                    <li>Мать: <b>@(mother.GetMother().ФИО.GetFio()) - @mother.GetMother().GetParentBirthDate()</b></li>
-                    <li>Ребёнок: <b>@(childInfo.ФИОРожд.GetFio()) - @childInfo.GetChildBirthDate()</b></li>
-                    @if (info.СвидетРожд != null && info.СвидетРожд.Any())
-                    {
-                        <li>
-                            Свидетельство о рождении:
-                            <ul>
-                                @foreach (var i in info.СвидетРожд ?? new RestChild.Comon.Exchange.EGRZagz.СведСвидетТип[0])
-                                {
-                                    <li>
-                                        <b> @i.Item @i.Item1 от @i.Item2.FormatEx()</b>
-                                    </li>
-                                }
-                            </ul>
-                        </li>
-                    }
-                    else
-                    {
-                        <li>Свидетельства о рождении не переданы</li>
-                    }
-                    <li>Номер записи:<b> @info.НомерЗаписЕГР от @info.Item.FormatEx()</b></li>
-                </ul>
-
-
-            }
-        }
-
-
-
-        @if (Model.Type == ExchangeBaseRegistryTypeEnum.PassportDataBySNILS)
-        {
-            var items = Model.Passport != null ? (Model.Passport.Documents ?? new DocumentFMSType[0]).Where(d => d.CodeDocument == "01").ToArray() : new DocumentFMSType[0];
-            if (items.Any())
-            {
-                <div style="font-style: italic">Реквизиты документов:</div>
-                <ul>
-                    @foreach (var d in items)
-                    {
-                        <li><b>@(d.Series) @(d.Number)</b> от @(d.IssueDate.XmlToDateTime().FormatEx()) - @(d.Status) @(!string.IsNullOrWhiteSpace(d.InvalidityReason) ? string.Format("({0})", d.InvalidityReason) : "")</li>
-                    }
-                </ul>
-            }
-        }
-
-        @if (Model.Type == ExchangeBaseRegistryTypeEnum.CpmpkExchange)
-        {
-            if (
-                Model.BenefitCheckRequest != null
-                && Model.BenefitCheckRequest.CpmpkResponse != null
-                && Model.BenefitCheckRequest.CpmpkResponse.Available)
-            {
-                <div style="font-style: italic; font-weight: bold">Заключение номер @Model.BenefitCheckRequest.CpmpkResponse.Number от @Model.BenefitCheckRequest.CpmpkResponse.Date.XmlToDateTime().FormatEx()</div>
-                if (Model.BenefitCheckRequest.CpmpkResponse.Aoop == true)
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.Relationship && Model.RelationshipCheckResults != null && Model.RelationshipCheckResults.Any())
+    {
+        <div style="font-style: italic">Сведения из свидетельства о рождении:</div>
+        <table>
+            <tbody>
+                @foreach (var category in Model.RelationshipCheckResults)
                 {
-                    <div style="font-style: italic;">Предусмотрено наличие адаптированной общеобразовательной программы</div>
+                    <tr>
+                        <td>Отец:<b> @category.FatherLastName @category.FatherFirstName @category.FatherPatronymic - @category.FatherBirthDate.FormatEx(string.Empty)</b></td>
+                    </tr>
+                    <tr>
+                        <td>Мать: <b>@category.MotherLastName @category.MotherFirstName @category.MotherPatronymic - @category.MotherBirthDate.FormatEx(string.Empty)</b></td>
+                    </tr>
+                    <tr>
+                        <td>Ребёнок: <b>@category.ChildLastName @category.ChildFirstName @category.ChildPatronymic - @category.ChildBirthDate.FormatEx(string.Empty) </b></td>
+                    </tr>
+                    <tr>
+                        <td>Свидетельство о рождении: <b> @category.CertSeries @category.CertNumber от @category.CertlssueDate.FormatEx()</b></td>
+                    </tr>
+                    <tr>
+                        <td>Номер записи:<b> @category.ActRequisitesActNumber от @category.ActRequisitesActDate.FormatEx(), @category.ActRequisitesNameOfRegistrar</b></td>
+                    </tr>
                 }
-            }
-            else
-            {
-                <div style="font-style: italic; font-weight: bold">Заключение отсутствует</div>
-            }
-        }
-        @if (Model.Type == ExchangeBaseRegistryTypeEnum.FRIExchange)
+            </tbody>
+        </table>
+    }
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.RelationshipSmev)
+    {
+        if (Model.SmevZagzResponse != null && Model.SmevZagzResponse.СведРегРожд != null)
         {
-            if (Model.FRIResponse != null)
-            {
-                bool isInvalid = Model.FRIResponse.Number != null;
-                if (isInvalid)
+            var info = Model.SmevZagzResponse.СведРегРожд;
+            var father = (info.ПрдСведРег != null ? info.ПрдСведРег.СведОтец : null) ?? new RestChild.Comon.Exchange.Zagz.СведРодитТип();
+            var mother = (info.ПрдСведРег != null ? info.ПрдСведРег.СведМать : null) ?? new RestChild.Comon.Exchange.Zagz.СведРодитТип();
+            var childInfo = (info.ПрдСведРег != null ? info.ПрдСведРег.СведРодившемся : null) ?? new RestChild.Comon.Exchange.Zagz.informResponseСведРегРождПрдСведРегСведРодившемся();
+            <div style="font-style: italic">Свидетельство о рождении:</div>
+            <ul>
+                <li>Отец:<b> @(father.ФИО.GetFio()) @father.GetParentBirthDate()</b></li>
+                <li>Мать: <b>@(mother.ФИО.GetFio()) @mother.GetParentBirthDate()</b></li>
+                <li>Ребёнок: <b>@(childInfo.ФИОРожд.GetFio()) - @childInfo.GetChildBirthDate()</b></li>
+                @if (info.СвидетРожд != null && info.СвидетРожд.Any())
                 {
-                    <div style="font-style: italic; font-weight: bold">Обнаружена справка об инвалидности</div>
-                    <ul>
-                        <li>Гражданин:<b> @(Model.FRIResponse.LastName) @(Model.FRIResponse.FirstName) @(Model.FRIResponse.SecondName)</b></li>
-                        <li>Серия:<b>@(Model.FRIResponse.Series)</b></li>
-                        <li>Номер: <b>@(Model.FRIResponse.Number)</b></li>
-                        <li>Выдана: <b>@(Model.FRIResponse.BuroFullName)</b></li>
-                        <li>Дата выдачи: <b>@(Model.FRIResponse.ActDate)</b></li>
-                    </ul>
+                    <li>
+                        Свидетельство о рождении:
+                        <ul>
+                            @foreach (var i in info.СвидетРожд ?? new RestChild.Comon.Exchange.Zagz.СведСвидетТип[0])
+                            {
+                                <li>
+                                    <b> @i.СерияСвидет @i.НомерСвидет от @i.ДатаВыдСвидет.FormatEx()</b>
+                                </li>
+                            }
+                        </ul>
+                    </li>
                 }
                 else
                 {
-                    <div style="font-style: italic; font-weight: bold">Информация об инвалидности отсутствует</div>
+                    <li>Свидетельства о рождении не переданы</li>
                 }
+                <li>Номер записи:<b> @info.НомерЗапис от @info.ДатаЗапис.FormatEx()</b></li>
+            </ul>
+        }
+    }
+
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.GetEGRZAGS)
+    {
+        if (Model.EGRZagzResponse != null && Model.EGRZagzResponse.СведОтветАГС[0].СведРегРожд != null)
+        {
+            var info = Model.EGRZagzResponse.СведОтветАГС[0].СведРегРожд[0];
+            var father = (info.ПрдСведРег != null ? info.ПрдСведРег.Item2 : null) ?? new RestChild.Comon.Exchange.EGRZagz.СведРодитТип();
+            var mother = (info.ПрдСведРег != null ? info.ПрдСведРег.Item1 : null) ?? new RestChild.Comon.Exchange.EGRZagz.СведРодитТип();
+            var childInfo = (info.ПрдСведРег != null ? info.ПрдСведРег.СведРодившемся : null) ?? new ROGDINFResponseСведОтветАГССведРегРождПрдСведРегСведРодившемся();
+            <div style="font-style: italic">Свидетельство о рождении:</div>
+            <ul>
+                <li>Отец:<b> @(father.GetFather().ФИО.GetFio()) - @father.GetFather().GetParentBirthDate()</b></li>
+                <li>Мать: <b>@(mother.GetMother().ФИО.GetFio()) - @mother.GetMother().GetParentBirthDate()</b></li>
+                <li>Ребёнок: <b>@(childInfo.ФИОРожд.GetFio()) - @childInfo.GetChildBirthDate()</b></li>
+                @if (info.СвидетРожд != null && info.СвидетРожд.Any())
+                {
+                    <li>
+                        Свидетельство о рождении:
+                        <ul>
+                            @foreach (var i in info.СвидетРожд ?? new RestChild.Comon.Exchange.EGRZagz.СведСвидетТип[0])
+                            {
+                                <li>
+                                    <b> @i.Item @i.Item1 от @i.Item2.FormatEx()</b>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li>Свидетельства о рождении не переданы</li>
+                }
+                <li>Номер записи:<b> @info.НомерЗаписЕГР от @info.Item.FormatEx()</b></li>
+            </ul>
+
+
+        }
+    }
+
+
+
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.PassportDataBySNILS)
+    {
+        var items = Model.Passport != null ? (Model.Passport.Documents ?? new DocumentFMSType[0]).Where(d => d.CodeDocument == "01").ToArray() : new DocumentFMSType[0];
+        if (items.Any())
+        {
+            <div style="font-style: italic">Реквизиты документов:</div>
+            <ul>
+                @foreach (var d in items)
+                {
+                    <li><b>@(d.Series) @(d.Number)</b> от @(d.IssueDate.XmlToDateTime().FormatEx()) - @(d.Status) @(!string.IsNullOrWhiteSpace(d.InvalidityReason) ? string.Format("({0})", d.InvalidityReason) : "")</li>
+                }
+            </ul>
+        }
+    }
+
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.CpmpkExchange)
+    {
+        if (
+            Model.BenefitCheckRequest != null
+            && Model.BenefitCheckRequest.CpmpkResponse != null
+            && Model.BenefitCheckRequest.CpmpkResponse.Available)
+        {
+            <div style="font-style: italic; font-weight: bold">Заключение номер @Model.BenefitCheckRequest.CpmpkResponse.Number от @Model.BenefitCheckRequest.CpmpkResponse.Date.XmlToDateTime().FormatEx()</div>
+            if (Model.BenefitCheckRequest.CpmpkResponse.Aoop == true)
+            {
+                <div style="font-style: italic;">Предусмотрено наличие адаптированной общеобразовательной программы</div>
             }
         }
-    </div>
+        else
+        {
+            <div style="font-style: italic; font-weight: bold">Заключение отсутствует</div>
+        }
+    }
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.FRIExchange)
+    {
+        if (Model.FRIResponse != null)
+        {
+            bool isInvalid = Model.FRIResponse.Number != null;
+            if (isInvalid)
+            {
+                <div style="font-style: italic; font-weight: bold">Обнаружена справка об инвалидности</div>
+                <ul>
+                    <li>Гражданин:<b> @(Model.FRIResponse.LastName) @(Model.FRIResponse.FirstName) @(Model.FRIResponse.SecondName)</b></li>
+                    <li>Серия:<b>@(Model.FRIResponse.Series)</b></li>
+                    <li>Номер: <b>@(Model.FRIResponse.Number)</b></li>
+                    <li>Выдана: <b>@(Model.FRIResponse.BuroFullName)</b></li>
+                    <li>Дата выдачи: <b>@(Model.FRIResponse.ActDate)</b></li>
+                </ul>
+            }
+            else
+            {
+                <div style="font-style: italic; font-weight: bold">Информация об инвалидности отсутствует</div>
+            }
+        }
+    }
+
+    @if (Model.Type == ExchangeBaseRegistryTypeEnum.GetFGISFRI)
+    {
+        if (Model.FGISFRIResponse != null)
+        {
+            bool isInvalid = Model.FGISFRIResponse.AttachmentsBlock.AttachmentFormat1 != null;
+            if (isInvalid)
+            {
+                <div style="font-style: italic; font-weight: bold">Обнаружены записи.</div>
+                <ul>
+                    <li>Гражданин:<b> @(Model.FGISFRIResponse.AttachmentsBlock.AttachmentFormat1.FamilyName) @(Model.FGISFRIResponse.AttachmentsBlock.AttachmentFormat1.FirstName) </b></li>
+                    <li>СНИЛС:<b>@(Model.FGISFRIResponse.AttachmentsBlock.AttachmentFormat1.Snils)</b></li>
+                </ul>
+            }
+            else
+            {
+                <div style="font-style: italic; font-weight: bold">Действующие документы отсутствуют</div>
+            }
+        }
+    }
+</div>
 }
