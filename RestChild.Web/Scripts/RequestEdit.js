@@ -1281,6 +1281,9 @@ $(function () {
         $('#Data_InternalCommentary').val($('#CommentModalValue').val());
         $('#CommentModal').modal('toggle');
     });
+    $('.copy-request').click(function () {
+        $('#copyRequestModal').modal('toggle');
+    });
     $('.history-button').click(function () {
         $('#HistoryModalError').addClass('hidden');
         $('#HistoryModalTable').addClass('hidden');
@@ -1751,12 +1754,12 @@ function CheckHandler(event, isParentNode) {
 function SelectAll() {
     var cond = $("[name='selectAll']").prop("checked");
     if (cond) {
-        $.each($("#mainList").find("[type='checkbox']").not(":disabled"), function (i, val) {
+        $.each($("#copyRequestModal").find("[type='checkbox']").not(":disabled"), function (i, val) {
             $(val).prop("checked", true);
         });
     }
     else {
-        $.each($("#mainList").find("[type='checkbox']").not(":disabled"), function (i, val) {
+        $.each($("#copyRequestModal").find("[type='checkbox']").not(":disabled"), function (i, val) {
             $(val).prop("checked", false);
         });
     }

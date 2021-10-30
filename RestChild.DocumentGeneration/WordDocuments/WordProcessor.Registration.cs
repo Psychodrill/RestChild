@@ -201,7 +201,7 @@ namespace RestChild.DocumentGeneration
                             new Run(titleRequestRunProperties.CloneNode(true),
                                 new Text(
                                     //"пункт 5.11.1 Порядка: \"Наличие в отношении одного и того же ребёнка, лица из числа детей-сирот и детей, оставшихся без попечения родителей, другого заявления о предоставлении услуг отдыха и оздоровления в текущем календарном году\"."
-                                    request.DeclineReason.Name
+                                    request.DeclineReason==null ? "Заявление является повторным. На указанного(ых) в заявлении ребенка(детей) (ФИО) уже подано заявление о предоставлении  услуг отдыха и оздоровления. " : request.DeclineReason.Name
                                     ))));
 
                     SignBlockNotification2020(doc, account, "Исполнитель:");

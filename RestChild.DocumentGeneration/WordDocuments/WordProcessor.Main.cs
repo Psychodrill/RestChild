@@ -45,6 +45,8 @@ namespace RestChild.DocumentGeneration
         public const string FederalLaw = "Порядок организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденный постановлением Правительства Москвы от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\" (далее – Порядок).";
         public const string FederalShort2020Law = "Порядок организации отдыха и оздоровления детей на основании путевок для отдыха и оздоровления при выездном отдыхе с полной оплатой стоимости путевки для отдыха и оздоровления за счет средств бюджета города Москвы с датами заезда, начиная с 1 апреля по 27 июля 2020 г., в другое время либо замены указанных путевок на сертификат на отдых и оздоровление";
         public const string FederalShort2021Law = "Порядок организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденный постановлением Правительства Москвы от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\"";
+        public const string FederalLawReference = "пункты 8.9 и 9.17 Порядка организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденный постановлением Правительства Москвы от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\" (далее – Порядок).";
+        public const string ParticipateNotification = "в случае неучастия заявителя, подавшего заявление о предоставлении услуг отдыха и оздоровления в отношении организации индивидуального выездного отдыха либо совместного выездного отдыха ребенка, находящегося в трудной жизненной ситуации и указанного в пункте 3.1.2 Порядка, лица из числа детей-сирот и детей, оставшихся без попечения родителей, во втором этапе заявочной кампании, услуга отдыха и оздоровления не считается оказанной.";
 
         private const string extention = ".docx";
         private static readonly string mimeType = MimeTypeMap.GetMimeType(extention);
@@ -96,7 +98,7 @@ namespace RestChild.DocumentGeneration
                     HighAnsi = "Times New Roman",
                     ComplexScript = "Times New Roman"
                 },
-                FontSize = new FontSize {Val = "16"},
+                FontSize = new FontSize {Val = "20"},
                 Italic = new Italic()
             };
 
@@ -223,7 +225,7 @@ namespace RestChild.DocumentGeneration
         /// <summary>
         ///     Формирование таблицы об услугах, оказанных ребенку\детям в течение последних 3-х лет
         /// </summary>
-        private static void AddTableChildTours(Document doc, IEnumerable<Request> Requests)
+        private static void AddTableChildTours(Document doc, IEnumerable<Request> requests, IEnumerable<int>years)
         {
             var titleRequestRunProperties = new RunProperties();
             titleRequestRunProperties.AppendChild(new RunFonts
@@ -277,7 +279,7 @@ namespace RestChild.DocumentGeneration
                     new TableCellWidth
                     {
                         Type = TableWidthUnitValues.Dxa,
-                        Width = (ThirdColumn + FourthColumn + FifthColumn + SixthColumn).ToString()
+                        Width = (ThirdColumn + FourthColumn + FifthColumn /*+ SixthColumn*/).ToString()
                     }),
                 new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
             cell.AppendChild(new Paragraph(
@@ -292,15 +294,25 @@ namespace RestChild.DocumentGeneration
                 (long?) TypeOfRestEnum.MoneyOn7To15, (long?) TypeOfRestEnum.MoneyOnInvalidOn4To17
             };
 
-            //данные о предоставленных льготах
-            foreach (var request in Requests)
+            //данные о предоставленных услугах
+
+            foreach (var year in years)
             {
-                var year = request.YearOfRest?.Name;
-                if (request.ParentRequestId.HasValue &&
-                    request.YearOfRest?.Year - 1 == request.ParentRequest.YearOfRest?.Year)
-                {
-                    year = $"{request.ParentRequest.YearOfRest?.Name} (дополнительная кампания)";
-                }
+
+                Request request = requests.FirstOrDefault(req => req.YearOfRest.Year == year);
+
+                //string year = request?.YearOfRest?.Name;
+                //if (request != null)
+                //{
+                //    if (request.ParentRequestId.HasValue && request.YearOfRest?.Year - 1 == request?.ParentRequest.YearOfRest?.Year)
+                //    {
+                //        year = $"{request.ParentRequest.YearOfRest?.Name} (дополнительная кампания)";
+                //    }
+                //}
+                //else if (request == null)
+                //{
+                //    year = $"{request.ParentRequest.YearOfRest?.Name} (дополнительная кампания)";
+                //}
 
                 row = new TableRow();
                 cell = new TableCell();
@@ -310,7 +322,7 @@ namespace RestChild.DocumentGeneration
                 cell.AppendChild(new Paragraph(
                     new ParagraphProperties(new Justification {Val = JustificationValues.Left}),
                     new Run(titleRequestRunProperties.CloneNode(true),
-                        new Text(year))));
+                        new Text(year.ToString()))));
                 row.AppendChild(cell);
 
                 cell = new TableCell();
@@ -322,7 +334,7 @@ namespace RestChild.DocumentGeneration
                 cell.AppendChild(new Paragraph(
                     new ParagraphProperties(new Justification {Val = JustificationValues.Left}),
                     new Run(titleRequestRunProperties.CloneNode(true),
-                        new Text(request.TypeOfRest?.Name))));
+                        new Text(request?.TypeOfRest?.Name))));
                 row.AppendChild(cell);
 
                 cell = new TableCell();
@@ -333,6 +345,135 @@ namespace RestChild.DocumentGeneration
                             Width = (ThirdColumn + FourthColumn + FifthColumn + SixthColumn).ToString()
                         }),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
+                cell.AppendChild(new Paragraph(
+                    new Run(titleRequestRunProperties.CloneNode(true),
+                        new Text(request == null? Space:
+                            request.TourId.HasValue
+                            ? $"{request.Tour.Hotels?.Name}, c {request.Tour.DateIncome.FormatEx(string.Empty)} по {request.Tour.DateOutcome.FormatEx(string.Empty)}"
+                            : (request.RequestOnMoney && !moneyTypes.Contains(request.TypeOfRestId)
+                                ? "Осуществлен выбор сертификата на втором этапе заявочной кампании"
+                                : Space)))));
+                row.AppendChild(cell);
+                table.AppendChild(row);
+            }
+
+            doc.AppendChild(table);
+        }
+
+        /// <summary>
+        ///     Формирование статической таблицы об услугах, оказанных ребенку\детям в течение последних 3-х лет
+        /// </summary>
+        private static void AddStaticTableChildTours(Document doc, IEnumerable<Request> requests, IEnumerable<long> yearIds)
+        {
+
+            var titleRequestRunProperties = new RunProperties();
+            titleRequestRunProperties.AppendChild(new RunFonts
+            {
+                Ascii = "Times New Roman",
+                HighAnsi = "Times New Roman",
+                ComplexScript = "Times New Roman"
+            });
+            titleRequestRunProperties.AppendChild(new FontSize { Val = Size22 });
+
+            var titleRequestRunPropertiesBold = titleRequestRunProperties.CloneNode(true);
+            titleRequestRunPropertiesBold.AppendChild(new Bold());
+
+            var tblProp = new TableProperties(
+                new TableBorders(
+                    new TopBorder { Val = new EnumValue<BorderValues>(BorderValues.Single) },
+                    new BottomBorder { Val = new EnumValue<BorderValues>(BorderValues.Single) },
+                    new LeftBorder { Val = new EnumValue<BorderValues>(BorderValues.Single) },
+                    new RightBorder { Val = new EnumValue<BorderValues>(BorderValues.Single) },
+                    new InsideHorizontalBorder { Val = new EnumValue<BorderValues>(BorderValues.Single) },
+                    new InsideVerticalBorder { Val = new EnumValue<BorderValues>(BorderValues.Single) }));
+
+            var table = new Table();
+            table.AppendChild(tblProp.CloneNode(true));
+
+            //первая строка (шапка)
+            var row = new TableRow();
+            var cell = new TableCell();
+            cell.Append(new TableCellProperties(
+                    new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = FirstColumn.ToString() }),
+                new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
+            cell.AppendChild(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Left }),
+                new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                    new Text("Год кампании"))));
+            row.AppendChild(cell);
+
+            cell = new TableCell();
+            cell.Append(new TableCellProperties(
+                    new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = SecondColumn.ToString() },
+                    new TableCellBorders(new BottomBorder { Val = new EnumValue<BorderValues>(BorderValues.Single) })),
+                new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
+            cell.AppendChild(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Left }),
+                new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                    new Text("Вид услуги (путевка, сертификат, компенсация)"))));
+            row.AppendChild(cell);
+
+            cell = new TableCell();
+            cell.Append(new TableCellProperties(
+                    new TableCellWidth
+                    {
+                        Type = TableWidthUnitValues.Dxa,
+                        Width = (ThirdColumn + FourthColumn + FifthColumn + SixthColumn).ToString()
+                    }),
+                new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
+            cell.AppendChild(new Paragraph(
+                new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                    new Text("Организация отдыха и оздоровления (в случае предоставления путевки для отдыха и оздоровления), даты заезда"))));
+            row.AppendChild(cell);
+            table.AppendChild(row);
+
+            var moneyTypes = new[]
+            {
+                (long?) TypeOfRestEnum.MoneyOn18, (long?) TypeOfRestEnum.MoneyOn3To7,
+                (long?) TypeOfRestEnum.MoneyOn7To15, (long?) TypeOfRestEnum.MoneyOnInvalidOn4To17
+            };
+
+            //данные о предоставленных льготах
+            foreach (var request in requests)
+            {
+                var year = request.YearOfRest?.Name;
+                if (request.ParentRequestId.HasValue &&
+                    request.YearOfRest?.Year - 1 == request.ParentRequest.YearOfRest?.Year)
+                {
+                    year = $"{request.ParentRequest.YearOfRest?.Name} (дополнительная кампания)";
+                }
+
+                row = new TableRow();
+                cell = new TableCell();
+                cell.Append(new TableCellProperties(
+                        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = FirstColumn.ToString() }),
+                    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
+                cell.AppendChild(new Paragraph(
+                    new ParagraphProperties(new Justification { Val = JustificationValues.Left }),
+                    new Run(titleRequestRunProperties.CloneNode(true),
+                        new Text(year))));
+                row.AppendChild(cell);
+
+                cell = new TableCell();
+                cell.Append(new TableCellProperties(
+                        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = SecondColumn.ToString() },
+                        new TableCellBorders(new BottomBorder
+                        { Val = new EnumValue<BorderValues>(BorderValues.Single) })),
+                    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
+                cell.AppendChild(new Paragraph(
+                    new ParagraphProperties(new Justification { Val = JustificationValues.Left }),
+                    new Run(titleRequestRunProperties.CloneNode(true),
+                        new Text(request.TypeOfRest?.Name))));
+                row.AppendChild(cell);
+
+                cell = new TableCell();
+                cell.Append(new TableCellProperties(
+                        new TableCellWidth
+                        {
+                            Type = TableWidthUnitValues.Dxa,
+                            Width = (ThirdColumn + FourthColumn + FifthColumn + SixthColumn).ToString()
+                        }),
+                    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
                 cell.AppendChild(new Paragraph(
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(request.TourId.HasValue
@@ -346,6 +487,7 @@ namespace RestChild.DocumentGeneration
 
             doc.AppendChild(table);
         }
+
 
         /// <summary>
         ///     Блок подписией для ЛОК 2019
@@ -540,6 +682,13 @@ namespace RestChild.DocumentGeneration
             var table = new Table();
             table.AppendChild(tblProp.CloneNode(true));
 
+
+            //отступ - нулевая строка
+            {
+                doc.AppendChild(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Both },
+                new SpacingBetweenLines { After = Size20 })));
+            }
             //первая строка
             {
                 var row = new TableRow();
@@ -549,7 +698,7 @@ namespace RestChild.DocumentGeneration
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = FirstColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}, new SpacingBetweenLines { After="1"}),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(Space))));
                 row.AppendChild(cell);
@@ -561,7 +710,7 @@ namespace RestChild.DocumentGeneration
                             {Val = new EnumValue<BorderValues>(BorderValues.Single)})),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(Space))));
                 row.AppendChild(cell);
@@ -570,7 +719,7 @@ namespace RestChild.DocumentGeneration
                 cell.Append(new TableCellProperties(
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = ThirdColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
-                cell.AppendChild(new Paragraph(new Run(new Text(Space))));
+                cell.AppendChild(new Paragraph(new ParagraphProperties( new SpacingBetweenLines { After = "1" }),new Run(new Text(Space))));
                 row.AppendChild(cell);
 
                 cell = new TableCell();
@@ -580,7 +729,7 @@ namespace RestChild.DocumentGeneration
                             {Val = new EnumValue<BorderValues>(BorderValues.Single)})),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Left}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Left}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(Space))));
                 row.AppendChild(cell);
@@ -589,7 +738,7 @@ namespace RestChild.DocumentGeneration
                 cell.Append(new TableCellProperties(
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = FifthColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
-                cell.AppendChild(new Paragraph(new Run(new Text(Space))));
+                cell.AppendChild(new Paragraph(new ParagraphProperties( new SpacingBetweenLines { After = "1" }), new Run(new Text(Space))));
                 row.AppendChild(cell);
 
                 cell = new TableCell();
@@ -599,7 +748,7 @@ namespace RestChild.DocumentGeneration
                             {Val = new EnumValue<BorderValues>(BorderValues.Single)})),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(DateTime.Now.Date.FormatEx()))));
                 row.AppendChild(cell);
@@ -675,7 +824,7 @@ namespace RestChild.DocumentGeneration
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = FirstColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(functionName))));
                 row.AppendChild(cell);
@@ -687,7 +836,7 @@ namespace RestChild.DocumentGeneration
                             {Val = new EnumValue<BorderValues>(BorderValues.Single)})),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(
                             $"{account.Name.FormatEx()}{(string.IsNullOrWhiteSpace(account.Position) ? string.Empty : $", {account.Position}")}"))));
@@ -697,7 +846,7 @@ namespace RestChild.DocumentGeneration
                 cell.Append(new TableCellProperties(
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = ThirdColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
-                cell.AppendChild(new Paragraph(new Run(new Text(Space))));
+                cell.AppendChild(new Paragraph(new ParagraphProperties(new SpacingBetweenLines { After = "1" }), new Run(new Text(Space))));
                 row.AppendChild(cell);
 
                 cell = new TableCell();
@@ -707,7 +856,7 @@ namespace RestChild.DocumentGeneration
                             {Val = new EnumValue<BorderValues>(BorderValues.Single)})),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Left}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Left}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(Space))));
                 row.AppendChild(cell);
@@ -716,7 +865,7 @@ namespace RestChild.DocumentGeneration
                 cell.Append(new TableCellProperties(
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = FifthColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
-                cell.AppendChild(new Paragraph(new Run(new Text(Space))));
+                cell.AppendChild(new Paragraph(new ParagraphProperties(new SpacingBetweenLines { After = "1" }), new Run(new Text(Space))));
                 row.AppendChild(cell);
 
                 cell = new TableCell();
@@ -724,7 +873,7 @@ namespace RestChild.DocumentGeneration
                         new TableCellWidth {Type = TableWidthUnitValues.Dxa, Width = SixthColumn.ToString()}),
                     new TableCellVerticalAlignment {Val = TableVerticalAlignmentValues.Bottom});
                 cell.AppendChild(new Paragraph(
-                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}),
+                    new ParagraphProperties(new Justification {Val = JustificationValues.Center}, new SpacingBetweenLines { After = "1" }),
                     new Run(titleRequestRunProperties.CloneNode(true),
                         new Text(Space))));
                 row.AppendChild(cell);
@@ -923,8 +1072,17 @@ namespace RestChild.DocumentGeneration
 
             var captionRunProperties = new RunProperties().SetFont().SetFontSizeSupperscript();
 
+
+
             var table = new Table();
             table.AppendChild(tblProp.CloneNode(true));
+
+            //отступ - нулевая строка
+            {
+                doc.AppendChild(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Both },
+                new SpacingBetweenLines { After = Size20 })));
+            }
 
             var row = new TableRow();
 

@@ -67,6 +67,19 @@ namespace RestChild.Web.Controllers.WebApi
             return statusId != request.StatusId;
         }
 
+
+        /// <summary>
+        ///     сохранение статуса отказа заявления.
+        /// </summary>
+        public void SaveRequestDeclineStatus(RequestViewModel model, Request request)
+        {
+            //Request request = UnitOfWork.GetById<Request>(model.Data.Id);
+            SetUnitOfWorkInRefClass(UnitOfWork);
+            request.DeclineReason.Id = model.Data.DeclineReason.Id;
+            request.DeclineReason = model.Data.DeclineReason;
+            //return request;
+        }
+
         /// <summary>
         ///     сохранение заявления.
         /// </summary>
@@ -1124,6 +1137,37 @@ namespace RestChild.Web.Controllers.WebApi
                                                                                          && r.TypeOfRest.FirstRequestCompanySelect)
                 .ToList();
                 */
+        }
+        public void SetDeclineReason(RequestViewModel model)
+        {
+
+            if (model.SameChildren.Any())
+            {
+                model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202107);
+            }
+            if (model.SameChildren.Any() && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.YouthRestOrphanCamps)
+            {
+                model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202104);
+            }
+            if (model.ApplicantDouble.Any()&&model.Data.TypeOfRestId == (long?)TypeOfRestEnum.RestWithParentsPoor)
+            {
+                model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202105);
+            }
+            if (model.ApplicantDouble.Any() && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.MoneyOn3To7)
+            {
+                model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202106);
+            }
+            if (model.SameAttendants.Any() && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.RestWithParentsPoor)
+            {
+                model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202102);
+            }
+            if (model.SameAttendants.Any() && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.MoneyOn3To7)
+            {
+                model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202103);
+            }
+
+
+
         }
 
         /// <summary>
