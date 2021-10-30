@@ -1183,6 +1183,9 @@ namespace RestChild.Web.Controllers.WebApi
                 {
                     return count;
                 }
+                var snils = child.Snils.Replace("-", "");
+                snils = snils.Replace("-", "");
+                snils = snils.Replace(" ", "");
 
                 ResetCheckChildInBaseRegistry(child.Id, ExchangeBaseRegistryTypeEnum.GetFGISFRI);
 
@@ -1194,8 +1197,9 @@ namespace RestChild.Web.Controllers.WebApi
                     testmsg = $"<testmsg/>";
                     child.Snils = "00000055500"; //для положительного ответа
                 }
+
                 var request = $@"<ServiceProperties>
-                                    <snils>{child.Snils}</snils>
+                                    <snils>{snils}</snils>
                                     <date>{DateTime.Now.ToString("yyyy-MM-dd")}T00:00:00Z</date>
                                     {testmsg}
                                  </ServiceProperties>";
@@ -1671,18 +1675,18 @@ namespace RestChild.Web.Controllers.WebApi
                 v.ApplicantId == req.ApplicantId || v.Applicant.RequestId == req.Id ||
                 v.Child.RequestId == req.Id) + 1;
             var requestNumber = req.RequestNumber;
-            //if (req.TypeOfRestId == (long)TypeOfRestEnum.Compensation ||
-            //    req.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)
-            //{
-            //    var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
-            //    requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
-            //    count = 1;
-            //}
+            if (req.TypeOfRestId == (long)TypeOfRestEnum.MoneyOnInvalidOn4To17 ||
+                req.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsInvalid)
+            {
+                var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
+                requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
+                count = 1;
+            }
 
             //if (req.SourceId == (long)SourceEnum.Mpgu //|| req.SourceId == (long)SourceEnum.Operator //Удалить || req.SourceId == (long)SourceEnum.Operator
             //    && req.TypeOfRestId != (long)TypeOfRestEnum.ChildRestFederalCamps)
             //{
-                foreach (var child in req.Child)
+            foreach (var child in req.Child)
                 {
                     count = ExtractFromFGISFRI(requestNumber, child, count);
                 }

@@ -144,10 +144,10 @@ namespace RestChild.Web.Controllers
                     res = ExchangeController.AdditionallyCheckRegistrationAddress(model.RequestBlock);
                 }
 
-                if (model.ActionString == GetExtractFromFGISFRI)
-                {
-                    //res = ExchangeController.ExtractFromFGISFRI(model.RequestBlock);
-                }
+                //if (model.ActionString == GetExtractFromFGISFRI)
+                //{
+                //    res = ExchangeController.ExtractFromFGISFRI(model.RequestBlock);
+                //}
 
                 if (res?.HasError ?? false)
                 {
