@@ -40,7 +40,7 @@ namespace RestChild.DocumentGeneration
             var forMpguPortal = request.SourceId == (long) SourceEnum.Mpgu;
             if (forMpguPortal)
             {
-                return PDFDocuments.PdfProcessor.NotificationWaitApplicant(request);
+                return PDFDocuments.PdfProcessor.NotificationWaitApplicant(request, benefits);
             }
 
             using (var ms = new MemoryStream())
