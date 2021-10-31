@@ -40,7 +40,7 @@ namespace RestChild.DocumentGeneration
             var forMpguPortal = request.SourceId == (long) SourceEnum.Mpgu;
             if (forMpguPortal)
             {
-                return PDFDocuments.PdfProcessor.NotificationWaitApplicant(request);
+                return PDFDocuments.PdfProcessor.NotificationWaitApplicant(request, benefits);
             }
 
             using (var ms = new MemoryStream())
@@ -541,7 +541,7 @@ namespace RestChild.DocumentGeneration
                                 new Indentation { FirstLine = FirstLineIndentation600.ToString() },
                                 new SpacingBetweenLines { After = Size20 }),
                             new Run(titleRequestRunProperties.CloneNode(true),
-                                new Text("При подаче заявления через подсистему \"личный кабинет\" Портала для отказа от всех предложенных организаций отдыха и оздоровления необходимо оформить отказ, нажать соответствующую \"галочку\" в интерактивном поле Портала: \"Я отказываюсь от предложенных вариантов организаций отдыха и оздоровления\".")
+                                new Text("При подаче заявления через подсистему \"личный кабинет\" Портала для отказа от всех предложенных организаций отдыха и оздоровления необходимо нажать соответствующую \"галочку\" в интерактивном поле Портала: \"Я отказываюсь от предложенных вариантов организаций отдыха и оздоровления\".")
                                     { Space = SpaceProcessingModeValues.Preserve })
                         ));
 
