@@ -974,7 +974,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small,
                         new Chunk("Для подтверждения сведений, указанных в заявлении о предоставлении услуг отдыха и оздоровления (далее – заявление), ", MainText),
                         new Chunk("в течение 10 рабочих дней со дня направления данного уведомления", HeaderFont),
-                        new Chunk(" Вам необходимо явиться в офис ГАУК \"МОСГОРТУР\" по адресу: г. Москва, Малый Харитоньевский переулок, дом 6, строение 3.", MainText));
+                        new Chunk(" Вам необходимо явиться в офис ГАУК \"МОСГОРТУР\" по адресу: город Москва, Малый Харитоньевский переулок, дом 6, строение 3.", MainText));
 
                     PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small,
                         new Chunk("Прием в офисе ГАУК \"МОСГОРТУР\" осуществляется исключительно по предварительной записи.", HeaderFont),
