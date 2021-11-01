@@ -1845,7 +1845,7 @@ namespace RestChild.Web.Controllers.WebApi
                                                 
                         ApiRequest.CheckAttendants(vm);
                         // чудовищный костыль, связаннаый с косячным отправлением из МПГУ в случае с наличием доверенного лица, им достаточно проставить у себя галочку isagent 
-                        if (!vm.Data.Agent.IsNullOrEmpty() && vm.Data.SourceId == (long)SourceEnum.Mpgu)
+                        if (/*!vm.Data.Agent.IsNullOrEmpty() && vm.Data.SourceId == (long)SourceEnum.Mpgu*/vm.Data.AgentId!=null)
                         {
                             vm.SameAttendants.Clear();
                             vm.SameAttendantSnils.Clear();
