@@ -1044,6 +1044,11 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 return;
             }
+            // чудовищный костыль, связаннаый с косячным отправлением из МПГУ в случае с наличием доверенного лица, им достаточно проставить у себя галочку isagent 
+            if (!model.Data.Agent.IsNullOrEmpty() && model.Data.TypeOfRest.ParentId == 16)
+            {
+                return;
+            }
 
             model.ApplicantDouble = new List<Request>();
             var snils = model.Applicant?.Data?.Snils;
@@ -1181,8 +1186,12 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 return;
             }
+            // чудовищный костыль, связаннаый с косячным отправлением из МПГУ в случае с наличием доверенного лица, им достаточно проставить у себя галочку isagent 
+            if (!model.Data.Agent.IsNullOrEmpty() && model.Data.TypeOfRest.ParentId == 16)
+            {
+                return;
+            }
 
-            model.SameAttendants = new List<Applicant>();
             model.SameAttendantSnils = new List<string>();
 
             if (model.ParentInvalid != null && (model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor
@@ -1241,6 +1250,11 @@ namespace RestChild.Web.Controllers.WebApi
             SetUnitOfWorkInRefClass(UnitOfWork);
 
             if (model.Data?.ParentRequestId != null)
+            {
+                return;
+            }
+            // чудовищный костыль, связаннаый с косячным отправлением из МПГУ в случае с наличием доверенного лица, им достаточно проставить у себя галочку isagent 
+            if (!model.Data.Agent.IsNullOrEmpty() && model.Data.TypeOfRest.ParentId == 16)
             {
                 return;
             }
