@@ -1258,6 +1258,14 @@ namespace RestChild.DocumentGeneration
             var table = new Table();
             table.AppendChild(tblProp.CloneNode(true));
 
+
+            //отступ - нулевая строка
+            {
+                doc.AppendChild(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Both },
+                new SpacingBetweenLines { After = Size20 })));
+            }
+
             var row = new TableRow();
 
             var cell = new TableCell();
