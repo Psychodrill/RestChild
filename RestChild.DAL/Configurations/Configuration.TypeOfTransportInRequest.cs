@@ -23,7 +23,7 @@ namespace RestChild.DAL.Configurations
                 new TypeOfTransportInRequest
                 {
                     Id = (long) TypeOfTransportInRequestEnum.Train,
-                    Name = "Назменый транспорт (поезд)",
+                    Name = "Наземный транспорт (поезд)",
                     IsActive = true
                 });
 
