@@ -80,7 +80,7 @@ $(function () {
             if (!$('#dialogNumber').val() && uid !== getCPMPK) {
                 errorMsg = errorMsg + '<li>Не заполнен номер документа</li>';
             }
-            if (!$('#snils').val() && getSnilsAction !== uid && uid !== getCPMPK && uid != getRegistrationAddress) {
+            if (!$('#snils').val() && getSnilsAction !== uid && uid !== getCPMPK) {
                 errorMsg = errorMsg + '<li>Не заполнен СНИЛС</li>';
             }
         }

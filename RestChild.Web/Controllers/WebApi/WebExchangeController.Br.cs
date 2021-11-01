@@ -546,6 +546,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                 var middlename = "";
                 var testmsg = "";
+
                 if (!model.MiddleName.IsNullOrEmpty())
                 {
                     middlename = $"<middlename>{ model.MiddleName}</middlename>";
@@ -562,14 +563,10 @@ namespace RestChild.Web.Controllers.WebApi
                         <rogdinflist>
                             <rogdinf>
                         	    <member_type>3</member_type>
-                                <snils>{model.Snils}</snils>
                                 <lastname>{model.LastName}</lastname>
                                 <firstname>{model.FirstName}</firstname>
                                 {middlename}
                                 <birthdate>{model.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
-                                <doc_type>{documentType?.BaseRegistryUid}</doc_type>
-                                <doc_series>{model.DocumentSeria}</doc_series>
-                                <doc_number>{model.DocumentNumber}</doc_number>
                             </rogdinf>
                         </rogdinflist>
                         {testmsg}
@@ -1113,12 +1110,33 @@ namespace RestChild.Web.Controllers.WebApi
 
                 ResetCheckChildInBaseRegistry(child.Id, ExchangeBaseRegistryTypeEnum.GetEGRZAGS);
 
-                var middlename = "";
+                string middlename = "";
+                //string snils = "";
+                //string baseRegistryUid = "";
+                //string documentSeria = "";
+                //string documentNumber = "";
                 var testmsg = "";
+
+                //if (!child.Snils.IsNullOrEmpty())
+                //{
+                //    snils = $"<snils>{child.Snils}</snils>";
+                //}
+
                 if (!child.MiddleName.IsNullOrEmpty())
                 {
                     middlename = $"<middlename>{ child.MiddleName}</middlename>";
                 }
+
+                //if (!child.DocumentType.IsNullOrEmpty())
+                //{
+                //    baseRegistryUid = $"<doc_type>{child.DocumentType.BaseRegistryUid}</doc_type>";
+                //    documentNumber = $"<doc_number>{child.DocumentNumber}</doc_number>";
+                //    if (!child.DocumentSeria.IsNullOrEmpty())
+                //    {
+                //        documentSeria = $"< doc_series >{ child.DocumentSeria}</ doc_series >";
+                //    }
+                //}
+
                 if (Settings.Default.SnilsTestRequest)
                 {
                     testmsg = $"<testmsg/>";
@@ -1131,20 +1149,35 @@ namespace RestChild.Web.Controllers.WebApi
                         <rogdinflist>
                             <rogdinf>
                         	    <member_type>3</member_type>
-                                <snils>{child.Snils}</snils>
                                 <lastname>{child.LastName}</lastname>
                                 <firstname>{child.FirstName}</firstname>
                                 {middlename}
                                 <birthdate>{child.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
-                                <doc_type>{child.DocumentType?.BaseRegistryUid}</doc_type>
-                                <doc_series>{child.DocumentSeria}</doc_series>
-                                <doc_number>{child.DocumentNumber}</doc_number>
                             </rogdinf>
                         </rogdinflist>
                         {testmsg}
                     </ServiceProperties>";
+                //var request =
+                //    $@"<ServiceProperties>
+                //        <base_code>01</base_code>
+                //        <quantity_doc>1</quantity_doc>
+                //        <rogdinflist>
+                //            <rogdinf>
+                //        	    <member_type>3</member_type>
+                //                {snils}
+                //                <lastname>{child.LastName}</lastname>
+                //                <firstname>{child.FirstName}</firstname>
+                //                {middlename}
+                //                <birthdate>{child.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
+                //                {baseRegistryUid}
+                //                {documentSeria}
+                //                {documentNumber}
+                //            </rogdinf>
+                //        </rogdinflist>
+                //        {testmsg}
+                //    </ServiceProperties>";
 
-                
+
 
                 var messageV6 = GetCoordinateMessageV6(request,
                     ((long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS).ToString(),
@@ -1488,6 +1521,7 @@ namespace RestChild.Web.Controllers.WebApi
             CheckRequestInBaseRegistryStatusSet(req);
 
             CheckRequestInBaseRegistryBenefitReq(req);
+            CheckBaseRegistryExtractFromFGISFRIReq(req);
         }
 
         /// <summary>
@@ -1675,8 +1709,8 @@ namespace RestChild.Web.Controllers.WebApi
                 v.ApplicantId == req.ApplicantId || v.Applicant.RequestId == req.Id ||
                 v.Child.RequestId == req.Id) + 1;
             var requestNumber = req.RequestNumber;
-            if (req.TypeOfRestId == (long)TypeOfRestEnum.MoneyOnInvalidOn4To17 ||
-                req.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsInvalid)
+            if (req.TypeOfRestId == (long)TypeOfRestEnum.Compensation ||
+            req.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)
             {
                 var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
                 requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
@@ -1687,9 +1721,12 @@ namespace RestChild.Web.Controllers.WebApi
             //    && req.TypeOfRestId != (long)TypeOfRestEnum.ChildRestFederalCamps)
             //{
             foreach (var child in req.Child)
+            {
+                if (!child.TypeOfRestrictionId.IsNullOrEmpty())
                 {
                     count = ExtractFromFGISFRI(requestNumber, child, count);
                 }
+            }
             //}
 
             UnitOfWork.SaveChanges();
