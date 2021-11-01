@@ -314,7 +314,7 @@ namespace RestChild.DocumentGeneration
                                 innerListOrphans = new List<string>
                                     {
                                         "документ, удостоверяющий личность заявителя;",
-                                        "документы, подтверждающие, что заявитель является законным представителем ребенка: свидетельство о рождении ребенка*, договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие полномочия законного представителя ребенка;",
+                                        "документы, подтверждающие, что заявитель является законным представителем ребенка: договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие полномочия законного представителя ребенка;",
                                         "документ, удостоверяющий личность ребенка;",
                                         "документ, подтверждающий место жительства ребенка в городе Москве;",
                                         "документ, подтверждающий полномочия заявителя, сопровождающего лица(в случае организации совместного выездного отдыха) из числа законных представителей – опекунов, попечителей, приемных родителей, патронатных воспитателей ребенка (договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие статус ребенка);",
@@ -590,7 +590,7 @@ namespace RestChild.DocumentGeneration
                                         new SpacingBetweenLines { After = Size20 },
                                         new Indentation { FirstLine = FirstLineIndentation600.ToString() }),
                                     new Run(titleRequestRunPropertiesBold.CloneNode(true),
-                                        new Text("Дети сироты и дети, оставшиеся без попечения родителей, находящиеся под опекой, попечительством, в том числе в приёмной или патронатной семье")
+                                        new Text("Дети-сироты и дети, оставшиеся без попечения родителей, находящиеся под опекой, попечительством, в том числе в приёмной или патронатной семье")
                                         { Space = SpaceProcessingModeValues.Preserve })));
                         foreach (var docText in innerListOrphans)
                         {
@@ -1165,9 +1165,9 @@ namespace RestChild.DocumentGeneration
                     , (long?) TypeOfRestEnum.MoneyOn7To15
                     , (long?) TypeOfRestEnum.MoneyOn18
                     , (long?) TypeOfRestEnum.MoneyOnInvalidOn4To17
-                    ,(long?) TypeOfRestEnum.RestWithParentsOrphan
-                    ,(long?) TypeOfRestEnum.YouthRestOrphanCamps
-                    ,(long?) TypeOfRestEnum.ChildRestOrphanCamps
+                    //,(long?) TypeOfRestEnum.RestWithParentsOrphan
+                    //,(long?) TypeOfRestEnum.YouthRestOrphanCamps
+                    //,(long?) TypeOfRestEnum.ChildRestOrphanCamps
                 };
 
             if (request.StatusId == (long) StatusEnum.CertificateIssued &&
@@ -1181,13 +1181,220 @@ namespace RestChild.DocumentGeneration
             {
                 return NotificationAboutCertificate(request, account);
             }
-            if (money.Contains(request.TypeOfRestId))
-            {
-                return NotificationAboutCertificate(request, account);
-            }
+            //if (request.TypeOfRestId== (long)TypeOfRestEnum.RestWithParentsOrphan||
+            //    request.TypeOfRestId ==  (long)TypeOfRestEnum.YouthRestOrphanCamps||
+            //    request.TypeOfRestId == (long)TypeOfRestEnum.ChildRestOrphanCamps)
+            //{
+            //    return NotificationAboutParticipate(request, account);
+            //}
 
 
             return NotificationAboutTour(request, account);
+        }
+
+
+        /// <summary>
+        ///     Уведомление о неучастии заявителя в выборе конкретной организации (1075.3)
+        /// </summary>
+        private static IDocument NotificationAboutParticipate(Request request, Account account)
+        {
+            var forMpguPortal = request.SourceId == (long)SourceEnum.Mpgu;
+
+            //if (forMpguPortal)
+            //{
+            //    return PDFDocuments.PdfProcessor.NotificationCertificate107503(request);
+            //}
+
+            using (var ms = new MemoryStream())
+            {
+                using (var wordDocument = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document))
+                {
+                    var mainPart = wordDocument.AddMainDocumentPart();
+                    var doc = new Document(new Body());
+
+                    var titleRequestRunProperties = new RunProperties().SetFont().SetFontSize();
+
+                    var titleRequestRunPropertiesBold = titleRequestRunProperties.CloneNode(true);
+                    titleRequestRunPropertiesBold.AppendChild(new Bold());
+
+                    var titleRequestRunPropertiesItalic = titleRequestRunProperties.CloneNode(true);
+                    titleRequestRunPropertiesItalic.AppendChild(new Italic());
+
+                    var applicant = request.Applicant ?? new Applicant
+                    { DocumentType = new DocumentType { Name = string.Empty } };
+
+                    DocumentHeaderRegistration(doc);
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = Size20 }),
+                            new Run(new RunProperties().SetFont().SetFontSize(Size28).Bold(), new Text(Space))));
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = Size20 }),
+                            new Run(new RunProperties().SetFont().SetFontSize(Size28).Bold(), new Text(Space))));
+
+                    doc.AppendChild(new Paragraph(
+                        new ParagraphProperties(new Justification { Val = JustificationValues.Center }),
+                        new Run(new RunProperties().SetFont().SetFontSize(Size28).Bold(),
+                            new Text("Уведомление о предоставлении бесплатной путевки для отдыха"),
+                            new Break(),
+                            new Text("и оздоровления"))));
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = Size20 }),
+                            new Run(new RunProperties().SetFont().SetFontSize(Size28).Bold(), new Text(Space))));
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = Size20 }),
+                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                new Text("Дата и время регистрации заявления: ")
+                                { Space = SpaceProcessingModeValues.Preserve }),
+                            new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                new Text(request.DateRequest.FormatEx()))));
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = Size20 }),
+                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                new Text("Номер заявления: ") { Space = SpaceProcessingModeValues.Preserve }),
+                            new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                new Text(request.RequestNumber.FormatEx()))));
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = Size20 }),
+                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                new Text("Данные заявителя: ") { Space = SpaceProcessingModeValues.Preserve }),
+                            new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                new Text(
+                                    $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DateOfBirth.FormatExGR(string.Empty)}"))));
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = Size20 }),
+                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                new Text("Контактная информация: ") { Space = SpaceProcessingModeValues.Preserve }),
+                            new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                new Text(applicant.Phone + ", " + applicant.Email))));
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = Size20 }),
+                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                new Text("Вид услуги: ") { Space = SpaceProcessingModeValues.Preserve }),
+                            new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                new Text(request.TypeOfRest?.Name))));
+
+
+                    if (request.Child != null)
+                    {
+                        foreach (var child in request.Child.Where(c => !c.IsDeleted))
+                        {
+                            doc.AppendChild(
+                                new Paragraph(
+                                    new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                        new SpacingBetweenLines { After = Size20 }),
+                                    new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                        new Text(
+                                                "Данные ребенка/детей ")
+                                        { Space = SpaceProcessingModeValues.Preserve }),
+                                    new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                        new Text(
+                                            $"{child.LastName} {child.FirstName} {child.MiddleName}, {child.DateOfBirth.FormatExGR(string.Empty)}"))));
+
+                            doc.AppendChild(
+                                new Paragraph(
+                                    new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                        new SpacingBetweenLines { After = Size20 }),
+                                    new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                        new Text("Льготная категория: ")
+                                        { Space = SpaceProcessingModeValues.Preserve }),
+                                    new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                        new Text($"{child.BenefitType?.Name}"))));
+                        }
+                    }
+
+                    if (request.TypeOfRestId == (long)TypeOfRestEnum.YouthRestCamps ||
+                        request.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps)
+                    {
+                        doc.AppendChild(
+                            new Paragraph(
+                                new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                    new SpacingBetweenLines { After = Size20 }),
+                                new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                    new Text(
+                                            "Данные ребенка/детей: ")
+                                    { Space = SpaceProcessingModeValues.Preserve }),
+                                new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                    new Text(
+                                        $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DateOfBirth.FormatExGR(string.Empty)}"))));
+                        doc.AppendChild(
+                            new Paragraph(
+                                new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                    new SpacingBetweenLines { After = Size20 }),
+                                new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                    new Text("Льготная категория: ")
+                                    { Space = SpaceProcessingModeValues.Preserve }),
+                                new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                    new Text(
+                                        "Дети-сироты и дети, оставшиеся без попечения родителей, в возрасте от 18 до 23 лет"))));
+                    }
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                new SpacingBetweenLines { After = Size20 }),
+                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                new Text("Результат рассмотрения заявления: ")
+                                { Space = SpaceProcessingModeValues.Preserve }),
+                            new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                new Text("Услуга оказана. Решения отрицательное"))));
+
+
+                    doc.AppendChild(
+                        new Paragraph(
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Both },
+                                new SpacingBetweenLines { After = Size20 }),
+                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                new Text("Основание: ") { Space = SpaceProcessingModeValues.Preserve }),
+                            new Run(titleRequestRunProperties.CloneNode(true),
+                                new Text($"{DeclineReasonParticipate}."))));
+
+                    if (!forMpguPortal)
+                    {
+                        doc.AppendChild(
+                            new Paragraph(
+                                new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                    new SpacingBetweenLines { After = Size20 }),
+                                new Run(new RunProperties().SetFont().SetFontSize(Size28).Bold(), new Text(Space))));
+
+
+                        SignBlockNotification2020(doc, account, "Исполнитель:");
+                    }
+
+                    mainPart.Document = doc;
+                }
+
+                return new DocumentResult
+                {
+                    FileBody = ms.ToArray(),
+                    FileName = "Уведомление о предоставлении бесплатной путевки для отдыха и оздоровления.docx",
+                    MimeType = mimeType,
+                    MimeTypeShort = extention
+                };
+            }
         }
 
         /// <summary>
