@@ -1551,7 +1551,6 @@ namespace RestChild.Web.Controllers.WebApi
                     
                     if (requestData.childs?.child != null)
                     {
-                        entity.NeedSendForCPMPK = true;
                         var children = new List<Child>();
                         var indexChild = -1;
                         foreach (var child in requestData.childs.child)
@@ -1582,6 +1581,7 @@ namespace RestChild.Web.Controllers.WebApi
                                 Payed = true,
                                 IndexField = indexChild,
                                 Snils = child.snils
+                                
                             };
                             indexChild--;
                             if (child.birthCertDocument != null)
@@ -1595,6 +1595,7 @@ namespace RestChild.Web.Controllers.WebApi
                             if (child.benefit != null)
                             {
                                 var b = child.benefit;
+                                entity.NeedSendForCPMPK = item.IsCPMPK = b.cpmpcConclusion;
                                 item.BenefitDate = b.benefitDate.XmlToDateTime();
                                 item.BenefitEndDate = b.benefitEndDate.XmlToDateTime();
                                 item.BenefitNeverEnd = b.benefitNeverEnd;
@@ -1845,11 +1846,11 @@ namespace RestChild.Web.Controllers.WebApi
                                                 
                         ApiRequest.CheckAttendants(vm);
                         // чудовищный костыль, связаннаый с косячным отправлением из МПГУ в случае с наличием доверенного лица, им достаточно проставить у себя галочку isagent 
-                        if (!vm.Data.Agent.IsNullOrEmpty() && vm.Data.SourceId == (long)SourceEnum.Mpgu)
+                        if (!vm.Data.Agent.IsNullOrEmpty())
                         {
                             vm.SameAttendants.Clear();
                             vm.SameAttendantSnils.Clear();
-                            if (vm.Data.TypeOfRestId != (long)TypeOfRestEnum.YouthRestCamps && vm.Data.TypeOfRestId != (long)TypeOfRestEnum.YouthRestCamps)
+                            //if (vm.Data.TypeOfRestId != (long)TypeOfRestEnum.YouthRestCamps && vm.Data.TypeOfRestId != (long)TypeOfRestEnum.YouthRestCamps)
                             vm.ApplicantDouble.Clear();
                         }
                             if (vm.SameAttendantSnils.Any() || vm.SameAttendants.Any())
