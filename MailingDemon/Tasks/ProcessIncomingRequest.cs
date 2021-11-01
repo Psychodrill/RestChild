@@ -22,7 +22,11 @@ namespace MailingDemon.Tasks
 
 		protected override void Execute()
 		{
-			using (var unitOfWork = new UnitOfWork())
+            //Костыль для запуска компании по таймингу 2021 год, кампания 2022 год
+            //DateTime sdate = new DateTime();
+            //var tp = DateTime.TryParse("02/11/2021 10:00:00", out sdate);
+            //if (DateTime.Now > sdate)
+                using (var unitOfWork = new UnitOfWork())
 			{
 				Logger.Info("ProcessIncomingRequest started");
 
