@@ -879,7 +879,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                             new Chunk("Обращаем внимание, что Вы согласились с необходимостью соблюдения Правил отдыха и оздоровления.", MainText));
                     }
 
-                    SignWorkerBlock(document, account);
+                    //SignWorkerBlock(document, account);
                     document.Close();
                 }
 
@@ -1075,7 +1075,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, 0, new Chunk("Неявка с соответствующими документами в течение срока приостановления рассмотрения заявления является основанием для отказа в предоставлении услуг отдыха и оздоровления.", MainText));
 
 
-                    SignWorkerBlock(document, account);
+                    //SignWorkerBlock(document, account);
 
                     document.Close();
                 }
