@@ -180,6 +180,7 @@ namespace RestChild.Comon.Enumeration
         /// </summary>
         [EnumMember(Value = "24")] MoneyOnInvalidOn4To17 = 24,
 
+
         /// <summary>
         ///     Сертификат на отдых и оздоровление, молодёжный отдых
         /// </summary>
