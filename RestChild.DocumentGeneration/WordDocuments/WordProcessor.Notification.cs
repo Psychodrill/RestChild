@@ -24,7 +24,9 @@ namespace RestChild.DocumentGeneration
         public static IDocument NotificationWaitApplicant(IUnitOfWork unitOfWork, Account account, long requestId)
         {
             var request = unitOfWork.GetById<Request>(requestId);
-            IEnumerable<Child> childs = unitOfWork.GetAll<Child>().Where(x=>x.RequestId==requestId);
+
+            //IEnumerable<Child> childs = unitOfWork.GetAll<Child>().Where(x=>x.RequestId==requestId);
+            IEnumerable<Child> childs = unitOfWork.GetSet<Child>().Where(x => x.RequestId == requestId);
             IEnumerable<BenefitType> benefits = unitOfWork.GetAll<BenefitType>().Where(b => b.IsActive&&childs.Any(c=>c.BenefitTypeId==b.Id));
 
 
