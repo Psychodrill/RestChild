@@ -260,7 +260,8 @@ namespace RestChild.DAL.Configurations
                     ExternalUid = ((long) StatusEnum.WaitApplicantMoney).ToString(CultureInfo.InvariantCulture),
                     ForCommerce = false,
                     ForPreferential = true
-                });
+                }
+                );
 
             SetEidAndLastUpdateTicks(context.Status.ToList());
             context.SaveChanges();

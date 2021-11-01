@@ -16,24 +16,31 @@ namespace RestChild.DocumentGeneration
 {
     public static partial class WordProcessor
     {
+
+
         /// <summary>
         ///     Уведомление о приостановлении рассмотрения (вызов)
         /// </summary>
         public static IDocument NotificationWaitApplicant(IUnitOfWork unitOfWork, Account account, long requestId)
         {
             var request = unitOfWork.GetById<Request>(requestId);
-            return NotificationWaitApplicant(request, account);
+            IEnumerable<Child> childs = unitOfWork.GetAll<Child>().Where(x=>x.RequestId==requestId);
+            IEnumerable<BenefitType> benefits = unitOfWork.GetAll<BenefitType>().Where(b => b.IsActive&&childs.Any(c=>c.BenefitTypeId==b.Id));
+
+
+            return NotificationWaitApplicant(request, account, benefits);
         }
 
         /// <summary>
         ///     Уведомление о приостановлении рассмотрения (вызов)
         /// </summary>
-        private static IDocument NotificationWaitApplicant(Request request, Account account)
+        private static IDocument NotificationWaitApplicant(Request request, Account account, IEnumerable<BenefitType>benefits)
         {
+            
             var forMpguPortal = request.SourceId == (long) SourceEnum.Mpgu;
             if (forMpguPortal)
             {
-                return PDFDocuments.PdfProcessor.NotificationWaitApplicant(request);
+                return PDFDocuments.PdfProcessor.NotificationWaitApplicant(request, benefits);
             }
 
             using (var ms = new MemoryStream())
@@ -264,16 +271,80 @@ namespace RestChild.DocumentGeneration
                             new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                 new Text("При себе необходимо иметь: ") {Space = SpaceProcessingModeValues.Preserve})));
 
-                    var docs = new List<string>
+
+                    List<string> docs = new List<string>
                     {
                         "документ, удостоверяющий личность заявителя;",
                         "документы, подтверждающие, что заявитель является родителем ребёнка (свидетельство о рождении ребенка, в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения);",
                         "документ, подтверждающий место жительства ребёнка, лица из числа детей-сирот и детей, оставшихся без попечения родителей, в городе Москве;",
                         "документ, подтверждающий полномочия заявителя, сопровождающего лица (в случае организации совместного выездного отдыха) из числа законных представителей – родителей, опекунов, попечителей, приемных родителей, патронатных воспитателей ребёнка (договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие статус ребенка);",
-                        "документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);",
+                       "документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);",
                         "документ, подтверждающий полномочия доверенного лица для сопровождения во время отдыха и оздоровления (в случае организации совместного выездного отдыха и сопровождения ребёнка доверенным лицом для сопровождения во время отдыха и оздоровления и подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала) (нотариально заверенное согласие или доверенность);",
                         "документ, подтверждающий отнесение ребёнка, к одной из категорий детей, находящихся в трудной жизненной ситуации и указанных в пунктах 3.1.3, 3.1.5 - 3.1.13 Порядка, лица из числа детей-сирот к категории лиц из числа детей-сирот и детей, оставшихся без попечения родителей (заключение медико-социальной экспертизы, заключение Центральной психолого-медико-педагогической комиссии города Москвы, справки уполномоченного учреждения социальной защиты населения города Москвы и/или федеральных органов);"
                     };
+
+                    if (benefits.Count() >= 0)
+                    {
+                        docs.Clear();
+                        docs.Add("документ, удостоверяющий личность заявителя;");
+
+                        docs.Add("документ, подтверждающий место жительства ребенка в городе Москве;");
+                        docs.Add("документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;");
+                        docs.Add("документы, подтверждающие, что заявитель является родителем (законным представителем) ребенка: свидетельство о рождении ребенка*, договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие полномочия законного представителя ребенка;");
+                        docs.Add("документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);");
+
+                        docs.Add("* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени");
+                        foreach (BenefitType benefit in benefits)
+                        {
+                            if (benefit.ExnternalUid.Contains("52"))//дети-сироты и оставшиеся без попечения родителей...
+                            {
+                                List<string> innerList = new List<string>
+                                {
+                                    "документ, удостоверяющий личность ребенка;",
+                                    "документ, подтверждающий полномочия заявителя, сопровождающего лица(в случае организации совместного выездного отдыха) из числа законных представителей – опекунов, попечителей, приемных родителей, патронатных воспитателей ребенка(договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие статус ребенка);",
+                                    "документ, подтверждающий полномочия доверенного лица для сопровождения во время отдыха и оздоровления (в случае организации совместного выездного отдыха и сопровождения ребенка доверенным лицом для сопровождения во время отдыха и оздоровления и подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала) (нотариально заверенное согласие или доверенность);",
+
+                                };
+                                
+
+                                docs.InsertRange(4,innerList);
+                                docs.Remove("документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;");
+                                docs.Remove("* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени");
+                            }
+                            if (benefit.ExnternalUid.Contains("24"))//дети-инвалиды, дети с ограниченными возможностями...
+                            {
+                                docs.Insert(1,"документ, удостоверяющий личность ребенка;");
+                                docs.Insert(3, "документ, подтверждающий отнесение ребенка к категории, указанной в заявлении (заключение медико-социальной экспертизы или заключение Центральной психолого-медико-педагогической комиссии города Москвы**);");
+                                docs.Insert(5,"документ, подтверждающий полномочия доверенного лица для сопровождения во время отдыха и оздоровления (в случае организации совместного выездного отдыха и сопровождения ребенка доверенным лицом для сопровождения во время отдыха и оздоровления и подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала) (нотариально заверенное согласие или доверенность);");
+                                docs.Remove("документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;");
+                                docs.Add("** является документом, подтвержающим категорию, только в случае указания на необходимость предоставления ребенку специальных условий обучения по адаптированной основной образовательной программе");
+                            }
+                            if (benefit.ExnternalUid.Contains("48"))//дети из малообеспеченных семей
+                            {
+
+
+                                docs.Insert(1,"документ, удостоверяющий личность ребенка;");
+                                docs.Insert(5,"документ, подтверждающий полномочия доверенного лица для сопровождения во время отдыха и оздоровления (в случае организации совместного выездного отдыха и сопровождения ребенка доверенным лицом для сопровождения во время отдыха и оздоровления и подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала) (нотариально заверенное согласие или доверенность);");
+                                docs.Remove("документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;");
+                            }
+
+                            if (benefit.Id ==48||benefit.Id==67)//лица из числа детей-сирот и детей, оставших без попечения...
+                            {
+
+
+                                docs.Insert(1,"документ, подтверждающий место жительства лица из числа детей-сирот и детей, оставшихся без попечения родителей, в городе Москве;");
+                                docs.Insert(2,"документ, подтверждающий отнесение лица из числа детей-сирот и детей, оставшихся без попечения родителей, к категории лиц из числа детей-сирот и детей, оставшихся без попечения родителей.");
+                                docs.Remove("документ, подтверждающий место жительства ребенка в городе Москве;");//11
+                                docs.Remove("документы, подтверждающие, что заявитель является родителем (законным представителем) ребенка: свидетельство о рождении ребенка, договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие полномочия законного представителя ребенка;");//11
+                                docs.Remove("документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;");//10;
+                                docs.Remove("* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени");
+                            }
+
+                           
+
+                        }
+                    }
+
 
                     foreach (var docText in docs)
                     {
@@ -389,7 +460,7 @@ namespace RestChild.DocumentGeneration
 
                     doc.AppendChild(
                         new Paragraph(
-                            new ParagraphProperties(new Justification { Val = JustificationValues.Center },
+                            new ParagraphProperties(new Justification { Val = JustificationValues.Both },
                             new Run(titleRequestRunProperties.CloneNode(true),
                                 new Text($"Уважаемый(ая) {applicant.LastName} {applicant.FirstName} {applicant.MiddleName},")
                                     { Space = SpaceProcessingModeValues.Preserve }))));
@@ -410,7 +481,7 @@ namespace RestChild.DocumentGeneration
                                 new Indentation {FirstLine = FirstLineIndentation600.ToString()},
                                 new SpacingBetweenLines {After = Size20}),
                             new Run(titleRequestRunProperties.CloneNode(true),
-                                new Text("В период второго этапа заявочной кампании (с 7 по 21 февраля 2021 г.) Вам необходимо дополнить Ваше заявление сведениями о конкретной организации отдыха и оздоровления. Выбор конкретной организации отдыха и оздоровления осуществляется из числа предлагаемых ГАУК \"МОСГОРТУР\" в соответствии с указанными Вами на первом этапе заявочной кампании сведениями о приоритетном времени, направлении отдыха и оздоровления и количестве детей.")
+                                new Text("В период второго этапа заявочной кампании (с 7 по 21 февраля 2022 г.) Вам необходимо дополнить Ваше заявление сведениями о конкретной организации отдыха и оздоровления. Выбор конкретной организации отдыха и оздоровления осуществляется из числа предлагаемых ГАУК \"МОСГОРТУР\" в соответствии с указанными Вами на первом этапе заявочной кампании сведениями о приоритетном времени, направлении отдыха и оздоровления и количестве детей.")
                                     {Space = SpaceProcessingModeValues.Preserve})
                         ));
 
@@ -437,7 +508,7 @@ namespace RestChild.DocumentGeneration
                                 new Indentation {FirstLine = FirstLineIndentation600.ToString()},
                                 new SpacingBetweenLines {After = Size20}),
                             new Run(titleRequestRunProperties.CloneNode(true),
-                                new Text("В случае подачи заявления при личном обращении в офисе ГАУК \"МОСГОРТУР\", дополнение формы заявления сведениями о конкретной организации отдыха и оздоровления возможно только при личном обращении заявителя в офис ГАУК \"МОСГОРТУР\" по адресу: г. Москва, Малый Харитоньевский переулок д. 6 стр. 3.")
+                                new Text("В случае подачи заявления при личном обращении в офисе ГАУК \"МОСГОРТУР\", дополнение формы заявления сведениями о конкретной организации отдыха и оздоровления возможно только при личном обращении заявителя в офис ГАУК \"МОСГОРТУР\" по адресу: г. Москва, Малый Харитоньевский переулок д. 6, стр. 3.")
                                     {Space = SpaceProcessingModeValues.Preserve})
                         ));
 
@@ -460,7 +531,7 @@ namespace RestChild.DocumentGeneration
                                 new Indentation {FirstLine = FirstLineIndentation600.ToString()},
                                 new SpacingBetweenLines {After = Size20}),
                             new Run(titleRequestRunProperties.CloneNode(true),
-                                new Text("В случае если на втором этапе заявочной кампании Вас не устроит ни один из вариантов организаций отдыха и оздоровления, предлагаемых ГАУК \"МОСГОРТУР\", во втором этапе заявочной кампании в период с 7 по 21 февраля 2021 г. Вам необходимо отказаться от всех предложенных организаций отдыха и оздоровления.")
+                                new Text("В случае если на втором этапе заявочной кампании Вас не устроит ни один из вариантов организаций отдыха и оздоровления, предлагаемых ГАУК \"МОСГОРТУР\", на втором этапе заявочной кампании в период с 7 по 21 февраля 2022 г. Вам необходимо отказаться от всех предложенных организаций отдыха и оздоровления.")
                                     {Space = SpaceProcessingModeValues.Preserve})
                         ));
 
@@ -470,7 +541,7 @@ namespace RestChild.DocumentGeneration
                                 new Indentation { FirstLine = FirstLineIndentation600.ToString() },
                                 new SpacingBetweenLines { After = Size20 }),
                             new Run(titleRequestRunProperties.CloneNode(true),
-                                new Text("При подаче заявления через подсистему \"личный кабинет\" Портала для отказа от всех предложенных организаций отдыха и оздоровления необходимо оформить отказ, нажав соответствующую \"галочку\" в интерактивном поле Портала: \"Я отказываюсь от предложенных вариантов организации отдыха и оздоровления\".")
+                                new Text("При подаче заявления через подсистему \"личный кабинет\" Портала для отказа от всех предложенных организаций отдыха и оздоровления необходимо нажать соответствующую \"галочку\" в интерактивном поле Портала: \"Я отказываюсь от предложенных вариантов организаций отдыха и оздоровления\".")
                                     { Space = SpaceProcessingModeValues.Preserve })
                         ));
 
@@ -492,7 +563,7 @@ namespace RestChild.DocumentGeneration
                             new Run(new RunProperties().SetFont().SetFontSize(Size28).Bold(), new Text(Space))));
 
 
-                    SignBlockNotification2020(doc, account, "Исполнитель:");
+                    SignWorkerBlock(doc, account, "Исполнитель:");
 
                     mainPart.Document = doc;
                 }
@@ -661,7 +732,7 @@ namespace RestChild.DocumentGeneration
                                         new SpacingBetweenLines {After = Size20}),
                                     new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                         new Text(
-                                                "Данные ребенка/лица из числа детей-сирот и детей, оставшихся без попечения родителей: ")
+                                                "Данные лиц, указанных в путевке ")
                                             {Space = SpaceProcessingModeValues.Preserve}),
                                     new Run(titleRequestRunPropertiesItalic.CloneNode(true),
                                         new Text(
@@ -688,7 +759,7 @@ namespace RestChild.DocumentGeneration
                                     new SpacingBetweenLines {After = Size20}),
                                 new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                     new Text(
-                                            "Данные ребенка/лица из числа детей-сирот и детей, оставшихся без попечения родителей: ")
+                                            "Данные лиц, указанных в путевке: ")
                                         {Space = SpaceProcessingModeValues.Preserve}),
                                 new Run(titleRequestRunPropertiesItalic.CloneNode(true),
                                     new Text(
@@ -899,7 +970,7 @@ namespace RestChild.DocumentGeneration
                                     new ParagraphProperties(new Justification {Val = JustificationValues.Left},
                                         new SpacingBetweenLines {After = Size20}),
                                     new Run(titleRequestRunPropertiesBold.CloneNode(true),
-                                        new Text("Данные ребенка: ") {Space = SpaceProcessingModeValues.Preserve}),
+                                        new Text("Данные лиц, указанных в сертификате: ") {Space = SpaceProcessingModeValues.Preserve}),
                                     new Run(titleRequestRunPropertiesItalic.CloneNode(true),
                                         new Text(
                                             $"{child.LastName} {child.FirstName} {child.MiddleName}, {child.DateOfBirth.FormatExGR(string.Empty)}"))));
@@ -1288,7 +1359,7 @@ namespace RestChild.DocumentGeneration
             // неучастие в выборе альтернативного варианта (мини ЛОК 2020)
             var dr5 = ConfigurationManager.AppSettings["NotificationRefuseDeclineDiscardingChoose"].LongParse() ?? 201911;
             //неучастие заявителя во втором этапе заявочной кампании
-            var dr6 = ConfigurationManager.AppSettings["NotParticipateInSecondStage"].LongParse() ?? 201704;
+            var dr6 = ConfigurationManager.AppSettings["NotParticipateInSecondStage"].LongParse() ?? 201911;
 
 
             var request = unitOfWork.GetById<Request>(requestId);
@@ -1302,19 +1373,19 @@ namespace RestChild.DocumentGeneration
 
             if (request.StatusId == (long)StatusEnum.CancelByApplicant)
             {
-                return NotificationRefuse1090(request);
+                return NotificationRefuse1090(request, account);
             }
 
             if (request.StatusId == (long)StatusEnum.Reject && request.DeclineReasonId == dr2)
             {
-                var doc = NotificationRefuse10802(request);
+                var doc = NotificationRefuse10802(request, account);
                 doc.RequestFileTypeId = (long) RequestFileTypeEnum.NotificationRefuse;
                 return doc;
             }
 
             if (request.StatusId == (long)StatusEnum.Reject && request.DeclineReasonId == dr3)
             {
-                var doc = NotificationRefuse10805(unitOfWork, request);
+                var doc = NotificationRefuse10805(unitOfWork, request, account);
                 doc.RequestFileTypeId = (long) RequestFileTypeEnum.NotificationRefuse;
                 return doc;
             }

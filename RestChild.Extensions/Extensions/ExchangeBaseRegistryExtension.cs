@@ -10,6 +10,7 @@ using RestChild.Comon.Dto;
 using RestChild.Comon.Enumeration;
 using RestChild.Comon.Exchange.Cpmpk;
 using RestChild.Comon.Exchange.EGRZagz;
+using RestChild.Comon.Exchange.FGISFRI;
 using RestChild.Comon.Exchange.Passport;
 using RestChild.Comon.Exchange.PassportRegistration;
 using RestChild.Comon.Exchange.Snils;
@@ -261,6 +262,7 @@ namespace RestChild.Extensions.Extensions
                     return "получение СНИЛС";
                 case ExchangeBaseRegistryTypeEnum.PassportDataBySNILS:
                     return "получение паспортного досье";
+                case ExchangeBaseRegistryTypeEnum.GetEGRZAGS:
                 case ExchangeBaseRegistryTypeEnum.RelationshipSmev:
                     return "проверку свидетельства о рождении";
                 case ExchangeBaseRegistryTypeEnum.Snils:
@@ -278,6 +280,8 @@ namespace RestChild.Extensions.Extensions
                     return "проверку законного представительства";
                 case ExchangeBaseRegistryTypeEnum.FRIExchange:
                     return "проверку сведений ФРИ";
+                case ExchangeBaseRegistryTypeEnum.GetFGISFRI:
+                    return "проверку выписки сведеней об инвалиде";
             }
 
             return "-";
@@ -711,8 +715,19 @@ namespace RestChild.Extensions.Extensions
                         res.FRIResponse = Serialization.Deserialize<DisabilityExtractResponse>(xmlData);
                     }
                 }
-            }
 
+                //Получение выписки сведеней об инвалиде
+                //TODO
+                if (res.Type == ExchangeBaseRegistryTypeEnum.GetFGISFRI)
+                {
+                    var xmlData = resultData.FirstOrDefault()?.OuterXml;
+                    if (!string.IsNullOrWhiteSpace(xmlData))
+                    {
+                        res.FGISFRIResponse = Serialization.Deserialize<ExtractionInvalidDataResponse>(xmlData);
+                    }
+                }
+
+            }
             return res;
         }
     }

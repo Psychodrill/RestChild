@@ -212,7 +212,7 @@
                 <div class="text-center">
                     <button class="btn btn-default btn-primary" type="submit" name="actionName" value="@AnalyticReportController.ShowActionName">Сформировать</button>
                     <button class="btn btn-default" type="submit" name="actionName" value="@AnalyticReportController.ExportActionName">Выгрузить в Excel</button>
-                    @Html.ActionLink("Очистить", "Index", new { Model.ReportType }, new { @class = "btn btn-default" })
+                    <input id='btnClearFields' type='button' class='btn btn-default' value='Очистить'/>                    
                 </div>
             }
         </fieldset>

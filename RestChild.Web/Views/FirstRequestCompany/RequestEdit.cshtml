@@ -34,6 +34,7 @@
             @Html.HiddenFor(m => m.Data.HotelsId)
             @Html.HiddenFor(m => m.Data.OrganizationId)
 
+
             @if (Model.BookingRequest != null)
             {
                 @Html.HiddenFor(m => m.BookingRequest.Attendants)
@@ -75,9 +76,9 @@
                                     </button>
                                 }
 
-                                <!--<button type="button" class="btn btn-default btn-primary copy-request">
+                                @*<button type="button" class="btn btn-default btn-primary copy-request">
                                     Скопировать данные в новое заявление
-                                </button> -->
+                                </button>*@
 
                                 if (Model.Data.StatusId == (long)StatusEnum.Draft && Security.HasRight(AccessRightEnum.RemoveDraft))
                                 {
@@ -85,10 +86,10 @@
                                         Удалить
                                     </button>
                                 }
-                                @*if (Model.Data.StatusId == (long)StatusEnum.CertificateIssued /*&& (Model.Data.TypeOfRestId != (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationGroup || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationYouthRest)*/)
-                                    {
-                                        <a class="btn btn-default btn-primary edit-control" target="_blank" href="@Url.Action("RequestEdit", "FirstRequestCompany", new { requestId = Model.Data.Id, reApply = true })"> Тестовое заявление </a>
-                                    }*@
+                                if (Model.Data.StatusId.HasValue && Model.Data.StatusId != (long)StatusEnum.Draft && Model.Data.StatusId != (long)StatusEnum.RegistrationDecline && Model.Data.StatusId != (long)StatusEnum.RegistrationDeclineBecauseDuplicate/*&& (Model.Data.TypeOfRestId != (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationGroup || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationYouthRest)*/)
+                                {
+                                    <a class="btn btn-default btn-primary edit-control" target="_blank" href="@Url.Action("RequestEdit", "FirstRequestCompany", new { requestId = Model.Data.Id, reApply = true })">Копировать заявление в черновик</a>
+                                }
                                 foreach (StatusAction action in Model.Actions)
                                 {
                                     <button type="button" class="btn btn-default edit-control" onclick="@(new[] { AccessRightEnum.Status.FcToReject, AccessRightEnum.Status.ToRejectFromCertificateIssued, AccessRightEnum.Status.ToReject, AccessRightEnum.Status.ToRejectNormal, AccessRightEnum.Status.ToCancelByApplicant }.Contains(action.Code) ? " confirmButtonWithDecline" : "confirmButton")('@action.Name', '@action.Code', '@action.ToStatusId') ">
@@ -378,15 +379,108 @@
             <div class="modal-header container-fluid">
                 <div id="selectAllBlock" class='checkbox'>
                     <label>
-                        <input name="selectAll" onclick='SelectAll()' type='checkbox' value>
+                        <input name="selectAll" onclick='SelectAll()' type='checkbox'>
                         <input name="selectAll" type='hidden' value='false'>
                         Выделить все
                     </label>
                 </div>
-                <div id="copyOptions"></div>
+                <div id="copyOptions">
+                    <div id="Info" class='checkbox'>
+                        <ul>
+                            <li>
+                                <label>
+                                    <input name="generalInfo" type='checkbox'>
+                                    <input name="generalInfo" type='hidden' value='false'>
+                                    Общие сведения
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input name="visitTargetAndTimeOfRest" type='checkbox'>
+                                    <input name="visitTargetAndTimeOfRest" type='hidden' value='false'>
+                                    Цель обращения
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input name="applicantInfo" type='checkbox'>
+                                    <input name="applicantInfo" type='hidden' value='false'>
+                                    Сведения о заявителе
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input name="attendantInfo" type='checkbox'>
+                                    <input name="attendantInfo" type='hidden' value='false'>
+                                    Сведения о сопровождающих
+                                </label>
+                                <ul>
+                                    @{ foreach (var attendant in Model.Data.Attendant)
+                                        {
+                                            <li>
+                                                <label>
+                                                    <input name="attendant" type='checkbox' >
+                                                    <input name="attendant" type='hidden' value='false'>
+                                                    @attendant.LastName @attendant.FirstName @attendant.MiddleName
+                                                </label>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </li>
+
+                            <li>
+                                <label>
+                                    <input name="vouchers" type='checkbox' disabled>
+                                    <input name="vouchers" type='hidden' value='false'>
+                                    Путёвки
+                                </label>
+                            </li>
+
+                            <li>
+                                <label>
+                                    <input name="childInfo" type='checkbox'>
+                                    <input name="childInfo" type='hidden' value='false'>
+                                    Сведения о детях
+                                </label>
+                                <ul>
+                                    @{ foreach (var child in Model.Data.Child)
+                                        {
+                                            <li>
+                                                <label>
+                                                    <input name="child" onclick='SelectChild()' type='checkbox'>
+                                                    <input name="child" type='hidden' value='false'>
+                                                    @child.LastName @child.FirstName @child.MiddleName
+                                                </label>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </li>
+                            <li>
+                                <label>
+                                    <input name="bankDetails" type='checkbox'>
+                                    <input name="bankDetails" type='hidden' value='false'>
+                                    Банковские реквизиты
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input name="documents" type='checkbox'>
+                                    <input name="documents" type='hidden' value='false'>
+                                    Документы
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
             </div>
             <div class="modal-footer">
-                <button id="submitRequestCopy" type="button" class="btn btn-default btn-primary">Копировать</button>
+                <button id="submitRequestCopy" type="button" class="btn btn-default btn-primary" @*onclick="@(Url.Action("CopyRequest", "FirstRequestCompany", new { requestId = Model.Data.Id }))"*@>
+                 Копировать
+                </button>
                 <input id="@Model.Data.Id" class="requestToCopy" type="hidden" />
                 @{
                     foreach (var attendant in Model.Data.Attendant)

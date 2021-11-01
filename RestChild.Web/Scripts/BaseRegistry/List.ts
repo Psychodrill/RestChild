@@ -6,6 +6,7 @@
     let getCPMPK = 'EDC78633-AC2A-41E6-BD7E-5E6FFF695346';
     //  Проверка адреса регистрации
     let getRegistrationAddress = '38D6E2D8-CE98-4916-A267-D4469FDE6295';
+    let getExtractFromFGISFRI = '3e8fe0c1-1501-477a-b492-5fa1037d1d97';
 
     $('select').select2();
     $('.date input, input.date').inputmask("d.m.y", {

@@ -32,6 +32,10 @@ namespace RestChild.Web.Controllers
         ///     Проверка адреса регистрации
         /// </summary>
         public const string GetRegistrationAddress = "38D6E2D8-CE98-4916-A267-D4469FDE6295";
+        /// <summary>
+        /// Проверка в ФГИС ФРИ инвалида
+        /// </summary>
+        public const string GetExtractFromFGISFRI = "3e8fe0c1-1501-477a-b492-5fa1037d1d97";
 
         public WebExchangeController ExchangeController { get; set; }
 
@@ -139,6 +143,11 @@ namespace RestChild.Web.Controllers
                 {
                     res = ExchangeController.AdditionallyCheckRegistrationAddress(model.RequestBlock);
                 }
+
+                //if (model.ActionString == GetExtractFromFGISFRI)
+                //{
+                //    res = ExchangeController.ExtractFromFGISFRI(model.RequestBlock);
+                //}
 
                 if (res?.HasError ?? false)
                 {

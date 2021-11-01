@@ -19,107 +19,114 @@
 			@Html.HiddenFor(model => model.PhotoUrl)
 			@Html.HiddenFor(model => model.LastUpdateTick)
 			@Html.HiddenFor(model => model.ForSite)
-			<fieldset class="form-horizontal">
-				<div class="form-group">
-					<div class="col-md-12">
-						<button type="submit" class="btn btn-default btn-primary">
-							<i class="glyphicon glyphicon-pencil"></i> Сохранить
-						</button>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Название<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Name, new { @class = "form-control", autocomplete = "off" })
-						@Html.ValidationMessageFor(model => model.Name, "Заполните поле")
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Страна</label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.CountryId, new { @class = "form-control", autocomplete = "off", placeholder= "Введите первые буквы названия страны" })
-						@Html.ValidationMessageFor(model => model.CountryId, "Заполните поле")
-						@Html.Hidden("_CountryId", Model.CountryId, new { @class = "form-control", autocomplete = "off", Id = "_CountryId" })
-						@Html.Hidden("_CountryName", Model.NullSafe(m => m.Country.FullName), new { @class = "form-control", autocomplete = "off", Id = "_CountryName" })
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Описание</label>
-					<div class="col-md-9">
-						@Html.TextAreaFor(model => model.Description, new { @class = "form-control", autocomplete = "off" })
-						@Html.ValidationMessageFor(model => model.Description, "Заполните поле")
-					</div>
-				</div>
+        <fieldset class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-default btn-primary">
+                        <i class="glyphicon glyphicon-pencil"></i> Сохранить
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Название<span class="requared">*</span></label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control", autocomplete = "off" })
+                    @Html.ValidationMessageFor(model => model.Name, "Заполните поле")
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Страна</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.CountryId, new { @class = "form-control", autocomplete = "off", placeholder = "Введите первые буквы названия страны" })
+                    @Html.ValidationMessageFor(model => model.CountryId, "Заполните поле")
+                    @Html.Hidden("_CountryId", Model.CountryId, new { @class = "form-control", autocomplete = "off", Id = "_CountryId" })
+                    @Html.Hidden("_CountryName", Model.NullSafe(m => m.Country.FullName), new { @class = "form-control", autocomplete = "off", Id = "_CountryName" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Описание</label>
+                <div class="col-md-9">
+                    @Html.TextAreaFor(model => model.Description, new { @class = "form-control", autocomplete = "off" })
+                    @Html.ValidationMessageFor(model => model.Description, "Заполните поле")
+                </div>
+            </div>
 
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Группа</label>
-					<div class="col-md-9">
-						@Html.DropDownListFor(m => m.GroupId, new SelectList(ViewBag.Groups, "Id", "Name").InsertAt(new SelectListItem(){Value = "0", Text = "-- Не выбрано --"}, 0), new { @class = "form-control select2", autocomplete = "off", @id = "groupId" })
-					</div>
-				</div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Группа</label>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(m => m.GroupId, new SelectList(ViewBag.Groups, "Id", "Name").InsertAt(new SelectListItem() { Value = "0", Text = "-- Не выбрано --" }, 0), new { @class = "form-control select2", autocomplete = "off", @id = "groupId" })
+                </div>
+            </div>
 
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Цели обращения</label>
-					<div class="col-md-9">
-						@Html.ListBoxFor(m => m.TypeOfRestIds, new SelectList(ViewBag.TypeOfRests, "Id", "Name").InsertAt(new SelectListItem(){Value = "0", Text = "-- Не выбрано --"}, 0), new { @class = "form-control select2", autocomplete = "off", @id = "TypeOfRestIds" })
-					</div>
-				</div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Цели обращения</label>
+                <div class="col-md-9">
+                    @Html.ListBoxFor(m => m.TypeOfRestIds, new SelectList(ViewBag.TypeOfRests, "Id", "Name").InsertAt(new SelectListItem() { Value = "0", Text = "-- Не выбрано --" }, 0), new { @class = "form-control select2", autocomplete = "off", @id = "TypeOfRestIds" })
+                </div>
+            </div>
 
 
-                <div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle="tooltip" data-placement="right" title="При установке признака будет доступен для выбора">
-							@Html.CheckBoxFor(model => model.IsActive) Действующий
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-9 col-md-offset-3">
-						<div class="checkbox">
-							<label class="control-label" data-toggle="tooltip" data-placement="right" title="При установке признака будет отображаться на МПГУ">
-								@Html.CheckBoxFor(m => m.ForMpgu)
-								Отображать на МПГУ
-							</label>
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle="tooltip" data-placement="right" title="При установке признака в заявлениях, поданных на данное направление будет требоваться ввод сведений заграничного паспорта">
-							@Html.CheckBoxFor(model => model.IsForegin) Необходим загранпаспорт
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle="tooltip" data-placement="right" title="При установке в картоке бронирования будет отображаться соответствующий признак.">
-							@Html.CheckBoxFor(model => model.ZoneOfSea) Место у моря
-						</label>
-					</div>
-				</div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="При установке признака будет доступен для выбора">
+                        @Html.CheckBoxFor(model => model.IsActive) Действующий
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-3">
+                    <div class="checkbox">
+                        <label class="control-label" data-toggle="tooltip" data-placement="right" title="При установке признака будет отображаться на МПГУ">
+                            @Html.CheckBoxFor(m => m.ForMpgu)
+                            Отображать на МПГУ
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="При установке признака в заявлениях, поданных на данное направление будет требоваться ввод сведений заграничного паспорта">
+                        @Html.CheckBoxFor(model => model.IsForegin) Необходим загранпаспорт
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="При установке в картоке бронирования будет отображаться соответствующий признак.">
+                        @Html.CheckBoxFor(model => model.ZoneOfSea) Место у моря
+                    </label>
+                </div>
+            </div>
 
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle="tooltip" data-placement="right" title="Элемент для группировки направлений отдыха.">
-							@Html.CheckBoxFor(model => model.NotForSelect) Групповой элемент
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-9 col-md-offset-3">
-						<img id="imgPreview" src="@ViewBag.ImgUrl" width="256" height="330"/>
-						<button id="editImageBtn" type="button" class="btn btn-primary glyphicon glyphicon-pencil voffset-6 hidden"></button>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-9 col-md-offset-3">
-						<span class="btn btn-primary btn-file">
-							<span class="glyphicon glyphicon-folder-open"></span><span> Открыть изображение</span><input type='file' id="photo" name="photo" accept="image/jpeg,image/png" />
-						</span>
-						<button type="button" class="btn btn-danger @(string.IsNullOrEmpty(Model.PhotoUrl)?"hidden":"")" id="btnRemoveFile"><i class="glyphicon glyphicon-remove"></i> Удалить</button>
-					</div>
-				</div>
-			</fieldset>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Элемент для группировки направлений отдыха.">
+                        @Html.CheckBoxFor(model => model.NotForSelect) Групповой элемент
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Необходимо указать тип транспорта при выборе этого направления отдыха.">
+                        @Html.CheckBoxFor(model => model.NeedTypeOfTransport) Необходимо указать тип транспорта
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-3">
+                    <img id="imgPreview" src="@ViewBag.ImgUrl" width="256" height="330" />
+                    <button id="editImageBtn" type="button" class="btn btn-primary glyphicon glyphicon-pencil voffset-6 hidden"></button>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-3">
+                    <span class="btn btn-primary btn-file">
+                        <span class="glyphicon glyphicon-folder-open"></span><span> Открыть изображение</span><input type='file' id="photo" name="photo" accept="image/jpeg,image/png" />
+                    </span>
+                    <button type="button" class="btn btn-danger @(string.IsNullOrEmpty(Model.PhotoUrl)?"hidden":"")" id="btnRemoveFile"><i class="glyphicon glyphicon-remove"></i> Удалить</button>
+                </div>
+            </div>
+        </fieldset>
 		}
 	</div>
 </div>
