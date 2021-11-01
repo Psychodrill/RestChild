@@ -29,13 +29,13 @@ namespace RestChild.Web.Controllers
         #region Working days
 
         /// <summary>
-        ///     Рабочии дни
+        ///     Рабочие дни
         /// </summary>
         [Route("BookingMosgorturReestr/WorkingDays/{Year}/{Month}/{DepartmentId}")]
         public ActionResult WorkingDays(int Year = 0, int Month = 0, int Page = 1, long DepartmentId = 1)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysView))
+            if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysView) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysViewClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysViewBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
@@ -45,6 +45,10 @@ namespace RestChild.Web.Controllers
             {
                 filter.Date = new DateTime(Year, Month, 1);
             }
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysViewClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysView) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysViewBookingDepartment))
+                DepartmentId = 3;
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysViewBookingDepartment) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysView) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysViewClientDepartment))
+                DepartmentId = 4;
             filter.DepartmentId = DepartmentId;
             filter.PageNumber = Page;
             if (DepartmentId > 1)
@@ -62,11 +66,14 @@ namespace RestChild.Web.Controllers
         public ActionResult DayManage(long id = 0, long DepartmentId = 2)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit))
+            if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
-
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment))
+                DepartmentId = 3;
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
+                DepartmentId = 4;
             ViewBag.Targets = ApiController.GetDayTargets(DepartmentId);
             ViewBag.Departments = ApiController.GetDepartments();
             var result = ApiController.GetModel(id, DepartmentId);
@@ -82,10 +89,14 @@ namespace RestChild.Web.Controllers
         public ActionResult DeleteDay(long Id = 0, long DepartmentId = 2)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit))
+            if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment))
+                DepartmentId = 3;
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
+                DepartmentId = 4;
             var result = ApiController.GetModel(Id, DepartmentId);
             ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
             ViewBag.Benefits = ApiController.GetChildrenBenefits();
@@ -109,10 +120,14 @@ namespace RestChild.Web.Controllers
         public ActionResult SaveDay(Models.MGTWorkingDayModel result)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit))
+            if (!Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment))
+                result.DepartmentId = 3;
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
+                result.DepartmentId = 4;
             ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
             ViewBag.Benefits = ApiController.GetChildrenBenefits();
             ViewBag.Departments = ApiController.GetDepartments();
@@ -251,7 +266,7 @@ namespace RestChild.Web.Controllers
         public ActionResult GetObjectHistory(long DayId)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView))
+            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
@@ -268,11 +283,10 @@ namespace RestChild.Web.Controllers
         public ActionResult TransferDay(long DayId, DateTime tdate, long DepartmentId)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView))
+            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
-
             var result = ApiController.GetModel(DayId, DepartmentId);
 
             result.Date = tdate.Date;
@@ -301,16 +315,19 @@ namespace RestChild.Web.Controllers
         public ActionResult Search(BookingMosgorturReestrFilterModel filter)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView))
+            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewBookingDepartment))
             {
                 return RedirectToAvalibleAction();
-            }
-
+            }           
             filter = filter ?? new BookingMosgorturReestrFilterModel()
             {
                 DateFrom = DateTime.Now.Date,
                 DateTo = DateTime.Now.Date.AddMonths(1),
             };
+            //if (Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewBookingDepartment))
+            //    filter.DepartmentId = 3;
+            //if (Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewBookingDepartment) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewClientDepartment))
+            //    filter.DepartmentId = 4;
             filter.Result = ApiController.Get(filter);
             ViewBag.Targets = ApiController.GetTargets();
             ViewBag.Statuses = ApiController.GetStatuses();
@@ -323,14 +340,17 @@ namespace RestChild.Web.Controllers
         /// Вывод view добавления записи на приём
         /// </summary>
         /// <returns></returns>
-        public ActionResult InsertBooking(long DepartmentId)
+        public ActionResult InsertBooking(long DepartmentId = 2)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreate))
+            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreate) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreateClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreateBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
-
+            if (Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreateClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreate) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreateBookingDepartment))
+                DepartmentId = 3;
+            if (Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreateBookingDepartment) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreate) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreateClientDepartment))
+                DepartmentId = 4;
             var booking = new Models.BookingMosgorturReestrBooking();
             booking.DepartmentId = DepartmentId;
             ViewBag.Targets = ApiController.GetDayTargets(DepartmentId);
@@ -361,7 +381,7 @@ namespace RestChild.Web.Controllers
         public ActionResult SaveBooking(Models.BookingMosgorturReestrBooking booking)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreate))
+            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreate) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreateClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreateBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
@@ -448,7 +468,7 @@ namespace RestChild.Web.Controllers
         public ActionResult Update(long Id)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView))
+            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewClientDepartment)&& !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
@@ -466,7 +486,7 @@ namespace RestChild.Web.Controllers
         public ActionResult CancelBooking(long Id)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCancel))
+            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCancel) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCancelClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCancelBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
@@ -480,7 +500,7 @@ namespace RestChild.Web.Controllers
         public ActionResult BookingVisited(long Id)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreate))
+            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreate) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreateClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreateBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
@@ -495,7 +515,7 @@ namespace RestChild.Web.Controllers
         public ActionResult GetGrid(Models.VisitQueue.BookingVisitGridViewFilter model)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreate))
+            if (!Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreate) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreateClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturScheduleBookingCreateBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
