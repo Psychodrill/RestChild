@@ -1188,6 +1188,12 @@ namespace RestChild.Web.Controllers.WebApi
                         AdditionalTypeOfTransportInRequestId = requestData.typeOfTransportAddonSpecified ? requestData.typeOfTransportAddon : (int?)null
                     };
 
+                    //foreach (var child in requestData.childs.child)
+                    //{
+
+                    //}
+                        
+
                     if (entity.DateRequest.HasValue && entity.DateRequest.Value.Year < 2000)
                     {
                         entity.DateRequest = null;
@@ -1542,13 +1548,15 @@ namespace RestChild.Web.Controllers.WebApi
 
                     entity.Attendant = attendants;
                     entity.Child = new List<Child>();
-
+                    
                     if (requestData.childs?.child != null)
                     {
+                        entity.NeedSendForCPMPK = true;
                         var children = new List<Child>();
                         var indexChild = -1;
                         foreach (var child in requestData.childs.child)
                         {
+                            
                             var item = new Child
                             {
                                 Id = indexChild,
