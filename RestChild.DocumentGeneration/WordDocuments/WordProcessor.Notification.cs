@@ -42,7 +42,7 @@ namespace RestChild.DocumentGeneration
             var forMpguPortal = request.SourceId == (long) SourceEnum.Mpgu;
             if (forMpguPortal)
             {
-                return PDFDocuments.PdfProcessor.NotificationWaitApplicant(request, benefits);
+                return PDFDocuments.PdfProcessor.NotificationWaitApplicant(request, benefits, account);
             }
 
             using (var ms = new MemoryStream())
@@ -213,9 +213,10 @@ namespace RestChild.DocumentGeneration
                             new Run(titleRequestRunProperties.CloneNode(true),
                                 new Text("пункт 6.4 Порядка организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденного постановлением Правительства Москвы") { Space = SpaceProcessingModeValues.Preserve },
                                 new Break(),
-                                new Text("от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\": \"Необходимость личной явки заявителя в ГАУК \"МОСГОРТУР\".") { Space = SpaceProcessingModeValues.Preserve }
+                                new Text("от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\": ") { Space = SpaceProcessingModeValues.Preserve }),
                                // new Break(),
-                                //new Text("в ГАУК \"МОСГОРТУР\".") { Space = SpaceProcessingModeValues.Preserve }
+                            new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                new Text("\"Необходимость личной явки заявителя в ГАУК \"МОСГОРТУР\".") { Space = SpaceProcessingModeValues.Preserve }
                                 )));
 
                     doc.AppendChild(
