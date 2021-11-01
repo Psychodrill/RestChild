@@ -306,7 +306,7 @@ namespace RestChild.DocumentGeneration
                                 innerListOrphans = new List<string>
                                     {
                                         "документ, удостоверяющий личность заявителя;",
-                                        "документы, подтверждающие, что заявитель является родителем (законным представителем) ребенка: свидетельство о рождении ребенка*, договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие полномочия законного представителя ребенка;",
+                                        "документы, подтверждающие, что заявитель является законным представителем ребенка: свидетельство о рождении ребенка*, договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие полномочия законного представителя ребенка;",
                                         "документ, удостоверяющий личность ребенка;",
                                         "документ, подтверждающий место жительства ребенка в городе Москве;",
                                         "документ, подтверждающий полномочия заявителя, сопровождающего лица(в случае организации совместного выездного отдыха) из числа законных представителей – опекунов, попечителей, приемных родителей, патронатных воспитателей ребенка(договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие статус ребенка);",
@@ -470,7 +470,7 @@ namespace RestChild.DocumentGeneration
                                         new SpacingBetweenLines { After = Size20 },
                                         new Indentation { FirstLine = FirstLineIndentation600.ToString() }),
                                     new Run(titleRequestRunPropertiesBold.CloneNode(true),
-                                        new Text("Дети сироты и дети оставшиеся без попечения родителей, находящиеся под опекой,попечительством, в том числе в приёмной или патронатной семье")
+                                        new Text("Дети сироты и дети оставшиеся без попечения родителей, находящиеся под опекой, попечительством, в том числе в приёмной или патронатной семье")
                                         { Space = SpaceProcessingModeValues.Preserve })));
                         foreach (var docText in innerListOrphans)
                         {
@@ -1045,8 +1045,9 @@ namespace RestChild.DocumentGeneration
                     , (long?) TypeOfRestEnum.MoneyOn7To15
                     , (long?) TypeOfRestEnum.MoneyOn18
                     , (long?) TypeOfRestEnum.MoneyOnInvalidOn4To17
-                    ,(long?)TypeOfRestEnum.RestWithParentsOrphan
-                    //,(long?)TypOfRestEnum.Re
+                    ,(long?) TypeOfRestEnum.RestWithParentsOrphan
+                    ,(long?) TypeOfRestEnum.YouthRestOrphanCamps
+                    ,(long?) TypeOfRestEnum.ChildRestOrphanCamps
                 };
 
             if (request.StatusId == (long) StatusEnum.CertificateIssued &&
@@ -1060,6 +1061,11 @@ namespace RestChild.DocumentGeneration
             {
                 return NotificationAboutCertificate(request, account);
             }
+            if (money.Contains(request.TypeOfRestId))
+            {
+                return NotificationAboutCertificate(request, account);
+            }
+
 
             return NotificationAboutTour(request, account);
         }
