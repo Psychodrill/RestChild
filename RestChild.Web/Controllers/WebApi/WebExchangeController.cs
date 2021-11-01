@@ -1841,6 +1841,8 @@ namespace RestChild.Web.Controllers.WebApi
                         {
                             vm.SameAttendants.Clear();
                             vm.SameAttendantSnils.Clear();
+                            if (vm.Data.TypeOfRestId != (long)TypeOfRestEnum.YouthRestCamps && vm.Data.TypeOfRestId != (long)TypeOfRestEnum.YouthRestCamps)
+                            vm.ApplicantDouble.Clear();
                         }
                             if (vm.SameAttendantSnils.Any() || vm.SameAttendants.Any())
                         {
