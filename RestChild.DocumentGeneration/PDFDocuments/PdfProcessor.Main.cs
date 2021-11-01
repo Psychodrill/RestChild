@@ -1003,7 +1003,15 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     List<string> innerListOrphans = new List<string>();
                     List<string> innerListDisabled = new List<string>();
                     List<string> innerListLowIncome = new List<string>();
-                    List<string> innerListCommon = new List<string>();
+                    List<string> innerListSacrifice = new List<string>();
+                    List<string> innerListRefugee = new List<string>();
+                    List<string> innerListExtreme = new List<string>();
+                    List<string> innerListViolence = new List<string>();
+                    List<string> innerListInvalid = new List<string>();
+                    List<string> innerListTerror = new List<string>();
+                    List<string> innerListMilitary = new List<string>();
+                    List<string> innerListInvalidParents = new List<string>();
+                    List<string> innerListDeviant = new List<string>();
                     List<string> innerListOrphansYouth = new List<string>();
 
 
@@ -1066,9 +1074,121 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                                     };
                             }
 
-                            if (!benefit.ExnternalUid.Contains("48") && !benefit.ExnternalUid.Contains("24") && !benefit.ExnternalUid.Contains("52"))
+                            if (benefit.ExnternalUid.Contains("57,71,72"))
                             {
-                                innerListCommon = new List<string>
+                                innerListSacrifice = new List<string>
+                                    {
+                                        "документ, удостоверяющий личность заявителя;",
+                                        "документы, подтверждающие, что заявитель является родителем ребенка – свидетельство о рождении ребенка*;",
+
+                                        "документ, подтверждающий место жительства ребенка в городе Москве;",
+                                        "документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;",
+                                        "документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);",
+                                        "* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени."
+
+                                    };
+                            }
+                            if (benefit.SameBenefitId==4 )
+                            {
+                                innerListRefugee = new List<string>
+                                    {
+                                        "документ, удостоверяющий личность заявителя;",
+                                        "документы, подтверждающие, что заявитель является родителем ребенка – свидетельство о рождении ребенка*;",
+
+                                        "документ, подтверждающий место жительства ребенка в городе Москве;",
+                                        "документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;",
+                                        "документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);",
+                                        "* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени."
+
+                                    };
+                            }
+                            if (benefit.SameBenefitId==36)
+                            {
+                                innerListExtreme = new List<string>
+                                    {
+                                        "документ, удостоверяющий личность заявителя;",
+                                        "документы, подтверждающие, что заявитель является родителем ребенка – свидетельство о рождении ребенка*;",
+
+                                        "документ, подтверждающий место жительства ребенка в городе Москве;",
+                                        "документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;",
+                                        "документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);",
+                                        "* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени."
+
+                                    };
+                            }
+                            if (benefit.SameBenefitId==37)
+                            {
+                                innerListViolence = new List<string>
+                                    {
+                                        "документ, удостоверяющий личность заявителя;",
+                                        "документы, подтверждающие, что заявитель является родителем ребенка – свидетельство о рождении ребенка*;",
+
+                                        "документ, подтверждающий место жительства ребенка в городе Москве;",
+                                        "документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;",
+                                        "документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);",
+                                        "* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени."
+
+                                    };
+                            }
+                            if (benefit.SameBenefitId==47)
+                            {
+                                innerListInvalid = new List<string>
+                                    {
+                                        "документ, удостоверяющий личность заявителя;",
+                                        "документы, подтверждающие, что заявитель является родителем ребенка – свидетельство о рождении ребенка*;",
+
+                                        "документ, подтверждающий место жительства ребенка в городе Москве;",
+                                        "документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;",
+                                        "документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);",
+                                        "* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени."
+
+                                    };
+                            }
+                            if (benefit.SameBenefitId==3)
+                            {
+                                innerListTerror = new List<string>
+                                    {
+                                        "документ, удостоверяющий личность заявителя;",
+                                        "документы, подтверждающие, что заявитель является родителем ребенка – свидетельство о рождении ребенка*;",
+
+                                        "документ, подтверждающий место жительства ребенка в городе Москве;",
+                                        "документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;",
+                                        "документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);",
+                                        "* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени."
+
+                                    };
+                            }
+                            if (benefit.ExnternalUid.Contains("58,71,72"))
+                            {
+                                innerListMilitary = new List<string>
+                                    {
+                                        "документ, удостоверяющий личность заявителя;",
+                                        "документы, подтверждающие, что заявитель является родителем ребенка – свидетельство о рождении ребенка*;",
+
+                                        "документ, подтверждающий место жительства ребенка в городе Москве;",
+                                        "документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;",
+                                        "документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);",
+                                        "* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени."
+
+                                    };
+                            }
+                            if (benefit.ExnternalUid.Contains("56"))
+                            {
+                                innerListInvalidParents = new List<string>
+                                    {
+                                        "документ, удостоверяющий личность заявителя;",
+                                        "документы, подтверждающие, что заявитель является родителем ребенка – свидетельство о рождении ребенка*;",
+
+                                        "документ, подтверждающий место жительства ребенка в городе Москве;",
+                                        "документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;",
+                                        "документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);",
+                                        "* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени."
+
+                                    };
+                            }
+                            if (benefit.SameBenefitId==50)
+                            {
+                                innerListDeviant = new List<string>
                                     {
                                         "документ, удостоверяющий личность заявителя;",
                                         "документы, подтверждающие, что заявитель является родителем ребенка – свидетельство о рождении ребенка*;",
@@ -1177,7 +1297,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                     if (innerListOrphans.Count > 0)
                     {
-                        PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk("Дети сироты и дети оставшиеся без попечения родителей, находящиеся под опекой, попечительством, в том числе в приёмной или патронатной семье", HeaderFont));
+                        PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk("Дети сироты и дети, оставшиеся без попечения родителей, находящиеся под опекой, попечительством, в том числе в приёмной или патронатной семье", HeaderFont));
                         
                         foreach (var docText in innerListOrphans)
                         {
@@ -1213,11 +1333,11 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                     }
 
-                    if (innerListCommon.Count > 0)
+                    if (innerListSacrifice.Count > 0)
                     {
                         PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk("Дети - жертвы вооруженных и межнациональных конфликтов, экологических и техногенных катастроф, стихийных бедствий", HeaderFont));
 
-                        foreach (var docText in innerListCommon)
+                        foreach (var docText in innerListSacrifice)
                         {
 
                             PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk(docText, MainItalicText));
@@ -1225,11 +1345,11 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                     }
 
-                    if (innerListCommon.Count > 0)
+                    if (innerListRefugee.Count > 0)
                     {
                         PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk("Дети из семей беженцев и вынужденных переселенцев", HeaderFont));
 
-                        foreach (var docText in innerListCommon)
+                        foreach (var docText in innerListRefugee)
                         {
 
                             PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk(docText, MainItalicText));
@@ -1237,11 +1357,11 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                     }
 
-                    if (innerListCommon.Count > 0)
+                    if (innerListExtreme.Count > 0)
                     {
                         PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk("Дети, оказавшиеся в экстремальных условиях", HeaderFont));
 
-                        foreach (var docText in innerListCommon)
+                        foreach (var docText in innerListExtreme)
                         {
 
                             PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk(docText, MainItalicText));
@@ -1249,11 +1369,11 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                     }
 
-                    if (innerListCommon.Count > 0)
+                    if (innerListViolence.Count > 0)
                     {
                         PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk("Дети - жертвы насилия", HeaderFont));
 
-                        foreach (var docText in innerListCommon)
+                        foreach (var docText in innerListViolence)
                         {
 
                             PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk(docText, MainItalicText));
@@ -1261,11 +1381,11 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                     }
 
-                    if (innerListCommon.Count > 0)
+                    if (innerListInvalid.Count > 0)
                     {
                         PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk("Дети, жизнедеятельность которых объективно нарушена в результате сложившихся обстоятельств и которые не могут преодолеть данные обстоятельства самостоятельно или с помощью семьи", HeaderFont));
 
-                        foreach (var docText in innerListCommon)
+                        foreach (var docText in innerListInvalid)
                         {
 
 
@@ -1274,11 +1394,11 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                     }
 
-                    if (innerListCommon.Count > 0)
+                    if (innerListTerror.Count > 0)
                     {
                         PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk("Дети, пострадавшие в результате террористических актов", HeaderFont));
 
-                        foreach (var docText in innerListCommon)
+                        foreach (var docText in innerListTerror)
                         {
 
                             PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk(docText, MainItalicText));
@@ -1286,11 +1406,11 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                     }
 
-                    if (innerListCommon.Count > 0)
+                    if (innerListMilitary.Count > 0)
                     {
                         PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk("Дети из семей военнослужащих и приравненных к ним лиц, погибших или получивших увечья(ранения, травмы, контузии) при исполнении ими обязанностей военной службы или служебных обязанностей", HeaderFont));
 
-                        foreach (var docText in innerListCommon)
+                        foreach (var docText in innerListMilitary)
                         {
 
                             PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk(docText, MainItalicText));
@@ -1298,11 +1418,11 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                     }
 
-                    if (innerListCommon.Count > 0)
+                    if (innerListInvalidParents.Count > 0)
                     {
                         PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk("Дети из семей, в которых оба или один родитель являются инвалидами", HeaderFont));
 
-                        foreach (var docText in innerListCommon)
+                        foreach (var docText in innerListInvalidParents)
                         {
 
                             PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk(docText, MainItalicText));
@@ -1310,11 +1430,11 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                     }
 
-                    if (innerListCommon.Count > 0)
+                    if (innerListDeviant.Count > 0)
                     {
                         PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk("Дети с отклонениями в поведении", HeaderFont));
 
-                        foreach (var docText in innerListCommon)
+                        foreach (var docText in innerListDeviant)
                         {
 
                             PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, firstLine_small, new Chunk(docText, MainItalicText));
