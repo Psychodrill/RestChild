@@ -861,7 +861,7 @@ namespace RestChild.DocumentGeneration
 
             if (forMpguPortal)
             {
-                return PDFDocuments.PdfProcessor.NotificationBasicRegistration(request, youth);
+                return PDFDocuments.PdfProcessor.NotificationBasicRegistration(request, youth, account);
             }
 
 

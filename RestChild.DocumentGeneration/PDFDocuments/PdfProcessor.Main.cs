@@ -42,6 +42,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
         private static readonly Font TitleFont = new Font(BaseBoldFont, 14);
         private static readonly Font MainText = new Font(BaseFont, 11);
         private static readonly Font MainItalicText = new Font(BaseItalicFont, 11);
+        private static readonly Font SmallText = new Font(BaseFont, 8);
 
         private static readonly float firstLine = 70;
         private static readonly float firstLine_small = 30;
@@ -742,7 +743,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
         /// <summary>
         ///     Уведомление о регистрации заявления
         /// </summary>
-        internal static IDocument NotificationBasicRegistration(Request request, bool youth)
+        internal static IDocument NotificationBasicRegistration(Request request, bool youth, Account account)
         {
             var applicant = request.Applicant ?? new Applicant { DocumentType = new DocumentType { Name = string.Empty } };
 
@@ -878,6 +879,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                             new Chunk("Обращаем внимание, что Вы согласились с необходимостью соблюдения Правил отдыха и оздоровления.", MainText));
                     }
 
+                    SignWorkerBlock(document, account);
                     document.Close();
                 }
 
@@ -894,7 +896,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
         /// <summary>
         ///     Уведомление о приостановлении рассмотрения (вызов)
         /// </summary>
-        internal static IDocument NotificationWaitApplicant(Request request, IEnumerable<BenefitType> benefits)
+        internal static IDocument NotificationWaitApplicant(Request request, IEnumerable<BenefitType> benefits, Account account)
         {
             var applicant = request.Applicant ?? new Applicant { DocumentType = new DocumentType { Name = string.Empty } };
 
@@ -967,7 +969,8 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                         new Chunk("рассмотрение заявления о предоставлении услуг отдыха и оздоровления приостановлено.", MainText));
 
                     PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, 0, new Chunk("Основание: ", HeaderFont),
-                        new Chunk($"пункт 6.4 Порядка организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденного постановлением Правительства Москвы от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\": \"Необходимость личной явки заявителя в ГАУК \"МОСГОРТУР\".", MainText));
+                        new Chunk($"пункт 6.4 Порядка организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденного постановлением Правительства Москвы от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\": ", MainText),
+                        new Chunk("\"Необходимость личной явки заявителя в ГАУК \"МОСГОРТУР\".", HeaderFont));
 
                     PdfAddParagraph(document, WordProcessor.Space, 0, 1, Element.ALIGN_LEFT, 0, MainText);
 
@@ -1035,21 +1038,19 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                             if (benefit.ExnternalUid.Contains("48"))//дети из малообеспеченных семей
                             {
 
-
                                 docs.Insert(1, "документ, удостоверяющий личность ребенка;");
                                 docs.Insert(5, "документ, подтверждающий полномочия доверенного лица для сопровождения во время отдыха и оздоровления (в случае организации совместного выездного отдыха и сопровождения ребенка доверенным лицом для сопровождения во время отдыха и оздоровления и подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала) (нотариально заверенное согласие или доверенность);");
                                 docs.Remove("документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;");
                             }
 
-                            if (benefit.Id == 48 || benefit.Id == 67)//лица из числа детей-сирот и детей, оставших без попечения...
+                            if (request.TypeOfRestId == 14 || request.TypeOfRestId == 19)//лица из числа детей-сирот и детей, оставших без попечения...
                             {
-
 
                                 docs.Insert(1, "документ, подтверждающий место жительства лица из числа детей-сирот и детей, оставшихся без попечения родителей, в городе Москве;");
                                 docs.Insert(2, "документ, подтверждающий отнесение лица из числа детей-сирот и детей, оставшихся без попечения родителей, к категории лиц из числа детей-сирот и детей, оставшихся без попечения родителей.");
                                 docs.Remove("документ, подтверждающий место жительства ребенка в городе Москве;");
-                                docs.Remove("документы, подтверждающие, что заявитель является родителем (законным представителем) ребенка: свидетельство о рождении ребенка, договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие полномочия законного представителя ребенка;");//11
-                                docs.Remove("документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;");;
+                                docs.Remove("документы, подтверждающие, что заявитель является родителем (законным представителем) ребенка: свидетельство о рождении ребенка, договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие полномочия законного представителя ребенка;");
+                                docs.Remove("документ, подтверждающий отнесение ребенка к категории, указанной в заявлении;");
                                 docs.Remove("* в случае если с момента рождения ребенка у родителя произошла смена фамилии, имени или отчества – необходимо также предоставить документы, подтверждающие данные изменения: свидетельство о браке, свидетельство о расторжении брака, свидетельство о перемене имени");
                             }
 
@@ -1074,6 +1075,9 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     PdfAddParagraph(document, WordProcessor.Space, 0, 1, Element.ALIGN_LEFT, 0, MainText);
 
                     PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, 0, new Chunk("Неявка с соответствующими документами в течение срока приостановления рассмотрения заявления является основанием для отказа в предоставлении услуг отдыха и оздоровления.", MainText));
+
+
+                    SignWorkerBlock(document, account);
 
                     document.Close();
                 }
@@ -1371,6 +1375,146 @@ namespace RestChild.DocumentGeneration.PDFDocuments
             var p = new Paragraph(new Chunk(new LineSeparator(0.0F, 100.0F, BaseColor.BLACK, Element.ALIGN_LEFT, 1)));
             document.Add(p);
         }
+
+
+        /// <summary>
+        ///     Подпись работника
+        /// </summary>
+        private static void SignWorkerBlock(Document document, Account account, string name = "Принял:")//костыль, который надо обязательно переделать
+        {
+            
+            account = account ?? new Account();
+            var titleRequestRunProperties = new RunProperties();
+            titleRequestRunProperties.AppendChild(new RunFonts
+            {
+                Ascii = "Times New Roman",
+                HighAnsi = "Times New Roman",
+                ComplexScript = "Times New Roman"
+            });
+            titleRequestRunProperties.AppendChild(new FontSize { Val = "22" });
+
+            var tblProp = new TableProperties(
+                new TableBorders(
+                    new TopBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
+                    new BottomBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
+                    new LeftBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
+                    new RightBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
+                    new InsideHorizontalBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
+                    new InsideVerticalBorder { Val = new EnumValue<BorderValues>(BorderValues.None) }));
+
+            var captionRunProperties = new RunProperties().SetFont().SetFontSizeSupperscript();
+
+
+
+            var table = new Table();
+            table.AppendChild(tblProp.CloneNode(true));
+
+            //отступ - нулевая строка
+            PdfAddParagraph(document, 0, 20, Element.ALIGN_CENTER, 0);
+                //document.AppendChild(new Paragraph(
+                //new ParagraphProperties(new Justification { Val = JustificationValues.Both },
+                //new SpacingBetweenLines { After = Size20 })));
+
+
+            PdfAddParagraph(document, 0, 0, Element.ALIGN_JUSTIFIED, 0,
+                            new Chunk("Исполнитель: ", MainText),
+                            new Chunk("                                             ", MainText),
+                            new Chunk("_________________________", MainText),
+                            new Chunk("     ", MainText),
+                            new Chunk("_________________________", MainText));
+            PdfAddParagraph(document, 0, 0, Element.ALIGN_JUSTIFIED, 0,
+                            new Chunk("                  ", SmallText),
+                            new Chunk("                                                                                           ", SmallText),
+                            new Chunk("(ФИО работника, должность)", SmallText),
+                            new Chunk("                  ", SmallText),
+                            new Chunk("      (подпись работника)   ", SmallText));
+
+            
+            //var row = new TableRow();
+
+            //var cell = new TableCell();
+            //cell.Append(new TableCellProperties(
+            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "1231" }),
+            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
+            //cell.Append(PdfAddParagraph(document, 0, 1, Element.ALIGN_CENTER, 0));
+            //row.AppendChild(cell);
+
+
+            //cell = new TableCell();
+            //cell.Append(new TableCellProperties(
+            //    new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "6931" },
+            //    new TableCellBorders(new BottomBorder { Val = new EnumValue<BorderValues>(BorderValues.Single) }),
+            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom }
+            //));
+            //cell.AppendChild(new Paragraph(
+            //    new ParagraphProperties(new Justification { Val = JustificationValues.Center }),
+            //    new Run(titleRequestRunProperties.CloneNode(true),
+            //        new Text(
+            //            $"{account?.Name?.FormatEx()}{(string.IsNullOrWhiteSpace(account?.Position) ? string.Empty : $", {account.Position}")}"))));
+            //row.AppendChild(cell);
+
+            //cell = new TableCell();
+            //cell.Append(new TableCellProperties(
+            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "55" }),
+            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
+            //cell.AppendChild(new Paragraph(new Run(new Text(Space))));
+            //row.AppendChild(cell);
+
+            //cell = new TableCell();
+            //cell.Append(new TableCellProperties(
+            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "2931" },
+            //        new TableCellBorders(new BottomBorder { Val = new EnumValue<BorderValues>(BorderValues.Single) })),
+            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
+            //cell.AppendChild(new Paragraph(new Run(new Text(Space))));
+            //row.AppendChild(cell);
+
+            //table.AppendChild(row);
+            //// -----------------------------------------------------------
+            //row = new TableRow();
+
+            //cell = new TableCell();
+            //cell.Append(new TableCellProperties(
+            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "1231" }),
+            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
+            //cell.AppendChild(new Paragraph(
+            //    new ParagraphProperties(new Justification { Val = JustificationValues.Center }),
+            //    new Run(titleRequestRunProperties.CloneNode(true),
+            //        new Text(Space))));
+            //row.AppendChild(cell);
+
+
+            //cell = new TableCell();
+            //cell.Append(new TableCellProperties(
+            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "6931" }),
+            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
+            //cell.AppendChild(new Paragraph(
+            //    new ParagraphProperties(new Justification { Val = JustificationValues.Center }),
+            //    new Run(captionRunProperties.CloneNode(true), new Text("(Ф.И.О. работника, должность)"))));
+            //row.AppendChild(cell);
+
+            //cell = new TableCell();
+            //cell.Append(new TableCellProperties(
+            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "55" }),
+            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
+            //cell.AppendChild(new Paragraph(new Run(new Text(Space))));
+            //row.AppendChild(cell);
+
+            //cell = new TableCell();
+            //cell.Append(new TableCellProperties(
+            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "2931" }),
+            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
+            //cell.AppendChild(new Paragraph(
+            //    new ParagraphProperties(new Justification { Val = JustificationValues.Center }),
+            //    new Run(titleRequestRunProperties.CloneNode(true), captionRunProperties.CloneNode(true),
+            //        new Text("(подпись работника)"))));
+            //row.AppendChild(cell);
+
+
+            //table.AppendChild(row);
+
+            //doc.AppendChild(table);
+        }
+
 
         #endregion
     }
