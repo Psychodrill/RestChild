@@ -39,13 +39,17 @@ namespace RestChild.Web.Controllers
         public ActionResult Search(BookingMosgorturTargetsFilterModel filter)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturBookingTargetsView))
+            if (!Security.HasRight(AccessRightEnum.MosgorturBookingTargetsView) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsViewClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsViewBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
 
             if (filter == null)
                 filter = new BookingMosgorturTargetsFilterModel();
+            if (Security.HasRight(AccessRightEnum.MosgorturBookingTargetsViewClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsViewBookingDepartment) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsView))
+                filter.DepartmentId = 3;
+            if (Security.HasRight(AccessRightEnum.MosgorturBookingTargetsViewBookingDepartment) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsViewClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsView))
+                filter.DepartmentId = 4;
             ViewBag.Departments = ApiController.GetDepartments();
             filter.Targets = ApiController.Get(filter);
             return View("BookingTargetList", filter);
@@ -57,7 +61,7 @@ namespace RestChild.Web.Controllers
         public ActionResult Insert()
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEdit))
+            if (!Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEdit) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEditClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEditBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
@@ -71,7 +75,7 @@ namespace RestChild.Web.Controllers
         public ActionResult Update(long id)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEdit))
+            if (!Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEdit) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEditClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEditBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
@@ -87,7 +91,7 @@ namespace RestChild.Web.Controllers
         public ActionResult Save(MGTVisitTarget VisitTarget)
         {
             SetUnitOfWorkInRefClass(UnitOfWork);
-            if (!Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEdit))
+            if (!Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEdit) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEditClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEditBookingDepartment))
             {
                 return RedirectToAvalibleAction();
             }
@@ -103,6 +107,10 @@ namespace RestChild.Web.Controllers
                 b = new MGTVisitTarget();
                 b.Id = UnitOfWork.GetSet<MGTVisitTarget>().Max(s => s.Id) + 1;
             }
+            if (Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEditClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEditBookingDepartment) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEdit))
+                VisitTarget.DepartmentId = 3;
+            if (Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEditBookingDepartment) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEditClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturBookingTargetsEdit))
+                VisitTarget.DepartmentId = 4;
             b.Name = VisitTarget.Name;
             b.IsActive = VisitTarget.IsActive;
             b.Description = VisitTarget.Description;

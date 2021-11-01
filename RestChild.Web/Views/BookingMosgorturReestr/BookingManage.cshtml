@@ -228,6 +228,14 @@
             {
                 <a href="@Url.Action("CancelBooking", new { @Id = Model.Id })" class="btn btn-danger btn-primary"> <i class="glyphicon glyphicon-ok"></i> Анулировать</a>
             }
+            else if (!Model.Canceld && RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCancelClientDepartment) && Model.DepartmentId == 3 && Model.Date.Add(Model.Time) >= DateTime.Now)
+            {
+                <a href="@Url.Action("CancelBooking", new { @Id = Model.Id })" class="btn btn-danger btn-primary"> <i class="glyphicon glyphicon-ok"></i> Анулировать</a>
+            }
+            else if (!Model.Canceld && RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCancelBookingDepartment) && Model.DepartmentId == 4 && Model.Date.Add(Model.Time) >= DateTime.Now)
+            {
+                <a href="@Url.Action("CancelBooking", new { @Id = Model.Id })" class="btn btn-danger btn-primary"> <i class="glyphicon glyphicon-ok"></i> Анулировать</a>
+            }
 
         </div>
     </div>

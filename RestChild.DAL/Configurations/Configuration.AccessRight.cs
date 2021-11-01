@@ -1859,6 +1859,90 @@ namespace RestChild.DAL.Configurations
                     Id = ++startIndex,
                     Code = AccessRightEnum.AnalyticReports.NotRespondedRequests,
                     Name = "Отчет. Неудовлетворённые запросы"
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturScheduleBookingViewClientDepartment,
+                    Name = "(МОСГОРТУР) Отдел по работе с клиентами. Реестр записи на приём. Просмотр."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturScheduleBookingCancelClientDepartment,
+                    Name = "(МОСГОРТУР) Отдел по работе с клиентами. Реестр записи на приём. Аннулирование."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturScheduleBookingCreateClientDepartment,
+                    Name = "(МОСГОРТУР) Отдел по работе с клиентами. Реестр записи на приём. Создание."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturWorkingDaysViewClientDepartment,
+                    Name = "(МОСГОРТУР) Отдел по работе с клиентами. Управление рабочими днями. Просмотр."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturWorkingDaysEditClientDepartment,
+                    Name = "(МОСГОРТУР) Отдел по работе с клиентами. Управление рабочими днями. Управление."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturBookingTargetsViewClientDepartment,
+                    Name = "(МОСГОРТУР) Отдел по работе с клиентами. Цели обращения. Просмотр."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturBookingTargetsEditClientDepartment,
+                    Name = "(МОСГОРТУР) Отдел по работе с клиентами. Цели обращения. Управление."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturScheduleBookingViewBookingDepartment,
+                    Name = "(МОСГОРТУР) Отдел бронирования. Реестр записи на приём. Просмотр."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturScheduleBookingCancelBookingDepartment,
+                    Name = "(МОСГОРТУР) Отдел бронирования. Реестр записи на приём. Аннулирование."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturScheduleBookingCreateBookingDepartment,
+                    Name = "(МОСГОРТУР) Отдел бронирования. Реестр записи на приём. Создание."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturWorkingDaysViewBookingDepartment,
+                    Name = "(МОСГОРТУР) Отдел бронирования. Управление рабочими днями. Просмотр."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment,
+                    Name = "(МОСГОРТУР) Отдел бронирования. Управление рабочими днями. Управление."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturBookingTargetsViewBookingDepartment,
+                    Name = "(МОСГОРТУР) Отдел бронирования. Цели обращения. Просмотр."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.MosgorturBookingTargetsEditBookingDepartment,
+                    Name = "(МОСГОРТУР) Отдел бронирования. Цели обращения. Управление."
                 }
             );
 

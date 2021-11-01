@@ -11,7 +11,7 @@
     ViewBag.Caption = "Справочник целей записи на прием";
     ViewBag.InsertButtonCaption = "Добавить тип обращения";
     ViewBag.SearchPanelCaption = "Поиск целей записи на прием";
-    ViewBag.NeedInsertButton = RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturBookingTargetsEdit);
+    ViewBag.NeedInsertButton = RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturBookingTargetsEdit) || RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturBookingTargetsEditClientDepartment) || RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturBookingTargetsEditBookingDepartment);
 }
 
 @section searchForm
@@ -22,12 +22,15 @@
             @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
         </div>
     </div>
-    <div class="form-group">
-        <label class="col-md-3 control-label text-right">Отдел МГТ</label>
-        <div class="col-md-4">
-            @Html.DropDownListFor(m => m.DepartmentId, new SelectList(ViewBag.Departments, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+    @if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturBookingTargetsView))
+    {
+        <div class="form-group">
+            <label class="col-md-3 control-label text-right">Отдел МГТ</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(m => m.DepartmentId, new SelectList(ViewBag.Departments, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+            </div>
         </div>
-    </div>
+    }
 
 }
 

@@ -277,18 +277,20 @@
                 {
                     <li>@Html.ActionLink("Управление отправкой запросов в базовый регистр", "ManageExchangeBaseRegistry", "BaseRegistry")</li>
                 }
-                @if (Security.HasAnyRights(new[] {AccessRightEnum.MosgorturScheduleBookingView, AccessRightEnum.MosgorturBookingTargetsView, AccessRightEnum.MosgorturWorkingDaysView}))
+                @if (Security.HasAnyRights(new[] {AccessRightEnum.MosgorturScheduleBookingView, AccessRightEnum.MosgorturBookingTargetsView, AccessRightEnum.MosgorturWorkingDaysView,
+                                                  AccessRightEnum.MosgorturScheduleBookingViewClientDepartment, AccessRightEnum.MosgorturBookingTargetsViewClientDepartment, AccessRightEnum.MosgorturWorkingDaysViewClientDepartment,
+                                                  AccessRightEnum.MosgorturScheduleBookingViewBookingDepartment, AccessRightEnum.MosgorturBookingTargetsViewBookingDepartment, AccessRightEnum.MosgorturWorkingDaysViewBookingDepartment}))
                 {
                     <li role="separator" class="divider"></li>
-                    if (Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView))
+                    if (Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView) || Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewClientDepartment) || Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewBookingDepartment))
                     {
                         <li>@Html.ActionLink("Реестр записи на приём в ГАУК «МОСГОРТУР»", "Search", "BookingMosgorturReestr", new {filter = System.Guid.NewGuid().ToString()}, null)</li>
                     }
-                    if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysView))
+                    if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysView) || Security.HasRight(AccessRightEnum.MosgorturWorkingDaysViewClientDepartment) || Security.HasRight(AccessRightEnum.MosgorturWorkingDaysViewBookingDepartment))
                     {
                         <li>@Html.ActionLink("Управление рабочими днями ГАУК «МОСГОРТУР»", "WorkingDays", "BookingMosgorturReestr")</li>
                     }
-                    if (Security.HasRight(AccessRightEnum.MosgorturBookingTargetsView))
+                    if (Security.HasRight(AccessRightEnum.MosgorturBookingTargetsView) || Security.HasRight(AccessRightEnum.MosgorturBookingTargetsViewClientDepartment) || Security.HasRight(AccessRightEnum.MosgorturBookingTargetsViewBookingDepartment))
                     {
                         <li>@Html.ActionLink("Цели обращения в ГАУК «МОСГОРТУР»", "Search", "BookingMosgorturTargets")</li>
                     }
