@@ -98,7 +98,7 @@
     @if (Model.Type == ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck && !Model.ResultAbsent)
     {
         <div style="font-weight: bold">
-            @(Model.Approved ?? false ? "Запрашиваемые сведения подтверждены" : string.IsNullOrWhiteSpace(Model.Note) ? "Запрашиваемые сведения не подтверждены" : string.Empty)
+            @(Model.Approved ?? false ? "Запрашиваемые сведения подтверждены" : string.IsNullOrWhiteSpace(Model.Note) ? "Запрашиваемые сведения не1 подтверждены" : string.Empty)
         </div>
         if (!string.IsNullOrWhiteSpace(Model.AisoLegalRepresentationCheck) && Model.Approved == true)
         {
@@ -238,7 +238,7 @@
             var father = (info.ПрдСведРег != null ? info.ПрдСведРег.СведОтец : null) ?? new RestChild.Comon.Exchange.Zagz.СведРодитТип();
             var mother = (info.ПрдСведРег != null ? info.ПрдСведРег.СведМать : null) ?? new RestChild.Comon.Exchange.Zagz.СведРодитТип();
             var childInfo = (info.ПрдСведРег != null ? info.ПрдСведРег.СведРодившемся : null) ?? new RestChild.Comon.Exchange.Zagz.informResponseСведРегРождПрдСведРегСведРодившемся();
-            <div style="font-style: italic">Свидетельство о рождении:</div>
+            <div style="font-style: italic">Сведения из свидетельства о рождении:</div>
             <ul>
                 <li>Отец:<b> @(father.ФИО.GetFio()) @father.GetParentBirthDate()</b></li>
                 <li>Мать: <b>@(mother.ФИО.GetFio()) @mother.GetParentBirthDate()</b></li>
