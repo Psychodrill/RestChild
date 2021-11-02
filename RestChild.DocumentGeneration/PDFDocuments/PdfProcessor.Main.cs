@@ -1189,7 +1189,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                                     };
                             }
-                            if (benefit.SameBenefitId==4 )
+                            if (benefit.BenefitTypeERLId == 7)
                             {
                                 innerListRefugee = new List<string>
                                     {
@@ -1203,7 +1203,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                                     };
                             }
-                            if (benefit.SameBenefitId==36)
+                            if (benefit.BenefitTypeERLId == 8)
                             {
                                 innerListExtreme = new List<string>
                                     {
@@ -1217,7 +1217,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                                     };
                             }
-                            if (benefit.SameBenefitId==37)
+                            if (benefit.BenefitTypeERLId == 9)
                             {
                                 innerListViolence = new List<string>
                                     {
@@ -1231,7 +1231,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                                     };
                             }
-                            if (benefit.SameBenefitId==47)
+                            if (benefit.BenefitTypeERLId == 10)
                             {
                                 innerListInvalid = new List<string>
                                     {
@@ -1245,7 +1245,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                                     };
                             }
-                            if (benefit.SameBenefitId==3)
+                            if (benefit.BenefitTypeERLId == 11)
                             {
                                 innerListTerror = new List<string>
                                     {
@@ -1287,7 +1287,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                                     };
                             }
-                            if (benefit.SameBenefitId==50)
+                            if (benefit.BenefitTypeERLId == 14)
                             {
                                 innerListDeviant = new List<string>
                                     {
