@@ -317,7 +317,7 @@ namespace RestChild.DocumentGeneration
                                         "документы, подтверждающие, что заявитель является законным представителем ребенка: договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие полномочия законного представителя ребенка;",
                                         "документ, удостоверяющий личность ребенка;",
                                         "документ, подтверждающий место жительства ребенка в городе Москве;",
-                                        "документ, подтверждающий полномочия заявителя, сопровождающего лица(в случае организации совместного выездного отдыха) из числа законных представителей – опекунов, попечителей, приемных родителей, патронатных воспитателей ребенка (договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие статус ребенка);",
+                                        "документ, подтверждающий полномочия заявителя, сопровождающего лица (в случае организации совместного выездного отдыха) из числа законных представителей – опекунов, попечителей, приемных родителей, патронатных воспитателей ребенка (договор о приемной семье, распоряжение об опеке, иные документы, устанавливающие статус ребенка);",
                                         "документ, подтверждающий полномочия доверенного лица на совершение действий в период проведения заявочной кампании (в случае подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала доверенным лицом на совершение действий в период проведения заявочной кампании) (нотариально заверенное согласие или доверенность);",
                                         "документ, подтверждающий полномочия доверенного лица для сопровождения во время отдыха и оздоровления (в случае организации совместного выездного отдыха и сопровождения ребенка доверенным лицом для сопровождения во время отдыха и оздоровления и подачи заявления о предоставлении услуг отдыха и оздоровления с использованием Портала) (нотариально заверенное согласие или доверенность).",
 
@@ -1181,12 +1181,12 @@ namespace RestChild.DocumentGeneration
             {
                 return NotificationAboutCertificate(request, account);
             }
-            //if (request.TypeOfRestId== (long)TypeOfRestEnum.RestWithParentsOrphan||
-            //    request.TypeOfRestId ==  (long)TypeOfRestEnum.YouthRestOrphanCamps||
-            //    request.TypeOfRestId == (long)TypeOfRestEnum.ChildRestOrphanCamps)
-            //{
-            //    return NotificationAboutParticipate(request, account);
-            //}
+            if (request.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsOrphan ||
+                request.TypeOfRestId == (long)TypeOfRestEnum.YouthRestOrphanCamps ||
+                request.TypeOfRestId == (long)TypeOfRestEnum.ChildRestOrphanCamps)
+            {
+                return NotificationAboutParticipate(request, account);
+            }
 
 
             return NotificationAboutTour(request, account);
@@ -1200,10 +1200,10 @@ namespace RestChild.DocumentGeneration
         {
             var forMpguPortal = request.SourceId == (long)SourceEnum.Mpgu;
 
-            //if (forMpguPortal)
-            //{
-            //    return PDFDocuments.PdfProcessor.NotificationCertificate107503(request);
-            //}
+            if (forMpguPortal)
+            {
+                return PDFDocuments.PdfProcessor.NotificationCertificate107503(request);
+            }
 
             using (var ms = new MemoryStream())
             {
@@ -1346,10 +1346,10 @@ namespace RestChild.DocumentGeneration
                                     new SpacingBetweenLines { After = Size20 }),
                                 new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                     new Text("Льготная категория: ")
-                                    { Space = SpaceProcessingModeValues.Preserve }),
-                                new Run(titleRequestRunPropertiesItalic.CloneNode(true),
-                                    new Text(
-                                        "Дети-сироты и дети, оставшиеся без попечения родителей, в возрасте от 18 до 23 лет"))));
+                                    { Space = SpaceProcessingModeValues.Preserve })));
+                                //new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                //    new Text(
+                                //        "Дети-сироты и дети, оставшиеся без попечения родителей, в возрасте от 18 до 23 лет"))));
                     }
 
                     doc.AppendChild(
@@ -1371,6 +1371,22 @@ namespace RestChild.DocumentGeneration
                                 new Text("Основание: ") { Space = SpaceProcessingModeValues.Preserve }),
                             new Run(titleRequestRunProperties.CloneNode(true),
                                 new Text($"{DeclineReasonParticipate}."))));
+
+                    doc.AppendChild(
+                            new Paragraph(
+                                new ParagraphProperties(new Justification { Val = JustificationValues.Left },
+                                    new SpacingBetweenLines { After = Size20 }),
+                                new Run(new RunProperties().SetFont().SetFontSize(Size28).Bold(), new Text(Space))));
+
+
+                    doc.AppendChild(
+                            new Paragraph(
+                                new ParagraphProperties(new Justification { Val = JustificationValues.Both },
+                                    new SpacingBetweenLines { After = Size20 }),
+                                new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                                    new Text("Основание: ") { Space = SpaceProcessingModeValues.Preserve }),
+                                new Run(titleRequestRunProperties.CloneNode(true),
+                                    new Text($"В случае неучастия заявителя, подавшего заявление о предоставлении услуг отдыха и оздоровления в отношении организации индивидуального выездного отдыха либо совместного выездного отдыха ребенка, отнесенного к одной из категорий детей, находящихся в трудной жизненной ситуации и указанных в пунктах 3.1.3 и 3.1.4 Порядка, заявителя, подавшего заявление о предоставлении услуг отдыха и оздоровления в отношении организации индивидуального выездного отдыха ребенка, отнесенного к одной из категорий детей, находящихся в трудной жизненной ситуации и указанных в пунктах 3.1.5 - 3.1.13 Порядка, во втором этапе заявочной кампании, услуга отдыха и оздоровления считается предоставленной"))));
 
                     if (!forMpguPortal)
                     {
