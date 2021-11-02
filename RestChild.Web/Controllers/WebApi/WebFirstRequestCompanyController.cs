@@ -1044,8 +1044,14 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 return;
             }
-
+            // чудовищный костыль, связаннаый с косячным отправлением из МПГУ в случае с наличием доверенного лица, им достаточно проставить у себя галочку isagent
             model.ApplicantDouble = new List<Request>();
+
+            if (!model.Data.Agent.IsNullOrEmpty())// && model.Data.TypeOfRest.ParentId == 16)
+            {
+                return;
+            }
+
             var snils = model.Applicant?.Data?.Snils;
             if (model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor ||
                 model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7 ||
@@ -1181,9 +1187,16 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 return;
             }
-
-            model.SameAttendants = new List<Applicant>();
+            // чудовищный костыль, связаннаый с косячным отправлением из МПГУ в случае с наличием доверенного лица, им достаточно проставить у себя галочку isagent 
             model.SameAttendantSnils = new List<string>();
+            model.SameAttendants = new List<Applicant>();
+            
+            if (!model.Data.Agent.IsNullOrEmpty())// && model.Data.TypeOfRest.ParentId == 16)
+            {
+                return;
+            }
+
+            
 
             if (model.ParentInvalid != null && (model.Data.TypeOfRestId == (long)TypeOfRestEnum.RestWithParentsPoor
                 || model.Data.TypeOfRestId == (long)TypeOfRestEnum.MoneyOn3To7))
@@ -1197,10 +1210,11 @@ namespace RestChild.Web.Controllers.WebApi
                 attendants.Add(model.Data.Applicant);
             }
 
-            if (model.Agent?.DataApplicant?.Id > 0)
-            {
-                attendants.Add(model.Agent.DataApplicant);
-            }
+           //чудовищный костыль
+            //if (model.Agent?.DataApplicant?.Id > 0)
+            //{
+            //    attendants.Add(model.Agent.DataApplicant);
+            //}
 
             attendants.AddRange(model.Attendant.Select(a => a.Data));
             var applicants = UnitOfWork.GetSet<Request>().Where(r =>
@@ -1244,9 +1258,16 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 return;
             }
-
             model.SameChildren = new List<Child>();
             model.SimilarChildren = new List<Child>();
+            // чудовищный костыль, связаннаый с косячным отправлением из МПГУ в случае с наличием доверенного лица, им достаточно проставить у себя галочку isagent 
+            if (!model.Data.Agent.IsNullOrEmpty())// && model.Data.TypeOfRest.ParentId == 16)
+            {
+                return;
+            }
+
+            //model.SameChildren = new List<Child>();
+           // model.SimilarChildren = new List<Child>();
 
             var childQueue =
                 UnitOfWork.GetSet<Child>()

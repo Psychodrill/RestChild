@@ -1838,7 +1838,7 @@ namespace RestChild.DocumentGeneration
                         notificationName = request.TypeOfRestId == (long) TypeOfRestEnum.Compensation ||
                                            request.TypeOfRestId == (long) TypeOfRestEnum.CompensationYouthRest
                             ? "Уведомление о предоставлении выплаты компенсации за самостоятельно приобретенную родителями или иными законными представителями путевку для отдыха и оздоровления"
-                            : "Уведомление о предоставлении бесплатной путевки для отдыха и оздоровления";
+                            : "Уведомление о неучастии заявителя в выборе конкретной организации отдыха и оздоровления";
                     }
 
                     doc.AppendChild(new Paragraph(
@@ -2166,7 +2166,7 @@ namespace RestChild.DocumentGeneration
                                 new ParagraphProperties(new Justification {Val = JustificationValues.Left},
                                     new SpacingBetweenLines {After = Size20}),
                                 new Run(titleRequestRunPropertiesBold.CloneNode(true),
-                                    new Text("Вид отдыха: ") {Space = SpaceProcessingModeValues.Preserve}),
+                                    new Text("Вид услуги: ") {Space = SpaceProcessingModeValues.Preserve}),
                                 new Run(titleRequestRunPropertiesItalic.CloneNode(true),
                                     new Text(request.TypeOfRest?.Name))));
 
@@ -2179,35 +2179,35 @@ namespace RestChild.DocumentGeneration
                                 new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                     new Text("Результат рассмотрения заявления: ")
                                         {Space = SpaceProcessingModeValues.Preserve}),
-                                new Run(titleRequestRunPropertiesItalic.CloneNode(true), new Text("услуга оказана"))));
+                                new Run(titleRequestRunPropertiesItalic.CloneNode(true), new Text("Услуга оказана. Решение отрицательное"))));
 
-                        doc.AppendChild(
-                            new Paragraph(
-                                new ParagraphProperties(new Justification {Val = JustificationValues.Left},
-                                    new SpacingBetweenLines {After = Size20}),
-                                new Run(titleRequestRunPropertiesBold.CloneNode(true),
-                                    new Text("Номер путевки: ") {Space = SpaceProcessingModeValues.Preserve}),
-                                new Run(titleRequestRunPropertiesItalic.CloneNode(true),
-                                    new Text(request.CertificateNumber))));
+                        //doc.AppendChild(
+                        //    new Paragraph(
+                        //        new ParagraphProperties(new Justification {Val = JustificationValues.Left},
+                        //            new SpacingBetweenLines {After = Size20}),
+                        //        new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                        //            new Text("Номер путевки: ") {Space = SpaceProcessingModeValues.Preserve}),
+                        //        new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                        //            new Text(request.CertificateNumber))));
 
-                        doc.AppendChild(
-                            new Paragraph(
-                                new ParagraphProperties(new Justification {Val = JustificationValues.Left},
-                                    new SpacingBetweenLines {After = Size20}),
-                                new Run(titleRequestRunPropertiesBold.CloneNode(true),
-                                    new Text("Организация отдыха и оздоровления: ")
-                                        {Space = SpaceProcessingModeValues.Preserve}),
-                                new Run(titleRequestRunPropertiesItalic.CloneNode(true),
-                                    new Text(request.Hotels?.Name ?? request.Tour?.Hotels?.Name ?? string.Empty))));
+                        //doc.AppendChild(
+                        //    new Paragraph(
+                        //        new ParagraphProperties(new Justification {Val = JustificationValues.Left},
+                        //            new SpacingBetweenLines {After = Size20}),
+                        //        new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                        //            new Text("Организация отдыха и оздоровления: ")
+                        //                {Space = SpaceProcessingModeValues.Preserve}),
+                        //        new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                        //            new Text(request.Hotels?.Name ?? request.Tour?.Hotels?.Name ?? string.Empty))));
 
-                        doc.AppendChild(
-                            new Paragraph(
-                                new ParagraphProperties(new Justification {Val = JustificationValues.Left},
-                                    new SpacingBetweenLines {After = Size20}),
-                                new Run(titleRequestRunPropertiesBold.CloneNode(true),
-                                    new Text("Время отдыха: ") {Space = SpaceProcessingModeValues.Preserve}),
-                                new Run(titleRequestRunPropertiesItalic.CloneNode(true),
-                                    new Text(request.TimeOfRest?.Name ?? string.Empty))));
+                        //doc.AppendChild(
+                        //    new Paragraph(
+                        //        new ParagraphProperties(new Justification {Val = JustificationValues.Left},
+                        //            new SpacingBetweenLines {After = Size20}),
+                        //        new Run(titleRequestRunPropertiesBold.CloneNode(true),
+                        //            new Text("Время отдыха: ") {Space = SpaceProcessingModeValues.Preserve}),
+                        //        new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                        //            new Text(request.TimeOfRest?.Name ?? string.Empty))));
 
                         doc.AppendChild(
                             new Paragraph(
@@ -2216,13 +2216,21 @@ namespace RestChild.DocumentGeneration
                                 new Run(titleRequestRunPropertiesBold.CloneNode(true),
                                     new Text("Основание: ") {Space = SpaceProcessingModeValues.Preserve}),
                                 new Run(titleRequestRunPropertiesItalic.CloneNode(true),
-                                    new Text(FederalLaw))));
+                                    new Text(DeclineReasonParticipate))));
 
                         doc.AppendChild(
                             new Paragraph(
                                 new ParagraphProperties(new Justification {Val = JustificationValues.Left},
                                     new SpacingBetweenLines {After = Size20}),
                                 new Run(new RunProperties().SetFont().SetFontSize(Size28).Bold(), new Text(Space))));
+
+                        doc.AppendChild(
+                            new Paragraph(
+                                new ParagraphProperties(new Justification { Val = JustificationValues.Both },
+                                    new SpacingBetweenLines { After = Size20 }),
+                                new Run(titleRequestRunPropertiesItalic.CloneNode(true),
+                                    new Text("    "+Participate) { Space = SpaceProcessingModeValues.Preserve })));
+
                     }
 
                     doc.AppendChild(
@@ -2236,9 +2244,17 @@ namespace RestChild.DocumentGeneration
                                 new SpacingBetweenLines {After = Size20}),
                             new Run(new RunProperties().SetFont().SetFontSize(Size28).Bold(), new Text(Space))));
 
-                    SignBlockNotification(doc, account,
-                        $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}",
-                        request.StatusId != (long) StatusEnum.CertificateIssued);
+                    if (request.StatusId == (long)StatusEnum.CertificateIssued)
+                    {
+                        SignBlockNotification2020(doc, account, "Исполнитель");
+                    }
+                    else
+                    {
+                        SignBlockNotification(doc, account,
+                                            $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}",
+                                            request.StatusId != (long)StatusEnum.CertificateIssued);
+                    }
+
 
                     mainPart.Document = doc;
                 }
