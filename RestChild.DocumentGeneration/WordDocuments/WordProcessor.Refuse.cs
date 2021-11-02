@@ -2229,7 +2229,7 @@ namespace RestChild.DocumentGeneration
                                 new ParagraphProperties(new Justification { Val = JustificationValues.Both },
                                     new SpacingBetweenLines { After = Size20 }),
                                 new Run(titleRequestRunPropertiesItalic.CloneNode(true),
-                                    new Text(Participate) { Space = SpaceProcessingModeValues.Preserve })));
+                                    new Text("    "+Participate) { Space = SpaceProcessingModeValues.Preserve })));
 
                     }
 
