@@ -688,7 +688,7 @@ namespace RestChild.Extensions.Extensions
                             if (child.DocumentTypeId == (long)DocumentTypeEnum.CertOfBirth)
                             {
                                 // если нашли документ удостоверяющий личность то не подтвердили
-                                res.Approved = res.EGRZagzResponse.СведОтветАГС[0]?.СведРегРожд[0]?.СвидетРожд.Any(d =>
+                                res.Approved = res.EGRZagzResponse?.СведОтветАГС[0]?.СведРегРожд[0]?.СвидетРожд?.Any(d =>
                                    ((string)d.Item)?.Trim().ToLower() == child.DocumentSeria?.Trim().ToLower()
                                    && ((string)d.Item1)?.Trim().ToLower() == child.DocumentNumber?.Trim().ToLower());
                             }
