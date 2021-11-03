@@ -98,7 +98,7 @@
     @if (Model.Type == ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck && !Model.ResultAbsent)
     {
         <div style="font-weight: bold">
-            @(Model.Approved ?? false ? "Запрашиваемые сведения подтверждены" : string.IsNullOrWhiteSpace(Model.Note) ? "Запрашиваемые сведения не1 подтверждены" : string.Empty)
+            @(Model.Approved ?? false ? "Запрашиваемые сведения подтверждены" : string.IsNullOrWhiteSpace(Model.Note) ? "Запрашиваемые сведения не подтверждены" : string.Empty)
         </div>
         if (!string.IsNullOrWhiteSpace(Model.AisoLegalRepresentationCheck) && Model.Approved == true)
         {
@@ -364,6 +364,8 @@
 
     @if (Model.Type == ExchangeBaseRegistryTypeEnum.GetFGISFRI)
     {
+        //Model.FGISFRIResponse
+
         if (Model.FGISFRIResponse != null)
         {
             bool isInvalid = Model.FGISFRIResponse.AttachmentsBlock.AttachmentFormat1 != null;

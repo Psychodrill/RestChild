@@ -1596,6 +1596,18 @@ namespace RestChild.Web.Controllers.WebApi
         }
 
         /// <summary>
+        ///     перепроверка заявления в АС УР БР
+        /// </summary>
+        [HttpPost]
+        [HttpGet]
+        public void ReCheckRequestInBaseRegistrySnils(long requestId)
+        {
+            var req = UnitOfWork.GetById<Request>(requestId);
+
+            CheckRequestInBaseRegistrySnilsReq(req);
+        }
+
+        /// <summary>
         ///     проверка заявления в АС УР БР (исполнение)
         /// </summary>
         private void CheckRequestInBaseRegistrySnilsReq(Request req)
@@ -1694,6 +1706,18 @@ namespace RestChild.Web.Controllers.WebApi
         }
 
         /// <summary>
+        ///     пере-отправка запроса в ФГИС ФРИ
+        /// </summary>
+        [HttpPost]
+        [HttpGet]
+        public void ReCheckBaseRegistryExtractFromFGISFRI(long requestId)
+        {
+            var req = UnitOfWork.GetById<Request>(requestId);
+
+            CheckBaseRegistryExtractFromFGISFRIReq(req);
+        }
+
+        /// <summary>
         ///     отправка запроса в ФГИС ФРИ
         /// </summary>
         private void CheckBaseRegistryExtractFromFGISFRIReq(Request req)
@@ -1703,7 +1727,6 @@ namespace RestChild.Web.Controllers.WebApi
                 return;
             }
 
-            //req.NeedSendToRelative = false;
 
             var count = UnitOfWork.GetSet<ExchangeBaseRegistry>().Count(v =>
                 v.ApplicantId == req.ApplicantId || v.Applicant.RequestId == req.Id ||
@@ -1795,6 +1818,8 @@ namespace RestChild.Web.Controllers.WebApi
             req.NeedSendForRegistrationByPassport = false;
             UnitOfWork.SaveChanges();
         }
+
+
 
         /// <summary>
         ///     Установка статуса 7704 при отправке запроса в БР (единая точка входа)
