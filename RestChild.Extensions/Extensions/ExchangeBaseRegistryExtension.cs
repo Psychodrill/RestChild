@@ -723,7 +723,9 @@ namespace RestChild.Extensions.Extensions
                     var xmlData = resultData.FirstOrDefault()?.OuterXml;
                     if (!string.IsNullOrWhiteSpace(xmlData))
                     {
-                        res.FGISFRIResponse = Serialization.Deserialize<ExtractionInvalidDataResponse>(xmlData);
+                        var FGISFRIResponse = Serialization.Deserialize<ExtractionInvalidDataResponse>(xmlData);
+                        res.FGISFRIResponse = FGISFRIResponse;
+
                     }
                 }
 
