@@ -553,7 +553,7 @@ namespace RestChild.Web.Controllers.WebApi
                         }
                     }
 
-                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.RelationshipSmev)
+                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.GetEGRZAGS)
                     {
                         relativeSmevChildChecked = true;
                         if (!bri.Success)

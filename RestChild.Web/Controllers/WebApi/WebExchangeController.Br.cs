@@ -1727,6 +1727,7 @@ namespace RestChild.Web.Controllers.WebApi
                 return;
             }
 
+            //req.NeedSendToRelative = false;
 
             var count = UnitOfWork.GetSet<ExchangeBaseRegistry>().Count(v =>
                 v.ApplicantId == req.ApplicantId || v.Applicant.RequestId == req.Id ||
