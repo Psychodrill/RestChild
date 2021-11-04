@@ -96,6 +96,7 @@ namespace RestChild.Web.Logic
 		public HashSet<string> TypeOfRestFilter => new HashSet<string>
 		{
 			ByResidenceServices,
+            RoomsFund
 		};
 
 
