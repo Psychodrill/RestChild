@@ -341,6 +341,7 @@ namespace RestChild.Extensions.Extensions
             else if (
                 (self.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.Benefit ||
                  self.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.SNILSByFio ||
+                 self.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.GetEGRZAGS ||
                  self.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.RelationshipSmev) &&
                 !string.IsNullOrWhiteSpace(self.RequestText))
             {
@@ -645,7 +646,7 @@ namespace RestChild.Extensions.Extensions
                         if (res.Child is Child child)
                         {
                             //если есть ребенок то это заявление и по дефолту не подтверждено
-                            res.Approved = true;
+                            res.Approved = false;
                             var requestChild = child.Request;
 
                             // если есть доверенность то дальше можно не проверять
@@ -663,31 +664,30 @@ namespace RestChild.Extensions.Extensions
                             var fatherName = father?.ФИО?.GetFio().ToLower();
                             var motherName = mother?.ФИО?.GetFio().ToLower();
 
-                            //// фио заявителя
-                            //var applicantName =
-                            //    $"{requestChild.Applicant.LastName} {requestChild.Applicant.FirstName} {requestChild.Applicant.MiddleName}"
-                            //        .Trim().ToLower();
-                            //if (applicantName != fatherName && applicantName != motherName)
-                            //{
-                            //    //если заявитель не папа и не мама то не подтвердили
-                            //    return res;
-                            //}
+                            // фио заявителя
+                            var applicantName =
+                                $"{requestChild.Applicant.LastName} {requestChild.Applicant.FirstName} {requestChild.Applicant.MiddleName}"
+                                    .Trim().ToLower();
+                            if (applicantName != fatherName && applicantName != motherName)
+                            {
+                                //если заявитель не папа и не мама то не подтвердили
+                                return res;
+                            }
 
-                            //foreach (var attendant in requestChild.Attendant.ToList())
-                            //{
-                            //    // фио сопровождающего
-                            //    var attendantName = $"{attendant.LastName} {attendant.FirstName} {attendant.MiddleName}"
-                            //        .Trim().ToLower();
-                            //    //если сопровождающие не папа и не мама то не подтвердили
-                            //    if (attendantName != fatherName && attendantName != motherName)
-                            //    {
-                            //        return res;
-                            //    }
-                            //}
+                            foreach (var attendant in requestChild.Attendant.ToList())
+                            {
+                                // фио сопровождающего
+                                var attendantName = $"{attendant.LastName} {attendant.FirstName} {attendant.MiddleName}"
+                                    .Trim().ToLower();
+                                //если сопровождающие не папа и не мама то не подтвердили
+                                if (attendantName != fatherName && attendantName != motherName)
+                                {
+                                    return res;
+                                }
+                            }
 
                             if (child.DocumentTypeId == (long)DocumentTypeEnum.CertOfBirth)
                             {
-                                // если нашли документ удостоверяющий личность то не подтвердили
                                 res.Approved = res.EGRZagzResponse?.СведОтветАГС[0]?.СведРегРожд[0]?.СвидетРожд?.Any(d =>
                                    ((string)d.Item)?.Trim().ToLower() == child.DocumentSeria?.Trim().ToLower()
                                    && ((string)d.Item1)?.Trim().ToLower() == child.DocumentNumber?.Trim().ToLower());
