@@ -149,12 +149,6 @@ namespace RestChild.Web.Controllers.WebApi
                                   ?? exchangeBaseRegistry.Applicant?.Request
                                   ?? UnitOfWork.GetSet<Request>().FirstOrDefault(r => r.ApplicantId == exchangeBaseRegistry.ApplicantId);
 
-                    if (exchangeBaseRegistry.Applicant != null)
-                    {
-                        request = UnitOfWork.GetSet<Request>()
-                            .FirstOrDefault(r => r.ApplicantId == exchangeBaseRegistry.ApplicantId);
-                    }
-
                     if (request != null)
                     {
                         if (request.NeedSendForBenefit || request.NeedSendToRelative || request.NeedSendForParent ||
