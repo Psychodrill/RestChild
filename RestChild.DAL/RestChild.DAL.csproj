@@ -1287,21 +1287,13 @@
     <Compile Include="Migrations\202110190834127_migration.designer.cs">
       <DependentUpon>202110190834127_migration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202110191818422_migrations.cs" />
-    <Compile Include="Migrations\202110191818422_migrations.designer.cs">
-      <DependentUpon>202110191818422_migrations.cs</DependentUpon>
+    <Compile Include="Migrations\202111081448420_202110190834127_migration.cs" />
+    <Compile Include="Migrations\202111081448420_202110190834127_migration.designer.cs">
+      <DependentUpon>202111081448420_202110190834127_migration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202110280712294_Facilities.cs" />
-    <Compile Include="Migrations\202110280712294_Facilities.designer.cs">
-      <DependentUpon>202110280712294_Facilities.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202110280816053_Faculities.cs" />
-    <Compile Include="Migrations\202110280816053_Faculities.designer.cs">
-      <DependentUpon>202110280816053_Faculities.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202110280824166_Facikities.cs" />
-    <Compile Include="Migrations\202110280824166_Facikities.designer.cs">
-      <DependentUpon>202110280824166_Facikities.cs</DependentUpon>
+    <Compile Include="Migrations\202111081455309_Leisure.cs" />
+    <Compile Include="Migrations\202111081455309_Leisure.designer.cs">
+      <DependentUpon>202111081455309_Leisure.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="RepositoryExtensions\Repository.cs" />
@@ -2196,17 +2188,11 @@
     <EmbeddedResource Include="Migrations\202110190834127_migration.resx">
       <DependentUpon>202110190834127_migration.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110191818422_migrations.resx">
-      <DependentUpon>202110191818422_migrations.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202111081448420_202110190834127_migration.resx">
+      <DependentUpon>202111081448420_202110190834127_migration.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110280712294_Facilities.resx">
-      <DependentUpon>202110280712294_Facilities.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110280816053_Faculities.resx">
-      <DependentUpon>202110280816053_Faculities.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110280824166_Facikities.resx">
-      <DependentUpon>202110280824166_Facikities.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202111081455309_Leisure.resx">
+      <DependentUpon>202111081455309_Leisure.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

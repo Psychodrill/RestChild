@@ -7,18 +7,18 @@ namespace RestChild.DAL.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class Faculities : IMigrationMetadata
+    public sealed partial class _202110190834127_migration : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Faculities));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(_202110190834127_migration));
         
         string IMigrationMetadata.Id
         {
-            get { return "202110280816053_Faculities"; }
+            get { return "202111081448420_202110190834127_migration"; }
         }
         
         string IMigrationMetadata.Source
         {
-            get { return null; }
+            get { return Resources.GetString("Source"); }
         }
         
         string IMigrationMetadata.Target

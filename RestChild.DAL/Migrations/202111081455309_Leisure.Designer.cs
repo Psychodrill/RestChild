@@ -7,13 +7,13 @@ namespace RestChild.DAL.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class Facikities : IMigrationMetadata
+    public sealed partial class Leisure : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Facikities));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Leisure));
         
         string IMigrationMetadata.Id
         {
-            get { return "202110280824166_Facikities"; }
+            get { return "202111081455309_Leisure"; }
         }
         
         string IMigrationMetadata.Source
