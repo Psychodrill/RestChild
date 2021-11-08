@@ -167,8 +167,8 @@ namespace RestChild.Web.Controllers
                         attendan.Add(app);
                     reApplyReq.Attendant = attendan;
                 }
-                reApplyReq.Attendant = request.Attendant;
-               // reApplyReq.Applicant = app;
+                //reApplyReq.Attendant = request.Attendant;
+                reApplyReq.Applicant = app;
                 if (!request.AgentId.IsNullOrEmpty())
                 {
                     var agent = new Agent();
@@ -243,8 +243,18 @@ namespace RestChild.Web.Controllers
                     chil.Email = c.Email;
                     reApplyReq.Attendant.Add(chil);
                 }
+                List<long> fileTypes = new List<long>{ 20, 30, 35, 40, 50, 60, 130, 140, 150, 160, 170, 180, 190, 200, 210, 2000 };
+                List<RequestFile> files = new List<RequestFile>();
+                if (request.Files.Any())
+                foreach (RequestFile file in request.Files)
+                {
+                        if (fileTypes.Contains((long)file.RequestFileTypeId))
+                            files.Add(file);
+                }
+                reApplyReq.Files = files;
                 reApplyReq.CountAttendants = request.CountAttendants;
                 reApplyReq.CountPlace = request.CountPlace;
+                reApplyReq.TypeOfRest = request.TypeOfRest;
                 model = new RequestViewModel(reApplyReq);
             }
 
