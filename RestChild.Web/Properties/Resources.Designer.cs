@@ -59,14 +59,5 @@ namespace RestChild.Web.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string CurrentCommit {
-            get {
-                return ResourceManager.GetString("CurrentCommit", resourceCulture);
-            }
-        }
     }
 }

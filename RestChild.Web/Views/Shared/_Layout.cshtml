@@ -250,6 +250,14 @@
                 {
                     <li>@Html.ActionLink("Направления отдыха", "Search", "RestPlaces")</li>
                 }
+                @if (Security.HasRight(AccessRightEnum.LeisureFacilitiesManagement))
+                {
+                    <!--Объекты отдыха:-->
+                    <li>@Html.ActionLink("Обьекты отдыха", "Search", "LeisureFacilities")</li>
+                }
+
+
+
                 @if (Security.HasRight(AccessRightEnum.VocabularyManage))
                 {
                     <li>@Html.ActionLink("Заявочные кампании", "Search", "RequestCurrentPeriod")</li>

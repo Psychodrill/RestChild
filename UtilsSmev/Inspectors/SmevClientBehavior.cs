@@ -7,7 +7,7 @@ using UtilsSmev.Interface;
 namespace UtilsSmev.Inspectors
 {
 	public class SmevClientBehavior : IEndpointBehavior
-	{
+    {
 		ILoggingSmevRequest Logging { get; set; }
 		private List<string> _xpaths;
 		private List<string> _ids;

@@ -1943,6 +1943,12 @@ namespace RestChild.DAL.Configurations
                     Id = ++startIndex,
                     Code = AccessRightEnum.MosgorturBookingTargetsEditBookingDepartment,
                     Name = "(МОСГОРТУР) Отдел бронирования. Цели обращения. Управление."
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.LeisureFacilitiesManagement,
+                    Name = "Просмотр объектов отдыха"
                 }
             );
 
