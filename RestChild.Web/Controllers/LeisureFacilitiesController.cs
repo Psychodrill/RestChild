@@ -88,13 +88,18 @@ namespace RestChild.Web.Controllers
             return RedirectToAction(nameof(Search));
         }
         /// <summary>
-        ///     сохранение объекта отдыха
+        ///     сохранение объекта отдыха LeisureFacilitiesManagement
         /// </summary>
         [HttpPost]
         public ActionResult Save(LeisureFacilltiesViewModel place)
         {
-            var data = place.BuildData();
             var currentAccountId = Security.GetCurrentAccountId();
+            if (!Security.HasRight(AccessRightEnum.LeisureFacilitiesManagement) || !currentAccountId.HasValue)
+            {
+                return RedirectToAction("Search");
+            }
+            var data = place.BuildData();
+           
             if ((!ModelState.IsValid || !ValidateModel(data)))
             {
                 return View("LeisureFacilltiesEdit", CreateModel(data));

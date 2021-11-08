@@ -30,9 +30,9 @@ namespace RestChild.Web
             {
                 var version = Assembly.GetExecutingAssembly().GetName().Version;
                 var buildDate = new DateTime(2000, 1, 1).AddDays(version.Build).AddSeconds(version.Revision * 2);
-
+                /*
                 var gitVersion = Properties.Resources.CurrentCommit;
-
+                
                 if(string.IsNullOrWhiteSpace(gitVersion) || gitVersion.Length < 8)
                 {
                     gitVersion = version.ToString();
@@ -43,7 +43,7 @@ namespace RestChild.Web
                 }
 
                 var displayableVersion = $"{gitVersion}";
-                Version = displayableVersion;
+                Version = displayableVersion;*/
 
                 AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.Sid;
                 var container = WindsorHolder.Instance.Container;

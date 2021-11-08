@@ -1853,6 +1853,12 @@ namespace RestChild.DAL.Configurations
                     Id = ++startIndex,
                     Code = AccessRightEnum.InteragencyRequestDelete,
                     Name = "Работа с межведомственным запросом. Удаление"
+                },
+                new AccessRight
+                {
+                    Id = ++startIndex,
+                    Code = AccessRightEnum.LeisureFacilitiesManagement,
+                    Name = "Просмотр объектов отдыха"
                 }
             );
 

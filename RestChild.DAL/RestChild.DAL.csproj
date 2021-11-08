@@ -1290,6 +1290,18 @@
     <Compile Include="Migrations\202110191818422_migrations.designer.cs">
       <DependentUpon>202110191818422_migrations.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202110280712294_Facilities.cs" />
+    <Compile Include="Migrations\202110280712294_Facilities.designer.cs">
+      <DependentUpon>202110280712294_Facilities.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110280816053_Faculities.cs" />
+    <Compile Include="Migrations\202110280816053_Faculities.designer.cs">
+      <DependentUpon>202110280816053_Faculities.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110280824166_Facikities.cs" />
+    <Compile Include="Migrations\202110280824166_Facikities.designer.cs">
+      <DependentUpon>202110280824166_Facikities.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="RepositoryExtensions\Repository.cs" />
     <Compile Include="UnitOfWork.cs" />
@@ -2185,6 +2197,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202110191818422_migrations.resx">
       <DependentUpon>202110191818422_migrations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110280712294_Facilities.resx">
+      <DependentUpon>202110280712294_Facilities.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110280816053_Faculities.resx">
+      <DependentUpon>202110280816053_Faculities.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110280824166_Facikities.resx">
+      <DependentUpon>202110280824166_Facikities.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
