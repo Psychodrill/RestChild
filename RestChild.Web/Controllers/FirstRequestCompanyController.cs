@@ -1084,6 +1084,12 @@ namespace RestChild.Web.Controllers
 
                 var request = requestModel.BuildData();
 
+                // Установка признака автоматической проверки ЦПМПК
+                foreach (var child in request.Child)
+                {
+                    if (child.IsCPMPK == true) request.NeedSendForCPMPK = true;
+                }
+
                 if (request.TypeOfRestId == (long) TypeOfRestEnum.YouthRestCamps ||
                     request.TypeOfRestId == (long) TypeOfRestEnum.YouthRestOrphanCamps)
                 {
