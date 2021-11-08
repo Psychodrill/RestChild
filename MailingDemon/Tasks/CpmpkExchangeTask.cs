@@ -63,8 +63,8 @@ namespace MailingDemon.Tasks
 
                 if (!exec)
                 {
-                    Logger.Info("CpmpkExchangeTask disabled");
-                    Logger.Info("CpmpkExchangeTask finish");
+                    Logger.Info("CpmpkExchangeTask disabled.");
+                    Logger.Info("CpmpkExchangeTask finish.");
                     return;
                 }
 
@@ -83,7 +83,7 @@ namespace MailingDemon.Tasks
                     }
 
                     unitOfWork.SaveChanges();
-                    Logger.Info("CpmpkExchangeTask finish");
+                    Logger.Info("CpmpkExchangeTask finish..");
                     return;
                 }
 
@@ -113,7 +113,10 @@ namespace MailingDemon.Tasks
 
                     foreach (var request in requests)
                     {
-                        var children = request.Child.Where(c => c.TypeOfRestrictionId == Config.TypeOfRestrictionId)
+                        //var children = request.Child.Where(c => c.TypeOfRestrictionId == Config.TypeOfRestrictionId || c.IsCPMPK)
+                        //    .ToList();
+
+                        var children = request.Child.Where(c => c.IsCPMPK)
                             .ToList();
 
                         if (children.Any())

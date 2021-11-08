@@ -104,34 +104,105 @@ namespace RestChild.Web.Controllers
             var model = new RequestViewModel(request);
             if (reApply)
             {
-                //request.TypeOfRest.Name = null;
-                //model.Data.TypeOfRest = null;
-                //request.TimeOfRestId = null;
-                //request.SubjectOfRestId = null;
-                //request.YearOfRestId = null;
-                //request.PlaceOfRestId = null;
-                //request.Status = UnitOfWork.GetById<Status>((long)StatusEnum.Draft);
-                //request.StatusId = (long)StatusEnum.Draft;
-                //request.Tour = null;
-                //request.TourId = null;
-                reApplyReq.Child = request.Child;
-                reApplyReq.Attendant = request.Attendant;
-                reApplyReq.Applicant = request.Applicant;
-                reApplyReq.Agent = request.Agent;
-                // reApplyReq.IsLast = request.IsLast;
-                // reApplyReq.IsDeleted = request.IsDeleted;
-                //reApplyReq.IsDraft = request.IsDraft;
-                //reApplyReq.Status = UnitOfWork.GetById<Status>((long)StatusEnum.WaitApplicant);
-                //reApplyReq.StatusId = request.StatusId;
-                // reApplyReq.Version = request.Version;
-                // reApplyReq.UpdateDate = request.UpdateDate;
-                reApplyReq.SourceId = request.SourceId;
-                reApplyReq.Source = request.Source;
-                reApplyReq.Files = request.Files.Where(r => !r.FileTitle.Contains("Уведомление") && !r.FileTitle.Contains("Путёвка")).ToList();
+                reApplyReq.TypeOfRestId = request.TypeOfRestId;
+                reApplyReq.AgentApplicant = request.AgentApplicant;
+                var app = new Applicant();
+                app.FirstName = request.Applicant.FirstName;
+                app.LastName = request.Applicant.LastName;
+                app.HaveMiddleName = request.Applicant.HaveMiddleName;
+                app.MiddleName = request.Applicant.MiddleName;
+                app.Male = (bool)request.Applicant.Male;
+                app.Snils = request.Applicant.Snils;
+                app.DateOfBirth = request.Applicant.DateOfBirth;
+                app.PlaceOfBirth = request.Applicant.PlaceOfBirth;
+                app.DocumentTypeId = request.Applicant.DocumentTypeId;
+                app.DocumentSeria = request.Applicant.DocumentSeria;
+                app.DocumentNumber = request.Applicant.DocumentNumber;
+                app.DocumentDateOfIssue = request.Applicant.DocumentDateOfIssue;
+                app.DocumentSubjectIssue = request.Applicant.DocumentSubjectIssue;
+                app.BenefitTypeId = request.Applicant.BenefitTypeId;
+                app.AddressId = request.Applicant.AddressId;
+                app.Address = request.Applicant.Address;
+                app.Phone = request.Applicant.Phone;
+                app.AddonPhone = request.Applicant.AddonPhone;
+                app.Email = request.Applicant.Email;
+                reApplyReq.Applicant = app;
+                if (!request.AgentId.IsNullOrEmpty())
+                {
+                    var agent = new Agent();
+                    agent.FirstName = request.Agent.FirstName;
+                    agent.LastName = request.Agent.LastName;
+                    agent.HaveMiddleName = request.Agent.HaveMiddleName;
+                    agent.MiddleName = request.Agent.MiddleName;
+                   // agent.Male = (bool)request.Agent.Male;
+                    agent.Snils = request.Agent.Snils;
+                    agent.DateOfBirth = request.Agent.DateOfBirth;
+                    agent.PlaceOfBirth = request.Agent.PlaceOfBirth;
+                    agent.DocumentTypeId = request.Agent.DocumentTypeId;
+                    agent.DocumentSeria = request.Agent.DocumentSeria;
+                    agent.DocumentNumber = request.Agent.DocumentNumber;
+                    agent.DocumentDateOfIssue = request.Agent.DocumentDateOfIssue;
+                    agent.DocumentSubjectIssue = request.Agent.DocumentSubjectIssue;
+                    agent.Phone = request.Agent.Phone;
+                    agent.Email = request.Agent.Email;
+                    reApplyReq.Agent = agent;
+                }
+                if (!request.Child.IsNullOrEmpty())
+                    reApplyReq.Child.Clear();
+                foreach (var c in request.Child)
+                {
+                    var chil = new Child();
+                    chil.FirstName = c.FirstName;
+                    chil.LastName = c.LastName;
+                    chil.HaveMiddleName = c.HaveMiddleName;
+                    chil.MiddleName = c.MiddleName;
+                    chil.Male = c.Male;
+                    chil.Snils = c.Snils;
+                    chil.DateOfBirth = c.DateOfBirth;
+                    chil.PlaceOfBirth = c.PlaceOfBirth;
+                    chil.DocumentTypeId = c.DocumentTypeId;
+                    chil.DocumentSeria = c.DocumentSeria;
+                    chil.DocumentNumber = c.DocumentNumber;
+                    chil.DocumentDateOfIssue = c.DocumentDateOfIssue;
+                    chil.DocumentSubjectIssue = c.DocumentSubjectIssue;
+                    chil.BenefitTypeId = c.BenefitTypeId;
+                    chil.AddressId = c.AddressId;
+                    chil.Address = c.Address;
+                    chil.SchoolId = c.SchoolId;
+                    chil.School = c.School;
+                    chil.ApplicantId = c.ApplicantId;
+                    reApplyReq.Child.Add(chil);
+                }
+                if (!request.Attendant.IsNullOrEmpty())
+                    reApplyReq.Attendant.Clear();
+                foreach (var c in request.Attendant)
+                {
+                    var chil = new Applicant();
+                    chil.FirstName = c.FirstName;
+                    chil.LastName = c.LastName;
+                    chil.HaveMiddleName = c.HaveMiddleName;
+                    chil.MiddleName = c.MiddleName;
+                    chil.Male = (bool)c.Male;
+                    chil.Snils = c.Snils;
+                    chil.DateOfBirth = c.DateOfBirth;
+                    chil.PlaceOfBirth = c.PlaceOfBirth;
+                    chil.DocumentTypeId = c.DocumentTypeId;
+                    chil.DocumentSeria = c.DocumentSeria;
+                    chil.DocumentNumber = c.DocumentNumber;
+                    chil.DocumentDateOfIssue = c.DocumentDateOfIssue;
+                    chil.DocumentSubjectIssue = c.DocumentSubjectIssue;
+                    chil.BenefitTypeId = c.BenefitTypeId;
+                    chil.AddressId = c.AddressId;
+                    chil.Address = c.Address;
+                    chil.Phone = c.Phone;
+                    chil.AddonPhone = c.AddonPhone;
+                    chil.Email = c.Email;
+                    reApplyReq.Attendant.Add(chil);
+                }
                 model = new RequestViewModel(reApplyReq);
             }
-            
-            
+
+
             BookingRequest bookingRequest = null;
             if (!id.HasValue && typeOfRestId.HasValue && tourId.HasValue && bookingGuid.HasValue)
             {
@@ -1150,23 +1221,23 @@ namespace RestChild.Web.Controllers
             {
                 model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202107);
             }
-            if (model.SameChildren?.Any()??false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.YouthRestOrphanCamps)
+            if ((model.SameChildren?.Any()??false) && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.YouthRestOrphanCamps)
             {
                 model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202104);
             }
-            if (model.ApplicantDouble?.Any()??false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.RestWithParentsPoor)
+            if ((model.ApplicantDouble?.Any()??false) && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.RestWithParentsPoor)
             {
                 model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202105);
             }
-            if (model.ApplicantDouble?.Any() ?? false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.MoneyOn3To7)
+            if ((model.ApplicantDouble?.Any() ?? false) && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.MoneyOn3To7)
             {
                 model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202106);
             }
-            if (model.SameAttendants?.Any() ?? false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.RestWithParentsPoor)
+            if ((model.SameAttendants?.Any() ?? false) && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.RestWithParentsPoor)
             {
                 model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202102);
             }
-            if (model.SameAttendants?.Any()??false && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.MoneyOn3To7)
+            if ((model.SameAttendants?.Any()??false) && model.Data.TypeOfRestId == (long?)TypeOfRestEnum.MoneyOn3To7)
             {
                 model.Data.DeclineReason = UnitOfWork.GetById<DeclineReason>(202103);
             }
@@ -2319,5 +2390,63 @@ namespace RestChild.Web.Controllers
                 ErrorText = model.GetErrorDescription()
             });
         }
+
+        /// <summary>
+        /// Функция для стресс теста 25.10.2021, если найдено в коде после 10.11.2021 - УДАЛИТЬ
+        /// </summary>
+        ///
+        public ActionResult StressTest()
+        {
+            DateTime sdate = new DateTime();
+            DateTime edate = new DateTime();
+            var tp = DateTime.TryParse("26/10/2021 13:30:00", out sdate);
+            tp = DateTime.TryParse("27/10/2021 13:30:00", out edate);
+            var filter = new RequestFilterModel();
+            filter.StartRequestDate = sdate;
+            filter.EndRequestDate = edate;
+            filter.YearOfRestId = 5;
+            filter.SourceId = (long)SourceEnum.Mpgu;
+            filter.ApplicantFio = "фам";
+            var query = ApiController.RequestListQuery(filter);
+            foreach (Request r in query)
+            {
+                using (var uw = new UnitOfWork())
+                {
+                    SetUnitOfWorkInRefClass(uw);
+                    ApiController.RequestChangeStatus(r.Id, "33039E99-9360-47B2-AF29-6707EC0AFF01");
+                    ApiController.RequestChangeStatus(r.Id, "4407104C-99FD-4667-A4EB-D654C264F34E");
+                    ApiController.RequestChangeStatus(r.Id, "27D4DBFA-0B91-4D94-A2CE-A5F973414DA4");
+                }
+            }
+            return RedirectToAction("RequestList");
+        }
+
+        public ActionResult StressTestDeleteAll()
+        {
+            DateTime sdate = new DateTime();
+            DateTime edate = new DateTime();
+            var tp = DateTime.TryParse("26/10/2021 13:30:00", out sdate);
+            tp = DateTime.TryParse("27/10/2021 13:30:00", out edate);
+            var filter = new RequestFilterModel();
+            filter.StartRequestDate = sdate;
+            filter.EndRequestDate = edate;
+            filter.YearOfRestId = 5;
+            filter.SourceId = (long)SourceEnum.Mpgu;
+            filter.ApplicantFio = "фам";
+            //filter.ApplicantFio = "Удаление";
+            var query = ApiController.RequestListQuery(filter);
+            foreach (Request r in query)
+            {
+                using (var uw = new UnitOfWork())
+                {
+                    SetUnitOfWorkInRefClass(uw);
+                    var res = ApiController.RemoveStressTestVersion(r.Id);
+                }
+            }
+            return RedirectToAction("RequestList");
+        }
+
     }
+
+
 }

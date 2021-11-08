@@ -30,37 +30,37 @@ namespace RestChild.Comon.Enumeration
         public const string ManageExchangeBaseRegistry = "60CC3642-336C-4E8A-85D1-401A47B57132";
 
         /// <summary>
-        ///     Реестр записи на приём (просмотр)
+        ///     Реестр записи на приём (просмотр). Отдел приема документов
         /// </summary>
         public const string MosgorturScheduleBookingView = "789BF5C0-D151-4435-824C-79EED359459C";
 
         /// <summary>
-        ///     Реестр записи на приём (анулирование)
+        ///     Реестр записи на приём (анулирование). Отдел приема документов
         /// </summary>
         public const string MosgorturScheduleBookingCancel = "4FF5F092-DB8A-4C78-B247-E31D31B93C20";
 
         /// <summary>
-        ///     Реестр записи на приём (создание)
+        ///     Реестр записи на приём (создание). Отдел приема документов
         /// </summary>
         public const string MosgorturScheduleBookingCreate = "4D6BFBC1-16F2-42DB-A02E-54991AA390B3";
 
         /// <summary>
-        ///     Управление рабочими днями (просмотр)
+        ///     Управление рабочими днями (просмотр). Отдел приема документов
         /// </summary>
         public const string MosgorturWorkingDaysView = "FEEC3B20-8500-41D9-858D-9551BB506EC5";
 
         /// <summary>
-        ///     Управление рабочими днями (редактирование)
+        ///     Управление рабочими днями (редактирование). Отдел приема документов
         /// </summary>
         public const string MosgorturWorkingDaysEdit = "553B46F8-0F82-4E6E-8D34-BDCD3ED3A0D0";
 
         /// <summary>
-        ///     Управление целями визита (просмотр)
+        ///     Управление целями визита (просмотр). Отдел приема документов
         /// </summary>
         public const string MosgorturBookingTargetsView = "97A388D4-AA84-493A-8B4E-4616EF9EDB1D";
 
         /// <summary>
-        ///     Управление целями визита (редактирование)
+        ///     Управление целями визита (редактирование). Отдел приема документов
         /// </summary>
         public const string MosgorturBookingTargetsEdit = "AEE5CF55-CF11-4333-B3C1-E340FB792563";
 
@@ -193,6 +193,76 @@ namespace RestChild.Comon.Enumeration
         ///     Заявление. Замена сопровождающего
         /// </summary>
         public const string ReplacingAccompanying = "54FFFBEA-5DCC-474A-8E6B-8250B92B2620";
+
+        /// <summary>
+        ///     Реестр записи на приём (просмотр). Отдел по работе с клиентами
+        /// </summary>
+        public const string MosgorturScheduleBookingViewClientDepartment = "ca97dfe7-8692-4244-9d76-9250a8cf49de";
+
+        /// <summary>
+        ///     Реестр записи на приём (анулирование). Отдел по работе с клиентами
+        /// </summary>
+        public const string MosgorturScheduleBookingCancelClientDepartment = "bc0bad0c-0d58-4739-a690-ccde171582d0";
+
+        /// <summary>
+        ///     Реестр записи на приём (создание). Отдел по работе с клиентами
+        /// </summary>
+        public const string MosgorturScheduleBookingCreateClientDepartment = "dafb2ce0-fb03-454b-b696-d1530dba8586";
+
+        /// <summary>
+        ///     Управление рабочими днями (просмотр). Отдел по работе с клиентами
+        /// </summary>
+        public const string MosgorturWorkingDaysViewClientDepartment = "6959e8ab-a7b1-4b1b-86c8-f7616c75a127";
+
+        /// <summary>
+        ///     Управление рабочими днями (редактирование). Отдел по работе с клиентами
+        /// </summary>
+        public const string MosgorturWorkingDaysEditClientDepartment = "300ee0f9-4831-4e5f-9db9-9026371aba80";
+
+        /// <summary>
+        ///     Управление целями визита (просмотр). Отдел по работе с клиентами
+        /// </summary>
+        public const string MosgorturBookingTargetsViewClientDepartment = "b65fa644-7e92-46ce-aaf7-3ed2334d5f67";
+
+        /// <summary>
+        ///     Управление целями визита (редактирование). Отдел по работе с клиентами
+        /// </summary>
+        public const string MosgorturBookingTargetsEditClientDepartment = "b835e5cf-ed88-401d-8a8e-d112c213e406";
+
+        /// <summary>
+        ///     Реестр записи на приём (просмотр). Отдел бронирования
+        /// </summary>
+        public const string MosgorturScheduleBookingViewBookingDepartment = "ee2ea857-2575-4ff4-adc4-de64df35c196";
+
+        /// <summary>
+        ///     Реестр записи на приём (анулирование). Отдел бронирования
+        /// </summary>
+        public const string MosgorturScheduleBookingCancelBookingDepartment = "b133c177-065a-4969-beea-9d7d37359fa8";
+
+        /// <summary>
+        ///     Реестр записи на приём (создание). Отдел бронирования
+        /// </summary>
+        public const string MosgorturScheduleBookingCreateBookingDepartment = "ff7d9775-0163-41bf-8509-9b51102f71c4";
+
+        /// <summary>
+        ///     Управление рабочими днями (просмотр). Отдел бронирования
+        /// </summary>
+        public const string MosgorturWorkingDaysViewBookingDepartment = "ddc043f5-7e10-46b8-8233-969369757167";
+
+        /// <summary>
+        ///     Управление рабочими днями (редактирование). Отдел бронирования
+        /// </summary>
+        public const string MosgorturWorkingDaysEditBookingDepartment = "c68cc5e7-073e-478c-8102-591db20d6575";
+
+        /// <summary>
+        ///     Управление целями визита (просмотр). Отдел бронирования
+        /// </summary>
+        public const string MosgorturBookingTargetsViewBookingDepartment = "69d9702f-8e84-411f-9c5d-5ef373ac670e";
+
+        /// <summary>
+        ///     Управление целями визита (редактирование). Отдел бронирования
+        /// </summary>
+        public const string MosgorturBookingTargetsEditBookingDepartment = "94fd7ce6-c0c0-4349-8d5b-5fee85c09a91";
 
         /// <summary>
         ///     платежи

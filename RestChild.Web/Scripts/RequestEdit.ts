@@ -883,6 +883,24 @@ $(() => {
 
     let statuses = $('select#statusApplicant').html();
 
+    // при выборе приоритетным наземный транспорт дополнительный воздушный
+    function changeAdditionalTransport(target) {
+
+        let additionalTransport = $(target).closest('fieldset').find('.additionalTypeOfTransport');
+        if (target.selectedIndex == 2)
+        {
+
+            $('.additionalTypeOfTransport').select2('val', 1);
+
+            additionalTransport.attr('disabled', 'disabled');
+        }
+        else
+        {
+            $('.additionalTypeOfTransport').select2('val', null);
+            additionalTransport.removeAttr('disabled');
+        }
+    }
+
     function changeTypeOfRest(target) {
         let savedInited = inited;
         let val = getTypeOfRest($(target).select2('val'));
@@ -1234,6 +1252,11 @@ $(() => {
     $('.type-of-rest').change((event) => {
         let target = event.target;
         changeTypeOfRest(target);
+    });
+
+    $('.priorityTypeOfTransport').change((event) => {
+        let target = event.target;
+        changeAdditionalTransport(target);
     });
 
     $('#mainPlaces')

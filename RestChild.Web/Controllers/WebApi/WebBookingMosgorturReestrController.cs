@@ -766,7 +766,7 @@ namespace RestChild.Web.Controllers.WebApi
                 var status10801 = ConfigurationManager.AppSettings["MqMPGUStatus1080.1Name"];
                 if (string.IsNullOrWhiteSpace(status10801))
                 {
-                    status10801 = "запись отменена по инициативе офиса ГАУК «МОСГОРТУР»";
+                    status10801 = "Запись отменена по инициативе офиса ГАУК «МОСГОРТУР»";
                 }
 
                 var note10801 = ConfigurationManager.AppSettings["MqMPGUStatus1080.1Title"];

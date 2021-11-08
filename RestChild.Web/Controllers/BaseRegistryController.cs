@@ -24,6 +24,7 @@ namespace RestChild.Web.Controllers
         public const string GetSnilsByData = "0DC806DA-6C5C-4B56-B410-3F2E1765AAFB";
         public const string GetRelativesSmev = "49C8F097-361C-48F5-A70A-909C0B89F061";
         public const string GetRelatives = "4AFEE4AC-9251-45F7-ADC1-17F0AC41345A";
+        public const string GetExtractFromFGISFRI = "6c216ccc-3c28-4fa1-ba79-df0851929762";
         /// <summary>
         ///     Проверка ЦПМПК
         /// </summary>

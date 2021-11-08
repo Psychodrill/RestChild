@@ -97,7 +97,7 @@ namespace RestChild.DAL.Configurations
                     Id = 11,
                     Name =
                         "Дети, имеющие заключение ЦПМПК города Москвы (адаптированная основная общеобразовательная программа)",
-                    IsActive = false,
+                    IsActive = true,
                     Eid = 11
                 });
 

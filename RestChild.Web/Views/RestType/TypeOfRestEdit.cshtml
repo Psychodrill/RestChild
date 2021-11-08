@@ -32,197 +32,207 @@
 			@Html.HiddenFor(model => model.NeedTransport)
 			@Html.HiddenFor(model => model.NeedBookingDate)
 			@Html.HiddenFor(model => model.NeedAccomodation)
-			<fieldset class="form-horizontal">
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Наименование<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.Name, new { @class = "form-control", autocomplete = "off", maxlength = 500, @id= "Name" })
-						<span class="field-validation-error" id="nameMessage"></span>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Код услуги</label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.ServiceCode, new { @class = "form-control", autocomplete = "off", maxlength = 500, @data_toggle = "tooltip", @data_placement = "right", @title = "Код услуги в АС ГУФ" })
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Родитель</label>
-					<div class="col-md-9">
-						@Html.DropDownListFor(model => model.ParentId, (IEnumerable<SelectListItem>)ViewBag.RestTypes, new { @class = "form-control", @data_toggle = "tooltip", @data_placement = "right", @title = "Выбор вышестоящего группирующего вида отдыха" })
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle = "tooltip" data-placement = "right" title = "При установке, данное значение справочника будет отображаться в соответствующих элементах Системы.">
-							@Html.CheckBoxFor(model => model.IsActive) Действующий вид отдыха
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle = "tooltip" data-placement = "right" title = "При установке, данное значение справочника будет передаваться на МПГУ.">
-							@Html.CheckBoxFor(model => model.ForMPGU) Для МПГУ
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle = "tooltip" data-placement = "right" title = "Установка признака приводит к отображению блока «регион отдыха» при подаче заявления на данный вид отдыха.">
-							@Html.CheckBoxFor(model => model.NeedPlace) Необходим регион отдыха
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle = "tooltip" data-placement = "right" title = "Установка признака приводит к отображению блока «размещение» при подаче заявления на данный вид отдыха.">
-							@Html.CheckBoxFor(model => model.NeedPlacment) Необходимо размещение
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle = "tooltip" data-placement = "right" title = "Приводит к отображению блока «заявитель» при подаче заявления на данный вид отдыха.">
-							@Html.CheckBoxFor(model => model.NeedApplicant) Необходим заявитель
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle = "tooltip" data-placement = "right" title = "Приводит к отображению блока «сопровождающий» при подаче заявления на данный вид отдыха.">
-							@Html.CheckBoxFor(model => model.NeedAttendant) Необходим сопровождающий
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle = "tooltip" data-placement = "right" title = "Приводит к тому, что данный вид отдыха отображается в выпадающем списке видов отдыха при формировании размещения.">
-							@Html.CheckBoxFor(model => model.ForTour) Для формирования размещения
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle = "tooltip" data-placement = "right" title = "Предполагает обязательное наличие тематики смены при формировании размещения на основе данного вида отдыха.">
-							@Html.CheckBoxFor(model => model.NeedSubject) Нужна тематика
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle="tooltip" data-placement="right" title="Установка признака предполагает обязательное наличие цены при формировании размещения на основе данного вида отдыха.">
-							@Html.CheckBoxFor(model => model.NeedPrice) Нужна цена
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle="tooltip" data-placement="right" title="Коммерческий вид">
-							@Html.CheckBoxFor(model => model.Commercial) Коммерческий
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle="tooltip" data-placement="right" title="Дополнительное">
-							@Html.CheckBoxFor(model => model.IsAddon) Дополнительное
-						</label>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="checkbox col-md-9 col-md-offset-3">
-						<label data-toggle="tooltip" data-placement="right" title="Используется в первой заявочной кампании">
-							@Html.CheckBoxFor(model => model.FirstRequestCompanySelect) Используется в первой заявочной кампании
-						</label>
-					</div>
-				</div>
+            @Html.HiddenFor(model =>model.ServiceCodeFirstCompany)
+            @Html.HiddenFor(model =>model.NeedTypeOfTransport)
+        <fieldset class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Наименование<span class="requared">*</span></label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control", autocomplete = "off", maxlength = 500, @id = "Name" })
+                    <span class="field-validation-error" id="nameMessage"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Код услуги</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.ServiceCode, new { @class = "form-control", autocomplete = "off", maxlength = 500, @data_toggle = "tooltip", @data_placement = "right", @title = "Код услуги в АС ГУФ" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Родитель</label>
+                <div class="col-md-9">
+                    @Html.DropDownListFor(model => model.ParentId, (IEnumerable<SelectListItem>)ViewBag.RestTypes, new { @class = "form-control", @data_toggle = "tooltip", @data_placement = "right", @title = "Выбор вышестоящего группирующего вида отдыха" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="При установке, данное значение справочника будет отображаться в соответствующих элементах Системы.">
+                        @Html.CheckBoxFor(model => model.IsActive) Действующий вид отдыха
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="При установке, данное значение справочника будет передаваться на МПГУ.">
+                        @Html.CheckBoxFor(model => model.ForMPGU) Для МПГУ
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Установка признака приводит к отображению блока «регион отдыха» при подаче заявления на данный вид отдыха.">
+                        @Html.CheckBoxFor(model => model.NeedPlace) Необходим регион отдыха
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Установка признака приводит к отображению блока «размещение» при подаче заявления на данный вид отдыха.">
+                        @Html.CheckBoxFor(model => model.NeedPlacment) Необходимо размещение
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Приводит к отображению блока «заявитель» при подаче заявления на данный вид отдыха.">
+                        @Html.CheckBoxFor(model => model.NeedApplicant) Необходим заявитель
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Приводит к отображению блока «сопровождающий» при подаче заявления на данный вид отдыха.">
+                        @Html.CheckBoxFor(model => model.NeedAttendant) Необходим сопровождающий
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Приводит к тому, что данный вид отдыха отображается в выпадающем списке видов отдыха при формировании размещения.">
+                        @Html.CheckBoxFor(model => model.ForTour) Для формирования размещения
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Предполагает обязательное наличие тематики смены при формировании размещения на основе данного вида отдыха.">
+                        @Html.CheckBoxFor(model => model.NeedSubject) Нужна тематика
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Установка признака предполагает обязательное наличие цены при формировании размещения на основе данного вида отдыха.">
+                        @Html.CheckBoxFor(model => model.NeedPrice) Нужна цена
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Коммерческий вид">
+                        @Html.CheckBoxFor(model => model.Commercial) Коммерческий
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Дополнительное">
+                        @Html.CheckBoxFor(model => model.IsAddon) Дополнительное
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Используется в первой заявочной кампании">
+                        @Html.CheckBoxFor(model => model.FirstRequestCompanySelect) Используется в первой заявочной кампании
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox col-md-9 col-md-offset-3">
+                    <label data-toggle="tooltip" data-placement="right" title="Заявитель является отдыхающим">
+                        @Html.CheckBoxFor(model => model.NotChildren) Заявитель является отдыхающим
+                    </label>
+                </div>
+            </div>
 
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Минимальный возраст<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.MinAge, new { @class = "form-control age", autocomplete = "off", maxlength=2, @id="minAge", @data_toggle = "tooltip", @data_placement = "right", @title = "Минимальный возраст ребёнка на данный вид отдыха." })
-						<span class="field-validation-error" id="minAgeMessage"></span>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Максимальный возраст<span class="requared">*</span></label>
-					<div class="col-md-9">
-						@Html.TextBoxFor(model => model.MaxAge, new { @class = "form-control age", autocomplete = "off", maxlength = 2, @id = "maxAge", @data_toggle = "tooltip", @data_placement = "right", @title = "Максимальный возраст ребёнка на данный вид отдыха." })
-						<span class="field-validation-error" id="maxAgeMessage"></span>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Правила отдыха</label>
-					<div class="col-md-9 line-height35" data-toggle = "tooltip" data-placement = "right" title = "Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
-						@{ var rulesFileExt = !string.IsNullOrEmpty(Model.UrlToRulesOfRest) ? Model.UrlToRulesOfRest.Substring(Model.UrlToRulesOfRest.LastIndexOf('.')) : string.Empty; }
-						<a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToRulesOfRest) ? "hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToRulesOfRest)&t=@Url.Encode("Правила" + rulesFileExt)">Скачать</a>
-						@Html.HiddenFor(r => r.UrlToRulesOfRest)
-						<span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToRulesOfRest) ? "hidden" : string.Empty)">Прикрепить
-							<input type="file" name="files[]" multiple>
-						</span>
-						<a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToRulesOfRest) ? "hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-3 control-label text-right">Перечень ограничений</label>
-					<div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
-						@{ var listRestriction = !string.IsNullOrEmpty(Model.UrlToListRestriction) ? Model.UrlToListRestriction.Substring(Model.UrlToListRestriction.LastIndexOf('.')) : string.Empty; }
-						<a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToListRestriction) ? " hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToListRestriction)&t=@Url.Encode("перечень ограничений" + listRestriction)">Скачать</a>
-						@Html.HiddenFor(r => r.UrlToListRestriction)
-						<span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToListRestriction) ? " hidden" : string.Empty)">
-							Прикрепить
-							<input type="file" name="files[]" multiple>
-						</span>
-						<a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToListRestriction) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
-					</div>
-				</div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Правила сопровождения</label>
-                    <div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
-                        @{ var stationaryType = !string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? Model.UrlToRoolAttendant.Substring(Model.UrlToRoolAttendant.LastIndexOf('.')) : string.Empty; }
-                        <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToRoolAttendant)&t=@Url.Encode("Правила сопровождения" + stationaryType)">Скачать</a>
-                        @Html.HiddenFor(r => r.UrlToRoolAttendant)
-                        <span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)">
-                            Прикрепить
-                            <input type="file" name="files[]" multiple>
-                        </span>
-                        <a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
-                    </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Минимальный возраст<span class="requared">*</span></label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.MinAge, new { @class = "form-control age", autocomplete = "off", maxlength = 2, @id = "minAge", @data_toggle = "tooltip", @data_placement = "right", @title = "Минимальный возраст ребёнка на данный вид отдыха." })
+                    <span class="field-validation-error" id="minAgeMessage"></span>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Фото лагеря стационарного типа</label>
-                    <div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
-                        @{ var campType = !string.IsNullOrEmpty(Model.UrlToStationaryTypeOfCampPhoto) ? Model.UrlToStationaryTypeOfCampPhoto.Substring(Model.UrlToStationaryTypeOfCampPhoto.LastIndexOf('.')) : string.Empty; }
-                        <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToStationaryTypeOfCampPhoto) ? " hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToStationaryTypeOfCampPhoto)&t=@Url.Encode("Фото типа лагеря для МПГУ" + campType)">Скачать</a>
-                        @Html.HiddenFor(r => r.UrlToStationaryTypeOfCampPhoto)
-                        <span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToStationaryTypeOfCampPhoto) ? " hidden" : string.Empty)">
-                            Прикрепить
-                            <input type="file" name="files[]" multiple>
-                        </span>
-                        <a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
-                    </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Максимальный возраст<span class="requared">*</span></label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.MaxAge, new { @class = "form-control age", autocomplete = "off", maxlength = 2, @id = "maxAge", @data_toggle = "tooltip", @data_placement = "right", @title = "Максимальный возраст ребёнка на данный вид отдыха." })
+                    <span class="field-validation-error" id="maxAgeMessage"></span>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Фото лагеря палаточного типа</label>
-                    <div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
-                        @{ var qweqwe = !string.IsNullOrEmpty(Model.UrlToCampTypeOfCampPhoto) ? Model.UrlToCampTypeOfCampPhoto.Substring(Model.UrlToCampTypeOfCampPhoto.LastIndexOf('.')) : string.Empty; }
-                        <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToCampTypeOfCampPhoto) ? " hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToCampTypeOfCampPhoto)&t=@Url.Encode("Фото типа лагеря для МПГУ" + qweqwe)">Скачать</a>
-                        @Html.HiddenFor(r => r.UrlToCampTypeOfCampPhoto)
-                        <span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToCampTypeOfCampPhoto) ? " hidden" : string.Empty)">
-                            Прикрепить
-                            <input type="file" name="files[]" multiple>
-                        </span>
-                        <a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
-                    </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Правила отдыха</label>
+                <div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
+                    @{ var rulesFileExt = !string.IsNullOrEmpty(Model.UrlToRulesOfRest) ? Model.UrlToRulesOfRest.Substring(Model.UrlToRulesOfRest.LastIndexOf('.')) : string.Empty; }
+                    <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToRulesOfRest) ? "hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToRulesOfRest)&t=@Url.Encode("Правила" + rulesFileExt)">Скачать</a>
+                    @Html.HiddenFor(r => r.UrlToRulesOfRest)
+                    <span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToRulesOfRest) ? "hidden" : string.Empty)">
+                        Прикрепить
+                        <input type="file" name="files[]" multiple>
+                    </span>
+                    <a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToRulesOfRest) ? "hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
                 </div>
-                <div class="form-group">
-					<div class="col-md-9 col-md-offset-3">
-						<button type="submit" class="btn btn-default btn-primary" id="btnSave">
-							<i class="glyphicon glyphicon-pencil"></i> Сохранить
-						</button>
-					</div>
-				</div>
-			</fieldset>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Перечень ограничений</label>
+                <div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
+                    @{ var listRestriction = !string.IsNullOrEmpty(Model.UrlToListRestriction) ? Model.UrlToListRestriction.Substring(Model.UrlToListRestriction.LastIndexOf('.')) : string.Empty; }
+                    <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToListRestriction) ? " hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToListRestriction)&t=@Url.Encode("перечень ограничений" + listRestriction)">Скачать</a>
+                    @Html.HiddenFor(r => r.UrlToListRestriction)
+                    <span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToListRestriction) ? " hidden" : string.Empty)">
+                        Прикрепить
+                        <input type="file" name="files[]" multiple>
+                    </span>
+                    <a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToListRestriction) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Правила сопровождения</label>
+                <div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
+                    @{ var stationaryType = !string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? Model.UrlToRoolAttendant.Substring(Model.UrlToRoolAttendant.LastIndexOf('.')) : string.Empty; }
+                    <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToRoolAttendant)&t=@Url.Encode("Правила сопровождения" + stationaryType)">Скачать</a>
+                    @Html.HiddenFor(r => r.UrlToRoolAttendant)
+                    <span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)">
+                        Прикрепить
+                        <input type="file" name="files[]" multiple>
+                    </span>
+                    <a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Фото лагеря стационарного типа</label>
+                <div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
+                    @{ var campType = !string.IsNullOrEmpty(Model.UrlToStationaryTypeOfCampPhoto) ? Model.UrlToStationaryTypeOfCampPhoto.Substring(Model.UrlToStationaryTypeOfCampPhoto.LastIndexOf('.')) : string.Empty; }
+                    <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToStationaryTypeOfCampPhoto) ? " hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToStationaryTypeOfCampPhoto)&t=@Url.Encode("Фото типа лагеря для МПГУ" + campType)">Скачать</a>
+                    @Html.HiddenFor(r => r.UrlToStationaryTypeOfCampPhoto)
+                    <span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToStationaryTypeOfCampPhoto) ? " hidden" : string.Empty)">
+                        Прикрепить
+                        <input type="file" name="files[]" multiple>
+                    </span>
+                    <a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Фото лагеря палаточного типа</label>
+                <div class="col-md-9 line-height35" data-toggle="tooltip" data-placement="right" title="Ссылка на скачивание прикрепленного файла будет отображаться на I шаге бронирования на МПГУ.">
+                    @{ var qweqwe = !string.IsNullOrEmpty(Model.UrlToCampTypeOfCampPhoto) ? Model.UrlToCampTypeOfCampPhoto.Substring(Model.UrlToCampTypeOfCampPhoto.LastIndexOf('.')) : string.Empty; }
+                    <a target="_blank" class="href-file @(string.IsNullOrEmpty(Model.UrlToCampTypeOfCampPhoto) ? " hidden" : string.Empty)" href="@Url.Content("~/")UploadRulesOfRestHandler.ashx?f=@Url.Encode(Model.UrlToCampTypeOfCampPhoto)&t=@Url.Encode("Фото типа лагеря для МПГУ" + qweqwe)">Скачать</a>
+                    @Html.HiddenFor(r => r.UrlToCampTypeOfCampPhoto)
+                    <span class="btn btn-sm btn-default fileinput-button fileinput-rest-rules-button @(!string.IsNullOrEmpty(Model.UrlToCampTypeOfCampPhoto) ? " hidden" : string.Empty)">
+                        Прикрепить
+                        <input type="file" name="files[]" multiple>
+                    </span>
+                    <a title="Удалить" class="remove-rest-rules btn btn-xs btn-danger requared @(string.IsNullOrEmpty(Model.UrlToRoolAttendant) ? " hidden" : string.Empty)"><i class="glyphicon glyphicon-remove"></i></a>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-3">
+                    <button type="submit" class="btn btn-default btn-primary" id="btnSave">
+                        <i class="glyphicon glyphicon-pencil"></i> Сохранить
+                    </button>
+                </div>
+            </div>
+        </fieldset>
 		}
 	</div>
 </div>

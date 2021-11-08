@@ -18,47 +18,50 @@
         {
             @Html.AntiForgeryToken()
             @Html.HiddenFor(model => model.Id)
-            <fieldset class="form-horizontal">
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Название</label>
-                    <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control", autocomplete = "off" })
-                        @Html.ValidationMessageFor(model => model.Name, "Заполните поле")
-                    </div>
+        <fieldset class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Название</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control", autocomplete = "off" })
+                    @Html.ValidationMessageFor(model => model.Name, "Заполните поле")
                 </div>
-                <div class="form-group">
-                    <label class="col-md-3 control-label text-right">Описание</label>
-                    <div class="col-md-9">
-                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", maxlength = 1000, autocomplete = "off", Rows = "4", style = "resize: none;" })
-                        @Html.ValidationMessageFor(model => model.Description, "Заполните поле")
-                    </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label text-right">Описание</label>
+                <div class="col-md-9">
+                    @Html.TextAreaFor(model => model.Description, new { @class = "form-control", maxlength = 1000, autocomplete = "off", Rows = "4", style = "resize: none;" })
+                    @Html.ValidationMessageFor(model => model.Description, "Заполните поле")
                 </div>
+            </div>
+            @if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturBookingTargetsEdit))
+            {
                 <div class="form-group">
                     <label class="col-md-3 control-label text-right">Отдел МГТ</label>
                     <div class="col-md-9">
-                        @Html.DropDownListFor(model => model.DepartmentId, new SelectList(ViewBag.Departments,"Id","Name"), new { @class = "form-control select2", autocomplete = "off" })
+                        @Html.DropDownListFor(model => model.DepartmentId, new SelectList(ViewBag.Departments, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="checkbox col-md-2 col-md-offset-3">
-                        <label>
-                            @Html.CheckBoxFor(model => model.IsActive) Активный
-                        </label>
-                    </div>
-                    <div class="checkbox col-md-2">
-                        <label>
-                            @Html.CheckBoxFor(model => model.IsForMPGU) Для МПГУ
-                        </label>
-                    </div>
+            }
+            <div class="form-group">
+                <div class="checkbox col-md-2 col-md-offset-3">
+                    <label>
+                        @Html.CheckBoxFor(model => model.IsActive) Активный
+                    </label>
                 </div>
-                <div class="form-group">
-                    <div class="col-md-9 col-md-offset-3">
-                        <button type="submit" class="btn btn-default btn-primary">
-                            <i class="glyphicon glyphicon-pencil"></i> Сохранить
-                        </button>
-                    </div>
+                <div class="checkbox col-md-2">
+                    <label>
+                        @Html.CheckBoxFor(model => model.IsForMPGU) Для МПГУ
+                    </label>
                 </div>
-            </fieldset>
+            </div>
+            <div class="form-group">
+                <div class="col-md-9 col-md-offset-3">
+                    <button type="submit" class="btn btn-default btn-primary">
+                        <i class="glyphicon glyphicon-pencil"></i> Сохранить
+                    </button>
+                </div>
+            </div>
+        </fieldset>
         }
     </div>
 </div>

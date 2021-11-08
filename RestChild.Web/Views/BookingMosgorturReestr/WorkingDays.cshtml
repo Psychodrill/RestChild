@@ -44,7 +44,8 @@
     }
     @if (Model.DepartmentId > 1)
     {
-        <a href="@Url.Action("WorkingDays", "BookingMosgorturReestr",new {@DepartmentId = 1},null)">Вернуться</a>
+        if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCreate))
+        {<a href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @DepartmentId = 1 }, null)">Вернуться</a>}
         <div class="col-md-12 form-group">
             <a class="btn btn-default" href="@Url.Action("WorkingDays", "BookingMosgorturReestr", new { @Year = Model.Date.AddMonths(-1).Year, @Month = Model.Date.AddMonths(-1).Month, @DepartmentId = DepartId })"><i class="glyphicon glyphicon-chevron-left"></i></a>
             <div class="btn btn-default">@_month[Model.Date.Month - 1] @Model.Date.Year</div>
@@ -54,7 +55,7 @@
 </div>
 @if (Model.DepartmentId > 1)
 {
-    if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEdit))
+    if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEdit) || RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEditClientDepartment)|| RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
     {
         <div class="row">
             <div class="col-md-12 form-group">
@@ -88,23 +89,23 @@
 
             @foreach (var day in Model.Result)
             {
-                <tr>
-                    <td class="text-center">@(rowNumber++)</td>
-                    @if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEdit))
-                    {
-                        <td><a href="@Url.Action("DayManage", "BookingMosgorturReestr", new { @id = day.Id, @DepartmentId = Model.DepartmentId})" target="_blank">@string.Format("{0:dd.MM.yyyy}", day.Date)</a></td>
-                    }
-                    else
-                    {
-                        <td>@string.Format("{0:dd.MM.yyyy}", day.Date)</td>
-                    }
-                    <td>@_days[(int)day.Date.DayOfWeek]</td>
-                    <td>@(day.IsDeleted ? "Удален" : "Активен")</td>
-                    <td>@string.Format("{0:HH:mm}-{1:HH:mm}", day.Windows.Min(sx => sx.WorkingPeriods.Min(sa => sa.TimeFrom)), day.Windows.Max(sx => sx.WorkingPeriods.Max(ss => ss.TimeTo)))</td>
-                    <td>@day.WorkingInterval минут</td>
-                    <td>@day.WindowCount</td>
-                    <td>@string.Format("{0}/{1}", day.BookingCount, day.BookingMaximum)</td>
-                </tr>
+            <tr>
+                <td class="text-center">@(rowNumber++)</td>
+                @if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEdit) || RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEditClientDepartment)|| RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
+                {
+                <td><a href="@Url.Action("DayManage", "BookingMosgorturReestr", new { @id = day.Id, @DepartmentId = Model.DepartmentId})" target="_blank">@string.Format("{0:dd.MM.yyyy}", day.Date)</a></td>
+                }
+                else
+                {
+                <td>@string.Format("{0:dd.MM.yyyy}", day.Date)</td>
+                }
+                <td>@_days[(int)day.Date.DayOfWeek]</td>
+                <td>@(day.IsDeleted ? "Удален" : "Активен")</td>
+                <td>@string.Format("{0:HH:mm}-{1:HH:mm}", day.Windows.Min(sx => sx.WorkingPeriods.Min(sa => sa.TimeFrom)), day.Windows.Max(sx => sx.WorkingPeriods.Max(ss => ss.TimeTo)))</td>
+                <td>@day.WorkingInterval минут</td>
+                <td>@day.WindowCount</td>
+                <td>@string.Format("{0}/{1}", day.BookingCount, day.BookingMaximum)</td>
+            </tr>
             }
         </tbody>
     </table>

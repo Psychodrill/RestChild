@@ -264,6 +264,7 @@
     <Compile Include="Exchange\Cpmpk\CpmpkResponseDto.cs" />
     <Compile Include="Exchange\EGRZagz\zags-rogdinf-types.cs" />
     <Compile Include="Exchange\ExchangePacket.cs" />
+    <Compile Include="Exchange\FGISFRI\smev-supplementary-commons-1_0_1.cs" />
     <Compile Include="Exchange\FRI\FRIResponse.cs" />
     <Compile Include="Exchange\FRI\personDataRequest.cs" />
     <Compile Include="Exchange\Message.cs" />
@@ -347,6 +348,15 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Exchange\EGRZagz\zags-rogdinf-ru-root.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Exchange\FGISFRI\commons\extraction-invalid-data-attachments-1.0.0.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Exchange\FGISFRI\commons\smev-supplementary-commons-1.0.1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Exchange\FGISFRI\extraction-invalid-data-1.0.3.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Exchange\NSIDeltaService.xsd">

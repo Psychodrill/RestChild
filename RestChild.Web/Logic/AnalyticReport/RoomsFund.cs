@@ -22,6 +22,9 @@ namespace RestChild.Web.Logic.AnalyticReport
         public static BaseExcelTable GetRoomsFund(this IUnitOfWork unitOfWork, AnalyticReportFilter filter)
         {
             var yearOfRestIds = String.Empty;
+            
+            long? typeOfRest = filter.TypeOfRestId.GetValueOrDefault(0);
+
             if (filter.NextYearsIncluded)
             {
                 var yors = unitOfWork.GetSet<YearOfRest>().Where(y => y.Id >= filter.YearOfRestId).OrderBy(x => x.Id);
@@ -80,7 +83,7 @@ namespace RestChild.Web.Logic.AnalyticReport
             where r.IsDeleted=0
             --and r.StatusId in (1050, 1052, 1055)"
             +"\n"+ (filter.StatusId != null ? $" and r.StatusId = {filter.StatusId} " : " ") +"\n"+
-            @"--and r.YearOfRestId=7
+            $@"--and r.YearOfRestId=7
             select c.RequestId,
             min(isnull(tr.RestrictionGroupId,3)) as RestrictionGroupId into #B09DFB1D_TMP4
             from
@@ -103,6 +106,7 @@ namespace RestChild.Web.Logic.AnalyticReport
             --and r.YearOfRestId=7
             and r.IsFirstCompany=1
             and (r.[CountAttendants]>0 or tr.Id=14)
+            and (r.TypeOfRestId={typeOfRest} or {typeOfRest} =0)
             group by tr.Name,t.Month, t.[DayOfMonth], t.Name, p.Name, case when tr.Id=14 then 1 else r.CountAttendants end, r.CountPlace, rg.Name, t3.R, st.Name
             order by tr.Name, t.Month, t.[DayOfMonth], t3.R
 
@@ -134,7 +138,7 @@ namespace RestChild.Web.Logic.AnalyticReport
                 };
                 return res;
             }
-            catch
+            catch(Exception ex)
             {
 
             }

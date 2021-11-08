@@ -11,6 +11,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     List<MGTDepartmentModel> Departments = ViewBag.Departments;
     long DepartId = (long)Model.DepartmentId;
+    @Html.HiddenFor(m => m.Date)
+
 }
 @section styles
 {
@@ -43,7 +45,7 @@
             Изменение рабочих дней <br />
             @Departments[(int)DepartId - 1].Name
         </h2>
-        @Html.ActionLink("Вернуться", "WorkingDays", "BookingMosgorturReestr", new { Year = Model.Date.Year, Month = Model.Date.Month, DepartmentId = Model.DepartmentId },null)
+        @Html.ActionLink("Вернуться", "WorkingDays", "BookingMosgorturReestr", new { DepartmentId = Model.DepartmentId }, null)
     </div>
 </div>
 
@@ -100,12 +102,12 @@
         <label class="col-sm-2 control-label">Интервал до приёма</label>
         <div class="col-md-4">
             @Html.TextBoxFor(m => m.SuoVisitTooEarly, new { @class = "form-control", required = true })
-	        @Html.ValidationMessageFor(m => m.SuoVisitTooEarly)
+            @Html.ValidationMessageFor(m => m.SuoVisitTooEarly)
         </div>
         <label class="col-sm-2 control-label">Интервал после приёма</label>
         <div class="col-md-4">
             @Html.TextBoxFor(m => m.SuoVisitTooLate, new { @class = "form-control", required = true })
-	        @Html.ValidationMessageFor(m => m.SuoVisitTooLate)
+            @Html.ValidationMessageFor(m => m.SuoVisitTooLate)
         </div>
     </div>
 

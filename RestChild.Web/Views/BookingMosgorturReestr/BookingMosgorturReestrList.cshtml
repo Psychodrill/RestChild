@@ -11,12 +11,12 @@
     ViewBag.Controller = "BookingMosgorturReestr";
     ViewBag.Caption = "Реестр записи на прием";
     ViewBag.SearchPanelCaption = "Поиск";
-    bool NeedInsertButton = RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCreate);
-    ViewBag.NeedInsertButton = false;
+    bool NeedInsertButton = RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCreateClientDepartment) || RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCreateBookingDepartment);
+    ViewBag.NeedInsertButton = NeedInsertButton;
     List<MGTDepartmentModel> Departments = ViewBag.Departments;
     // long DepartId = (long)Model.DepartmentId;
-    //ViewBag.InsertButtonCaption = "Произвести запись";
-    //ViewBag.InsertAction = "InsertBooking";
+    ViewBag.InsertButtonCaption = "Произвести запись";
+    ViewBag.InsertAction = "InsertBooking";
 }
 
 
@@ -86,7 +86,7 @@
             @Html.DropDownListFor(m => m.Target, new SelectList(((ICollection<RestChild.Web.Models.VisitQueue.IVisitTarget>)ViewBag.Targets).InsertAt<RestChild.Web.Models.VisitQueue.IVisitTarget>(new RestChild.Web.Models.VisitQueue.VisitTarget() { Id = -1, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control select2" })
         </div>
     </div>
-    <div class="form-group">
+   <div class="form-group">
         <label class="col-md-2 control-label text-right">Отдел МГТ</label>
         <div class="col-md-4">
             @Html.DropDownListFor(m => m.DepartmentId, new SelectList(ViewBag.Departments, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
@@ -96,9 +96,9 @@
 
 @section additionalFilters
 {
-    @if (NeedInsertButton)
+    @if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCreate))
     {
-        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Произвести запись</button>
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Произвести запись в другой отдел</button>
         <ul class="dropdown-menu">
             @foreach (MGTDepartmentModel d in Departments)
             {
@@ -136,34 +136,45 @@
                 @{int rowNumber = Model.Result.FirstItemOnPage;}
                 @foreach (var booking in Model.Result)
                 {
-                    <tr>
-                        <td class="text-center">@(rowNumber++)</td>
-                        <td>@string.Format("{0:dd.MM.yyyy}", booking.DateShedule)</td>
-                        <td>
-                            @string.Format("{0:HH:mm}", booking.DateShedule)
-                            <br />
-                            <i><small style="color: #666; white-space: nowrap">@string.Format("x{0}", booking.SlotsCount)</small></i>
-                        </td>
-                        <td>@booking.AplicantFIO</td>
-                        <td>@booking.Target</td>
-                        <td>
-                            @if (booking.StatementId.HasValue && booking.StatementId > 0)
-                            {
-                                <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new { @id = booking.StatementId.Value })" target="_blank">@booking.BookingNumber</a>
-                            }
-                            else
-                            {
-                                @(booking.BookingNumber)
-                            }
-                            <br /><i><small style="color: #666; white-space: nowrap">@booking.Source</small></i>
-                            <br /><i><small style="color: #666; white-space: nowrap">@string.Format("{0:dd.MM.yyyy}", booking.RegDate)</small></i>
+                <tr>
+                    <td class="text-center">@(rowNumber++)</td>
+                    <td>@string.Format("{0:dd.MM.yyyy}", booking.DateShedule)</td>
+                    <td>
+                        @string.Format("{0:HH:mm}", booking.DateShedule)
+                        <br />
+                        <i><small style="color: #666; white-space: nowrap">@string.Format("x{0}", booking.SlotsCount)</small></i>
+                    </td>
+                    <td>@booking.AplicantFIO</td>
+                    <td>@booking.Target</td>
+                    <td>
+                        @if (booking.StatementId.HasValue && booking.StatementId > 0)
+                        {
+                            <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new { @id = booking.StatementId.Value })" target="_blank">@booking.BookingNumber</a>
+                        }
+                        else
+                        {
+                            @(booking.BookingNumber)
+                        }
+                        <br /><i><small style="color: #666; white-space: nowrap">@booking.Source</small></i>
+                        <br /><i><small style="color: #666; white-space: nowrap">@string.Format("{0:dd.MM.yyyy}", booking.RegDate)</small></i>
 
-                        </td>
-                        <td>@booking.Status</td>
-                        <td>@booking.PINCode</td>
-                        <td>@(!booking.DepartmentId.IsNullOrEmpty() ? Departments[(int)booking.DepartmentId-1].Name : "-") </td>
+                    </td>
+                    <td>@booking.Status</td>
+                    <td>@booking.PINCode</td>
+                    <td>@(!booking.DepartmentId.IsNullOrEmpty() ? Departments[(int)booking.DepartmentId-1].Name : "-") </td>
+                    @if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCreate))
+                    {
                         <td class="text-center">@Html.ActionLink(" ", "Update", new { id = booking.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
-                    </tr>
+                    }else
+                    if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCreateClientDepartment) && booking.DepartmentId == 3)
+                    {
+                        <td class="text-center">@Html.ActionLink(" ", "Update", new { id = booking.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+                    }else
+                    if (RestChild.Web.Controllers.Security.HasRight(RestChild.Comon.Enumeration.AccessRightEnum.MosgorturScheduleBookingCreateBookingDepartment) && booking.DepartmentId == 4)
+                    {
+                        <td class="text-center">@Html.ActionLink(" ", "Update", new { id = booking.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+                    }
+                </tr>
                 }
             </tbody>
         </table>

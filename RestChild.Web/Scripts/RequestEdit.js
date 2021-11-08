@@ -767,6 +767,18 @@ $(function () {
     }
     var timeOfRestFn = doT.template($('#timeOfRestTemplate').html());
     var statuses = $('select#statusApplicant').html();
+    // при выборе приоритетным наземный транспорт дополнительный воздушный
+    function changeAdditionalTransport(target) {
+        var additionalTransport = $(target).closest('fieldset').find('.additionalTypeOfTransport');
+        if (target.selectedIndex == 2) {
+            $('.additionalTypeOfTransport').select2('val', 1);
+            additionalTransport.attr('disabled', 'disabled');
+        }
+        else {
+            $('.additionalTypeOfTransport').select2('val', null);
+            additionalTransport.removeAttr('disabled');
+        }
+    }
     function changeTypeOfRest(target) {
         var savedInited = inited;
         var val = getTypeOfRest($(target).select2('val'));
@@ -1113,6 +1125,10 @@ $(function () {
     $('.type-of-rest').change(function (event) {
         var target = event.target;
         changeTypeOfRest(target);
+    });
+    $('.priorityTypeOfTransport').change(function (event) {
+        var target = event.target;
+        changeAdditionalTransport(target);
     });
     $('#mainPlaces')
         .change(function () {

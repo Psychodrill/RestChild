@@ -88,7 +88,12 @@ namespace RestChild.Web.Controllers.WebApi
             var doc = new XmlDocument();
             doc.LoadXml(request);
             var par = doc.DocumentElement;
-
+            var includeBinaryView = false;
+            if (documentTypeCode == "12150")
+            {
+                includeBinaryView = true;
+            }
+            
             return new CoordinateTaskMessage
             {
                 CoordinateTaskDataMessage = new CoordinateTaskData
@@ -96,7 +101,7 @@ namespace RestChild.Web.Controllers.WebApi
                     Data = new TaskDataType
                     {
                         DocumentTypeCode = documentTypeCode,
-                        IncludeBinaryView = false,
+                        IncludeBinaryView = includeBinaryView,
                         IncludeXmlView = true,
                         Parameter = par
                     },
@@ -541,6 +546,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                 var middlename = "";
                 var testmsg = "";
+
                 if (!model.MiddleName.IsNullOrEmpty())
                 {
                     middlename = $"<middlename>{ model.MiddleName}</middlename>";
@@ -557,14 +563,10 @@ namespace RestChild.Web.Controllers.WebApi
                         <rogdinflist>
                             <rogdinf>
                         	    <member_type>3</member_type>
-                                <snils>{model.Snils}</snils>
                                 <lastname>{model.LastName}</lastname>
                                 <firstname>{model.FirstName}</firstname>
                                 {middlename}
                                 <birthdate>{model.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
-                                <doc_type>{documentType?.BaseRegistryUid}</doc_type>
-                                <doc_series>{model.DocumentSeria}</doc_series>
-                                <doc_number>{model.DocumentNumber}</doc_number>
                             </rogdinf>
                         </rogdinflist>
                         {testmsg}
@@ -1108,12 +1110,33 @@ namespace RestChild.Web.Controllers.WebApi
 
                 ResetCheckChildInBaseRegistry(child.Id, ExchangeBaseRegistryTypeEnum.GetEGRZAGS);
 
-                var middlename = "";
+                string middlename = "";
+                //string snils = "";
+                //string baseRegistryUid = "";
+                //string documentSeria = "";
+                //string documentNumber = "";
                 var testmsg = "";
+
+                //if (!child.Snils.IsNullOrEmpty())
+                //{
+                //    snils = $"<snils>{child.Snils}</snils>";
+                //}
+
                 if (!child.MiddleName.IsNullOrEmpty())
                 {
                     middlename = $"<middlename>{ child.MiddleName}</middlename>";
                 }
+
+                //if (!child.DocumentType.IsNullOrEmpty())
+                //{
+                //    baseRegistryUid = $"<doc_type>{child.DocumentType.BaseRegistryUid}</doc_type>";
+                //    documentNumber = $"<doc_number>{child.DocumentNumber}</doc_number>";
+                //    if (!child.DocumentSeria.IsNullOrEmpty())
+                //    {
+                //        documentSeria = $"< doc_series >{ child.DocumentSeria}</ doc_series >";
+                //    }
+                //}
+
                 if (Settings.Default.SnilsTestRequest)
                 {
                     testmsg = $"<testmsg/>";
@@ -1126,20 +1149,35 @@ namespace RestChild.Web.Controllers.WebApi
                         <rogdinflist>
                             <rogdinf>
                         	    <member_type>3</member_type>
-                                <snils>{child.Snils}</snils>
                                 <lastname>{child.LastName}</lastname>
                                 <firstname>{child.FirstName}</firstname>
                                 {middlename}
                                 <birthdate>{child.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
-                                <doc_type>{child.DocumentType?.BaseRegistryUid}</doc_type>
-                                <doc_series>{child.DocumentSeria}</doc_series>
-                                <doc_number>{child.DocumentNumber}</doc_number>
                             </rogdinf>
                         </rogdinflist>
                         {testmsg}
                     </ServiceProperties>";
+                //var request =
+                //    $@"<ServiceProperties>
+                //        <base_code>01</base_code>
+                //        <quantity_doc>1</quantity_doc>
+                //        <rogdinflist>
+                //            <rogdinf>
+                //        	    <member_type>3</member_type>
+                //                {snils}
+                //                <lastname>{child.LastName}</lastname>
+                //                <firstname>{child.FirstName}</firstname>
+                //                {middlename}
+                //                <birthdate>{child.DateOfBirth?.ToString("yyyy-MM-dd")}T00:00:00Z</birthdate>
+                //                {baseRegistryUid}
+                //                {documentSeria}
+                //                {documentNumber}
+                //            </rogdinf>
+                //        </rogdinflist>
+                //        {testmsg}
+                //    </ServiceProperties>";
 
-                
+
 
                 var messageV6 = GetCoordinateMessageV6(request,
                     ((long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS).ToString(),
@@ -1162,6 +1200,64 @@ namespace RestChild.Web.Controllers.WebApi
             catch (Exception ex)
             {
                 Logger.Error("Ошибка отправки в базовый регистр по ЕГР ЗАГС", ex);
+            }
+
+            return count;
+        }
+
+        /// <summary>
+        ///     Выписка сведений из ФГИС ФРИ об инвалиде (12150)
+        /// </summary>
+        internal int ExtractFromFGISFRI(string requestNumber, Child child, int count)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(child?.Snils))
+                {
+                    return count;
+                }
+                var snils = child.Snils.Replace("-", "");
+                snils = snils.Replace("-", "");
+                snils = snils.Replace(" ", "");
+
+                ResetCheckChildInBaseRegistry(child.Id, ExchangeBaseRegistryTypeEnum.GetFGISFRI);
+
+                var time = DateTime.Now.ToString("yyyy-MM-dd")+"T00: 00:00Z";
+                var testmsg = "";
+
+                if (Settings.Default.SnilsTestRequest)
+                {
+                    testmsg = $"<testmsg/>";
+                    child.Snils = "00000055500"; //для положительного ответа
+                }
+
+                var request = $@"<ServiceProperties>
+                                    <snils>{snils}</snils>
+                                    <date>{DateTime.Now.ToString("yyyy-MM-dd")}T00:00:00Z</date>
+                                    {testmsg}
+                                 </ServiceProperties>";
+                
+                var messageV6 = GetCoordinateMessageV6(request,
+                    ((long)ExchangeBaseRegistryTypeEnum.GetFGISFRI).ToString(),
+                    requestNumber + $"/{count++}", requestNumber);
+
+                UnitOfWork.AddEntity(new ExchangeBaseRegistry
+                {
+                    IsIncoming = false,
+                    RequestText = Serialization.Serializer(messageV6),
+                    OperationType = "SendTask",
+                    RequestGuid = messageV6.CoordinateTaskDataMessage.Task.TaskId,
+                    ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
+                    Child = child,
+                    ChildId = child.Id,
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.GetFGISFRI
+                });
+
+                UnitOfWork.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Ошибка отправки в базовый регистр по выписки сведений из ФГИС ФРИ", ex);
             }
 
             return count;
@@ -1425,6 +1521,7 @@ namespace RestChild.Web.Controllers.WebApi
             CheckRequestInBaseRegistryStatusSet(req);
 
             CheckRequestInBaseRegistryBenefitReq(req);
+            CheckBaseRegistryExtractFromFGISFRIReq(req);
         }
 
         /// <summary>
@@ -1494,6 +1591,18 @@ namespace RestChild.Web.Controllers.WebApi
             var req = UnitOfWork.GetById<Request>(requestId);
 
             CheckRequestInBaseRegistryStatusSet(req);
+
+            CheckRequestInBaseRegistrySnilsReq(req);
+        }
+
+        /// <summary>
+        ///     перепроверка заявления в АС УР БР
+        /// </summary>
+        [HttpPost]
+        [HttpGet]
+        public void ReCheckRequestInBaseRegistrySnils(long requestId)
+        {
+            var req = UnitOfWork.GetById<Request>(requestId);
 
             CheckRequestInBaseRegistrySnilsReq(req);
         }
@@ -1582,6 +1691,72 @@ namespace RestChild.Web.Controllers.WebApi
         }
 
         /// <summary>
+        ///     отправка запроса в ФГИС ФРИ
+        /// </summary>
+        [HttpPost]
+        [HttpGet]
+        // /Api/WebExchange/
+        //http://localhost/Api/WebExchange/RequestInBaseRegistryInvalid?requestId=1153449
+        //http://localhost/Api/WebExchange/RequestInBaseRegistryInvalid?requestId=127586
+        public void CheckRequestInBaseRegistryInvalid(long requestId)
+        {
+            var req = UnitOfWork.GetById<Request>(requestId);
+
+            CheckBaseRegistryExtractFromFGISFRIReq(req);
+        }
+
+        /// <summary>
+        ///     пере-отправка запроса в ФГИС ФРИ
+        /// </summary>
+        [HttpPost]
+        [HttpGet]
+        public void ReCheckBaseRegistryExtractFromFGISFRI(long requestId)
+        {
+            var req = UnitOfWork.GetById<Request>(requestId);
+
+            CheckBaseRegistryExtractFromFGISFRIReq(req);
+        }
+
+        /// <summary>
+        ///     отправка запроса в ФГИС ФРИ
+        /// </summary>
+        private void CheckBaseRegistryExtractFromFGISFRIReq(Request req)
+        {
+            if (req?.Child == null)
+            {
+                return;
+            }
+
+            //req.NeedSendToRelative = false;
+
+            var count = UnitOfWork.GetSet<ExchangeBaseRegistry>().Count(v =>
+                v.ApplicantId == req.ApplicantId || v.Applicant.RequestId == req.Id ||
+                v.Child.RequestId == req.Id) + 1;
+            var requestNumber = req.RequestNumber;
+            if (req.TypeOfRestId == (long)TypeOfRestEnum.Compensation ||
+            req.TypeOfRestId == (long)TypeOfRestEnum.CompensationYouthRest)
+            {
+                var exchangeBaseRegistryCode = WebConfigurationManager.AppSettings["exchangeBaseRegistryCode"];
+                requestNumber = GetServiceNumber(exchangeBaseRegistryCode);
+                count = 1;
+            }
+
+            //if (req.SourceId == (long)SourceEnum.Mpgu //|| req.SourceId == (long)SourceEnum.Operator //Удалить || req.SourceId == (long)SourceEnum.Operator
+            //    && req.TypeOfRestId != (long)TypeOfRestEnum.ChildRestFederalCamps)
+            //{
+            foreach (var child in req.Child)
+            {
+                if (!child.TypeOfRestrictionId.IsNullOrEmpty())
+                {
+                    count = ExtractFromFGISFRI(requestNumber, child, count);
+                }
+            }
+            //}
+
+            UnitOfWork.SaveChanges();
+        }
+
+        /// <summary>
         ///     отправка проверки по свидетельству о рождении (исполнение)
         /// </summary>
         private void CheckRequestInBaseRegistryRelativesReq(Request req)
@@ -1645,6 +1820,8 @@ namespace RestChild.Web.Controllers.WebApi
             UnitOfWork.SaveChanges();
         }
 
+
+
         /// <summary>
         ///     Установка статуса 7704 при отправке запроса в БР (единая точка входа)
         /// </summary>
@@ -1659,5 +1836,7 @@ namespace RestChild.Web.Controllers.WebApi
                 UnitOfWork.SendChangeStatusByEvent(req, RequestEventEnum.SendRequestBase);
             }
         }
+
+
     }
 }

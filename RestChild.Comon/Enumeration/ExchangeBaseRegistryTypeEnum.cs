@@ -73,6 +73,11 @@
         /// <summary>
         ///     Получение данных из ЕГР ЗАГС
         /// </summary>
-        GetEGRZAGS = 11827
+        GetEGRZAGS = 11827,
+
+        /// <summary>
+        ///     Выписка сведений об инвалиде FGIS FRI
+        /// </summary>
+        GetFGISFRI = 12150
     }
 }

@@ -553,7 +553,7 @@ namespace RestChild.Web.Controllers.WebApi
                         }
                     }
 
-                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.RelationshipSmev)
+                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.GetEGRZAGS)
                     {
                         relativeSmevChildChecked = true;
                         if (!bri.Success)
@@ -674,6 +674,7 @@ namespace RestChild.Web.Controllers.WebApi
             CheckRequestInBaseRegistryPassportReq(req);
             CheckRequestInBaseRegistryRelativesReq(req);
             CheckRequestInBaseRegistryRegistrationByPassportReq(req);
+            CheckBaseRegistryExtractFromFGISFRIReq(req);
         }
 
         /// <summary>
@@ -1187,6 +1188,12 @@ namespace RestChild.Web.Controllers.WebApi
                         AdditionalTypeOfTransportInRequestId = requestData.typeOfTransportAddonSpecified ? requestData.typeOfTransportAddon : (int?)null
                     };
 
+                    //foreach (var child in requestData.childs.child)
+                    //{
+
+                    //}
+                        
+
                     if (entity.DateRequest.HasValue && entity.DateRequest.Value.Year < 2000)
                     {
                         entity.DateRequest = null;
@@ -1541,13 +1548,14 @@ namespace RestChild.Web.Controllers.WebApi
 
                     entity.Attendant = attendants;
                     entity.Child = new List<Child>();
-
+                    
                     if (requestData.childs?.child != null)
                     {
                         var children = new List<Child>();
                         var indexChild = -1;
                         foreach (var child in requestData.childs.child)
                         {
+                            
                             var item = new Child
                             {
                                 Id = indexChild,
@@ -1573,6 +1581,7 @@ namespace RestChild.Web.Controllers.WebApi
                                 Payed = true,
                                 IndexField = indexChild,
                                 Snils = child.snils
+                                
                             };
                             indexChild--;
                             if (child.birthCertDocument != null)
@@ -1586,6 +1595,7 @@ namespace RestChild.Web.Controllers.WebApi
                             if (child.benefit != null)
                             {
                                 var b = child.benefit;
+                                entity.NeedSendForCPMPK = item.IsCPMPK = b.cpmpcConclusion;
                                 item.BenefitDate = b.benefitDate.XmlToDateTime();
                                 item.BenefitEndDate = b.benefitEndDate.XmlToDateTime();
                                 item.BenefitNeverEnd = b.benefitNeverEnd;
@@ -1835,6 +1845,14 @@ namespace RestChild.Web.Controllers.WebApi
                         }
 
                         ApiRequest.CheckAttendants(vm);
+                        // чудовищный костыль, связаннаый с косячным отправлением из МПГУ в случае с наличием доверенного лица, им достаточно проставить у себя галочку isagent 
+                        if (!vm.Data.Agent.IsNullOrEmpty())
+                        {
+                            vm.SameAttendants.Clear();
+                            vm.SameAttendantSnils.Clear();
+                            //if (vm.Data.TypeOfRestId != (long)TypeOfRestEnum.YouthRestCamps && vm.Data.TypeOfRestId != (long)TypeOfRestEnum.YouthRestCamps)
+                            vm.ApplicantDouble.Clear();
+                        }
                         if (vm.SameAttendantSnils.Any() || vm.SameAttendants.Any())
                         {
                             status = StatusEnum.RegistrationDecline;

@@ -10,6 +10,7 @@ using RestChild.Comon.Dto;
 using RestChild.Comon.Enumeration;
 using RestChild.Comon.Exchange.Cpmpk;
 using RestChild.Comon.Exchange.EGRZagz;
+using RestChild.Comon.Exchange.FGISFRI;
 using RestChild.Comon.Exchange.Passport;
 using RestChild.Comon.Exchange.PassportRegistration;
 using RestChild.Comon.Exchange.Snils;
@@ -261,6 +262,7 @@ namespace RestChild.Extensions.Extensions
                     return "получение СНИЛС";
                 case ExchangeBaseRegistryTypeEnum.PassportDataBySNILS:
                     return "получение паспортного досье";
+                case ExchangeBaseRegistryTypeEnum.GetEGRZAGS:
                 case ExchangeBaseRegistryTypeEnum.RelationshipSmev:
                     return "проверку свидетельства о рождении";
                 case ExchangeBaseRegistryTypeEnum.Snils:
@@ -278,6 +280,8 @@ namespace RestChild.Extensions.Extensions
                     return "проверку законного представительства";
                 case ExchangeBaseRegistryTypeEnum.FRIExchange:
                     return "проверку сведений ФРИ";
+                case ExchangeBaseRegistryTypeEnum.GetFGISFRI:
+                    return "проверку выписки сведеней об инвалиде";
             }
 
             return "-";
@@ -641,7 +645,7 @@ namespace RestChild.Extensions.Extensions
                         if (res.Child is Child child)
                         {
                             //если есть ребенок то это заявление и по дефолту не подтверждено
-                            res.Approved = false;
+                            res.Approved = true;
                             var requestChild = child.Request;
 
                             // если есть доверенность то дальше можно не проверять
@@ -659,32 +663,32 @@ namespace RestChild.Extensions.Extensions
                             var fatherName = father?.ФИО?.GetFio().ToLower();
                             var motherName = mother?.ФИО?.GetFio().ToLower();
 
-                            // фио заявителя
-                            var applicantName =
-                                $"{requestChild.Applicant.LastName} {requestChild.Applicant.FirstName} {requestChild.Applicant.MiddleName}"
-                                    .Trim().ToLower();
-                            if (applicantName != fatherName && applicantName != motherName)
-                            {
-                                //если заявитель не папа и не мама то не подтвердили
-                                return res;
-                            }
+                            //// фио заявителя
+                            //var applicantName =
+                            //    $"{requestChild.Applicant.LastName} {requestChild.Applicant.FirstName} {requestChild.Applicant.MiddleName}"
+                            //        .Trim().ToLower();
+                            //if (applicantName != fatherName && applicantName != motherName)
+                            //{
+                            //    //если заявитель не папа и не мама то не подтвердили
+                            //    return res;
+                            //}
 
-                            foreach (var attendant in requestChild.Attendant.ToList())
-                            {
-                                // фио сопровождающего
-                                var attendantName = $"{attendant.LastName} {attendant.FirstName} {attendant.MiddleName}"
-                                    .Trim().ToLower();
-                                //если сопровождающие не папа и не мама то не подтвердили
-                                if (attendantName != fatherName && attendantName != motherName)
-                                {
-                                    return res;
-                                }
-                            }
+                            //foreach (var attendant in requestChild.Attendant.ToList())
+                            //{
+                            //    // фио сопровождающего
+                            //    var attendantName = $"{attendant.LastName} {attendant.FirstName} {attendant.MiddleName}"
+                            //        .Trim().ToLower();
+                            //    //если сопровождающие не папа и не мама то не подтвердили
+                            //    if (attendantName != fatherName && attendantName != motherName)
+                            //    {
+                            //        return res;
+                            //    }
+                            //}
 
                             if (child.DocumentTypeId == (long)DocumentTypeEnum.CertOfBirth)
                             {
                                 // если нашли документ удостоверяющий личность то не подтвердили
-                                res.Approved = res.EGRZagzResponse.СведОтветАГС[0]?.СведРегРожд[0]?.СвидетРожд.Any(d =>
+                                res.Approved = res.EGRZagzResponse?.СведОтветАГС[0]?.СведРегРожд[0]?.СвидетРожд?.Any(d =>
                                    ((string)d.Item)?.Trim().ToLower() == child.DocumentSeria?.Trim().ToLower()
                                    && ((string)d.Item1)?.Trim().ToLower() == child.DocumentNumber?.Trim().ToLower());
                             }
@@ -711,8 +715,21 @@ namespace RestChild.Extensions.Extensions
                         res.FRIResponse = Serialization.Deserialize<DisabilityExtractResponse>(xmlData);
                     }
                 }
-            }
 
+                //Получение выписки сведеней об инвалиде
+                //TODO
+                if (res.Type == ExchangeBaseRegistryTypeEnum.GetFGISFRI)
+                {
+                    var xmlData = resultData.FirstOrDefault()?.OuterXml;
+                    if (!string.IsNullOrWhiteSpace(xmlData))
+                    {
+                        var FGISFRIResponse = Serialization.Deserialize<ExtractionInvalidDataResponse>(xmlData);
+                        res.FGISFRIResponse = FGISFRIResponse;
+
+                    }
+                }
+
+            }
             return res;
         }
     }

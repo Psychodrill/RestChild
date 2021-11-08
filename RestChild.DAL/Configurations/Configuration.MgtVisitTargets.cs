@@ -85,37 +85,37 @@ namespace RestChild.DAL.Configurations
             context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
             {
                 Id = 7,
-                Name = "Приобрести дополнительное место к бесплатной путевке для отдыха и оздоровления / получить консультацию по указанному вопросу",
-                Description = string.Empty,
-                LastUpdateTick = DateTime.Now.Ticks,
-                IsForMPGU = true,
-                IsActive = true,
-                Eid = 7,
-                DepartmentId = 3,
-            }, r => r.Id == 7);
-
-            context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
-            {
-                Id = 8,
-                Name = "Приобрести семейный тур или путевку в детский лагерь, в том числе с использованием сертификата на отдых и оздоровление / получить консультацию по указанному вопросу",
-                Description = string.Empty,
-                LastUpdateTick = DateTime.Now.Ticks,
-                IsForMPGU = true,
-                IsActive = true,
-                Eid = 8,
-                DepartmentId = 4,
-            }, r => r.Id == 8);
-
-            context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
-            {
-                Id = 9,
                 Name = "Консультация у работника офиса",
                 Description = string.Empty,
                 LastUpdateTick = DateTime.Now.Ticks,
                 IsForMPGU = false,
                 IsActive = true,
-                Eid = 9,
+                Eid = 7,
                 DepartmentId = 1,
+            }, r => r.Id == 7);
+
+            context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
+            {
+                Id = 8,
+                Name = "Приобрести дополнительное место к бесплатной путевке для отдыха и оздоровления / получить консультацию по указанному вопросу",
+                Description = string.Empty,
+                LastUpdateTick = DateTime.Now.Ticks,
+                IsForMPGU = true,
+                IsActive = true,
+                Eid = 8,
+                DepartmentId = 3,
+            }, r => r.Id == 8);
+
+            context.MGTVisitTarget.AddIfNotExists(new MGTVisitTarget
+            {
+                Id = 9,
+                Name = "Приобрести семейный тур или путевку в детский лагерь, в том числе с использованием сертификата на отдых и оздоровление / получить консультацию по указанному вопросу",
+                Description = string.Empty,
+                LastUpdateTick = DateTime.Now.Ticks,
+                IsForMPGU = true,
+                IsActive = true,
+                Eid = 9,
+                DepartmentId = 4,
             }, r => r.Id == 9);
 
             context.SaveChanges();
