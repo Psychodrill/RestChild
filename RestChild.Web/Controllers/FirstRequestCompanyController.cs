@@ -126,7 +126,49 @@ namespace RestChild.Web.Controllers
                 app.Phone = request.Applicant.Phone;
                 app.AddonPhone = request.Applicant.AddonPhone;
                 app.Email = request.Applicant.Email;
-                reApplyReq.Applicant = app;
+                app.IsAccomp = request.Applicant.IsAccomp;
+                app.IsAgent = request.Applicant.IsAgent;
+                app.IsApplicant = request.Applicant.IsApplicant;
+                app.IsProxy = request.Applicant.IsProxy;
+
+                if (!request.Attendant.IsNullOrEmpty())
+                {
+                    reApplyReq.CountAttendants = request.CountAttendants;
+                    List<Applicant> attendan = new List<Applicant>();
+                    foreach (Applicant attend in request.Attendant)
+                    {
+                        var att = new Applicant();
+                        att.FirstName = attend.FirstName;
+                        att.LastName = attend.LastName;
+                        att.HaveMiddleName = attend.HaveMiddleName;
+                        att.MiddleName = attend.MiddleName;
+                        att.Male = (bool)attend.Male;
+                        att.Snils = attend.Snils;
+                        att.DateOfBirth = attend.DateOfBirth;
+                        att.PlaceOfBirth = attend.PlaceOfBirth;
+                        att.DocumentTypeId = attend.DocumentTypeId;
+                        att.DocumentSeria = attend.DocumentSeria;
+                        att.DocumentNumber = attend.DocumentNumber;
+                        att.DocumentDateOfIssue = attend.DocumentDateOfIssue;
+                        att.DocumentSubjectIssue = attend.DocumentSubjectIssue;
+                        att.BenefitTypeId = attend.BenefitTypeId;
+                        att.AddressId = attend.AddressId;
+                        att.Address = attend.Address;
+                        att.Phone = attend.Phone;
+                        att.AddonPhone = attend.AddonPhone;
+                        att.Email = attend.Email;
+                        att.IsAccomp = attend.IsAccomp;
+                        att.IsAgent = attend.IsAgent;
+                        att.IsApplicant = attend.IsApplicant;
+                        att.IsProxy = attend.IsProxy;
+                        attendan.Add(att);
+                    }
+                    if (app.IsAccomp)
+                        attendan.Add(app);
+                    reApplyReq.Attendant = attendan;
+                }
+                reApplyReq.Attendant = request.Attendant;
+               // reApplyReq.Applicant = app;
                 if (!request.AgentId.IsNullOrEmpty())
                 {
                     var agent = new Agent();
@@ -149,6 +191,7 @@ namespace RestChild.Web.Controllers
                 }
                 if (!request.Child.IsNullOrEmpty())
                     reApplyReq.Child.Clear();
+                List<Child> childs = new List<Child>();
                 foreach (var c in request.Child)
                 {
                     var chil = new Child();
@@ -171,8 +214,9 @@ namespace RestChild.Web.Controllers
                     chil.SchoolId = c.SchoolId;
                     chil.School = c.School;
                     chil.ApplicantId = c.ApplicantId;
-                    reApplyReq.Child.Add(chil);
+                    childs.Add(chil);
                 }
+                reApplyReq.Child = childs;
                 if (!request.Attendant.IsNullOrEmpty())
                     reApplyReq.Attendant.Clear();
                 foreach (var c in request.Attendant)
@@ -199,6 +243,8 @@ namespace RestChild.Web.Controllers
                     chil.Email = c.Email;
                     reApplyReq.Attendant.Add(chil);
                 }
+                reApplyReq.CountAttendants = request.CountAttendants;
+                reApplyReq.CountPlace = request.CountPlace;
                 model = new RequestViewModel(reApplyReq);
             }
 
