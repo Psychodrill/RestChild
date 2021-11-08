@@ -167,10 +167,7 @@ namespace RestChild.Web.Controllers.WebApi
                         return;
                     }
 
-                    if (request.IsFirstCompany)
-                    {
-                        UnitOfWork.SendChangeStatusByEvent(request, RequestEventEnum.GetResponseBase);
-                    }
+                    
 
                     var comment = string.Empty;
                     exchangeBaseRegistry.IsProcessed = true;
@@ -278,6 +275,10 @@ namespace RestChild.Web.Controllers.WebApi
                         {
                             if (!resCheck.NotFinished)
                             {
+                                if (request.IsFirstCompany)
+                                {
+                                    UnitOfWork.SendChangeStatusByEvent(request, RequestEventEnum.GetResponseBase);
+                                }
                                 if (requestForUpdate.IsFirstCompany)
                                 {
                                     // отправка статусов по заявке
@@ -549,6 +550,10 @@ namespace RestChild.Web.Controllers.WebApi
 
                     if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.GetEGRZAGS)
                     {
+                       //if (req.Child.Any(c=>c.BenefitType.ExnternalUid == "52,69")) //абизатильна протестировать
+                       //     relativeSmevChild = false;
+                       // if (!req.Child.Any() && req.Applicant.BenefitType.ExnternalUid == "52,69")
+                       //     relativeSmevChild = false;
                         relativeSmevChildChecked = true;
                         if (!bri.Success)
                         {
