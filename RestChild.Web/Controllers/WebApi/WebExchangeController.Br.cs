@@ -1228,7 +1228,7 @@ namespace RestChild.Web.Controllers.WebApi
                 if (Settings.Default.SnilsTestRequest)
                 {
                     testmsg = $"<testmsg/>";
-                    child.Snils = "00000055500"; //для положительного ответа
+                    snils = "00000055500"; //для положительного ответа
                 }
 
                 var request = $@"<ServiceProperties>

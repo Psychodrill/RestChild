@@ -149,12 +149,6 @@ namespace RestChild.Web.Controllers.WebApi
                                   ?? exchangeBaseRegistry.Applicant?.Request
                                   ?? UnitOfWork.GetSet<Request>().FirstOrDefault(r => r.ApplicantId == exchangeBaseRegistry.ApplicantId);
 
-                    if (exchangeBaseRegistry.Applicant != null)
-                    {
-                        request = UnitOfWork.GetSet<Request>()
-                            .FirstOrDefault(r => r.ApplicantId == exchangeBaseRegistry.ApplicantId);
-                    }
-
                     if (request != null)
                     {
                         if (request.NeedSendForBenefit || request.NeedSendToRelative || request.NeedSendForParent ||
@@ -173,10 +167,7 @@ namespace RestChild.Web.Controllers.WebApi
                         return;
                     }
 
-                    if (request.IsFirstCompany)
-                    {
-                        UnitOfWork.SendChangeStatusByEvent(request, RequestEventEnum.GetResponseBase);
-                    }
+                    
 
                     var comment = string.Empty;
                     exchangeBaseRegistry.IsProcessed = true;
@@ -284,6 +275,10 @@ namespace RestChild.Web.Controllers.WebApi
                         {
                             if (!resCheck.NotFinished)
                             {
+                                if (request.IsFirstCompany)
+                                {
+                                    UnitOfWork.SendChangeStatusByEvent(request, RequestEventEnum.GetResponseBase);
+                                }
                                 if (requestForUpdate.IsFirstCompany)
                                 {
                                     // отправка статусов по заявке
@@ -291,7 +286,7 @@ namespace RestChild.Web.Controllers.WebApi
                                     {
                                         var requestResultCheck =
                                             resCheck.BenefitApprove && resCheck.SnilsApprove &&
-                                            /*resCheck.PassportApprove &&*/ resCheck.LowIncomeApprove;
+                                            /*resCheck.PassportApprove &&*/ resCheck.LowIncomeApprove; //???
 
                                         var declined = false;
 
@@ -450,7 +445,7 @@ namespace RestChild.Web.Controllers.WebApi
                 applicants.Add(req.Applicant);
             }
 
-            // если есть кто то не завершенный то дальше нечего делать
+            // если есть не завершенные проверки в БР то дальше нечего делать
             if (children.Any(c => c.BaseRegistryInfo.Any(b => !b.IsProcessed && !b.NotActual))
                 || applicants.Any(c => c.BaseRegistryInfo.Any(b => !b.IsProcessed && !b.NotActual)))
             {
@@ -520,8 +515,8 @@ namespace RestChild.Web.Controllers.WebApi
                         }
 
                         if (!benefitChildChecked || benefitChildChecked &&
-                            (!benefitApprove && benefitApproveAdditional ||
-                             !lowIncomeApprove && lowIncomeApproveAdditional))
+                            (!benefitApprove && benefitApproveAdditional ||     //??? выражение никогда не выполняется
+                             !lowIncomeApprove && lowIncomeApproveAdditional))  //??? выражение никогда не выполняется
                         {
                             benefitApprove = benefitApproveAdditional;
                             lowIncomeApprove = lowIncomeApproveAdditional;
@@ -555,6 +550,10 @@ namespace RestChild.Web.Controllers.WebApi
 
                     if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.GetEGRZAGS)
                     {
+                       //if (req.Child.Any(c=>c.BenefitType.ExnternalUid == "52,69")) //абизатильна протестировать
+                       //     relativeSmevChild = false;
+                       // if (!req.Child.Any() && req.Applicant.BenefitType.ExnternalUid == "52,69")
+                       //     relativeSmevChild = false;
                         relativeSmevChildChecked = true;
                         if (!bri.Success)
                         {
@@ -588,7 +587,7 @@ namespace RestChild.Web.Controllers.WebApi
                         result.CallOfApplicant = true;
                     }*/
 
-                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange)
+                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange) //??? 
                     {
                         if (!bri.Success)
                         {
@@ -600,11 +599,12 @@ namespace RestChild.Web.Controllers.WebApi
                         }
                     }
 
-                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS &&
-                        !bri.Success)
-                    {
-                        result.PassportApprove = false;
-                    }
+                    // Повторяется
+                    //if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS &&
+                    //    !bri.Success)
+                    //{
+                    //    result.PassportApprove = false;
+                    //}
                 }
 
                 result.BenefitApprove &= benefitApprove;
@@ -641,13 +641,13 @@ namespace RestChild.Web.Controllers.WebApi
                         result.PassportApprove = false;
                     }
 
-                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.PassportRegistration &&
+                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.PassportRegistration && // ??? не нужно вызывать
                         !bri.Success)
                     {
                         result.CallOfApplicant = true;
                     }
 
-                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.GetPassportRegistration &&
+                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.GetPassportRegistration && // ??? не нужно вызывать
                         !bri.Success)
                     {
                         result.CallOfApplicant = true;

@@ -1144,6 +1144,7 @@ namespace RestChild.Web.Controllers.WebApi
                 .ToList();
                 */
         }
+        //Присвоение кодов отказа
         public void SetDeclineReason(RequestViewModel model)
         {
 

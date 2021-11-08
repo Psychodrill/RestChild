@@ -70,9 +70,9 @@ namespace RestChild.Web.Controllers
             {
                 return RedirectToAvalibleAction();
             }
-            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment))
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
                 DepartmentId = 3;
-            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment))
                 DepartmentId = 4;
             ViewBag.Targets = ApiController.GetDayTargets(DepartmentId);
             ViewBag.Departments = ApiController.GetDepartments();
@@ -93,9 +93,9 @@ namespace RestChild.Web.Controllers
             {
                 return RedirectToAvalibleAction();
             }
-            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment))
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
                 DepartmentId = 3;
-            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment))
                 DepartmentId = 4;
             var result = ApiController.GetModel(Id, DepartmentId);
             ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
@@ -124,9 +124,9 @@ namespace RestChild.Web.Controllers
             {
                 return RedirectToAvalibleAction();
             }
-            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment))
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
                 result.DepartmentId = 3;
-            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment))
+            if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditBookingDepartment) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEdit) && !Security.HasRight(AccessRightEnum.MosgorturWorkingDaysEditClientDepartment))
                 result.DepartmentId = 4;
             ViewBag.Targets = ApiController.GetDayTargets((long)result.DepartmentId);
             ViewBag.Benefits = ApiController.GetChildrenBenefits();
