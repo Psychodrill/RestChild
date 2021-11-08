@@ -1594,6 +1594,8 @@ namespace RestChild.Web.Controllers.WebApi
 
                             if (child.benefit != null)
                             {
+                                item.IsCPMPK = child.benefit.cpmpcConclusion;
+
                                 var b = child.benefit;
                                 entity.NeedSendForCPMPK = item.IsCPMPK = b.cpmpcConclusion;
                                 item.BenefitDate = b.benefitDate.XmlToDateTime();
