@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -31,10 +31,10 @@ namespace RestChild.Web.Controllers
                 return RedirectToAction("RequestList");
             }
 
-            if (source.StatusId != (long) StatusEnum.DecisionMakingCovid
+            if (source.StatusId != (long)StatusEnum.DecisionMakingCovid
                 || !Security.HasRight(AccessRightEnum.Status.FcToDecisionMakingCovid))
             {
-                return RedirectToAction("RequestEdit", new {id = source.Id});
+                return RedirectToAction("RequestEdit", new { id = source.Id });
             }
 
             var currentAccountId = Security.GetCurrentAccountId();
@@ -45,7 +45,7 @@ namespace RestChild.Web.Controllers
 
             if (nextYear == null)
             {
-                return RedirectToAction("RequestEdit", new {id = source.Id});
+                return RedirectToAction("RequestEdit", new { id = source.Id });
             }
 
             var newEntity = await UnitOfWork.AddEntityAsync(new Request(source)
@@ -70,7 +70,7 @@ namespace RestChild.Web.Controllers
                     }
                     : null,
                 YearOfRestId = nextYear.Id,
-                StatusId = (long) StatusEnum.IncludedInList,
+                StatusId = (long)StatusEnum.IncludedInList,
                 ApplicantId = null,
                 AgentId = null,
                 CreateUserId = currentAccountId,
@@ -88,7 +88,7 @@ namespace RestChild.Web.Controllers
                 RequestNumber = null,
                 RequestNumberMpgu = null,
                 Repared = false,
-                SourceId = (long) SourceEnum.Operator,
+                SourceId = (long)SourceEnum.Operator,
                 NeedEmail = true,
                 UpdateDate = DateTime.Now,
                 CertificateDate = null,
@@ -144,15 +144,15 @@ namespace RestChild.Web.Controllers
                 currentAccountId);
 
             source = await UnitOfWork.GetByIdAsync<Request>(source.Id, CancellationToken.None);
-            source.StatusId = (long) StatusEnum.Reject;
-            source.DeclineReasonId = (long) DeclineReasonEnum.CertificateIssued;
+            source.StatusId = (long)StatusEnum.Reject;
+            source.DeclineReasonId = (long)DeclineReasonEnum.CertificateIssued;
             UnitOfWork.WriteHistory(source.Id,
                 $"Выпуск путёвки на отдых в {nextYear.Name}г. вместо неиспользованной путёвки.",
                 currentAccountId);
             UnitOfWork.SendChangeStatusByEvent(source, RequestEventEnum.SendCertificateIssuedByParent);
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
 
-            return RedirectToAction("RequestEdit", new {id = newEntity.Id});
+            return RedirectToAction("RequestEdit", new { id = newEntity.Id });
         }
 
         /// <summary>
@@ -167,10 +167,10 @@ namespace RestChild.Web.Controllers
                 return RedirectToAction("RequestList");
             }
 
-            if (source.StatusId != (long) StatusEnum.DecisionMakingCovid
+            if (source.StatusId != (long)StatusEnum.DecisionMakingCovid
                 || !Security.HasRight(AccessRightEnum.Status.FcToDecisionMakingCovid))
             {
-                return RedirectToAction("RequestEdit", new {id = source.Id});
+                return RedirectToAction("RequestEdit", new { id = source.Id });
             }
 
             var result = new List<Request>();
@@ -194,9 +194,9 @@ namespace RestChild.Web.Controllers
                             TourVolumeId = null
                         },
                         TypeOfRestId = child.DateOfBirth.GetAgeInYears() < 7
-                            ? (long) TypeOfRestEnum.MoneyOn3To7
-                            : (long) TypeOfRestEnum.MoneyOn7To15,
-                        StatusId = (long) StatusEnum.CertificateIssued,
+                            ? (long)TypeOfRestEnum.MoneyOn3To7
+                            : (long)TypeOfRestEnum.MoneyOn7To15,
+                        StatusId = (long)StatusEnum.CertificateIssued,
                         YearOfRestId = source.YearOfRestId,
                         CountAttendants = 0,
                         RequestOnMoney = true,
@@ -205,7 +205,7 @@ namespace RestChild.Web.Controllers
                         NeedEmail = true,
                         NeedSms = false,
                         CreateUserId = currentAccountId,
-                        SourceId = (long) SourceEnum.Operator,
+                        SourceId = (long)SourceEnum.Operator,
                         StatusApplicant = source.StatusApplicant,
                         SsoId = source.SsoId,
                         IsLast = true,
@@ -254,8 +254,8 @@ namespace RestChild.Web.Controllers
                         IncludeReasonId = null,
                         TourVolumeId = null
                     },
-                    TypeOfRestId = (long) TypeOfRestEnum.MoneyOn18,
-                    StatusId = (long) StatusEnum.CertificateIssued,
+                    TypeOfRestId = (long)TypeOfRestEnum.MoneyOn18,
+                    StatusId = (long)StatusEnum.CertificateIssued,
                     YearOfRestId = source.YearOfRestId,
                     CountAttendants = 0,
                     RequestOnMoney = true,
@@ -264,7 +264,7 @@ namespace RestChild.Web.Controllers
                     NeedEmail = true,
                     NeedSms = false,
                     CreateUserId = currentAccountId,
-                    SourceId = (long) SourceEnum.Operator,
+                    SourceId = (long)SourceEnum.Operator,
                     StatusApplicant = source.StatusApplicant,
                     SsoId = source.SsoId,
                     IsLast = true,
@@ -302,14 +302,138 @@ namespace RestChild.Web.Controllers
             }
 
             source = await UnitOfWork.GetByIdAsync<Request>(source.Id, CancellationToken.None);
-            source.StatusId = (long) StatusEnum.Reject;
-            source.DeclineReasonId = (long) DeclineReasonEnum.CertificateIssued;
+            source.StatusId = (long)StatusEnum.Reject;
+            source.DeclineReasonId = (long)DeclineReasonEnum.CertificateIssued;
             UnitOfWork.WriteHistory(source.Id, "Выпуск сертификатов на отдых вместо неиспользованной путёвки.",
                 currentAccountId);
             UnitOfWork.SendChangeStatusByEvent(source, RequestEventEnum.SendCertificateIssuedByParent);
             await UnitOfWork.SaveChangesAsync(CancellationToken.None);
 
-            return RedirectToAction("RequestEdit", new {id = source.Id});
+            return RedirectToAction("RequestEdit", new { id = source.Id });
+        }
+
+        /// <summary>
+        ///     Копирование данных из имеющегося заявления в новое
+        /// </summary>
+        [HttpPost]
+        [Route("FirstRequestCompany/CopyRequestDataToNewRequest")]
+        public long CopyRequestDataToNewRequest(RequestCopyModel model)
+        {
+            var sourceRequest = UnitOfWork.GetById<Request>(model.RequestId);
+            var newRequest = new Request
+            {
+                Child = new List<Child>(),
+                Attendant = new List<Applicant>(),
+                Applicant = new Applicant(),
+                Agent = new Agent(),
+                Files = new List<RequestFile>(),
+                IsLast = true,
+                IsDeleted = false,
+                IsDraft = false,
+                Status = UnitOfWork.GetById<Status>((long)StatusEnum.Draft),
+                StatusId = (long)StatusEnum.Draft,
+                Version = 0,
+                UpdateDate = DateTime.Now,
+                SourceId = sourceRequest.SourceId,
+                Source = sourceRequest.Source,
+                IsFirstCompany = sourceRequest.IsFirstCompany
+            };
+            var requests = UnitOfWork.GetSet<Request>();
+            requests.Add(newRequest);
+            UnitOfWork.SaveChanges();
+
+            // Общие сведения о заявлении
+            if (model.TransferGeneralData)
+            {
+                newRequest.ChangeByScan = sourceRequest.ChangeByScan;
+                newRequest.NeedSms = sourceRequest.NeedSms;
+                newRequest.NeedEmail = sourceRequest.NeedEmail;
+            }
+
+            // Раздел "Цель обращения и время отдыха"
+            newRequest.TypeOfRestId = sourceRequest.TypeOfRestId;
+            newRequest.YearOfRestId = UnitOfWork.GetSet<YearOfRest>().FirstOrDefault(x => x.Year == DateTime.Now.Year)?.Id;
+            if (model.TransferTargetAndTimeOfRestData)
+            {
+                newRequest.StatusApplicant = sourceRequest.StatusApplicant;
+                newRequest.TransferTo = sourceRequest.TransferTo;
+                newRequest.TransferFrom = sourceRequest.TransferFrom;
+            }
+
+            // Сведения о заявителе
+            if (model.TransferApplicantData)
+            {
+                var copiedApplicant = new Applicant(sourceRequest.Applicant);
+                copiedApplicant.Id = -1;
+                copiedApplicant.RequestId = null;
+                newRequest.Applicant = copiedApplicant;
+            }
+
+            // Сведения о представителе заявителя
+            if (model.TransferAgentData)
+            {
+                var copiedAgent = new Agent(sourceRequest.Agent);
+                copiedAgent.Id = -1;
+                newRequest.Agent = copiedAgent;
+            }
+
+            // Сведения о сопровождающих
+            if (model.AttendantsIds.Count > 0)
+            {
+                newRequest.CountAttendants = model.AttendantsIds.Count;
+                var attendants = UnitOfWork.GetSet<Applicant>().Where(x => model.AttendantsIds.Any(a => a == x.Id)).ToList();
+                foreach (var attendant in attendants)
+                {
+                    var copiedAttendant = new Applicant(attendant);
+                    copiedAttendant.Id = -1;
+                    copiedAttendant.RequestId = newRequest.Id;
+                    newRequest.Attendant.Add(copiedAttendant);
+                }
+            }
+
+            // Сведения о детях
+            if (model.ChildrenIds.Count > 0)
+            {
+                newRequest.CountPlace = model.ChildrenIds.Count;
+                var childs = UnitOfWork.GetSet<Child>().Where(x => model.ChildrenIds.Any(a => a == x.Id)).ToList();
+                foreach (var child in childs)
+                {
+                    var copiedChild = new Child(child);
+                    copiedChild.Id = -1;
+                    copiedChild.RequestId = newRequest.Id;
+                    newRequest.Child.Add(copiedChild);
+                }
+            }
+
+            // Банковские реквизиты
+            if (model.TransferBankData)
+            {
+                newRequest.BankName = sourceRequest.BankName;
+                newRequest.BankInn = sourceRequest.BankInn;
+                newRequest.BankKpp = sourceRequest.BankKpp;
+                newRequest.BankBik = sourceRequest.BankBik;
+                newRequest.BankAccount = sourceRequest.BankAccount;
+                newRequest.BankCorr = sourceRequest.BankCorr;
+                newRequest.BankCardNumber = sourceRequest.BankCardNumber;
+                newRequest.BankLastName = sourceRequest.BankLastName;
+                newRequest.BankFirstName = sourceRequest.BankFirstName;
+                newRequest.BankMiddleName = sourceRequest.BankMiddleName;
+            }
+
+            // Документы
+            if (model.TransferFilesData)
+            {
+                var sourceFiles = UnitOfWork.GetSet<RequestFile>().Where(x => x.RequestId == sourceRequest.Id);
+                foreach (var file in sourceFiles)
+                {
+                    var copiedFile = new RequestFile(file);
+                    copiedFile.Id = -1;
+                    copiedFile.RequestId = newRequest.Id;
+                    newRequest.Files.Add(copiedFile);
+                }
+            }
+            UnitOfWork.SaveChanges();
+            return newRequest.Id;
         }
     }
 }
