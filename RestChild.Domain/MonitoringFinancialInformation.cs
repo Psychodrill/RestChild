@@ -75,7 +75,7 @@ namespace RestChild.Domain
       /// </summary>
       [ForeignKey("HistoryLink")]
       [DataMember(Name = "historyLinkId")]
-      [Display(Description = "История изменений сведеней о финансировании")]
+      [Display(Description = "История изменений сведений о финансировании")]
       public virtual long? HistoryLinkId { get; set; }
       
       

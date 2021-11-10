@@ -39,7 +39,7 @@ namespace RestChild.Domain
       /// <summary>
       /// История изменений сведеней о численности детей
       /// </summary>
-      [Display(Description = "История изменений сведеней о численности детей")]
+      [Display(Description = "История изменений сведений о численности детей")]
       [DataMember(Name = "historyLink", EmitDefaultValue = false)]
       public virtual HistoryLink HistoryLink { get; set; }
       
