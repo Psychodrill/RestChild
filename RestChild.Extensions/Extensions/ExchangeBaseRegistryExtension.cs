@@ -653,7 +653,11 @@ namespace RestChild.Extensions.Extensions
                         if (res.Child is Child child)
                         {
                             //если есть ребенок то это заявление и по дефолту не подтверждено
-                            res.Approved = false;
+                            res.Approved = true;
+                            if (self.ResponseText.Contains("<ResultType>NegativeAnswer</ResultType>"))
+                            {
+                                res.Approved = false;
+                            }
                             var requestChild = child.Request;
 
                             // если есть доверенность то дальше можно не проверять
@@ -693,12 +697,12 @@ namespace RestChild.Extensions.Extensions
                                 }
                             }
 
-                            if (child.DocumentTypeId == (long)DocumentTypeEnum.CertOfBirth)
-                            {
-                                res.Approved = res.EGRZagzResponse?.СведОтветАГС[0]?.СведРегРожд[0]?.СвидетРожд?.Any(d =>
-                                   ((string)d.Item)?.Trim().ToLower() == child.DocumentSeria?.Trim().ToLower()
-                                   && ((string)d.Item1)?.Trim().ToLower() == child.DocumentNumber?.Trim().ToLower());
-                            }
+                            //if (child.DocumentTypeId == (long)DocumentTypeEnum.CertOfBirth)
+                            //{
+                            //    res.Approved = res.EGRZagzResponse?.СведОтветАГС[0]?.СведРегРожд[0]?.СвидетРожд?.Any(d =>
+                            //       ((string)d.Item)?.Trim().ToLower() == child.DocumentSeria?.Trim().ToLower()
+                            //       && ((string)d.Item1)?.Trim().ToLower() == child.DocumentNumber?.Trim().ToLower());
+                            //}
                         }
                     }
                 }
