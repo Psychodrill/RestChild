@@ -5,6 +5,7 @@
 @using RestChild.DAL
 @using RestChild.Domain
 @using RestChild.Web.Controllers
+@using RestChild.Web.Models
 @model RestChild.Web.Models.RequestViewModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,6 +13,7 @@
     var typeOfRest = Model.Data.TypeOfRest ?? new TypeOfRest();
     ViewBag.NeedAttendant = typeOfRest.NeedAttendant;
     ViewBag.ModelStatusId = Model.Data.StatusId;
+    var Id = Model.Data.Id;
 }
 
 @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
@@ -75,30 +77,27 @@
                                         Сохранить
                                     </button>
                                 }
-                                <button type="button" id="copyRequestBtn" class="btn btn-default btn-primary copy-request">
-                                    Скопировать данные в новое заявления
-                                </button> }
 
-                            @*<button type="button" class="btn btn-default btn-primary copy-request">
+                                @*<button type="button" class="btn btn-default btn-primary copy-request">
                                     Скопировать данные в новое заявление
                                 </button>*@
 
-                            if (Model.Data.StatusId == (long)StatusEnum.Draft && Security.HasRight(AccessRightEnum.RemoveDraft))
-                            {
-                            <button id="DeleteButton" type="button" role="button" class="btn btn-default btn-danger edit-control" onclick="confirmButton('удалить заявление', '@RequestActionEnum.RemoveDraftVersion') ">
-                                Удалить
-                            </button>
-                            }
-                            @*if (Model.Data.StatusId.HasValue && Model.Data.StatusId != (long)StatusEnum.Draft && Model.Data.StatusId != (long)StatusEnum.RegistrationDecline && Model.Data.StatusId != (long)StatusEnum.RegistrationDeclineBecauseDuplicate/*&& (Model.Data.TypeOfRestId != (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationGroup || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationYouthRest)*/)
+                                if (Model.Data.StatusId == (long)StatusEnum.Draft && Security.HasRight(AccessRightEnum.RemoveDraft))
                                 {
-                                <a class="btn btn-default btn-primary edit-control" target="_blank" href="@Url.Action("RequestEdit", "FirstRequestCompany", new { requestId = Model.Data.Id, reApply = true })">Копировать заявление в черновик</a>
-                                }*@
-                            foreach (StatusAction action in Model.Actions)
-                            {
-                            <button type="button" class="btn btn-default edit-control" onclick="@(new[] { AccessRightEnum.Status.FcToReject, AccessRightEnum.Status.ToRejectFromCertificateIssued, AccessRightEnum.Status.ToReject, AccessRightEnum.Status.ToRejectNormal, AccessRightEnum.Status.ToCancelByApplicant }.Contains(action.Code) ? " confirmButtonWithDecline" : "confirmButton")('@action.Name', '@action.Code', '@action.ToStatusId') ">
-                                @action.Name
-                            </button>
-                            }
+                                    <button id="DeleteButton" type="button" role="button" class="btn btn-default btn-danger edit-control" onclick="confirmButton('удалить заявление', '@RequestActionEnum.RemoveDraftVersion') ">
+                                        Удалить
+                                    </button>
+                                }
+                                if (Model.Data.StatusId.HasValue && Model.Data.StatusId != (long)StatusEnum.Draft && Model.Data.StatusId != (long)StatusEnum.RegistrationDecline && Model.Data.StatusId != (long)StatusEnum.RegistrationDeclineBecauseDuplicate/*&& (Model.Data.TypeOfRestId != (long)TypeOfRestEnum.Compensation || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationGroup || Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationYouthRest)*/)
+                                {
+                                    <button disabled class="btn btn-default btn-primary edit-control" target="_blank" href="@Url.Action("RequestEdit", "FirstRequestCompany", new { requestId = Model.Data.Id, reApply = true })">Копировать заявление в черновик</button>
+                                }
+                                foreach (StatusAction action in Model.Actions)
+                                {
+                                    <button type="button" class="btn btn-default edit-control" onclick="@(new[] { AccessRightEnum.Status.FcToReject, AccessRightEnum.Status.ToRejectFromCertificateIssued, AccessRightEnum.Status.ToReject, AccessRightEnum.Status.ToRejectNormal, AccessRightEnum.Status.ToCancelByApplicant }.Contains(action.Code) ? " confirmButtonWithDecline" : "confirmButton")('@action.Name', '@action.Code', '@action.ToStatusId') ">
+                                        @action.Name
+                                    </button>
+                                }
                             }
                             @if (Model.Data.Id != 0)
                             {
@@ -205,7 +204,7 @@
             @{ Html.RenderPartial("Partials/RequestApplicant", Model); }
             @{ if (!Model.Agent.Data.IsNullOrEmpty()) { Html.RenderPartial("Partials/RequestAgent", Model); } }
 
-            <h3 id="AttendantsReference" class="anchor bs-callout-info @(Model.Data.TypeOfRest.NullSafe(x => x.NeedAttendant) && Model.Data.TypeOfRestId != (long) TypeOfRestEnum.CompensationYouthRest ? string.Empty : " hidden")">
+            <h3 id="AttendantsReference" class="anchor bs-callout-info @(Model.Data.TypeOfRest.NullSafe(x => x.NeedAttendant) && Model.Data.TypeOfRestId != (long)TypeOfRestEnum.CompensationYouthRest ? string.Empty : " hidden")">
                 Сведения о сопровождающих
             </h3><span class="field-validation-error">@Model.AttendantEm.FormatEx(string.Empty)</span>
 
@@ -214,7 +213,7 @@
             </fieldset>
             <div class="form-group row">
                 <div class="col-md-12">
-                    <button type="button" class="btn btn-default btn-primary @(Model.Data.TypeOfRestId == (long) TypeOfRestEnum.Compensation || !(Model.ForbidInsertAttendants ?? false) ? string.Empty : " hidden")" id="AddAttendant">
+                    <button type="button" class="btn btn-default btn-primary @(Model.Data.TypeOfRestId == (long)TypeOfRestEnum.Compensation || !(Model.ForbidInsertAttendants ?? false) ? string.Empty : " hidden")" id="AddAttendant">
                         <i class="glyphicon glyphicon-plus"></i>Добавить
                     </button>
                 </div>
@@ -251,7 +250,7 @@
                             }
                             foreach (StatusAction action in Model.Actions)
                             {
-                                <button type="button" class="btn btn-default edit-control" onclick="@(new[] {AccessRightEnum.Status.FcToReject, AccessRightEnum.Status.ToRejectFromCertificateIssued, AccessRightEnum.Status.ToReject, AccessRightEnum.Status.ToRejectNormal, AccessRightEnum.Status.ToCancelByApplicant}.Contains(action.Code) ? " confirmButtonWithDecline" : "confirmButton")('@action.Name', '@action.Code', '@action.ToStatusId') ">
+                                <button type="button" class="btn btn-default edit-control" onclick="@(new[] { AccessRightEnum.Status.FcToReject, AccessRightEnum.Status.ToRejectFromCertificateIssued, AccessRightEnum.Status.ToReject, AccessRightEnum.Status.ToRejectNormal, AccessRightEnum.Status.ToCancelByApplicant }.Contains(action.Code) ? " confirmButtonWithDecline" : "confirmButton")('@action.Name', '@action.Code', '@action.ToStatusId') ">
                                     @action.Name
                                 </button>
                             }
@@ -388,10 +387,12 @@
                     </label>
                 </div>
                 <div id="copyOptions">
+                    <ul id='mainList'> </ul>
                     <div id="Info" class='checkbox'>
                         <ul>
                             <li>
                                 <label>
+                                    @*<div class="checkbox"><label>@Html.CheckBox("TransferGeneralData", copymodel.TransferGeneralData) Общие сведения</label></div>*@
                                     <input name="generalInfo" type='checkbox'>
                                     <input name="generalInfo" type='hidden' value='false'>
                                     Общие сведения
@@ -476,12 +477,11 @@
                             </li>
                         </ul>
                     </div>
-
                 </div>
 
             </div>
             <div class="modal-footer">
-                <button id="submitRequestCopy" type="button" class="btn btn-default btn-primary" @*onclick="@(Url.Action("CopyRequest", "FirstRequestCompany", new { requestId = Model.Data.Id }))"*@>
+                <button id="submitRequestCopy" type="button" class="btn btn-default btn-primary" @*href="@(Url.Action("CopyRequestDataToNewRequest", "FirstRequestCompany", new { model = copymodel }))"*@>
                     Копировать
                 </button>
                 <input id="@Model.Data.Id" class="requestToCopy" type="hidden" />
@@ -497,9 +497,33 @@
                         <input id="@child.Id" class="childToCopy" value="@String.Join(" ", child.LastName, child.FirstName, child.MiddleName)" type="hidden" />
                     }
                 }
+                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
             </div>
         </div>
     </div>
+    @*@{var copymodel = new RequestCopyModel();
+            copymodel.RequestId = Model.Data.Id;
+            List<Applicant> Attendants = new List<Applicant>();
+            List<Child> Children = new List<Child>();
+            if (Model.Attendant.Any())
+            {
+                foreach (var att in Model.Attendant)
+                {
+                    Attendants.Add(att.Data);
+                }
+            }
+            copymodel.Attendants = Attendants;
+            if (Model.Child.Any())
+            {
+                foreach (var att in Model.Child)
+                {
+                    Children.Add(att.Data);
+                }
+            }
+            copymodel.Children = Children;
+        }
+        @{ Html.RenderPartial("Partials/CopyRequestModal", copymodel); }*@
+
 </div>
 
 @section styles {
