@@ -65,7 +65,7 @@ namespace RestChild.Comon.Dto
         ///     проверка льготы запрос
         /// </summary>
         public BenefitCheckRequest BenefitCheckRequest { get; set; }
-
+        
         /// <summary>
         ///     результат проверки по льготе
         /// </summary>

@@ -404,6 +404,25 @@ namespace RestChild.Web.Controllers.WebApi
             }
         }
 
+        /// <summary>
+        ///     Запрос явки заявителя
+        /// </summary>
+        /// <param name="requestId"></param>
+        [HttpPost]
+        [HttpGet]
+        public void SendRequestToWaitApplicant(long requestId, string plandate = null)
+        {
+            SetUnitOfWorkInRefClass(UnitOfWork);
+
+            var planDate = plandate?.XmlToDateTime();
+            var requestForUpdate = UnitOfWork.GetById<Request>(requestId);
+
+            if (requestForUpdate.StatusId == 1050 && !requestForUpdate.IsDeleted)
+            {
+                UnitOfWork.RequestChangeStatusInternal(AccessRightEnum.Status.FcToWaitApplicant, requestForUpdate, null, false, null, planDate);
+            }
+        }
+
         internal static void UpdateInfoInChild(Child child, string comment)
         {
             if (child == null)
@@ -457,17 +476,29 @@ namespace RestChild.Web.Controllers.WebApi
             {
                 var relativeChild = true;
                 var relativeChildChecked = false;
+
                 var relativeSmevChild = true;
                 var relativeSmevChildChecked = false;
+
                 var aisoChild = true;
                 var aisoChildChecked = false;
 
+                var FGISFRIChild = true;
+                var FGISFRIChildChecked = false;
+
                 var benefitApprove = true;
-                var callOfApplicant = false;
-                var callOfApplicantBenefit = false;
                 var benefitChildChecked = false;
+
+                var callOfApplicant = false;
+                var callOfApplicantBenefit = false; //вызов если нет льготы
                 var lowIncomeApprove = true;
-                var cpmpkApproved = false;
+
+                var cpmpkChildCheked = false;
+                var cpmpkChild = true;
+
+                var PassportChildCheked = false;
+                var PassportChild = true;
+
 
                 foreach (var bri in child.BaseRegistryInfo.Where(b => !b.NotActual).ToArray())
                 {
@@ -533,12 +564,13 @@ namespace RestChild.Web.Controllers.WebApi
                         result.SnilsApprove = false;
                     }
 
+                    //не используется
                     if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.Payments &&
                         !bri.Success)
                     {
                         result.LowIncomeApprove = false;
                     }
-
+                    //не используется
                     if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.Relationship)
                     {
                         relativeChildChecked = true;
@@ -550,7 +582,7 @@ namespace RestChild.Web.Controllers.WebApi
 
                     if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.GetEGRZAGS)
                     {
-                       //if (req.Child.Any(c=>c.BenefitType.ExnternalUid == "52,69")) //абизатильна протестировать
+                       //if (req.Child.Any(c=>c.BenefitType.ExnternalUid == "52,69")) 
                        //     relativeSmevChild = false;
                        // if (!req.Child.Any() && req.Applicant.BenefitType.ExnternalUid == "52,69")
                        //     relativeSmevChild = false;
@@ -561,10 +593,22 @@ namespace RestChild.Web.Controllers.WebApi
                         }
                     }
 
-                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS &&
-                        !bri.Success)
+                    if (bri.ExchangeBaseRegistryTypeId == (long)ExchangeBaseRegistryTypeEnum.GetFGISFRI)
                     {
-                        result.PassportApprove = false;
+                        FGISFRIChildChecked = true;
+                        if (!bri.Success)
+                        {
+                            FGISFRIChild = false;
+                        }
+                    }
+
+                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS)
+                    {
+                        PassportChildCheked = true; //Костыль для подтверждения родства ребенка если указан паспорт, на 2021-11-02 большая часть запросов не подтверждается
+                        if (!bri.Success)
+                        {
+                            result.PassportApprove = false;
+                        }
                     }
 
                     if (bri.ExchangeBaseRegistryTypeId ==
@@ -589,15 +633,13 @@ namespace RestChild.Web.Controllers.WebApi
 
                     if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange) //??? 
                     {
+                        cpmpkChildCheked = true;
                         if (!bri.Success)
                         {
-                            result.CallOfApplicant = true;
-                        }
-                        else
-                        {
-                            cpmpkApproved = true;
+                            cpmpkChild = false;
                         }
                     }
+                    
 
                     // Повторяется
                     //if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS &&
@@ -606,19 +648,28 @@ namespace RestChild.Web.Controllers.WebApi
                     //    result.PassportApprove = false;
                     //}
                 }
-
+                Logger.InfoFormat("Start CallOfApplicant ={0}, Satart BenefitApprove ={1}", result.CallOfApplicant, result.BenefitApprove);
                 result.BenefitApprove &= benefitApprove;
-                result.CallOfApplicant |= callOfApplicant;
-                result.CallOfApplicant |= callOfApplicantBenefit && !cpmpkApproved;
+                result.CallOfApplicant |= callOfApplicant; //
+                Logger.InfoFormat("BenefitApprove &= benefitApprove ={0}, CallOfApplicant |= callOfApplicant ={1}", result.BenefitApprove, result.CallOfApplicant);
 
+                //result.CallOfApplicant |= callOfApplicantBenefit && !cpmpkApproved;
+
+                //result.CallOfApplicant |= callOfApplicantBenefit
+
+                 result.CallOfApplicant |= (!((aisoChild && aisoChildChecked) || (relativeSmevChild && relativeSmevChildChecked) || (PassportChild && PassportChildCheked))
+                        || !((cpmpkChild && cpmpkChildCheked) || (FGISFRIChild && FGISFRIChildChecked) || (benefitApprove && benefitChildChecked)));
+
+                Logger.InfoFormat("ReqId={0}, result.CallOfApplicant={1}, callOfApplicantBenefit={2}, aisoChild={3},aisoChildChecked={4}, relativeSmevChild={5},relativeSmevChildChecked={6},PassportChild={7},PassportChildCheked={8}", req.Id, result.CallOfApplicant, callOfApplicantBenefit, aisoChild, aisoChildChecked, relativeSmevChild, relativeSmevChildChecked, PassportChild, PassportChildCheked);
+                Logger.InfoFormat("ReqId={0}, cpmpkChild={1}, cpmpkChildCheked={2}, FGISFRIChild={3},FGISFRIChildChecked={4}, benefitApprove={5},benefitChildChecked={6}, lowIncomeApprove={7}", req.Id, cpmpkChild, cpmpkChildCheked, FGISFRIChild, FGISFRIChildChecked, benefitApprove, benefitChildChecked, lowIncomeApprove);
                 result.LowIncomeApprove &= lowIncomeApprove;
 
-                if (!(relativeChild && relativeChildChecked)
-                    && !(relativeSmevChild && relativeSmevChildChecked)
-                    && !(aisoChild && aisoChildChecked))
-                {
-                    result.CallOfApplicant = true;
-                }
+                //if (!(relativeChild && relativeChildChecked)
+                //    && !(relativeSmevChild && relativeSmevChildChecked)
+                //    && !(aisoChild && aisoChildChecked))
+                //{
+                //    result.CallOfApplicant = true;
+                //}
             }
 
             foreach (var applicant in applicants)
@@ -641,19 +692,21 @@ namespace RestChild.Web.Controllers.WebApi
                         result.PassportApprove = false;
                     }
 
-                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.PassportRegistration && // ??? не нужно вызывать
-                        !bri.Success)
-                    {
-                        result.CallOfApplicant = true;
-                    }
+                    //if (bri.ExchangeBaseRegistryTypeId == (long)ExchangeBaseRegistryTypeEnum.PassportRegistration && // ??? не нужно вызывать
+                    //    !bri.Success)
+                    //{
+                    //    result.CallOfApplicant = true;
+                    //}
 
-                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.GetPassportRegistration && // ??? не нужно вызывать
-                        !bri.Success)
-                    {
-                        result.CallOfApplicant = true;
-                    }
+                    //if (bri.ExchangeBaseRegistryTypeId == (long)ExchangeBaseRegistryTypeEnum.GetPassportRegistration && // ??? не нужно вызывать
+                    //    !bri.Success)
+                    //{
+                    //    result.CallOfApplicant = true;
+                    //}
                 }
             }
+
+            
 
             return result;
         }

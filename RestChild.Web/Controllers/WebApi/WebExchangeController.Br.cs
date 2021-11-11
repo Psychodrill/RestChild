@@ -1787,9 +1787,11 @@ namespace RestChild.Web.Controllers.WebApi
                 {
                     //старый документ (3091)
                     //count = CheckChildForRelationshipSmev(requestNumber, child, count);
-
-                    //новый документ (11827)
-                    count = CheckChildForRelationshipEGRZAGS(requestNumber, child, count);
+                    if (child.DocumentTypeId == 22)
+                    {
+                        //новый документ (11827)
+                        count = CheckChildForRelationshipEGRZAGS(requestNumber, child, count);
+                    }
                 }
             }
 

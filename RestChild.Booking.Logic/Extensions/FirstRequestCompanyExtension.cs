@@ -48,6 +48,13 @@ namespace RestChild.Booking.Logic.Extensions
             (long) StatusEnum.CancelByApplicant, (long) StatusEnum.RegistrationDecline
         };
 
+        //private static readonly Dictionary<long?, long?> DelayedSendingStatus =
+        //    Settings.Default.DelayedSendingStatus?.Cast<string>()
+        //        .Select(v => v.Split(';'))
+        //        .Where(v => v.Length == 2)
+        //        .Select(v => new { id = v[0].LongParse(), dec = v[1].LongParse() })
+        //        .ToDictionary(v => v.id, v => v.dec) ?? new Dictionary<long?, long?>();
+
         /// <summary>
         ///     получить ранг
         /// </summary>
@@ -246,6 +253,13 @@ namespace RestChild.Booking.Logic.Extensions
         public static void SendChangeStatus(this IUnitOfWork unitOfWork, Request entity, long statusId, string comment,
             string action, DateTime? planDate = null, long? accountId = null, bool isFromMpgu = false)
         {
+
+            // Отложенная отправка статуса 1060
+            //if (statusId == 1055 && !planDate.HasValue)
+            //{
+            //    planDate = DateTime.Now.AddDays(1);
+            //}
+
             var exchangeSystemCode = ConfigurationManager.AppSettings["exchangeSystemCode"];
             var fromCode = ConfigurationManager.AppSettings["exchangeBaseRegistryFromCode"];
             var toCode = ConfigurationManager.AppSettings["exchangeMpguToCode"];

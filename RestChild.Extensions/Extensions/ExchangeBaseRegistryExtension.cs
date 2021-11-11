@@ -390,14 +390,14 @@ namespace RestChild.Extensions.Extensions
                 Approved = self.Success,
                 Type =
                     self.ExchangeBaseRegistryTypeId.HasValue
-                        ? (ExchangeBaseRegistryTypeEnum) self.ExchangeBaseRegistryTypeId
+                        ? (ExchangeBaseRegistryTypeEnum)self.ExchangeBaseRegistryTypeId
                         : ExchangeBaseRegistryTypeEnum.Benefit,
                 RequestNumber = self.ServiceNumber,
                 ResultAbsent = string.IsNullOrWhiteSpace(self.ResponseText),
                 RequestDate = self.SendDate,
                 Child = self.Child,
                 Applicant = self.Applicant,
-                BenefitCheckRequest = request,
+                BenefitCheckRequest = request
             };
 
             if (res.Type == ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck)
@@ -405,6 +405,8 @@ namespace RestChild.Extensions.Extensions
                 res.AisoLegalRepresentationCheck = self.ResponseText;
             }
 
+
+            //если результан не получем или меж-вед в АСУР
             if (res.ResultAbsent ||
                 self.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange ||
                 self.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck)
@@ -416,6 +418,7 @@ namespace RestChild.Extensions.Extensions
             CoordinateStatusMessage responseMessage = null;
             ErrorMessage errorMessage = null;
 
+            ///Парсим ответ в <param name="responseMessage">
             try
             {
                 if (self.RequestText?.Contains("http://asguf.mos.ru/rkis_gu/coordinate/v6_1") ?? false)
@@ -489,8 +492,10 @@ namespace RestChild.Extensions.Extensions
                     res.ApprovedLowIncome = poors != null && poors.Any()
                         ? res.BenefitCheckResult.Any(b => b.LowIncome)
                         : (bool?) null;
+                    
                 }
 
+                // не используются
                 if (res.Type == ExchangeBaseRegistryTypeEnum.Relationship)
                 {
                     res.RelationshipCheckResults = resultData
@@ -506,7 +511,7 @@ namespace RestChild.Extensions.Extensions
 
                     res.Approved = res.SnilsCheckResult?.CanUse ?? false;
                 }
-
+                // не используется
                 if (res.Type == ExchangeBaseRegistryTypeEnum.Snils)
                 {
                     res.SnilsCheckResult = resultData
@@ -520,6 +525,7 @@ namespace RestChild.Extensions.Extensions
                     res.PassportRegistrationResponse = resultData
                         .Select(r => Serialization.Deserialize<Registration>(r.OuterXml)).FirstOrDefault();
 
+                    //не требуется для ЛОК 2022
                     res.Approved = res.PassportRegistrationResponse != null &&
                                    res.PassportRegistrationResponse?.DocumentStatus?.ToLower() == "y";
                 }
@@ -535,6 +541,7 @@ namespace RestChild.Extensions.Extensions
                                    res.PassportRegistrationResponse?.LocationRegion?.StartsWith("45") == true;
                 }
 
+                //не используется
                 if (res.Type == ExchangeBaseRegistryTypeEnum.Payments)
                 {
                     res.PaymentCheckResults = resultData
@@ -577,7 +584,7 @@ namespace RestChild.Extensions.Extensions
                     }
                 }
 
-                //проверка на родство по СМЭВ
+                //проверка на родство по СМЭВ НЕ ИСПОЛЬЗУЕТСЯ
                 if (res.Type == ExchangeBaseRegistryTypeEnum.RelationshipSmev)
                 {
                     var xmlData = resultData.FirstOrDefault()?.OuterXml;
@@ -725,7 +732,6 @@ namespace RestChild.Extensions.Extensions
                     {
                         var FGISFRIResponse = Serialization.Deserialize<ExtractionInvalidDataResponse>(xmlData);
                         res.FGISFRIResponse = FGISFRIResponse;
-
                     }
                 }
 
