@@ -582,15 +582,18 @@ namespace RestChild.Web.Controllers.WebApi
 
                     if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.GetEGRZAGS)
                     {
-                       //if (req.Child.Any(c=>c.BenefitType.ExnternalUid == "52,69")) 
-                       //     relativeSmevChild = false;
-                       // if (!req.Child.Any() && req.Applicant.BenefitType.ExnternalUid == "52,69")
-                       //     relativeSmevChild = false;
                         relativeSmevChildChecked = true;
-                        if (!bri.Success)
+                        
+                        var benefitCheck = bri.Parse();
+                        // если проверка родства между ребенком и заявителем/сопровождающими и прверка документа не прошла то родство по сведрожду не подтвердилось
+                        if (!(benefitCheck.Approved.HasValue && benefitCheck.Approved == true))
                         {
                             relativeSmevChild = false;
                         }
+                        //if (!bri.Success)
+                        //{
+                        //    relativeSmevChild = false;
+                        //}
                     }
 
                     if (bri.ExchangeBaseRegistryTypeId == (long)ExchangeBaseRegistryTypeEnum.GetFGISFRI)
@@ -602,9 +605,9 @@ namespace RestChild.Web.Controllers.WebApi
                         }
                     }
 
-                    if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS)
+                    if (bri.ExchangeBaseRegistryTypeId == (long)ExchangeBaseRegistryTypeEnum.PassportDataBySNILS)
                     {
-                        PassportChildCheked = true; //Костыль для подтверждения родства ребенка если указан паспорт, на 2021-11-02 большая часть запросов не подтверждается
+                        PassportChildCheked = true; //Костыль для подтверждения родства ребенка если указан паспорт чтоб проверка на родство не вызывала заявителя
                         if (!bri.Success)
                         {
                             result.PassportApprove = false;
@@ -639,7 +642,19 @@ namespace RestChild.Web.Controllers.WebApi
                             cpmpkChild = false;
                         }
                     }
-                    
+
+
+                    //Если ребенок сирота то вызов
+                    if (child.BenefitType.ExnternalUid == "52,69")
+                    {
+                        result.CallOfApplicant = true;
+                    }
+                    // В связи замечаниями проверки паспортов у детей и количества неподтвержденных решено подтверждать родство в заявлениях, в которых у детей паспорт
+                    if (child.DocumentTypeId == 50001)
+                    {
+                        PassportChild = true;
+                    }
+
 
                     // Повторяется
                     //if (bri.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.PassportDataBySNILS &&
