@@ -292,9 +292,17 @@
     </div>
     <div class="row form-group">
         <div class="col-md-offset-3 col-md-9">
-            @Html.CheckBoxFor(r => r[i].Data.IsCPMPK, new {@class = "hasCPMPKConclusion"}).ReadOnlyIf(Model[i].Data.IsCPMPK).DisableIf(Model[i].Data.IsCPMPK)
-            Ребенок имеет заключение ЦПМПК города Москвы (адаптированная основная общеобразовательная программа)
-        </div>
+            @if (Model[i].Data.IsCPMPK)
+            {
+                @Html.CheckBox("FakeCPMPK",true).DisableIf(Model[i].Data.IsCPMPK);
+                @Html.HiddenFor(r => r[i].Data.IsCPMPK);
+            }
+            else
+            {
+           @Html.CheckBoxFor(r => r[i].Data.IsCPMPK, new { @class = "hasCPMPKConclusion" })
+            }
+           Ребенок имеет заключение ЦПМПК города Москвы(адаптированная основная общеобразовательная программа)
+            </div>
     </div>
     <div class="row form-group type-of-restriction @(!Model[i].Data.IsInvalid ? " hidden" : string.Empty)">
         <label class="col-md-3 control-label">Вид ограничения<span class="requared">*</span></label>
