@@ -255,10 +255,10 @@ namespace RestChild.Booking.Logic.Extensions
         {
 
             // Отложенная отправка статуса 1060
-            //if (statusId == 1055 && !planDate.HasValue)
-            //{
-            //    planDate = DateTime.Now.AddDays(1);
-            //}
+            if (statusId == 1055 && !planDate.HasValue)
+            {
+                planDate = DateTime.Now.AddDays(2);
+            }
 
             var exchangeSystemCode = ConfigurationManager.AppSettings["exchangeSystemCode"];
             var fromCode = ConfigurationManager.AppSettings["exchangeBaseRegistryFromCode"];

@@ -663,10 +663,10 @@ namespace RestChild.Web.Controllers.WebApi
                     //    result.PassportApprove = false;
                     //}
                 }
-                Logger.InfoFormat("Start CallOfApplicant ={0}, Satart BenefitApprove ={1}", result.CallOfApplicant, result.BenefitApprove);
+                Logger.InfoFormat("Start ReqId={0}, CallOfApplicant={1}, BenefitApprove={2}", req.Id, result.CallOfApplicant, result.BenefitApprove);
                 result.BenefitApprove &= benefitApprove;
                 result.CallOfApplicant |= callOfApplicant; //
-                Logger.InfoFormat("BenefitApprove &= benefitApprove ={0}, CallOfApplicant |= callOfApplicant ={1}", result.BenefitApprove, result.CallOfApplicant);
+                Logger.InfoFormat("BenefitApprove &= benefitApprove={0}, CallOfApplicant |= callOfApplicant={1}", result.BenefitApprove, result.CallOfApplicant);
 
                 //result.CallOfApplicant |= callOfApplicantBenefit && !cpmpkApproved;
 
@@ -675,8 +675,10 @@ namespace RestChild.Web.Controllers.WebApi
                  result.CallOfApplicant |= (!((aisoChild && aisoChildChecked) || (relativeSmevChild && relativeSmevChildChecked) || (PassportChild && PassportChildCheked))
                         || !((cpmpkChild && cpmpkChildCheked) || (FGISFRIChild && FGISFRIChildChecked) || (benefitApprove && benefitChildChecked)));
 
-                Logger.InfoFormat("ReqId={0}, result.CallOfApplicant={1}, callOfApplicantBenefit={2}, aisoChild={3},aisoChildChecked={4}, relativeSmevChild={5},relativeSmevChildChecked={6},PassportChild={7},PassportChildCheked={8}", req.Id, result.CallOfApplicant, callOfApplicantBenefit, aisoChild, aisoChildChecked, relativeSmevChild, relativeSmevChildChecked, PassportChild, PassportChildCheked);
-                Logger.InfoFormat("ReqId={0}, cpmpkChild={1}, cpmpkChildCheked={2}, FGISFRIChild={3},FGISFRIChildChecked={4}, benefitApprove={5},benefitChildChecked={6}, lowIncomeApprove={7}", req.Id, cpmpkChild, cpmpkChildCheked, FGISFRIChild, FGISFRIChildChecked, benefitApprove, benefitChildChecked, lowIncomeApprove);
+                Logger.InfoFormat("result.CallOfApplicant={0}, callOfApplicantBenefit={1}, ", result.CallOfApplicant, callOfApplicantBenefit);
+                Logger.InfoFormat("ChildId={0}, aisoChild={1},aisoChildChecked={2}, relativeSmevChild={3},relativeSmevChildChecked={4},PassportChild={5},PassportChildCheked={6}", child.Id, aisoChild, aisoChildChecked, relativeSmevChild, relativeSmevChildChecked, PassportChild, PassportChildCheked);
+                Logger.InfoFormat("ChildId={0}, cpmpkChild={1}, cpmpkChildCheked={2}, FGISFRIChild={3},FGISFRIChildChecked={4}, benefitApprove={5},benefitChildChecked={6}, lowIncomeApprove={7}", child.Id, cpmpkChild, cpmpkChildCheked, FGISFRIChild, FGISFRIChildChecked, benefitApprove, benefitChildChecked, lowIncomeApprove);
+                Logger.InfoFormat("ChildEnd result.CallOfApplicant{0}", result.CallOfApplicant);
                 result.LowIncomeApprove &= lowIncomeApprove;
 
                 //if (!(relativeChild && relativeChildChecked)
@@ -721,7 +723,7 @@ namespace RestChild.Web.Controllers.WebApi
                 }
             }
 
-            
+            Logger.InfoFormat("End result.CallOfApplicant{0}", result.CallOfApplicant);
 
             return result;
         }
