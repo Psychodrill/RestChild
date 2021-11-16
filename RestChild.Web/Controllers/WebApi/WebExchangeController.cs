@@ -2121,5 +2121,14 @@ namespace RestChild.Web.Controllers.WebApi
 
             UnitOfWork.SaveChanges();
         }
+
+        [HttpPost]
+        [HttpGet]
+        public void RequestToRejectNoBenefit(long requestId)
+        {
+            var requestToReject = UnitOfWork.GetById<Request>(requestId);
+            UnitOfWork.RequestChangeStatusInternal(AccessRightEnum.Status.FcToReject,
+                                                    requestToReject, Settings.Default.ReasonNotHaveBenefit, false);
+        }
     }
 }
