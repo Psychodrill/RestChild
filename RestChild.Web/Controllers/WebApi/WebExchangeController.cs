@@ -341,6 +341,7 @@ namespace RestChild.Web.Controllers.WebApi
                                                 UnitOfWork.RequestChangeStatusInternal(
                                                     AccessRightEnum.Status.FcToWaitApplicant, requestForUpdate, null,
                                                     false);
+                                                Logger.InfoFormat("FcToWaitApplicant - {0}", requestForUpdate.Id);
                                             }
                                         }
                                     }
@@ -377,7 +378,7 @@ namespace RestChild.Web.Controllers.WebApi
                                                 targetStatus = AccessRightEnum.Status.ToOperatorCheck;
                                             }
                                         }
-
+                                        Logger.InfoFormat("requestForUpdate.Id={0}, targetStatus={1}", requestForUpdate.Id, targetStatus);
                                         UnitOfWork.RequestChangeStatusInternal(targetStatus, requestForUpdate, null,
                                             false);
                                     }
@@ -431,6 +432,18 @@ namespace RestChild.Web.Controllers.WebApi
             }
 
             child.BenefitApproveComment = comment;
+        }
+
+        /// <summary>
+        ///     Проверить заявление на вызов
+        /// </summary>
+        [Route("api/CheckRequestForCallOfApplicant")]
+        [HttpGet]
+        public CheckResultRequest CheckRequestForCallOfApplicant(long requestId)
+        {
+            var requestForCheck = UnitOfWork.GetById<Request>(requestId);
+
+            return CheckStateCheckRequest(requestForCheck);
         }
 
         /// <summary>
@@ -678,7 +691,7 @@ namespace RestChild.Web.Controllers.WebApi
                 Logger.InfoFormat("result.CallOfApplicant={0}, callOfApplicantBenefit={1}, ", result.CallOfApplicant, callOfApplicantBenefit);
                 Logger.InfoFormat("ChildId={0}, aisoChild={1},aisoChildChecked={2}, relativeSmevChild={3},relativeSmevChildChecked={4},PassportChild={5},PassportChildCheked={6}", child.Id, aisoChild, aisoChildChecked, relativeSmevChild, relativeSmevChildChecked, PassportChild, PassportChildCheked);
                 Logger.InfoFormat("ChildId={0}, cpmpkChild={1}, cpmpkChildCheked={2}, FGISFRIChild={3},FGISFRIChildChecked={4}, benefitApprove={5},benefitChildChecked={6}, lowIncomeApprove={7}", child.Id, cpmpkChild, cpmpkChildCheked, FGISFRIChild, FGISFRIChildChecked, benefitApprove, benefitChildChecked, lowIncomeApprove);
-                Logger.InfoFormat("ChildEnd result.CallOfApplicant{0}", result.CallOfApplicant);
+                Logger.InfoFormat("ChildEnd result.CallOfApplicant={0}", result.CallOfApplicant);
                 result.LowIncomeApprove &= lowIncomeApprove;
 
                 //if (!(relativeChild && relativeChildChecked)
@@ -723,7 +736,7 @@ namespace RestChild.Web.Controllers.WebApi
                 }
             }
 
-            Logger.InfoFormat("End result.CallOfApplicant{0}", result.CallOfApplicant);
+            Logger.InfoFormat("End result.CallOfApplicant={0}", result.CallOfApplicant);
 
             return result;
         }
