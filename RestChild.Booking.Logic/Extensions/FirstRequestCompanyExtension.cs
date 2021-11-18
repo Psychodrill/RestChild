@@ -133,7 +133,7 @@ namespace RestChild.Booking.Logic.Extensions
                 return;
             }
 
-            var exchangeSystemCode = ConfigurationManager.AppSettings["exchangeSystemCode"];
+            var exchangeSystemCode = ConfigurationManager.AppSettings["exchangeSystemCode"] ?? "9000063";
             var fromCode = ConfigurationManager.AppSettings["exchangeBaseRegistryFromCode"];
             var toCode = ConfigurationManager.AppSettings["exchangeMpguToCode"];
 
@@ -266,7 +266,7 @@ namespace RestChild.Booking.Logic.Extensions
                 planDate = DateTime.Now.AddDays(2);
             }
 
-            var exchangeSystemCode = ConfigurationManager.AppSettings["exchangeSystemCode"];
+            var exchangeSystemCode = ConfigurationManager.AppSettings["exchangeSystemCode"] ?? "9000063";
             var fromCode = ConfigurationManager.AppSettings["exchangeBaseRegistryFromCode"];
             var toCode = ConfigurationManager.AppSettings["exchangeMpguToCode"];
 
@@ -1041,7 +1041,7 @@ namespace RestChild.Booking.Logic.Extensions
                 return entity;
             }
 
-            var exchangeSystemCode = ConfigurationManager.AppSettings["exchangeSystemCode"];
+            var exchangeSystemCode = ConfigurationManager.AppSettings["exchangeSystemCode"] ?? "9000063";
             var fromCode = ConfigurationManager.AppSettings["exchangeBaseRegistryFromCode"];
             var toCode = ConfigurationManager.AppSettings["exchangeMpguToCode"];
             var keyRef = new Dictionary<long, int>();
