@@ -2134,5 +2134,14 @@ namespace RestChild.Web.Controllers.WebApi
             UnitOfWork.RequestChangeStatusInternal(AccessRightEnum.Status.FcToReject,
                                                     requestToReject, Settings.Default.ReasonNotHaveBenefit, false);
         }
+
+        [HttpPost]
+        [HttpGet]
+        public void RequestToRejectWithReason(long requestId, long declineReason)
+        {
+            var requestToReject = UnitOfWork.GetById<Request>(requestId);
+            UnitOfWork.RequestChangeStatusInternal(AccessRightEnum.Status.FcToReject,
+                                                    requestToReject, declineReason, false);
+        }
     }
 }
