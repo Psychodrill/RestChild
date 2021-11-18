@@ -405,6 +405,17 @@ namespace RestChild.Web.Controllers.WebApi
             }
         }
 
+        internal static void UpdateInfoInChild(Child child, string comment)
+        {
+            if (child == null)
+            {
+                return;
+            }
+
+            child.BenefitApproveComment = comment;
+        }
+
+
         /// <summary>
         ///     Запрос явки заявителя
         /// </summary>
@@ -423,17 +434,6 @@ namespace RestChild.Web.Controllers.WebApi
                 UnitOfWork.RequestChangeStatusInternal(AccessRightEnum.Status.FcToWaitApplicant, requestForUpdate, null, false, null, planDate);
             }
         }
-
-        internal static void UpdateInfoInChild(Child child, string comment)
-        {
-            if (child == null)
-            {
-                return;
-            }
-
-            child.BenefitApproveComment = comment;
-        }
-
         /// <summary>
         ///     Проверить заявление на вызов
         /// </summary>
@@ -443,7 +443,11 @@ namespace RestChild.Web.Controllers.WebApi
         {
             var requestForCheck = UnitOfWork.GetById<Request>(requestId);
 
-            return CheckStateCheckRequest(requestForCheck);
+            if (requestForCheck != null)
+            {
+                return CheckStateCheckRequest(requestForCheck);
+            }
+            return null;
         }
 
         /// <summary>
@@ -683,10 +687,10 @@ namespace RestChild.Web.Controllers.WebApi
 
                 //result.CallOfApplicant |= callOfApplicantBenefit && !cpmpkApproved;
 
-                //result.CallOfApplicant |= callOfApplicantBenefit
+                result.CallOfApplicant |= (callOfApplicantBenefit && !(cpmpkChild && cpmpkChildCheked)) && (callOfApplicantBenefit && !(FGISFRIChild && FGISFRIChildChecked));
 
-                 result.CallOfApplicant |= (!((aisoChild && aisoChildChecked) || (relativeSmevChild && relativeSmevChildChecked) || (PassportChild && PassportChildCheked))
-                        || !((cpmpkChild && cpmpkChildCheked) || (FGISFRIChild && FGISFRIChildChecked) || (benefitApprove && benefitChildChecked)));
+                 result.CallOfApplicant |= (!((aisoChild && aisoChildChecked) || (relativeSmevChild && relativeSmevChildChecked)) // || (PassportChild && PassportChildCheked))
+                        || !((cpmpkChild && cpmpkChildCheked) || (FGISFRIChild && FGISFRIChildChecked) || (benefitApprove && benefitChildChecked) ));
 
                 Logger.InfoFormat("result.CallOfApplicant={0}, callOfApplicantBenefit={1}, ", result.CallOfApplicant, callOfApplicantBenefit);
                 Logger.InfoFormat("ChildId={0}, aisoChild={1},aisoChildChecked={2}, relativeSmevChild={3},relativeSmevChildChecked={4},PassportChild={5},PassportChildCheked={6}", child.Id, aisoChild, aisoChildChecked, relativeSmevChild, relativeSmevChildChecked, PassportChild, PassportChildCheked);
