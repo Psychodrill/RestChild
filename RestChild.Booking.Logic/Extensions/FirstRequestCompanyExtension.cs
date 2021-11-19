@@ -134,6 +134,9 @@ namespace RestChild.Booking.Logic.Extensions
             }
 
             var exchangeSystemCode = ConfigurationManager.AppSettings["exchangeSystemCode"] ?? "9000063";
+            //очередной костыль для невнятной проблемы с пропадающим систем кодом
+            if (exchangeSystemCode.IsNullOrEmpty())
+                exchangeSystemCode = "9000063";
             var fromCode = ConfigurationManager.AppSettings["exchangeBaseRegistryFromCode"];
             var toCode = ConfigurationManager.AppSettings["exchangeMpguToCode"];
 
@@ -267,6 +270,9 @@ namespace RestChild.Booking.Logic.Extensions
             }
 
             var exchangeSystemCode = ConfigurationManager.AppSettings["exchangeSystemCode"] ?? "9000063";
+            //очередной костыль для невнятной проблемы с пропадающим систем кодом
+            if (exchangeSystemCode.IsNullOrEmpty())
+                exchangeSystemCode = "9000063";
             var fromCode = ConfigurationManager.AppSettings["exchangeBaseRegistryFromCode"];
             var toCode = ConfigurationManager.AppSettings["exchangeMpguToCode"];
 
@@ -1042,6 +1048,9 @@ namespace RestChild.Booking.Logic.Extensions
             }
 
             var exchangeSystemCode = ConfigurationManager.AppSettings["exchangeSystemCode"] ?? "9000063";
+            //очередной костыль для невнятной проблемы с пропадающим систем кодом
+            if (exchangeSystemCode.IsNullOrEmpty())
+                exchangeSystemCode = "9000063";
             var fromCode = ConfigurationManager.AppSettings["exchangeBaseRegistryFromCode"];
             var toCode = ConfigurationManager.AppSettings["exchangeMpguToCode"];
             var keyRef = new Dictionary<long, int>();
