@@ -122,10 +122,14 @@ namespace RestChild.Web.Logic.AnalyticReport
                 get
                 {
                     return string.Concat(Applicant?.LastName,
+                                        " ",
                                         Applicant?.FirstName,
+                                        " ",
                                         Applicant?.MiddleName,
                                         Child?.LastName,
+                                        " ",
                                         Child?.FirstName,
+                                        " ",
                                         Child?.MiddleName);
                 }
             }
