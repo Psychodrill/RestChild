@@ -1858,7 +1858,7 @@ namespace RestChild.DAL.Configurations
                 {
                     Id = ++startIndex,
                     Code = AccessRightEnum.AnalyticReports.NotRespondedRequests,
-                    Name = "Отчет. Неудовлетворённые запросы"
+                    Name = "Отчет. Не отвеченные запросы"
                 },
                 new AccessRight
                 {
