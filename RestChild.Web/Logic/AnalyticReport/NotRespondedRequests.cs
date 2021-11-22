@@ -24,8 +24,28 @@ namespace RestChild.Web.Logic.AnalyticReport
         {
 
 
-            var applications = unitOfWork.GetSet<Request>().AsQueryable();
+            var applications = unitOfWork.GetSet<Request>().Where(r => r.IsDeleted == false).AsQueryable();
 
+            if (filter?.DateFormingBegin.HasValue ?? false)
+            {
+                applications = applications.Where(apps => apps.DateRequest >= filter.DateFormingBegin.Value);
+            }
+            else
+            {
+                //DateTime innerDate = new DateTime(DateTime.Now.Year, 1, 1);
+                int maxYear = applications.Max(x => x.TimeOfRest.Year);
+                applications = applications.Where(apps => apps.TimeOfRest.Year >= maxYear);
+            }
+            if (filter?.DateFormingEnd.HasValue ?? false)
+            {
+                applications = applications.Where(apps => apps.DateRequest <= filter.DateFormingEnd.Value);
+            }
+            else
+            {
+                int maxYear = applications.Max(x => x.TimeOfRest.Year);
+                applications = applications.Where(res => res.TimeOfRest.Year <= maxYear);
+            }
+            //var sf = applications.ToList();
             var requests = unitOfWork.GetSet<ExchangeBaseRegistry>().Where(row => row.ResponseGuid == null && (
                                                                                   row.ExchangeBaseRegistryTypeId == -1 || //Запрос наличия заключения ЦПМПК
                                                                                   row.ExchangeBaseRegistryTypeId == 10209 || //Запрос паспортного досье по СНИЛС
@@ -43,36 +63,26 @@ namespace RestChild.Web.Logic.AnalyticReport
             {
                 requests = requests.Where(row => row.ExchangeBaseRegistryTypeId == filter.ExchangeBaseRegistryTypeId);
             }
+            //var sdf = requests.ToList();
+            var applicants = applications.Select(app => app.Applicant).AsQueryable();
+            var childs = applications.SelectMany(ch => ch.Child).AsQueryable();
+
+            var attendants = applications.SelectMany(at => at.Attendant).AsQueryable();
+
+            ICollection<NotRespondedRequestsRow> resultsByApplicants = requests.Join(applications, ra => ra.Applicant.Id, a => a.Applicant.Id, (ra, a) => new NotRespondedRequestsRow { RequestId = a.Id, Child = null, Applicant = a.Applicant, RequestNumber = a.RequestNumber, TypeOfRest = a.TypeOfRest.Name, ExchangeBaseRegistryTypeName = ra.ExchangeBaseRegistryType.Name, RequestDateTime = a.DateRequest }).ToList();
+
+            //ICollection<NotRespondedRequestsRow> resultsByAgents = requests.Join(applications, ra => ra.Applicant.Id, a => a.Agent.Id, (ra, a) => new NotRespondedRequestsRow { RequestId = a.Id, Child = null, Applicant = a.Agent, RequestNumber = a.RequestNumber, TypeOfRest = a.TypeOfRest.Name, ExchangeBaseRegistryTypeName = ra.ExchangeBaseRegistryType.Name, RequestDateTime = a.DateRequest }).ToList();
+
+            ICollection<NotRespondedRequestsRow> resultsByAttendants = requests.Join(attendants, r => r.Applicant.Id, at => at.Id, (r, at) => new NotRespondedRequestsRow { RequestId = at.RequestId, Child = null, Applicant = at, RequestNumber = null, TypeOfRest = null, ExchangeBaseRegistryTypeName = r.ExchangeBaseRegistryType.Name, RequestDateTime = null })
+                                                                               .Join(applications, ra => ra.RequestId, a => a.Id, (ra, a) => new NotRespondedRequestsRow { RequestId = a.Id, Child = null, Applicant = ra.Applicant, RequestNumber = a.RequestNumber, TypeOfRest = a.TypeOfRest.Name, ExchangeBaseRegistryTypeName = ra.ExchangeBaseRegistryTypeName, RequestDateTime = a.DateRequest }).ToList();
+
+            ICollection<NotRespondedRequestsRow> resultsByChilds = requests.Join(childs, r => r.Child.Id, ch => ch.Id, (r, ch) => new NotRespondedRequestsRow { RequestId = ch.RequestId, Child = ch, Applicant = null, RequestNumber = null, TypeOfRest = null, ExchangeBaseRegistryTypeName = r.ExchangeBaseRegistryType.Name, RequestDateTime = null })
+                                                                           .Join(applications, ra => ra.RequestId, a => a.Id, (ra, a) => new NotRespondedRequestsRow { RequestId = a.Id, Child = ra.Child, Applicant = null, RequestNumber = a.RequestNumber, TypeOfRest = a.TypeOfRest.Name, ExchangeBaseRegistryTypeName = ra.ExchangeBaseRegistryTypeName, RequestDateTime = a.DateRequest }).ToList();
+
+            ICollection<NotRespondedRequestsRow> unionResults = resultsByApplicants.Union(resultsByAttendants).ToList();
 
 
-
-            var exUTS = unitOfWork.GetSet<ExchangeUTS>().Where(ex => requests.Any(r => r.ServiceNumber.Contains(ex.ServiceNumber))).AsQueryable();
-
-
-            var results = requests.Join(exUTS, re => re.ServiceNumber.Substring(0, 30), ex => ex.ServiceNumber, (re, ex) => new NotRespondedRequestsRow { RequestId = re.Id, Child = re.Child, Applicant = re.Applicant, RequestNumber = ex.ServiceNumber, TypeOfRest = null, ExchangeBaseRegistryTypeName = re.ExchangeBaseRegistryType.Name, RequestDateTime = null,TimeOfRest=null, ApplicationId = ex.RequestId })
-                                  .Join(applications, r => r.ApplicationId, a => a.Id, (r, a) => new NotRespondedRequestsRow { RequestId = r.RequestId, Child = r.Child, Applicant = r.Applicant, RequestNumber = a.RequestNumber, TypeOfRest = a.TypeOfRest.Name, ExchangeBaseRegistryTypeName = r.ExchangeBaseRegistryTypeName, RequestDateTime = a.DateRequest, TimeOfRest = a.TimeOfRest, ApplicationId=r.ApplicationId }).Distinct().ToList();
-
-
-            results.RemoveAll(x => x.TimeOfRest == null);//удаление записей с нарушенной целостностью данных
-            if (filter?.DateFormingBegin.HasValue ?? false)
-            {
-                results = results.Where(res => res.RequestDateTime >= filter.DateFormingBegin.Value).ToList();
-            }
-            else
-            {
-                //DateTime innerDate = new DateTime(DateTime.Now.Year, 1, 1);
-                int maxYear = applications.Max(x => x.TimeOfRest.Year);
-                results = results.Where(res => res.TimeOfRest.Year >= maxYear).ToList();
-            }
-            if (filter?.DateFormingEnd.HasValue ?? false)
-            {
-                results = results.Where(res => res.RequestDateTime <= filter.DateFormingEnd.Value).ToList();
-            }
-            else
-            {
-                int maxYear = applications.Max(x => x.TimeOfRest.Year);
-                results = results.Where(res => res.TimeOfRest.Year <= maxYear).ToList();
-            }
+            ICollection<NotRespondedRequestsRow> results = unionResults.Union(resultsByChilds).ToList();
 
 
             var columns = new List<ExcelColumn<NotRespondedRequestsRow>>
@@ -82,7 +92,7 @@ namespace RestChild.Web.Logic.AnalyticReport
                 new ExcelColumn<NotRespondedRequestsRow> {Title = "Цель обращения", Func = r => r.TypeOfRest},
                 new ExcelColumn<NotRespondedRequestsRow> {Title = "ФИО(того, на кого запрос)", Func = r => r.Names},
                 new ExcelColumn<NotRespondedRequestsRow> {Title = "Запрос", Func = r => r.ExchangeBaseRegistryTypeName},
-                new ExcelColumn<NotRespondedRequestsRow> {Title = "Дата запроса", Func = r => r.RequestDateTime},
+                new ExcelColumn<NotRespondedRequestsRow> {Title = "Дата заявления", Func = r => r.RequestDateTime},
 
 
             };
@@ -92,7 +102,7 @@ namespace RestChild.Web.Logic.AnalyticReport
 
         public class NotRespondedRequestsRow
         {
-            public long? ApplicationId { get; set; }
+            //public long? ApplicationId { get; set; }
             public long? RequestId { get; set; }
             public string RequestNumber { get; set; }
 
@@ -107,7 +117,6 @@ namespace RestChild.Web.Logic.AnalyticReport
                                         Applicant?.FirstName,
                                         " ",
                                         Applicant?.MiddleName,
-                                        ", ",
                                         Child?.LastName,
                                         " ",
                                         Child?.FirstName,
@@ -116,15 +125,16 @@ namespace RestChild.Web.Logic.AnalyticReport
                 }
             }
 
-            public Child Child {get; set;}
 
-            public Applicant Applicant {get; set;}
+            public Child Child { get; set; }
+
+            public Applicant Applicant { get; set; }
+
+            //public Agent Agent { get; set; }
 
             public string ExchangeBaseRegistryTypeName { get; set; }
 
             public DateTime? RequestDateTime { get; set; }
-                       
-            public TimeOfRest TimeOfRest{ get; set; }
 
         }
     }
