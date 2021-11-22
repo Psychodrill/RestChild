@@ -420,6 +420,7 @@ namespace RestChild.Web.Controllers.WebApi
         ///     Запрос явки заявителя
         /// </summary>
         /// <param name="requestId"></param>
+        /// <param name="plandate"></param>
         [HttpPost]
         [HttpGet]
         public void SendRequestToWaitApplicant(long requestId, string plandate = null)

@@ -1840,6 +1840,21 @@ namespace RestChild.Web.Controllers.WebApi
             }
         }
 
+        /// <summary>
+        ///     отправка проверки регистрации по паспорту
+        /// </summary>
+        /// 
+        //[HttpPost]
+        [Route("api/CheckRequestBrGetRegistrationDataByPassport")]
+        [HttpGet]
+        public void CheckRequestBrGetRegistrationDataByPassport(long requestId)
+        {
+            var req = UnitOfWork.GetById<Request>(requestId);
+
+
+            BrGetRegistrationDataByPassport(req);
+        }
+
 
     }
 }
