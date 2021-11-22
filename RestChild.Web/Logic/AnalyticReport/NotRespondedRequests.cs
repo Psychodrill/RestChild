@@ -12,13 +12,13 @@ namespace RestChild.Web.Logic.AnalyticReport
 {
 
     /// <summary>
-    /// Логика отчёта по неудовлетворённым запросам
+    /// Логика отчёта по не отвеченным запросам
     /// </summary>
     public static class NotRespondedRequests
     {
 
         /// <summary>
-        ///     Неудовлетворённые запросы
+        ///     Не отвеченные запросы  - так наркоманы назвали их в ТЗ
         /// </summary>
         public static BaseExcelTable GetNotRespondedRequests(this IUnitOfWork unitOfWork, AnalyticReportFilter filter)
         {

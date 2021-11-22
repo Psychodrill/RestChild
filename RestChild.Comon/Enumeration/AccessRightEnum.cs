@@ -784,7 +784,7 @@ namespace RestChild.Comon.Enumeration
 
             [Display(Name = "ЕГИССО")] public const string EGISO = "9F94888C-43F9-4422-A7A2-E013EE35849A";
 
-            [Display(Name = "Неудовлетворённые запросы")] public const string NotRespondedRequests = "EF04214C-276B-11EC-9621-0242AC130002";
+            [Display(Name = "Не отвеченные запросы")] public const string NotRespondedRequests = "EF04214C-276B-11EC-9621-0242AC130002";
         }
 
         /// <summary>
