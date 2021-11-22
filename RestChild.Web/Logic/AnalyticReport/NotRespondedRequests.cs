@@ -99,16 +99,6 @@ namespace RestChild.Web.Logic.AnalyticReport
             return new ExcelTable<NotRespondedRequestsRow>(columns, results.OrderBy(ss => ss.RequestNumber));
         }
 
-
-        public static NotRespondedRequestsRow SetParameters(NotRespondedRequestsRow row, Request request)
-        {
-            row.RequestNumber = request.RequestNumber;
-            row.TypeOfRest = request.TypeOfRest.Name;
-            row.RequestDateTime = request.DateRequest;
-
-            return row;
-        }
-
         public class NotRespondedRequestsRow
         {
             //public long? ApplicationId { get; set; }
