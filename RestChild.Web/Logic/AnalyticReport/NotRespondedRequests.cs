@@ -46,21 +46,21 @@ namespace RestChild.Web.Logic.AnalyticReport
                 applications = applications.Where(res => res.TimeOfRest.Year <= maxYear);
             }
             //var sf = applications.ToList();
-            var requests = unitOfWork.GetSet<ExchangeBaseRegistry>().Where(row => row.ResponseGuid == null && (
-                                                                                  row.ExchangeBaseRegistryTypeId == -1 || //Запрос наличия заключения ЦПМПК
-                                                                                  row.ExchangeBaseRegistryTypeId == 10209 || //Запрос паспортного досье по СНИЛС
-                                                                                  row.ExchangeBaseRegistryTypeId == 8255 ||// Запрос СНИЛС по ФИО
-                                                                                  row.ExchangeBaseRegistryTypeId == 260 ||//Наличие льготной категории
-                                                                                  row.ExchangeBaseRegistryTypeId == 10211 ||//Получение регистрации по месту жительства
-                                                                                  row.ExchangeBaseRegistryTypeId == 3091 ||//Предоставление из ЕГР ЗАГС сведений об актах гражданского состояния
-                                                                                  row.ExchangeBaseRegistryTypeId == 10214 ||//Проверка адреса регистрации ребенка (МВД)
-                                                                                  row.ExchangeBaseRegistryTypeId == -2 ||//Проверка законного представительства внутри АИС ДО
-                                                                                  row.ExchangeBaseRegistryTypeId == 22 ||//Проверка родства
-                                                                                  row.ExchangeBaseRegistryTypeId == 10244 ||// Проверка СНИЛС
-                                                                                  row.ExchangeBaseRegistryTypeId == 11827 ||//Предоставление из ЕГР ЗАГС сведений об актах гражданского состояния (11827)
-                                                                                  row.ExchangeBaseRegistryTypeId == 12150 || //Предоставление из ФГИС ФРИ выписки сведений об инвалиде(12150)
-                                                                                  row.ExchangeBaseRegistryTypeId == 2043 ||//Предоставление из ФРИ сведений об инвалидности
-                                                                                  row.ExchangeBaseRegistryTypeId == 2040))//Проверка СНИЛС
+            var requests = unitOfWork.GetSet<ExchangeBaseRegistry>()//.Where(row => row.ResponseGuid == null && (
+            //                                                                      row.ExchangeBaseRegistryTypeId == -1 || //Запрос наличия заключения ЦПМПК
+            //                                                                      row.ExchangeBaseRegistryTypeId == 10209 || //Запрос паспортного досье по СНИЛС
+            //                                                                      row.ExchangeBaseRegistryTypeId == 8255 ||// Запрос СНИЛС по ФИО
+            //                                                                      row.ExchangeBaseRegistryTypeId == 260 ||//Наличие льготной категории
+            //                                                                      row.ExchangeBaseRegistryTypeId == 10211 ||//Получение регистрации по месту жительства
+            //                                                                      row.ExchangeBaseRegistryTypeId == 3091 ||//Предоставление из ЕГР ЗАГС сведений об актах гражданского состояния
+            //                                                                      row.ExchangeBaseRegistryTypeId == 10214 ||//Проверка адреса регистрации ребенка (МВД)
+            //                                                                      row.ExchangeBaseRegistryTypeId == -2 ||//Проверка законного представительства внутри АИС ДО
+            //                                                                      row.ExchangeBaseRegistryTypeId == 22 ||//Проверка родства
+            //                                                                      row.ExchangeBaseRegistryTypeId == 10244 ||// Проверка СНИЛС
+            //                                                                      row.ExchangeBaseRegistryTypeId == 11827||//Предоставление из ЕГР ЗАГС сведений об актах гражданского состояния (11827)
+            //                                                                      row.ExchangeBaseRegistryTypeId == 12150|| //Предоставление из ФГИС ФРИ выписки сведений об инвалиде(12150)
+            //                                                                      row.ExchangeBaseRegistryTypeId == 2043||//Предоставление из ФРИ сведений об инвалидности
+            //                                                                      row.ExchangeBaseRegistryTypeId == 2040))//Проверка СНИЛС
                                                                                   .AsQueryable();
 
             if (filter?.ExchangeBaseRegistryTypeId.HasValue ?? false)
