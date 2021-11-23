@@ -18,7 +18,7 @@ namespace RestChild.Web.Logic.AnalyticReport
     {
 
         /// <summary>
-        ///     Не отвеченные запросы    ---название из ТЗ, так их хотят называть наркоманы
+        ///     Не отвеченные запросы из БР
         /// </summary>
         public static BaseExcelTable GetNotRespondedRequests(this IUnitOfWork unitOfWork, AnalyticReportFilter filter)
         {
