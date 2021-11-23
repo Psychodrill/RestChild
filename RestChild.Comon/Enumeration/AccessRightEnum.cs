@@ -8,14 +8,7 @@ namespace RestChild.Comon.Enumeration
         ///     комерческая часть
         /// </summary>
         public const string CommercialPart = "7A0D807F-FF62-4798-A4B7-93BF380BF2C1";
-        /// <summary>
-        ///     управление объектами отдыха
-        /// </summary>
-        public const string LeisureFacilitiesManagement = "18ECAhB0-4g06-4о81-8р51-B2C4C2535217";
-        /// <summary>
-        ///     управление пользователями
-        /// </summary>
-        public const string CampRegionsManage = "0A5CAhB0-4g06-4о81-8р51-7F449FCB753E";
+        
         /// <summary>
         ///     управление пользователями
         /// </summary>
@@ -789,7 +782,7 @@ namespace RestChild.Comon.Enumeration
 
             [Display(Name = "ЕГИССО")] public const string EGISO = "9F94888C-43F9-4422-A7A2-E013EE35849A";
 
-            [Display(Name = "Не отвеченные запросы")] public const string NotRespondedRequests = "EF04214C-276B-11EC-9621-0242AC130002";
+            [Display(Name = "Не отвеченные запросы из БР")] public const string NotRespondedRequests = "EF04214C-276B-11EC-9621-0242AC130002";
         }
 
         /// <summary>

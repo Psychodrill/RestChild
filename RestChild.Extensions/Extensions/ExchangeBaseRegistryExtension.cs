@@ -699,7 +699,7 @@ namespace RestChild.Extensions.Extensions
                                 //res.Approved = true;
                                 res.Approved = res.EGRZagzResponse?.СведОтветАГС[0]?.СведРегРожд[0]?.СвидетРожд?.Any(d =>
                                    ((string)d.Item)?.Trim().ToLower() == child.DocumentSeria?.Trim().ToLower()
-                                   && ((string)d.Item1)?.Trim().ToLower() == child.DocumentNumber?.Trim().ToLower());
+                                   && ((string)d.Item1)?.Trim().ToLower() == child.DocumentNumber?.Trim().ToLower()) ?? false;
                             }
                         }
                     }
