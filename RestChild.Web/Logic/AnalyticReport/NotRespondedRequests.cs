@@ -55,7 +55,11 @@ namespace RestChild.Web.Logic.AnalyticReport
                                                                                   row.ExchangeBaseRegistryTypeId == 10214 ||//Проверка адреса регистрации ребенка (МВД)
                                                                                   row.ExchangeBaseRegistryTypeId == -2 ||//Проверка законного представительства внутри АИС ДО
                                                                                   row.ExchangeBaseRegistryTypeId == 22 ||//Проверка родства
-                                                                                  row.ExchangeBaseRegistryTypeId == 10244))// Проверка СНИЛС
+                                                                                  row.ExchangeBaseRegistryTypeId == 10244 ||// Проверка СНИЛС
+                                                                                  row.ExchangeBaseRegistryTypeId == 11827||//Предоставление из ЕГР ЗАГС сведений об актах гражданского состояния (11827)
+                                                                                  row.ExchangeBaseRegistryTypeId == 12150|| //Предоставление из ФГИС ФРИ выписки сведений об инвалиде(12150)
+                                                                                  row.ExchangeBaseRegistryTypeId == 2043||//Предоставление из ФРИ сведений об инвалидности
+                                                                                  row.ExchangeBaseRegistryTypeId == 2040))//Проверка СНИЛС
                                                                                   .AsQueryable();
 
             if (filter?.ExchangeBaseRegistryTypeId.HasValue ?? false)
