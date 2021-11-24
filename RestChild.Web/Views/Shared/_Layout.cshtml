@@ -64,7 +64,7 @@
                 {
                     <li>@Html.ActionLink("Реестр заявлений", "RequestList", "FirstRequestCompany")</li>
                     <li>@Html.ActionLink("Межведомственные запросы", "List", "InteragencyRequest")</li>
-                    <li>@Html.ActionLink("Реестр отдыхающих", "PreRegisterList2", "FirstRequestCompany")</li>                    
+                    <li>@Html.ActionLink("Реестр отдыхающих", "PreRegisterList", "FirstRequestCompany")</li>                    
                     if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.TradeUnionList.View, AccessRightEnum.RetryRequestInBaseRegistry, AccessRightEnum.Limits.LimitToOiv, AccessRightEnum.Limits.LimitByOrganization, AccessRightEnum.Limits.LimitChildInOrganization }))
                     {
                         <li role="separator" class="divider"></li>
