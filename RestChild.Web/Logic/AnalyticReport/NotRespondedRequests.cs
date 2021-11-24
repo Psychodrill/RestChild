@@ -38,7 +38,7 @@ namespace RestChild.Web.Logic.AnalyticReport
             }
             if (filter?.DateFormingEnd.HasValue ?? false)
             {
-                applications = applications.Where(apps => apps.DateRequest <= filter.DateFormingEnd.Value);
+                applications = applications.Where(apps => apps.DateRequest <= filter.DateFormingEnd.Value.AddDays(1));
             }
             else
             {
@@ -47,7 +47,7 @@ namespace RestChild.Web.Logic.AnalyticReport
             }
             //var sf = applications.ToList();
             var requests = unitOfWork.GetSet<ExchangeBaseRegistry>().Where(row => row.ResponseGuid == null &&
-                                                                                  row.NotActual == false)
+                                                                                  row.NotActual==false)
             //                                                                      row.ExchangeBaseRegistryTypeId == -1 || //Запрос наличия заключения ЦПМПК
             //                                                                      row.ExchangeBaseRegistryTypeId == 10209 || //Запрос паспортного досье по СНИЛС
             //                                                                      row.ExchangeBaseRegistryTypeId == 8255 ||// Запрос СНИЛС по ФИО
