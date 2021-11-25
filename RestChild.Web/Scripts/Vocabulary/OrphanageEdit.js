@@ -46,10 +46,10 @@ $(function () {
             var name = $(this).attr("name");
             var id = $(this).attr("id");
             if ($(this).attr("name") !== undefined) {
-                $(this).attr("name", $(this).attr("name").replace(/OrphanageAddress\[(.*?)\]/g, "OrphanageAddress[" + newNumber + "]"));
+                $(this).attr("name", $(this).attr("name").replace(/OrphanageAddress\[(.*?)\]/g, "OrphanageAddress[".concat(newNumber, "]")));
             }
             if ($(this).attr("id") !== undefined) {
-                $(this).attr("id", $(this).attr("id").replace(/OrphanageAddress\_(.*?)\_{2}/g, "OrphanageAddress_" + newNumber + "__"));
+                $(this).attr("id", $(this).attr("id").replace(/OrphanageAddress\_(.*?)\_{2}/g, "OrphanageAddress_".concat(newNumber, "__")));
             }
         });
     }

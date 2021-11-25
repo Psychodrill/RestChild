@@ -38,11 +38,11 @@ $(function () {
     var fillRow = function (row, data) {
         if (!data)
             return;
-        row.find(".cell-hprice-ages").text("\u0421 " + data.ageFrom + " \u0434\u043E " + data.agtTo);
+        row.find(".cell-hprice-ages").text("\u0421 ".concat(data.ageFrom, " \u0434\u043E ").concat(data.agtTo));
         row.find(".cell-hprice-room").text(data.room);
         row.find(".cell-hprice-type").text(data.type);
         row.find(".cell-hprice-food").text(data.food);
-        row.find(".cell-hprice-dates").text(data.dateFrom + " - " + data.dateTo);
+        row.find(".cell-hprice-dates").text("".concat(data.dateFrom, " - ").concat(data.dateTo));
         row.find(".cell-hprice-price").text(data.price);
         row.find(".cell-hprice-intprice").text(data.priceInternal);
         var json = JSON.stringify(data);

@@ -70,7 +70,7 @@ $(function () {
                     changed = false;
                     var tval = $("#Time").val();
                     if (tval) {
-                        var dvs = $(".grid").find(".visitGrid-time").find("div[s-time='" + tval + "']");
+                        var dvs = $(".grid").find(".visitGrid-time").find("div[s-time='".concat(tval, "']"));
                         dvs.addClass("btn-success");
                     }
                 }

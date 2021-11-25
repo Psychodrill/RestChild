@@ -1,4 +1,5 @@
 var typeOfCampOptions = [];
+var typeOfTransportOptions = [];
 var inited = false;
 var attendantFn = doT.template($('#attendantTemplate').html());
 var CompensationEnum = -2;
@@ -412,8 +413,19 @@ window.onload = function () {
         var campName = $(option).text();
         typeOfCampOptions.push({ id: campId, text: campName });
     });
+    $("select.priorityTypeOfTransport").select2().find("option").each(function (i, option) {
+        var typeOfTransportId = $(option).val();
+        var typeOfTransportName = $(option).text();
+        typeOfTransportOptions.push({ id: typeOfTransportId, text: typeOfTransportName });
+    });
     ToggleTypeOfTransportBlock();
     ToggleTypeOfCampBlock();
+    // небходимо для скрытия лишних блоков при копировании заявления
+    var buf = $('#mainPlaces').select2('val');
+    $('#mainPlaces').val('15');
+    $('#mainPlaces').trigger("change");
+    $('#mainPlaces').val(buf);
+    $('#mainPlaces').trigger("change");
 };
 function attendantChangeProxy($e) {
     var pb = $e.closest('fieldset.attendant-panel').find('.proxy-block');
@@ -770,13 +782,17 @@ $(function () {
     // при выборе приоритетным наземный транспорт дополнительный воздушный
     function changeAdditionalTransport(target) {
         var additionalTransport = $(target).closest('fieldset').find('.additionalTypeOfTransport');
+        var $typeOfadditional = $("select.additionalTypeOfTransport");
         if (target.selectedIndex == 2) {
+            additionalTransport.find("option[value=2]").remove();
             $('.additionalTypeOfTransport').select2('val', 1);
-            additionalTransport.attr('disabled', 'disabled');
         }
         else {
+            var optionToAdd = typeOfTransportOptions.filter(function (obj) { return obj.id == 2; })[0];
+            if (optionToAdd && additionalTransport[1].childElementCount < 3) {
+                $typeOfadditional.append(new Option(optionToAdd.text, optionToAdd.id, false, false));
+            }
             $('.additionalTypeOfTransport').select2('val', null);
-            additionalTransport.removeAttr('disabled');
         }
     }
     function changeTypeOfRest(target) {
@@ -1745,7 +1761,7 @@ $('.copy-request').on('click', function (e) {
     arr = [];
     var $copyOptions = $("#copyOptions");
     $copyOptions.empty();
-    $('#copyRequestModal').modal('show');
+    //$('#copyRequestModal').modal('show');
     var nodes = $("#scrollspy").html();
     $.each($(nodes).find("li").not(".hidden").find("a").not("li ul li a"), function (i, elem) {
         var ob = {};
@@ -1807,7 +1823,7 @@ $('.copy-request').on('click', function (e) {
 $("#submitRequestCopy").on('click', function (e) {
     var data = {};
     data["RequestId"] = $(".requestToCopy").attr("Id");
-    alert("Sending...");
+    // alert("Sending...");
     $.each(arr, function (i, val) {
         var dictVal = mapperDict[val.parent];
         if (dictVal != undefined) {
@@ -1832,13 +1848,13 @@ $("#submitRequestCopy").on('click', function (e) {
         }
     });
     $.ajax({
-        url: rootPath + 'Api/WebFirstRequestCompany/CopyRequestDataToNewRequest',
+        url: rootPath + 'FirstRequestCompany/CopyRequest',
         type: 'POST',
         data: JSON.stringify(data),
         dataType: "json",
         contentType: 'application/json; charset=utf-8',
-        success: function (copiedRequestId) {
-            window.location.replace("/FirstRequestCompany/RequestEdit/" + copiedRequestId + "");
+        success: function (res) {
+            window.location.href = res.newUrl;
         }
     });
 });
