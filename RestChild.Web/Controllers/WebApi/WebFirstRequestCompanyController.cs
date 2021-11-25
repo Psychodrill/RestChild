@@ -19,6 +19,7 @@ using RestChild.Comon.Enumeration;
 using RestChild.DAL.RepositoryExtensions;
 using RestChild.Domain;
 using RestChild.Extensions.Filter;
+using RestChild.Extensions.Extensions;
 using RestChild.Extensions.Services;
 using RestChild.Web.Common;
 using RestChild.Web.CshedService;
@@ -1840,8 +1841,9 @@ namespace RestChild.Web.Controllers.WebApi
             if (search.BaseRegistryPreferentialCategoryCheck.HasValue)
             {
                 query = query.Where(r => r.Child.Any() && r.Child.All(c => c.BaseRegistryInfo.Any(bri =>
-                    bri.ExchangeBaseRegistryTypeId ==
-                    (long)ExchangeBaseRegistryTypeEnum.Benefit
+                    (bri.ExchangeBaseRegistryTypeId == (long)ExchangeBaseRegistryTypeEnum.Benefit
+                    || bri.ExchangeBaseRegistryTypeId == (long)ExchangeBaseRegistryTypeEnum.CpmpkExchange
+                    || bri.ExchangeBaseRegistryTypeId == (long)ExchangeBaseRegistryTypeEnum.GetFGISFRI)
                     && bri.IsProcessed
                     && !bri.NotActual
                     && bri.Success == search.BaseRegistryPreferentialCategoryCheck.Value)));
@@ -1884,8 +1886,10 @@ namespace RestChild.Web.Controllers.WebApi
             if (search.BaseRegistryRelationshipCheck.HasValue)
             {
                 query = query.Where(r => r.Child.Any() && r.Child.All(c => c.BaseRegistryInfo.Any(bri =>
-                    bri.ExchangeBaseRegistryTypeId ==
-                    (long)ExchangeBaseRegistryTypeEnum.Relationship
+                    (bri.ExchangeBaseRegistryTypeId ==
+                    (long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS
+                    || bri.ExchangeBaseRegistryTypeId ==
+                    (long)ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck)
                     && bri.IsProcessed
                     && !bri.NotActual
                     && bri.Success == search.BaseRegistryRelationshipCheck.Value)));
