@@ -14,7 +14,7 @@ declare var placesOfRestRequiringTransportSelection;
 
 declare var typeOfRestRequiringCampTypeSelection;
 declare var isCamping;
-var typeOfCampOptions=[];
+var typeOfCampOptions = [];
 
 let inited = false;
 let attendantFn = doT.template($('#attendantTemplate').html());
@@ -87,7 +87,7 @@ function bindAutoFill(self, name) {
         if (name !== 'Applicant') {
             $('#' + name + 'Ref' + this.name.match(regExp)[0]).text(string);
             $('#' + name + 'Title' + this.name.match(regExp)[0]).text(string);
-            $('input.child-attendant-fio[value="' + guid + '"]').select2("data", {id: guid, text: getFio(guid)});
+            $('input.child-attendant-fio[value="' + guid + '"]').select2("data", { id: guid, text: getFio(guid) });
         }
 
         if (name === 'Applicant' || name === 'Attendant') {
@@ -113,18 +113,18 @@ function addElement(name, templateFn) {
     $(document).trigger("AddNewChild", model);
     changeGuids($item, name);
     try {
-        $('.datepicker-my').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY', maxDate: new Date()});
+        $('.datepicker-my').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY', maxDate: new Date() });
 
     } catch (e) {
     }
 
     try {
-        $('.datepicker-future').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY', minDate: new Date()});
+        $('.datepicker-future').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY', minDate: new Date() });
     } catch (e) {
     }
 
     try {
-        $('.datepicker-general').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY'});
+        $('.datepicker-general').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
     } catch (e) {
     }
 
@@ -249,7 +249,7 @@ function removeInformationVoucherElement(self) {
                     changeIndexInNamesVoucher($('#InformationVoucherDataRows'), 'InformationVouchers');
                     $('input.child-voucher-name').each((i, e) => {
                         if ($(e).val() == id) {
-                            $(e).select2('data', {id: '', text: '-- Не выбрано --'});
+                            $(e).select2('data', { id: '', text: '-- Не выбрано --' });
                         }
                     });
 
@@ -304,7 +304,7 @@ function removeAttendantElement(self) {
     removeElementWithConfirmation(self, 'Attendant', () => {
         let id = $(self).closest('.request-block').find('input.id').val();
         let guid = $(self).closest('.request-block').find('input.guid').val();
-        $('input.child-attendant-fio[value="' + guid + '"]').select2('data', {id: '', text: '-- Не выбрано --'});
+        $('input.child-attendant-fio[value="' + guid + '"]').select2('data', { id: '', text: '-- Не выбрано --' });
         lockAttendantAddButton();
         $('#AddonServicesTable tbody').find('tr:has(.service-link-applicant-id[value="' + id + '"])').remove();
         if ($('#AddonServicesTable tbody tr').length === 0) {
@@ -322,12 +322,12 @@ function configDropdowns() {
         $e.select2({
             initSelection: (element, callback) => {
                 if (element.val() == '')
-                    callback({id: '', text: '-- Не выбрано --'});
+                    callback({ id: '', text: '-- Не выбрано --' });
                 else
-                    callback({id: element.val(), text: getFio(element.val())});
+                    callback({ id: element.val(), text: getFio(element.val()) });
             },
             query: (query) => {
-                let result = [{id: '', text: '-- Не выбрано --'}];
+                let result = [{ id: '', text: '-- Не выбрано --' }];
                 let guids = $('.guid');
                 guids.each((i) => {
 
@@ -359,12 +359,12 @@ function configDropdowns() {
     $('.child-voucher-name').not('.select2-container, .inited').addClass('inited').select2({
         initSelection: (element, callback) => {
             if (element.val() == '')
-                callback({id: '', text: '-- Не выбрано --'});
+                callback({ id: '', text: '-- Не выбрано --' });
             else
-                callback({id: element.val(), text: getVoucherInfo(element.val())});
+                callback({ id: element.val(), text: getVoucherInfo(element.val()) });
         },
         query: (query) => {
-            let result = [{id: '', text: '-- Не выбрано --'}];
+            let result = [{ id: '', text: '-- Не выбрано --' }];
             let guids = $('#InformationVoucherDataRows .id');
             guids.each((i) => {
                 let guid = $(guids[i]);
@@ -384,7 +384,7 @@ function configDropdowns() {
 
     $('.school-select2').not('.select2-container, .inited').addClass('inited').select2({
         initSelection: (element, callback) => {
-            callback({id: element.attr('data-default-id'), text: element.attr('data-default-text')});
+            callback({ id: element.attr('data-default-id'), text: element.attr('data-default-text') });
         },
         minimumInputLength: 1,
         ajax: {
@@ -397,10 +397,10 @@ function configDropdowns() {
                 };
             },
             results: (data) => {
-                let result = [{id: '', text: '-- Не выбрано --'}];
+                let result = [{ id: '', text: '-- Не выбрано --' }];
                 if (data) {
                     for (let i = 0; i < data.length; i++) {
-                        result.push({id: data[i].id, text: data[i].name});
+                        result.push({ id: data[i].id, text: data[i].name });
                     }
                 }
 
@@ -475,14 +475,21 @@ window.onload = () => {
         }
     })
 
-    $("select.typeOfCamp").select2().find("option").each(function (i, option){
+    $("select.typeOfCamp").select2().find("option").each(function (i, option) {
         var campId = $(option).val();
-        var campName = $(option).text() ;
-        typeOfCampOptions.push({id: campId, text: campName})
+        var campName = $(option).text();
+        typeOfCampOptions.push({ id: campId, text: campName })
     })
 
     ToggleTypeOfTransportBlock();
     ToggleTypeOfCampBlock();
+
+    // небходимо для скрытия лишних блоков при копировании заявления
+    var buf = $('#mainPlaces').select2('val')
+    $('#mainPlaces').val('15');
+    $('#mainPlaces').trigger("change");
+    $('#mainPlaces').val(buf);
+    $('#mainPlaces').trigger("change");
 };
 
 function attendantChangeProxy($e) {
@@ -538,10 +545,10 @@ $(() => {
     let voucherAttendantFn = doT.template($('#voucherTemplateAttendant').html());
     let fileRowFn = doT.template($('#fileRowTemplate').html());
 
-    $('.datepicker-general').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY'});
-    $('.datepicker-my').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY', maxDate: new Date()});
-    $('.datepicker-future').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY', minDate: new Date()});
-    $('.datetimepicker').datetimepicker({showTodayButton: true, maxDate: new Date()});
+    $('.datepicker-general').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
+    $('.datepicker-my').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY', maxDate: new Date() });
+    $('.datepicker-future').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY', minDate: new Date() });
+    $('.datetimepicker').datetimepicker({ showTodayButton: true, maxDate: new Date() });
 
 
     $('#Attendants').on('change',
@@ -688,9 +695,9 @@ $(() => {
         $subres.select2({
             initSelection: (element, callback) => {
                 if ($subres.val() === '') {
-                    callback({id: '', text: '-- Не выбрано --'});
+                    callback({ id: '', text: '-- Не выбрано --' });
                 } else {
-                    callback({id: $subres.val(), text: $subres.attr('titleText')});
+                    callback({ id: $subres.val(), text: $subres.attr('titleText') });
                 }
             },
             minimumInputLength: 0,
@@ -704,7 +711,7 @@ $(() => {
                     };
                 },
                 results: (data) => {
-                    let results = [{id: '', text: '-- Не выбрано --'}];
+                    let results = [{ id: '', text: '-- Не выбрано --' }];
 
                     for (let j = 0; j < data.length; j++) {
                         results.push({
@@ -723,7 +730,7 @@ $(() => {
 
         $restriction.on('change', () => {
             let val = $restriction.select2('val');
-            $subres.select2('data', {id: '', text: '-- Не выбрано --'});
+            $subres.select2('data', { id: '', text: '-- Не выбрано --' });
             if (containsInArray(typeOfRestrictionSubs, parseInt(val))) {
                 $div.removeClass('hidden');
             } else {
@@ -887,15 +894,13 @@ $(() => {
     function changeAdditionalTransport(target) {
 
         let additionalTransport = $(target).closest('fieldset').find('.additionalTypeOfTransport');
-        if (target.selectedIndex == 2)
-        {
+        if (target.selectedIndex == 2) {
 
             $('.additionalTypeOfTransport').select2('val', 1);
 
             additionalTransport.attr('disabled', 'disabled');
         }
-        else
-        {
+        else {
             $('.additionalTypeOfTransport').select2('val', null);
             additionalTransport.removeAttr('disabled');
         }
@@ -926,7 +931,7 @@ $(() => {
             },
             success: (data) => {
                 let res = {
-                    data: [{id: 0, name: '-- Не выбрано --'}].concat(data)
+                    data: [{ id: 0, name: '-- Не выбрано --' }].concat(data)
                 };
 
                 htmlBenefitTypeDropdown = timeOfRestFn(res);
@@ -1435,7 +1440,7 @@ $(() => {
             (e) => {
                 let guid = $(e.target).closest('.request-block').find('.guid').val();
 
-                $('input.child-attendant-fio[value="' + guid + '"]').select2("data", {id: guid, text: getFio(guid)});
+                $('input.child-attendant-fio[value="' + guid + '"]').select2("data", { id: guid, text: getFio(guid) });
             });
 
     $('.comment-button').click(() => {
@@ -1495,10 +1500,10 @@ $(() => {
                 regex: '[a-zA-Z]{1,7}-[а-яА-Я][а-яА-Я]',
                 clearIncomplete: true
             });
-            $fieldset.find('.input-mask-passport-number').inputmask('999999', {clearIncomplete: true});
+            $fieldset.find('.input-mask-passport-number').inputmask('999999', { clearIncomplete: true });
         } else {
-            $fieldset.find('.input-mask-passport-series').inputmask('Regex', {regex: '.*'});
-            $fieldset.find('.input-mask-passport-number').inputmask('Regex', {regex: '.*'});
+            $fieldset.find('.input-mask-passport-series').inputmask('Regex', { regex: '.*' });
+            $fieldset.find('.input-mask-passport-number').inputmask('Regex', { regex: '.*' });
         }
 
         if ($item.val() !== '22' && $item.val() !== '23' && $('#isFirstCompany').val() === 'False') {
@@ -1516,7 +1521,7 @@ $(() => {
         let text = $item.text();
         let $fieldset = self.closest('fieldset');
         if (text === 'Паспорт гражданина РФ' || text === 'Паспорт РФ') {
-            $fieldset.find('.input-mask-cert-series').inputmask('9999', {placeholder: "сссс", clearIncomplete: true});
+            $fieldset.find('.input-mask-cert-series').inputmask('9999', { placeholder: "сссс", clearIncomplete: true });
             $fieldset.find('.input-mask-cert-number').inputmask('999999', {
                 placeholder: "нннннн",
                 clearIncomplete: true
@@ -1526,10 +1531,10 @@ $(() => {
                 regex: '[a-zA-Z]{1,7}-[а-яА-Я][а-яА-Я]',
                 clearIncomplete: true
             });
-            $fieldset.find('.input-mask-cert-number').inputmask('999999', {clearIncomplete: true});
+            $fieldset.find('.input-mask-cert-number').inputmask('999999', { clearIncomplete: true });
         } else {
-            $fieldset.find('.input-mask-cert-series').inputmask('Regex', {regex: '.*'});
-            $fieldset.find('.input-mask-cert-number').inputmask('Regex', {regex: '.*'});
+            $fieldset.find('.input-mask-cert-series').inputmask('Regex', { regex: '.*' });
+            $fieldset.find('.input-mask-cert-number').inputmask('Regex', { regex: '.*' });
         }
     }
 
@@ -1558,17 +1563,17 @@ $(() => {
 
     $typeOfCamp.on("change", function () {
 
-        if($(this).select2('val') == isCamping){
+        if ($(this).select2('val') == isCamping) {
             $typeOfCampAddon.select2().find("option[value=" + isCamping + "]").remove()
-            $typeOfCampAddon.select2("val","-1")
+            $typeOfCampAddon.select2("val", "-1")
         }
-        else{
-            if($typeOfCampAddon.find("option[value=" + isCamping + "]").length == 0){
+        else {
+            if ($typeOfCampAddon.find("option[value=" + isCamping + "]").length == 0) {
                 var optionToAdd = typeOfCampOptions.filter(obj => obj.id == isCamping)[0];
-                if (optionToAdd){
+                if (optionToAdd) {
                     $typeOfCampAddon.append(new Option(optionToAdd.text, optionToAdd.id, false, false))
                 }
-                $typeOfCampAddon.select2("val","-1")
+                $typeOfCampAddon.select2("val", "-1")
             }
         }
     });
@@ -1745,9 +1750,9 @@ $(() => {
                     location.reload();
                 }
             }).fail((msg) => {
-            $(".ReplacingAccompanyErr").html("Ошибка при выполнении запроса");
-            $(".attendantmodalsave").prop("disabled", false)
-        });
+                $(".ReplacingAccompanyErr").html("Ошибка при выполнении запроса");
+                $(".attendantmodalsave").prop("disabled", false)
+            });
     });
 });
 
@@ -1786,18 +1791,18 @@ function AddAttendantPopup($item) {
     });
 
     try {
-        $('.datepicker-my').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY', maxDate: new Date()});
+        $('.datepicker-my').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY', maxDate: new Date() });
 
     } catch (e) {
     }
 
     try {
-        $('.datepicker-future').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY', minDate: new Date()});
+        $('.datepicker-future').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY', minDate: new Date() });
     } catch (e) {
     }
 
     try {
-        $('.datepicker-general').datetimepicker({showTodayButton: true, format: 'DD.MM.YYYY'});
+        $('.datepicker-general').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
     } catch (e) {
     }
 
@@ -1903,7 +1908,7 @@ function confirmButtonWithDecline(buttonName, actionCode, statusId) {
         title: 'Подтвердить действие',
         message: () => {
             let fn = doT.template($("#declineReasons" + statusId).html());
-            $content = $(fn({name: "Вы действительно хотите " + buttonName.toLowerCase() + '?'}));
+            $content = $(fn({ name: "Вы действительно хотите " + buttonName.toLowerCase() + '?' }));
             $content.find('.declineReasonsSelect').select2({
                 width: 'copy',
                 formatResult: formatDecline,
@@ -1942,6 +1947,108 @@ function confirmButtonWithDecline(buttonName, actionCode, statusId) {
 
 var arr;
 
+$('.copy-request').on('click', function (e) {
+    arr = [];
+    var $copyOptions = $("#copyOptions");
+    $copyOptions.empty();
+    //$('#copyRequestModal').modal('show');
+    var nodes = $("#scrollspy").html();
+    $.each($(nodes).find("li").not(".hidden").find("a").not("li ul li a"), function (i, elem) {
+        var ob = {};
+        ob["parent"] = elem.getAttribute("href");
+        ob["children"] = [];
+        if (ob["parent"] == "#ChildsReference") {
+            $.each($(".childToCopy"), function (i, val) {
+                ob["children"].push(val);
+            });
+        }
+        if (ob["parent"] == "#AttendantsReference") {
+            $.each($(".attendantToCopy"), function (i, val) {
+                ob["children"].push(val);
+            });
+        }
+        arr.push(ob);
+    });
+    $copyOptions.append("<ul id='mainList'></ul>");
+    $.each(arr, function (i, val) {
+        var key = val["parent"];
+        var children;
+        children = val["children"].length > 0 ? val["children"] : "";
+        var cond = false;
+        var childrenHtml = "";
+        if (children.length > 0) {
+            cond = true;
+            childrenHtml += "<ul>";
+            $.each(children, function (i, val) {
+                childrenHtml +=
+                    "<li><div class='checkbox'><label>" +
+                    "<input id=" + (val.getAttribute("Id")) + " class='listItem' onclick='CheckHandler(event, 0)' type='checkbox' value>" +
+                    "<input id=" + (val.getAttribute("Id")) + " class='listItem' type='hidden' value='false'>" +
+                    $(val).val() + "</label></div></li>";
+            });
+            childrenHtml += "</ul>";
+        }
+        var html;
+        if (mapperDict[key].blocked != null) {
+            html =
+                "<li><div class='checkbox'><label name=" + key + ">" +
+                "<input disabled name=" + mapperDict[key].prop + " type='checkbox' value>" +
+                "<input disabled name=" + mapperDict[key].prop + " type='hidden' value='false'>" +
+                mapperDict[key].text +
+                (cond ? childrenHtml : "") +
+                "</label></div></li>";
+        }
+        else {
+            html =
+                "<li><div class='checkbox'><label name=" + key + ">" +
+                "<input name=" + mapperDict[key].prop + " onclick='CheckHandler(event, 1)' type='checkbox' value>" +
+                "<input name=" + mapperDict[key].prop + " type='hidden' value='false'>" +
+                mapperDict[key].text +
+                (cond ? childrenHtml : "") +
+                "</label></div></li>";
+        }
+        $("#mainList").append(html);
+    });
+});
+$("#submitRequestCopy").on('click', function (e) {
+    var data = {};
+    data["RequestId"] = $(".requestToCopy").attr("Id");
+   // alert("Sending...");
+    $.each(arr, function (i, val) {
+        var dictVal = mapperDict[val.parent];
+        if (dictVal != undefined) {
+            var prop = dictVal.prop;
+            if (prop != undefined)
+                data[prop] = $("#mainList").find("input[name=" + dictVal.prop + "]").prop('checked');
+            if (dictVal.list != undefined) {
+                var listName = dictVal.list;
+                if (listName == "AttendantsIds") {
+                    data[listName] = [];
+                    $.each($("#mainList").find("label[name='#AttendantsReference']").find(".listItem:checked"), function (i, val) {
+                        data[listName].push($(val).attr("Id"));
+                    });
+                }
+                if (listName == "ChildrenIds") {
+                    data[listName] = [];
+                    $.each($("#mainList").find("label[name='#ChildsReference']").find(".listItem:checked"), function (i, val) {
+                        data[listName].push($(val).attr("Id"));
+                    });
+                }
+            }
+        }
+    });
+    $.ajax({
+        url: rootPath + 'FirstRequestCompany/CopyRequest',
+        type: 'POST',
+        data: JSON.stringify(data),
+        dataType: "json",
+        contentType: 'application/json; charset=utf-8',
+        success: function (res) {
+            window.location.href = res.newUrl;
+        }
+    });
+});
+
 function CheckHandler(event, isParentNode) {
     var src = event.target;
     var cond = $(src).prop("checked");
@@ -1968,13 +2075,13 @@ function CheckHandler(event, isParentNode) {
 
 function SelectAll() {
     var cond = $("[name='selectAll']").prop("checked");
-        if (cond) {
-            $.each($("#copyRequestModal").find("[type='checkbox']").not(":disabled"), function (i, val) {
-                $(val).prop("checked", true);
-            });
-       
+    if (cond) {
+        $.each($("#copyRequestModal").find("[type='checkbox']").not(":disabled"), function (i, val) {
+            $(val).prop("checked", true);
+        });
+
     } else {
-            $.each($("#copyRequestModal").find("[type='checkbox']").not(":disabled"), function (i, val) {
+        $.each($("#copyRequestModal").find("[type='checkbox']").not(":disabled"), function (i, val) {
             $(val).prop("checked", false);
         })
     }
@@ -1983,22 +2090,22 @@ function SelectAll() {
 
 
 const mapperDict = {
-    "#GeneralInfo": {text: "Общие сведения", prop: "TransferGeneralData"},
-    "#TypeAndTime": {text: "Цель обращения и время отдыха", prop: "TransferTargetAndTimeOfRestData"},
-    "#PlaceRest": {text: "Место отдыха", blocked: "true"},
-    "#Places": {text: "Размещение", blocked: "true"},
-    "#Applicant": {text: "Сведения о заявителе", prop: "TransferApplicantData"},
-    "#Agent": {text: "Сведения о представителе заявителя", prop: "TransferAgentData"},
-    "#AttendantsReference": {text: "Сведения о сопровождающих", prop: "TransferAttendantData", list: "AttendantsIds"},
-    "#InformationVoucher": {text: "Путевки", blocked: "true"},
-    "#ChildsReference": {text: "Сведения о детях", prop: "TransferChildData", list: "ChildrenIds"},
-    "#parentIvalid": {text: "Сведения о родителе-инвалиде", blocked: "true"},
-    "#Bank": {text: "Банковские реквизиты", prop: "TransferBankData"},
-    "#ChildrenRequests": {text: "Сведения о созданных заявлениях", blocked: "true"},
-    "#ParentRequest": {text: "Сведения о заявлении на основе которого выдано текущее", blocked: "true"},
-    "#RequestCertificates": {text: "Сведения о погашенном сертификате", blocked: "true"},
-    "#FileReference": {text: "Документы", prop: "TransferFilesData"},
-    "#TypeOfTransport": {text: "Тип транспорта", prop: "TransferTypeOfTransportData", blocked: "true"},
-    "#TypeOfCamp": {text: "Тип лагеря", prop: "TransferTypeOfCampData"},
+    "#GeneralInfo": { text: "Общие сведения", prop: "TransferGeneralData" },
+    "#TypeAndTime": { text: "Цель обращения и время отдыха", prop: "TransferTargetAndTimeOfRestData" },
+    "#PlaceRest": { text: "Место отдыха", blocked: "true" },
+    "#Places": { text: "Размещение", blocked: "true" },
+    "#Applicant": { text: "Сведения о заявителе", prop: "TransferApplicantData" },
+    "#Agent": { text: "Сведения о представителе заявителя", prop: "TransferAgentData" },
+    "#AttendantsReference": { text: "Сведения о сопровождающих", prop: "TransferAttendantData", list: "AttendantsIds" },
+    "#InformationVoucher": { text: "Путевки", blocked: "true" },
+    "#ChildsReference": { text: "Сведения о детях", prop: "TransferChildData", list: "ChildrenIds" },
+    "#parentIvalid": { text: "Сведения о родителе-инвалиде", blocked: "true" },
+    "#Bank": { text: "Банковские реквизиты", prop: "TransferBankData" },
+    "#ChildrenRequests": { text: "Сведения о созданных заявлениях", blocked: "true" },
+    "#ParentRequest": { text: "Сведения о заявлении на основе которого выдано текущее", blocked: "true" },
+    "#RequestCertificates": { text: "Сведения о погашенном сертификате", blocked: "true" },
+    "#FileReference": { text: "Документы", prop: "TransferFilesData" },
+    "#TypeOfTransport": { text: "Тип транспорта", prop: "TransferTypeOfTransportData", blocked: "true" },
+    "#TypeOfCamp": { text: "Тип лагеря", prop: "TransferTypeOfCampData" },
 
 }
