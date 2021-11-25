@@ -23,6 +23,7 @@ namespace RestChild.Web.Logic.AnalyticReport
         public static BaseExcelTable GetNotRespondedRequests(this IUnitOfWork unitOfWork, AnalyticReportFilter filter)
         {
 
+            filter.DateFormingEnd = filter?.DateFormingEnd?.AddDays(1d);
             var applications = unitOfWork.GetSet<Request>().Where(r=>r.IsDeleted==false&&
                                                                       r.StatusId==1050&&
                                                                       r.StatusId ==1055).AsQueryable();
