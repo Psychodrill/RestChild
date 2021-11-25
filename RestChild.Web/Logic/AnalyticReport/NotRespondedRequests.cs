@@ -26,8 +26,8 @@ namespace RestChild.Web.Logic.AnalyticReport
             filter.DateFormingEnd = filter?.DateFormingEnd?.AddDays(1d);
 
             var applications = unitOfWork.GetSet<Request>().Where(r => r.IsDeleted == false&&
-                                                                        r.StatusId==1050&&
-                                                                        r.StatusId==1055).AsQueryable();
+                                                                        (r.StatusId==1050||
+                                                                        r.StatusId==1055)).AsQueryable();
 
             if (filter?.DateFormingBegin.HasValue ?? false)
             {
