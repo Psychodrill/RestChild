@@ -264,10 +264,10 @@ namespace RestChild.Booking.Logic.Extensions
             }
 
             // Отложенная отправка статуса 1080
-            if (statusId == 1080 && !planDate.HasValue)
-            {
-                planDate = DateTime.Now.AddDays(2);
-            }
+            //if (statusId == 1080 && !planDate.HasValue)
+            //{
+            //    planDate = DateTime.Now.AddDays(2);
+            //}
 
             var exchangeSystemCode = ConfigurationManager.AppSettings["exchangeSystemCode"] ?? "9000063";
             //очередной костыль для невнятной проблемы с пропадающим систем кодом

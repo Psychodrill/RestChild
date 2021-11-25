@@ -281,7 +281,7 @@ namespace RestChild.Extensions.Extensions
                 case ExchangeBaseRegistryTypeEnum.FRIExchange:
                     return "проверку сведений ФРИ";
                 case ExchangeBaseRegistryTypeEnum.GetFGISFRI:
-                    return "проверку выписки сведеней об инвалиде";
+                    return "проверку выписки сведений об инвалиде";
             }
 
             return "-";
@@ -725,7 +725,7 @@ namespace RestChild.Extensions.Extensions
                     }
                 }
 
-                //Получение выписки сведеней об инвалиде
+                //Получение выписки сведений об инвалиде
                 //TODO
                 if (res.Type == ExchangeBaseRegistryTypeEnum.GetFGISFRI)
                 {

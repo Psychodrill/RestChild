@@ -201,7 +201,7 @@
 </div>
 <h4>Сведения о доверенности на подачу заявления</h4>
 <div class="row form-group">
-    <label class="col-md-3 control-label">Дата выдачи доверенности<span class="requared">*</span></label>
+    <label class="col-md-3 control-label">Дата выдачи доверенности </label>
     <div class="col-md-9">
         <div class='input-group datepicker-my datepicker'>
             @Html.TextBoxFor(r => r.Agent.Data.ProxyDateOfIssure, new {@class = "form-control required input-mask-date", @Value = Model.NullSafe(m => m.Agent.Data.ProxyDateOfIssure).FormatEx(string.Empty, string.Empty)})
@@ -213,7 +213,7 @@
     </div>
 </div>
 <div class="row form-group">
-    <label class="col-md-3 control-label">Дата окончания срока действия доверенности<span class="requared">*</span></label>
+    <label class="col-md-3 control-label">Дата окончания срока действия доверенности </label>
     <div class="col-md-9">
         <div class='input-group datepicker-general datepicker'>
             @Html.TextBoxFor(r => r.Agent.Data.ProxyEndDate, new {@class = "form-control input-mask-date-anytime required", @Value = Model.NullSafe(m => m.Agent.Data.ProxyEndDate).FormatEx(string.Empty, string.Empty)})
@@ -225,14 +225,14 @@
     </div>
 </div>
 <div class="row form-group">
-    <label class="col-md-3 control-label">ФИО нотариуса<span class="requared">*</span></label>
+    <label class="col-md-3 control-label">ФИО нотариуса </label>
     <div class="col-md-9">
         @Html.TextBoxFor(r => r.Agent.Data.NotaryName, new {@class = "form-control  required", autocomplete = "off"})
         <span class="field-validation-error">@Model.Agent.NotaryNameEm.FormatEx(string.Empty)</span>
     </div>
 </div>
 <div class="row form-group">
-    <label class="col-md-3 control-label">Номер доверенности<span class="requared">*</span></label>
+    <label class="col-md-3 control-label">Номер доверенности </label>
     <div class="col-md-9">
         @Html.TextBoxFor(r => r.Agent.Data.ProxyNumber, new {@class = "form-control  required", autocomplete = "off"})
         <span class="field-validation-error">@Model.Agent.ProxyNumberEm.FormatEx(string.Empty)</span>

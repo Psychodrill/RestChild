@@ -71,18 +71,18 @@ namespace RestChild.Domain
       public virtual ICollection<MonitoringFinancialData> FinantialDatas { get; set; }
       
       /// <summary>
-      /// История изменений сведеней о финансировании
+      /// История изменений сведений о финансировании
       /// </summary>
       [ForeignKey("HistoryLink")]
       [DataMember(Name = "historyLinkId")]
-      [Display(Description = "История изменений сведеней о финансировании")]
+      [Display(Description = "История изменений сведений о финансировании")]
       public virtual long? HistoryLinkId { get; set; }
       
       
       /// <summary>
-      /// История изменений сведеней о финансировании
+      /// История изменений сведений о финансировании
       /// </summary>
-      [Display(Description = "История изменений сведеней о финансировании")]
+      [Display(Description = "История изменений сведений о финансировании")]
       [DataMember(Name = "historyLink", EmitDefaultValue = false)]
       public virtual HistoryLink HistoryLink { get; set; }
       

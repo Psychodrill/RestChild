@@ -234,32 +234,32 @@ namespace RestChild.Web.Models
             //}
             //-----------------------------------------------------------------------------------------------------------
 
-            if (Data.ApplicantTypeId == (long) ApplicantTypeEnum.Confidant && (request.TypeOfRestId != (long) TypeOfRestEnum.Compensation && request.TypeOfRestId != (long) TypeOfRestEnum.CompensationYouthRest))
-         {
-             if (!Data.ProxyDateOfIssure.HasValue)
-             {
-                 IsValid = false;
-                 ProxyDateOfIssureEm = RequaredField;
-             }
+         //if (Data.ApplicantTypeId == (long) ApplicantTypeEnum.Confidant && (request.TypeOfRestId != (long) TypeOfRestEnum.Compensation && request.TypeOfRestId != (long) TypeOfRestEnum.CompensationYouthRest))
+         //{
+         //    if (!Data.ProxyDateOfIssure.HasValue)
+         //    {
+         //        IsValid = false;
+         //        ProxyDateOfIssureEm = RequaredField;
+         //    }
 
-             if (!Data.ProxyEndDate.HasValue)
-             {
-                 IsValid = false;
-                 ProxyEndDateEm = RequaredField;
-             }
+         //    if (!Data.ProxyEndDate.HasValue)
+         //    {
+         //        IsValid = false;
+         //        ProxyEndDateEm = RequaredField;
+         //    }
 
-             if (string.IsNullOrWhiteSpace(Data.NotaryName))
-             {
-                 IsValid = false;
-                 NotaryNameEm = RequaredField;
-             }
+         //    if (string.IsNullOrWhiteSpace(Data.NotaryName))
+         //    {
+         //        IsValid = false;
+         //        NotaryNameEm = RequaredField;
+         //    }
 
-             if (string.IsNullOrWhiteSpace(Data.ProxyNumber))
-             {
-                 IsValid = false;
-                 ProxyNumberEm = RequaredField;
-             }
-         }
+         //    if (string.IsNullOrWhiteSpace(Data.ProxyNumber))
+         //    {
+         //        IsValid = false;
+         //        ProxyNumberEm = RequaredField;
+         //    }
+         //}
 
          if (request != null && request.SourceId == (long) SourceEnum.Mpgu)
          {
