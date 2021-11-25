@@ -23,7 +23,9 @@ namespace RestChild.Web.Logic.AnalyticReport
         public static BaseExcelTable GetNotRespondedRequests(this IUnitOfWork unitOfWork, AnalyticReportFilter filter)
         {
 
-            var applications = unitOfWork.GetSet<Request>().Where(r=>r.IsDeleted==false).AsQueryable();
+            var applications = unitOfWork.GetSet<Request>().Where(r=>r.IsDeleted==false&&
+                                                                      r.StatusId==1050&&
+                                                                      r.StatusId ==1055).AsQueryable();
 
             if (filter?.DateFormingBegin.HasValue ?? false)
             {
@@ -32,8 +34,8 @@ namespace RestChild.Web.Logic.AnalyticReport
             else
             {
                 //DateTime innerDate = new DateTime(DateTime.Now.Year, 1, 1);
-                int maxYear = applications.Max(x => x.TimeOfRest.Year);
-                applications = applications.Where(apps => apps.TimeOfRest.Year >= maxYear);
+                int maxYear = applications.Max(x => x.YearOfRest.Year);
+                applications = applications.Where(apps => apps.YearOfRest.Year >= maxYear);
             }
             if (filter?.DateFormingEnd.HasValue ?? false)
             {
@@ -41,8 +43,8 @@ namespace RestChild.Web.Logic.AnalyticReport
             }
             else
             {
-                int maxYear = applications.Max(x => x.TimeOfRest.Year);
-                applications = applications.Where(res => res.TimeOfRest.Year <= maxYear);
+                int maxYear = applications.Max(x => x.YearOfRest.Year);
+                applications = applications.Where(res => res.YearOfRest.Year <= maxYear);
             }
             //var sf = applications.ToList();
             var requests = unitOfWork.GetSet<ExchangeBaseRegistry>().Where(row => row.ResponseGuid == null &&
