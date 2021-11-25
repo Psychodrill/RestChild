@@ -45,7 +45,8 @@ namespace RestChild.Web.Logic.AnalyticReport
                 applications = applications.Where(res => res.TimeOfRest.Year <= maxYear);
             }
             //var sf = applications.ToList();
-            var requests = unitOfWork.GetSet<ExchangeBaseRegistry>()//.Where(row => row.ResponseGuid == null && (
+            var requests = unitOfWork.GetSet<ExchangeBaseRegistry>().Where(row => row.ResponseGuid == null &&
+                                                                                  row.NotActual==false)
             //                                                                      row.ExchangeBaseRegistryTypeId == -1 || //Запрос наличия заключения ЦПМПК
             //                                                                      row.ExchangeBaseRegistryTypeId == 10209 || //Запрос паспортного досье по СНИЛС
             //                                                                      row.ExchangeBaseRegistryTypeId == 8255 ||// Запрос СНИЛС по ФИО
