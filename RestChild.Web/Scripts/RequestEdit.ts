@@ -15,7 +15,7 @@ declare var placesOfRestRequiringTransportSelection;
 declare var typeOfRestRequiringCampTypeSelection;
 declare var isCamping;
 var typeOfCampOptions=[];
-
+var typeOfTransportOptions = [];
 let inited = false;
 let attendantFn = doT.template($('#attendantTemplate').html());
 
@@ -481,6 +481,12 @@ window.onload = () => {
         typeOfCampOptions.push({id: campId, text: campName})
     })
 
+    $("select.priorityTypeOfTransport").select2().find("option").each(function (i, option) {
+        var typeOfTransportId = $(option).val();
+        var typeOfTransportName = $(option).text();
+        typeOfTransportOptions.push({ id: typeOfTransportId, text: typeOfTransportName })
+    })
+
     ToggleTypeOfTransportBlock();
     ToggleTypeOfCampBlock();
 };
@@ -885,19 +891,27 @@ $(() => {
 
     // при выборе приоритетным наземный транспорт дополнительный воздушный
     function changeAdditionalTransport(target) {
-
+        
         let additionalTransport = $(target).closest('fieldset').find('.additionalTypeOfTransport');
+
+        var $typeOfadditional = $("select.additionalTypeOfTransport");
         if (target.selectedIndex == 2)
         {
+            additionalTransport.find("option[value=2]").remove();
 
             $('.additionalTypeOfTransport').select2('val', 1);
 
-            additionalTransport.attr('disabled', 'disabled');
         }
         else
         {
+            var optionToAdd = typeOfTransportOptions.filter(obj => obj.id == 2)[0];
+            if (optionToAdd && additionalTransport[1].childElementCount<3 ) {
+
+                $typeOfadditional.append(new Option(optionToAdd.text, optionToAdd.id, false, false));
+
+            }
             $('.additionalTypeOfTransport').select2('val', null);
-            additionalTransport.removeAttr('disabled');
+
         }
     }
 
