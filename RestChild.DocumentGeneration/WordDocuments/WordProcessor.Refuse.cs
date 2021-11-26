@@ -1349,7 +1349,7 @@ namespace RestChild.DocumentGeneration
                                     {Space = SpaceProcessingModeValues.Preserve}),
                             new Run(titleRequestRunProperties.CloneNode(true),
                                 new Text(
-                                    $"учитывая получение услуг отдыха и оздоровления в предыдущие годы и исходя из даты и времени подачи заявления, оказание услуг отдыха и оздоровления в {request.TimeOfRest.Year} году не представляется возможным."))));
+                                    $"учитывая получение услуг отдыха и оздоровления в предыдущие годы и исходя из даты и времени подачи заявления, оказание услуг отдыха и оздоровления в {request.YearOfRest.Year} году не представляется возможным."))));
 
                     doc.AppendChild(
                         new Paragraph(
