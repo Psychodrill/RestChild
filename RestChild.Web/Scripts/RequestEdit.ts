@@ -521,6 +521,8 @@ function ToggleTypeOfTransportBlock() {
         $("#TypeOfTransport").parent().removeClass('hidden');
         $("#TypeOfTransportLink").removeClass('hidden');
         $('#TypeOfTransportLink').html('<a href="#TypeOfTransport">Тип транспорта</a>');
+
+        $('.priorityTypeOfTransport').trigger('change');
     } else {
         $("#TypeOfTransport").parent().addClass('hidden');
         $('#TypeOfTransportLink').html('');
