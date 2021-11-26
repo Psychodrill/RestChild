@@ -898,19 +898,21 @@ $(() => {
 
     // при выборе приоритетным наземный транспорт дополнительный воздушный
     function changeAdditionalTransport(target) {
-
+        
         let additionalTransport = $(target).closest('fieldset').find('.additionalTypeOfTransport');
 
         var $typeOfadditional = $("select.additionalTypeOfTransport");
-        if (target.selectedIndex == 2) {
+        if (target.selectedIndex == 2)
+        {
             additionalTransport.find("option[value=2]").remove();
 
             $('.additionalTypeOfTransport').select2('val', 1);
 
         }
-        else {
+        else
+        {
             var optionToAdd = typeOfTransportOptions.filter(obj => obj.id == 2)[0];
-            if (optionToAdd && additionalTransport[1].childElementCount < 3) {
+            if (optionToAdd && additionalTransport[1].childElementCount<3 ) {
 
                 $typeOfadditional.append(new Option(optionToAdd.text, optionToAdd.id, false, false));
 
@@ -919,7 +921,6 @@ $(() => {
 
         }
     }
-
 
     function changeTypeOfRest(target) {
         let savedInited = inited;
