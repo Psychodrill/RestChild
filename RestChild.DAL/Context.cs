@@ -1385,7 +1385,7 @@
         /// <summary>
         ///     RestChild.Domain.LeisureFacilities
         /// </summary>
-        public DbSet<LeisureFacilities> leisureFacilities { get; set; }
+       // public DbSet<LeisureFacilities> leisureFacilities { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{

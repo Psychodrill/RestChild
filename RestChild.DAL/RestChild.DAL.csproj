@@ -1283,18 +1283,6 @@
     <Compile Include="Migrations\202108251158089_Task144666Migration.Designer.cs">
       <DependentUpon>202108251158089_Task144666Migration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202110190834127_migration.cs" />
-    <Compile Include="Migrations\202110190834127_migration.designer.cs">
-      <DependentUpon>202110190834127_migration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202111081448420_202110190834127_migration.cs" />
-    <Compile Include="Migrations\202111081448420_202110190834127_migration.designer.cs">
-      <DependentUpon>202111081448420_202110190834127_migration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202111081455309_Leisure.cs" />
-    <Compile Include="Migrations\202111081455309_Leisure.designer.cs">
-      <DependentUpon>202111081455309_Leisure.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="RepositoryExtensions\Repository.cs" />
     <Compile Include="UnitOfWork.cs" />
@@ -2184,15 +2172,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202108251158089_Task144666Migration.resx">
       <DependentUpon>202108251158089_Task144666Migration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202110190834127_migration.resx">
-      <DependentUpon>202110190834127_migration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202111081448420_202110190834127_migration.resx">
-      <DependentUpon>202111081448420_202110190834127_migration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202111081455309_Leisure.resx">
-      <DependentUpon>202111081455309_Leisure.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
