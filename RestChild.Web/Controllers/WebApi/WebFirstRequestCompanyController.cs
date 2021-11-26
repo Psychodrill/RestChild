@@ -1889,7 +1889,11 @@ namespace RestChild.Web.Controllers.WebApi
                     (bri.ExchangeBaseRegistryTypeId ==
                     (long)ExchangeBaseRegistryTypeEnum.GetEGRZAGS
                     || bri.ExchangeBaseRegistryTypeId ==
-                    (long)ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck)
+                    (long)ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck
+                    || bri.ExchangeBaseRegistryTypeId ==
+                    (long)ExchangeBaseRegistryTypeEnum.Relationship
+                    || bri.ExchangeBaseRegistryTypeId ==
+                    (long)ExchangeBaseRegistryTypeEnum.RelationshipSmev)
                     && bri.IsProcessed
                     && !bri.NotActual
                     && bri.Success == search.BaseRegistryRelationshipCheck.Value)));
