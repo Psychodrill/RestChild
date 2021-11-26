@@ -66,6 +66,7 @@ $(function () {
             '#DateStartBegin',
             '#DateStartEnd',
             '#DateFormingBegin',
+            '#DateFormingEnd',
             '#YearOfBDateFormingEndirthDateBegin',
             '#FlightNumber'
         ];
@@ -73,9 +74,15 @@ $(function () {
             '#SupplierId',
             '#DepartureId',
             '#ArrivalId',
-            '#TypeOfTransportId'
+            '#TypeOfTransportId',
+            '#ExchangeBaseRegistryTypeId',
+            '#yearOfRestSelect'
         ];
         //#endregion        
+        var checkBoxIds = [
+            '#NextYearsIncluded'
+        ];
+        checkBoxIds.forEach(function (id) { return setDefaultCheckBoxValue(id); });
         textboxIds.forEach(function (id) { return setDefaultTextboxValue(id); });
         dropdownListIds.forEach(function (id) { return setDefaultDropDownListValue(id); });
         select2DropDownIds.forEach(function (element) { return setDefaultSelect2DropDownValue(element.nameId, element.selectId); });
@@ -89,6 +96,9 @@ $(function () {
         }
         function setDefaultTextboxValue(id) {
             $(id).val('');
+        }
+        function setDefaultCheckBoxValue(id) {
+            $(id).val('false');
         }
         //#endregion        
     });
