@@ -420,6 +420,12 @@ window.onload = function () {
     });
     ToggleTypeOfTransportBlock();
     ToggleTypeOfCampBlock();
+    // небходимо для скрытия лишних блоков при копировании заявления
+    var buf = $('#mainPlaces').select2('val');
+    $('#mainPlaces').val('15');
+    $('#mainPlaces').trigger("change");
+    $('#mainPlaces').val(buf);
+    $('#mainPlaces').trigger("change");
 };
 function attendantChangeProxy($e) {
     var pb = $e.closest('fieldset.attendant-panel').find('.proxy-block');
@@ -1751,6 +1757,107 @@ function confirmButtonWithDecline(buttonName, actionCode, statusId) {
     });
 }
 var arr;
+$('.copy-request').on('click', function (e) {
+    arr = [];
+    var $copyOptions = $("#copyOptions");
+    $copyOptions.empty();
+    //$('#copyRequestModal').modal('show');
+    var nodes = $("#scrollspy").html();
+    $.each($(nodes).find("li").not(".hidden").find("a").not("li ul li a"), function (i, elem) {
+        var ob = {};
+        ob["parent"] = elem.getAttribute("href");
+        ob["children"] = [];
+        if (ob["parent"] == "#ChildsReference") {
+            $.each($(".childToCopy"), function (i, val) {
+                ob["children"].push(val);
+            });
+        }
+        if (ob["parent"] == "#AttendantsReference") {
+            $.each($(".attendantToCopy"), function (i, val) {
+                ob["children"].push(val);
+            });
+        }
+        arr.push(ob);
+    });
+    $copyOptions.append("<ul id='mainList'></ul>");
+    $.each(arr, function (i, val) {
+        var key = val["parent"];
+        var children;
+        children = val["children"].length > 0 ? val["children"] : "";
+        var cond = false;
+        var childrenHtml = "";
+        if (children.length > 0) {
+            cond = true;
+            childrenHtml += "<ul>";
+            $.each(children, function (i, val) {
+                childrenHtml +=
+                    "<li><div class='checkbox'><label>" +
+                        "<input id=" + (val.getAttribute("Id")) + " class='listItem' onclick='CheckHandler(event, 0)' type='checkbox' value>" +
+                        "<input id=" + (val.getAttribute("Id")) + " class='listItem' type='hidden' value='false'>" +
+                        $(val).val() + "</label></div></li>";
+            });
+            childrenHtml += "</ul>";
+        }
+        var html;
+        if (mapperDict[key].blocked != null) {
+            html =
+                "<li><div class='checkbox'><label name=" + key + ">" +
+                    "<input disabled name=" + mapperDict[key].prop + " type='checkbox' value>" +
+                    "<input disabled name=" + mapperDict[key].prop + " type='hidden' value='false'>" +
+                    mapperDict[key].text +
+                    (cond ? childrenHtml : "") +
+                    "</label></div></li>";
+        }
+        else {
+            html =
+                "<li><div class='checkbox'><label name=" + key + ">" +
+                    "<input name=" + mapperDict[key].prop + " onclick='CheckHandler(event, 1)' type='checkbox' value>" +
+                    "<input name=" + mapperDict[key].prop + " type='hidden' value='false'>" +
+                    mapperDict[key].text +
+                    (cond ? childrenHtml : "") +
+                    "</label></div></li>";
+        }
+        $("#mainList").append(html);
+    });
+});
+$("#submitRequestCopy").on('click', function (e) {
+    var data = {};
+    data["RequestId"] = $(".requestToCopy").attr("Id");
+    // alert("Sending...");
+    $.each(arr, function (i, val) {
+        var dictVal = mapperDict[val.parent];
+        if (dictVal != undefined) {
+            var prop = dictVal.prop;
+            if (prop != undefined)
+                data[prop] = $("#mainList").find("input[name=" + dictVal.prop + "]").prop('checked');
+            if (dictVal.list != undefined) {
+                var listName = dictVal.list;
+                if (listName == "AttendantsIds") {
+                    data[listName] = [];
+                    $.each($("#mainList").find("label[name='#AttendantsReference']").find(".listItem:checked"), function (i, val) {
+                        data[listName].push($(val).attr("Id"));
+                    });
+                }
+                if (listName == "ChildrenIds") {
+                    data[listName] = [];
+                    $.each($("#mainList").find("label[name='#ChildsReference']").find(".listItem:checked"), function (i, val) {
+                        data[listName].push($(val).attr("Id"));
+                    });
+                }
+            }
+        }
+    });
+    $.ajax({
+        url: rootPath + 'FirstRequestCompany/CopyRequest',
+        type: 'POST',
+        data: JSON.stringify(data),
+        dataType: "json",
+        contentType: 'application/json; charset=utf-8',
+        success: function (res) {
+            window.location.href = res.newUrl;
+        }
+    });
+});
 function CheckHandler(event, isParentNode) {
     var src = event.target;
     var cond = $(src).prop("checked");
