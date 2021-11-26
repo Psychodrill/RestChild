@@ -83,6 +83,7 @@
             '#DateStartBegin',
             '#DateStartEnd',
             '#DateFormingBegin',
+            '#DateFormingEnd',
             '#YearOfBDateFormingEndirthDateBegin',
             '#FlightNumber'
         ];
@@ -91,10 +92,17 @@
             '#SupplierId',
             '#DepartureId',
             '#ArrivalId',
-            '#TypeOfTransportId'
+            '#TypeOfTransportId',
+            '#ExchangeBaseRegistryTypeId',
+            '#yearOfRestSelect'
         ];
         //#endregion        
 
+        var checkBoxIds = [
+            '#NextYearsIncluded'
+        ];
+
+        checkBoxIds.forEach((id) => setDefaultCheckBoxValue(id));
         textboxIds.forEach((id) => setDefaultTextboxValue(id));
         dropdownListIds.forEach((id) => setDefaultDropDownListValue(id));
         select2DropDownIds.forEach((element) => setDefaultSelect2DropDownValue(element.nameId, element.selectId));
@@ -111,6 +119,11 @@
 
         function setDefaultTextboxValue(id) {
             $(id).val('');
+        }
+
+        function setDefaultCheckBoxValue(id) {
+            $(id).val('false');
+
         }
         //#endregion        
     });
