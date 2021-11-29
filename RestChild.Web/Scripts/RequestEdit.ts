@@ -522,12 +522,13 @@ function ToggleTypeOfTransportBlock() {
         $("#TypeOfTransportLink").removeClass('hidden');
         $('#TypeOfTransportLink').html('<a href="#TypeOfTransport">Тип транспорта</a>');
 
+        /*if ($('.priorityTypeOfTransport').se==)*/
         $('.priorityTypeOfTransport').trigger('change');
     } else {
         $("#TypeOfTransport").parent().addClass('hidden');
         $('#TypeOfTransportLink').html('');
-        $('.priorityTypeOfTransport').select2('val', null)
-        $('.additionalTypeOfTransport').select2('val', null)
+        $('.priorityTypeOfTransport').select2('val', null);
+        $('.additionalTypeOfTransport').select2('val', null);
     }
 }
 
@@ -911,6 +912,7 @@ $(() => {
             $('.additionalTypeOfTransport').select2('val', 1);
 
         }
+
         else
         {
             var optionToAdd = typeOfTransportOptions.filter(obj => obj.id == 2)[0];
@@ -919,9 +921,9 @@ $(() => {
                 $typeOfadditional.append(new Option(optionToAdd.text, optionToAdd.id, false, false));
 
             }
-            $('.additionalTypeOfTransport').select2('val', null);
 
         }
+        
     }
 
     function changeTypeOfRest(target) {
