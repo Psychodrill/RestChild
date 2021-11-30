@@ -585,7 +585,7 @@
     }
 
 
-    <script type="text/javascript" language="javascript">
+<script type="text/javascript" language="javascript">
 		var typeOfRest = @Html.Raw(Json.Encode(Model.TypeOfRestsAll));
 		var placeOfRest = @Html.Raw(Json.Encode(Model.PlacesOfRest));
 		var benefitType = @Html.Raw(Json.Encode(Model.BenefitTypes.Select(bt => new BenefitType(bt, 1)).ToList()));
@@ -598,7 +598,9 @@
 		var placesOfRestRequiringTransportSelection = @Html.Raw(Json.Encode(Model.PlacesOfRestRequiringTransportSelection.ToList()));
         var isCamping = @Html.Raw(Json.Encode((long)TypeOfCampEnum.IsCamping));
         var typeOfRestRequiringCampTypeSelection = @Html.Raw(Json.Encode((long)TypeOfRestEnum.ChildRest));
-    </script>
+    var CountAttendants = @Html.Raw(Json.Encode(Model.Data.CountAttendants));
+    var reApply = @Html.Raw(Json.Encode(ViewBag.ReApply));
+</script>
 
     @if (ViewBag.NeedCompletionAlert ?? false)
     {

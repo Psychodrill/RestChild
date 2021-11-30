@@ -125,8 +125,7 @@ namespace RestChild.Web.Controllers
                 copyModel.AttendantsIds.Add(copyAttendantId1);
                 copyModel.AttendantsIds.Add(copyAttendantId2);
                 copyModel.AttendantsIds.Add(copyAttendantId3);
-                //if (!cmodel.IsNullOrEmpty())
-                //    copyModel = cmodel;
+                ViewBag.ReApply = reApply;
                 model = new RequestViewModel(ReapplyRequest(copyModel));
             }
             BookingRequest bookingRequest = null;
@@ -2286,7 +2285,7 @@ namespace RestChild.Web.Controllers
                         else
                         {
                             acc.IsDeleted = true;
-                            r.CountAttendants++;
+                            //r.CountAttendants++; //вызывает добавление лишнего количества сопровождающих (?)
                             UnitOfWork.WriteHistory(r.Id, $"Сопровождающий {acc.GetFio()} исключен из заявления", Security.GetCurrentAccountId());
                         }
                     }
@@ -2294,7 +2293,6 @@ namespace RestChild.Web.Controllers
                     {
                         var acc = UnitOfWork.GetById<Applicant>(r.ApplicantId);
                         acc.IsAccomp = false;
-
                         UnitOfWork.WriteHistory(r.Id, $"Заявитель более не является сопровождающим", Security.GetCurrentAccountId());
                     }
                     UnitOfWork.SaveChanges();
@@ -2471,7 +2469,7 @@ namespace RestChild.Web.Controllers
                     chil.IsInvalid = c.IsInvalid;
                     //chil.TypeOfRestrictionId = c.TypeOfSubRestrictionId; закомментированные строки переобновляются при создании заявлений, поэтому передавать в модель нет смысла
                     //chil.TypeOfSubRestrictionId = c.TypeOfSubRestrictionId;
-                    chil.IsCPMPK = chil.IsCPMPK;
+                    //chil.IsCPMPK = chil.IsCPMPK;
                     //chil.TypeOfRestriction = chil.TypeOfRestriction;
                     // chil.SchoolId = c.SchoolId;
                     // chil.School = c.School;

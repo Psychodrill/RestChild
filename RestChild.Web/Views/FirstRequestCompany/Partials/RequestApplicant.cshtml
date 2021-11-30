@@ -152,7 +152,7 @@
     </div>
 </div>
 <div class="row form-group">
-    <label class="col-md-3 control-label">Email</label>
+    <label class="col-md-3 control-label">Email @if(Model.Data.SourceId == 1){<span class="requared">*</span>}</label>
     <div class="col-md-9">
         @Html.TextBoxFor(r => r.Applicant.Data.Email, new {@class = "form-control required input-mask-email"})
         <span class="field-validation-error">@Model.Applicant.EmailEm.FormatEx(string.Empty)</span>
