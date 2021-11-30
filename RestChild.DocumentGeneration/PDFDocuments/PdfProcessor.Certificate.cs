@@ -139,21 +139,21 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     {
                         using (var pdfStamper = new PdfStamper(readerTemplate, newStream, '1'))
                         {
-                            var page = 1;
+                            var page = 2;
                             if (request.TypeOfRestId == (long) TypeOfRestEnum.MoneyOn18)
                             {
                                 var over = pdfStamper.GetOverContent(page);
                                 over.BeginText();
                                 over.SetFontAndSize(customFont, 14);
-                                over.ShowTextAligned(Element.ALIGN_LEFT, GetDayMonth(request.CertificateDate), 280, 445, 0);
-                                over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 475, 445, 0);
+                                over.ShowTextAligned(Element.ALIGN_LEFT, GetDayMonth(request.CertificateDate), 280, 458, 0);
+                                over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 475, 458, 0);
                                 over.SetFontAndSize(customFont, 10);
 
-                                WriteByTable(over, font, 270, 392, 500, $"{applicant.LastName}  {applicant.FirstName}  {applicant.MiddleName}".Trim());
+                                WriteByTable(over, font, 270, 400, 500, $"{applicant.LastName}  {applicant.FirstName}  {applicant.MiddleName}".Trim());
 
-                                WriteByTable(over, font, 100, 358, 500, $"{applicant.DateOfBirth.FormatEx()},  {applicant.DocumentType.Name},  {applicant.DocumentSeria},  {applicant.DocumentNumber}".Trim());
+                                WriteByTable(over, font, 250, 366, 500, $"{applicant.DateOfBirth.FormatEx()},  {applicant.DocumentType.Name},  {applicant.DocumentSeria},  {applicant.DocumentNumber}".Trim());
 
-                                WriteByTable(over, font, 335, 235, 500, $"{request.RequestNumber}, {applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}".Trim());
+                                WriteByTable(over, font, 270, 243, 500, $"{request.RequestNumber}, {applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}".Trim());
                                 over.EndText();
                             }
                             else
@@ -164,13 +164,13 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                                     page++;
                                     over.BeginText();
                                     over.SetFontAndSize(customFont, 14);
-                                    over.ShowTextAligned(Element.ALIGN_LEFT, GetDayMonth(request.CertificateDate), 280, 445, 0);
-                                    over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 475, 445, 0);
+                                    over.ShowTextAligned(Element.ALIGN_LEFT, GetDayMonth(request.CertificateDate), 280, 458, 0);
+                                    over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 475, 458, 0);
                                     over.SetFontAndSize(customFont, 10);
 
-                                    WriteByTable(over, font, 270, 392, 500, $"{child.LastName}  {child.FirstName}  {child.MiddleName}".Trim());
+                                    WriteByTable(over, font, 270, 400, 500, $"{child.LastName}  {child.FirstName}  {child.MiddleName}".Trim());
 
-                                    WriteByTable(over, font, 100, 358, 500, $"{child.DateOfBirth.FormatEx()},  {child.DocumentType.Name},  {child.DocumentSeria},  {child.DocumentNumber}".Trim());
+                                    WriteByTable(over, font, 250, 366, 500, $"{child.DateOfBirth.FormatEx()},  {child.DocumentType.Name},  {child.DocumentSeria},  {child.DocumentNumber}".Trim());
 
                                     if (applicant.IsAccomp || request.Attendant.Any(a => a.IsAccomp && !a.IsDeleted))
                                     {
@@ -180,13 +180,13 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                                                 : request.Attendant.FirstOrDefault(a => a.IsAccomp && !a.IsDeleted)) ??
                                             new Applicant { DocumentType = new DocumentType { Name = string.Empty } };
 
-                                        WriteByTable(over, font, 360, 325, 500, $"{attendant.LastName} {attendant.FirstName} {attendant.MiddleName}".Trim());
+                                        WriteByTable(over, font, 360, 333, 500, $"{attendant.LastName} {attendant.FirstName} {attendant.MiddleName}".Trim());
 
-                                        WriteByTable(over, font, 100, 285, 500, $"{attendant.DateOfBirth.FormatEx()}, {attendant.DocumentType.Name}, {attendant.DocumentSeria}, {attendant.DocumentNumber}".Trim());
+                                        WriteByTable(over, font, 250, 293, 500, $"{attendant.DateOfBirth.FormatEx()}, {attendant.DocumentType.Name}, {attendant.DocumentSeria}, {attendant.DocumentNumber}".Trim());
 
                                     }
 
-                                    WriteByTable(over, font, 335, 235, 500, $"{request.RequestNumber}, {applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}".Trim());
+                                    WriteByTable(over, font, 270, 243, 500, $"{request.RequestNumber}, {applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}".Trim());
 
                                     over.EndText();
                                 }
