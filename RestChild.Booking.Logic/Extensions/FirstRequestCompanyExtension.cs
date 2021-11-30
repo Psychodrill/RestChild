@@ -258,10 +258,10 @@ namespace RestChild.Booking.Logic.Extensions
         {
 
             // Отложенная отправка статуса 1060
-            if (statusId == 1055 && !planDate.HasValue)
-            {
-                planDate = DateTime.Now.AddDays(2);
-            }
+            //if (statusId == 1055 && !planDate.HasValue)
+            //{
+            //    planDate = DateTime.Now.AddDays(2);
+            //}
 
             // Отложенная отправка статуса 1080
             //if (statusId == 1080 && !planDate.HasValue)

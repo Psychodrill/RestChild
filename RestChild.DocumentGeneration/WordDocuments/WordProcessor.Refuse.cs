@@ -1220,8 +1220,8 @@ namespace RestChild.DocumentGeneration
                 return PdfProcessor.NotificationRefuse10805(unitOfWork, request, yearIds);
             }
 
-            var listTravelersRequest = unitOfWork.GetSet<ListTravelersRequest>()
-                .FirstOrDefault(ss => ss.RequestId == request.Id);
+            var listTravelersRequest = unitOfWork.GetSet<ListTravelersRequest>();
+                //.FirstOrDefault(ss => ss.RequestId == request.Id);
 
 
             using (var ms = new MemoryStream())
@@ -1381,9 +1381,16 @@ namespace RestChild.DocumentGeneration
                     //if ((request.Child?.Any(c => !c.IsDeleted) ?? false) && listTravelersRequest != null &&
                     //    listTravelersRequest.Details.Any(ss => ss.Detail != "[]"))
                     //{
-                    var details = listTravelersRequest?.Details.Where(ss => ss.Detail != "[]")
-                        .Select(ss => ss.Detail).ToList().SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>)
-                        .ToArray();
+
+                    //var details = listTravelersRequest?.Details.Where(ss => ss.Detail != "[]")
+                    //    .Select(ss => ss.Detail).ToList().SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>)
+                    //    .ToArray();
+
+                    var details = listTravelersRequest?.SelectMany(d => d.Details)
+                                                       .Where(ss => ss.Detail != "[]")
+                                                       .Select(ss => ss.Detail)
+                                                       .SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>).ToList();
+
 
                     IEnumerable<int> years = unitOfWork.GetSet<YearOfRest>().Where(x => yearIds.Contains(x.Id)).Select(x => x.Year).OrderBy(x=>x).ToList();
 

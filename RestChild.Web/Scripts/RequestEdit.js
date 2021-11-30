@@ -422,10 +422,11 @@ window.onload = function () {
     ToggleTypeOfCampBlock();
     // небходимо для скрытия лишних блоков при копировании заявления
     var buf = $('#mainPlaces').select2('val');
-    $('#mainPlaces').val('15');
-    $('#mainPlaces').trigger("change");
-    $('#mainPlaces').val(buf);
-    $('#mainPlaces').trigger("change");
+    //$('#mainPlaces').val('15');
+    //$('#mainPlaces').trigger("change");
+    //$('#mainPlaces').val(buf);
+    //$('#mainPlaces').trigger("change");
+    //$('.firstRequestCompanyHide').addClass('hidden');
 };
 function attendantChangeProxy($e) {
     var pb = $e.closest('fieldset.attendant-panel').find('.proxy-block');
@@ -792,7 +793,7 @@ $(function () {
             if (optionToAdd && additionalTransport[1].childElementCount < 3) {
                 $typeOfadditional.append(new Option(optionToAdd.text, optionToAdd.id, false, false));
             }
-            $('.additionalTypeOfTransport').select2('val', null);
+            //$('.additionalTypeOfTransport').select2('val', null);
         }
     }
     function changeTypeOfRest(target) {
