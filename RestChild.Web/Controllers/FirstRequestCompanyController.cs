@@ -125,8 +125,7 @@ namespace RestChild.Web.Controllers
                 copyModel.AttendantsIds.Add(copyAttendantId1);
                 copyModel.AttendantsIds.Add(copyAttendantId2);
                 copyModel.AttendantsIds.Add(copyAttendantId3);
-                //if (!cmodel.IsNullOrEmpty())
-                //    copyModel = cmodel;
+                ViewBag.ReApply = reApply;
                 model = new RequestViewModel(ReapplyRequest(copyModel));
             }
             BookingRequest bookingRequest = null;

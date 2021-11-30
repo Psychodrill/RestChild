@@ -14,6 +14,8 @@ declare var placesOfRestRequiringTransportSelection;
 
 declare var typeOfRestRequiringCampTypeSelection;
 declare var isCamping;
+declare var CountAttendants;
+declare var reApply;
 var typeOfCampOptions=[];
 var typeOfTransportOptions = [];
 let inited = false;
@@ -217,18 +219,17 @@ function lockAttendantAddButton() {
     $('.remove-attendant-button').addClass('hidden');
     $('#AddAttendant').addClass('hidden');
 
-    //let count =
-    //    //$('input#Data_CountAttendants').length !== 0
-    //    //? $('input#Data_CountAttendants').val() :
-    //     $('select#Data_CountAttendants').select2('val');
+    let count =
+        $('input#Data_CountAttendants').length !== 0
+        ? $('input#Data_CountAttendants').val() :
+         $('select#Data_CountAttendants').select2('val');
 
-    //if (count) {
-    //    let attendantsCount = parseInt(count);
-    //    let attendants = $('.attendant-panel').length + ($('.is-accomp').select2('val') === 'True' ? 1 : 0) + ($('#is-agent-accomp').select2('val') === 'True' ? 1 : 0);
+    if (count) {
+        let attendantsCount = parseInt(count);
+        let attendants = $('.attendant-panel').length + ($('.is-accomp').select2('val') === 'True' ? 1 : 0) + ($('#is-agent-accomp').select2('val') === 'True' ? 1 : 0);
 
-       // changeCountAttendant(attendantsCount, attendants);
-    //}
-
+        changeCountAttendant(attendantsCount, attendants);
+    }
 }
 
 function removeChildElement(self) {
@@ -494,11 +495,14 @@ window.onload = () => {
     // небходимо для скрытия лишних блоков при копировании заявления
     //var buf = $('#mainPlaces').select2('val')
     //TriggerRemoveTemplates();
-    //$('.type-of-rest').trigger("change");
-    let typeOfRest = getTypeOfRest($('#typeOfRest-select2').val());
-    if (typeOfRest.FirstRequestCompanySelect && inited) {
-        $('.firstRequestCompanyHide').addClass('hidden');
+   // $('#Data_CountAttendants').select2('val', CountAttendants);
+    if (reApply) {
+        $('.type-of-rest').trigger("change");
     }
+    //let typeOfRest = getTypeOfRest($('#typeOfRest-select2').val());
+    //if (typeOfRest.FirstRequestCompanySelect && inited) {
+    //    $('.firstRequestCompanyHide').addClass('hidden');
+    //}
 };
 
 function TriggerRemoveTemplates() {
@@ -1082,6 +1086,10 @@ $(() => {
                 $('#mainPlaces').select2('val', 1);
             }
 
+            if (val.Id == 3 || val.Id == 12) {
+                $('#mainPlaces').select2('val', 1);
+            }
+
             $('#ChildsReference').removeClass('hidden');
             $('#ChildLinks').append($('#ChildLinksHidden').children());
             if (val.NeedPlacment || ($('#hasBooking').val() === 'False'
@@ -1094,7 +1102,11 @@ $(() => {
                 if (val.NeedPlacment) {
                     $('#PlacesAttendants').removeClass('hidden');
                     if (savedInited) {
-                        $('#Data_CountAttendants').select2('val', "1");
+                        if (CountAttendants > 0) {
+                            $('#Data_CountAttendants').select2('val', CountAttendants);
+                        } else {
+                            $('#Data_CountAttendants').select2('val', "1");
+                        }
                     }
                 } else {
                     $('#PlacesAttendants').addClass('hidden');
@@ -1135,7 +1147,11 @@ $(() => {
 
                 if (inited) {
                     if (containsInArray(moneyAttendants, val.Id)) {
-                        $('#Data_CountAttendants').select2('val', "1");
+                        if (CountAttendants > 0) {
+                            $('#Data_CountAttendants').select2('val', CountAttendants);
+                        } else {
+                            $('#Data_CountAttendants').select2('val', "1");
+                        }
                     } else {
                         $('#Data_CountAttendants').select2('val', null);
                     }
@@ -1151,6 +1167,7 @@ $(() => {
                     }
                 }
             }
+            $('#Data_CountAttendants').select2('val', CountAttendants);
             changeCountChildren();
             lockAttendantAddButton();
         }
