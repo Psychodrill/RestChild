@@ -1,6 +1,7 @@
 $(function () {
     moment.locale('ru');
     $('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
+    defaultYearItem = $("#yearOfRestSelect option:default");
     function setText(id, select2Element) {
         var str = null;
         if (select2Element != null)
@@ -13,7 +14,7 @@ $(function () {
     });
     $('#yearOfRestSelect').on("change", function (event) {
         var selectedElement = $("#yearOfRestSelect option:selected").text();
-        setText("#yearOfRest", selectedElement);
+        setText("#yearOfRest", { id: "#yearOfRest", text: selectedElement });
     });
     $("#districtName").on("change", function (event) {
         var selectedElement = $("#districtName").select2('data');
@@ -76,7 +77,7 @@ $(function () {
             '#ArrivalId',
             '#TypeOfTransportId',
             '#ExchangeBaseRegistryTypeId',
-            '#yearOfRestSelect'
+            //'#yearOfRestSelect'
         ];
         //#endregion        
         var checkBoxIds = [
@@ -86,6 +87,7 @@ $(function () {
         textboxIds.forEach(function (id) { return setDefaultTextboxValue(id); });
         dropdownListIds.forEach(function (id) { return setDefaultDropDownListValue(id); });
         select2DropDownIds.forEach(function (element) { return setDefaultSelect2DropDownValue(element.nameId, element.selectId); });
+        setDefaultDropDownListYearValue('#yearOfRest', '#yearOfRestSelect');
         //#region Helpers
         function setDefaultSelect2DropDownValue(nameId, selectId) {
             setText(nameId, { id: '', text: '' });
@@ -99,6 +101,10 @@ $(function () {
         }
         function setDefaultCheckBoxValue(id) {
             $(id).val('false');
+        }
+        function setDefaultDropDownListYearValue(nameId, selectId) {
+            setText(nameId, { id: defaultYearItem.val(), text: defaultYearItem.text() });
+            $(selectId).select2('data', { id: defaultYearItem.val(), text: defaultYearItem.text() });
         }
         //#endregion        
     });

@@ -1,8 +1,9 @@
-﻿$(() => {
+﻿declare var defaultYearItem;
+$(() => {
 	moment.locale('ru');
 	$('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
 
-
+    defaultYearItem = $("#yearOfRestSelect option:default");
 	function setText(id: string, select2Element: any) {
 		var str=null;
 		if (select2Element != null)
@@ -18,7 +19,7 @@
 
 	$('#yearOfRestSelect').on("change", (event) => {
 		var selectedElement = $("#yearOfRestSelect option:selected").text();
-		setText("#yearOfRest",selectedElement);
+        setText("#yearOfRest", { id: "#yearOfRest", text: selectedElement })
 	});
 
 	$("#districtName").on("change", (event) => {
@@ -94,7 +95,7 @@
             '#ArrivalId',
             '#TypeOfTransportId',
             '#ExchangeBaseRegistryTypeId',
-            '#yearOfRestSelect'
+            //'#yearOfRestSelect'
         ];
         //#endregion        
 
@@ -106,6 +107,8 @@
         textboxIds.forEach((id) => setDefaultTextboxValue(id));
         dropdownListIds.forEach((id) => setDefaultDropDownListValue(id));
         select2DropDownIds.forEach((element) => setDefaultSelect2DropDownValue(element.nameId, element.selectId));
+
+        setDefaultDropDownListYearValue('#yearOfRest', '#yearOfRestSelect');
 
         //#region Helpers
         function setDefaultSelect2DropDownValue(nameId, selectId) {
@@ -123,6 +126,12 @@
 
         function setDefaultCheckBoxValue(id) {
             $(id).val('false');
+
+        }
+        function setDefaultDropDownListYearValue(nameId, selectId) {
+
+            setText(nameId, { id: defaultYearItem.val(), text: defaultYearItem.text() });
+            $(selectId).select2('data', { id: defaultYearItem.val(), text: defaultYearItem.text() });
 
         }
         //#endregion        
