@@ -13,7 +13,8 @@ $(function () {
     });
     $('#yearOfRestSelect').on("change", function (event) {
         var selectedElement = $("#yearOfRestSelect option:selected").text();
-        setText("#yearOfRest", selectedElement);
+        //setText("#yearOfRest",selectedElement);
+        setText("#yearOfRest", { id: "#yearOfRest", text: selectedElement });
     });
     $("#districtName").on("change", function (event) {
         var selectedElement = $("#districtName").select2('data');
@@ -76,7 +77,7 @@ $(function () {
             '#ArrivalId',
             '#TypeOfTransportId',
             '#ExchangeBaseRegistryTypeId',
-            '#yearOfRestSelect'
+            //'#yearOfRestSelect'
         ];
         //#endregion        
         var checkBoxIds = [
@@ -86,6 +87,8 @@ $(function () {
         textboxIds.forEach(function (id) { return setDefaultTextboxValue(id); });
         dropdownListIds.forEach(function (id) { return setDefaultDropDownListValue(id); });
         select2DropDownIds.forEach(function (element) { return setDefaultSelect2DropDownValue(element.nameId, element.selectId); });
+        //var asd = document.
+        setDefaultDropDownListYearValue('#yearOfRest', '#yearOfRestSelect');
         //#region Helpers
         function setDefaultSelect2DropDownValue(nameId, selectId) {
             setText(nameId, { id: '', text: '' });
@@ -99,6 +102,11 @@ $(function () {
         }
         function setDefaultCheckBoxValue(id) {
             $(id).val('false');
+        }
+        function setDefaultDropDownListYearValue(nameId, selectId) {
+            var hiddenValue = $(nameId).val();
+            setText(nameId, { id: nameId, text: hiddenValue });
+            $(selectId).select2('data', { id: nameId, text: hiddenValue });
         }
         //#endregion        
     });

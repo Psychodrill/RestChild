@@ -1,65 +1,67 @@
-﻿$(() => {
-    moment.locale('ru');
-    $('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
+﻿declare var defaultYear;
+$(() => {
+	moment.locale('ru');
+	$('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
 
 
-    function setText(id: string, select2Element: any) {
-        var str = null;
-        if (select2Element != null)
-            str = select2Element.text;
+	function setText(id: string, select2Element: any) {
+		var str=null;
+		if (select2Element != null)
+			str = select2Element.text;
 
-        $(id).val(str);
-    }
+		$(id).val(str);
+	}
 
-    $('#timeOfRestSelect').on("change", (event) => {
-        var selectedElement = $("#timeOfRestSelect").select2('data');
-        setText("#timeOfRest", selectedElement);
-    });
+	$('#timeOfRestSelect').on("change", (event) => {
+		var selectedElement = $("#timeOfRestSelect").select2('data');
+		setText("#timeOfRest", selectedElement);
+	});
 
-    $('#yearOfRestSelect').on("change", (event) => {
-        var selectedElement = $("#yearOfRestSelect option:selected").text();
-        setText("#yearOfRest", selectedElement);
-    });
+	$('#yearOfRestSelect').on("change", (event) => {
+		var selectedElement = $("#yearOfRestSelect option:selected").text();
+        //setText("#yearOfRest",selectedElement);
+        setText("#yearOfRest", { id: "#yearOfRest", text: selectedElement })
+	});
 
-    $("#districtName").on("change", (event) => {
-        var selectedElement = $("#districtName").select2('data');
-        setText("#districtName", selectedElement);
-    });
+	$("#districtName").on("change", (event) => {
+		var selectedElement = $("#districtName").select2('data');
+		setText("#districtName",selectedElement);
+	});
 
-    $("#hotelSelect").on("change", (event) => {
-        var selectedElement = $("#hotelSelect").select2('data');
-        setText("#hotelName", selectedElement);
-    });
+	$("#hotelSelect").on("change", (event) => {
+		var selectedElement = $("#hotelSelect").select2('data');
+		setText("#hotelName",selectedElement);
+	});
 
-    $("#benefitSelect").on("change", (event) => {
-        var selectedElement = $("#benefitSelect").select2('data');
-        setText("#benefitName", selectedElement);
-    });
+	$("#benefitSelect").on("change", (event) => {
+		var selectedElement = $("#benefitSelect").select2('data');
+		setText("#benefitName",selectedElement);
+	});
 
-    $("#vedomstvoSelect").on("change", (event) => {
-        var selectedElement = $("#vedomstvoSelect").select2('data');
-        setText("#vedomstvoName", selectedElement);
-    });
+	$("#vedomstvoSelect").on("change", (event) => {
+		var selectedElement = $("#vedomstvoSelect").select2('data');
+		setText("#vedomstvoName", selectedElement);
+	});
 
-    $("#agencySelect").on("change", (event) => {
-        var selectedElement = $("#agencySelect").select2('data');
-        setText("#agencyName", selectedElement);
-    });
+	$("#agencySelect").on("change", (event) => {
+		var selectedElement = $("#agencySelect").select2('data');
+		setText("#agencyName", selectedElement);
+	});
 
-    $("#supplierSelect").on("change", (event) => {
-        var selectedElement = $("#supplierSelect").select2('data');
-        setText("#supplierName", selectedElement);
-    });
+	$("#supplierSelect").on("change", (event) => {
+		var selectedElement = $("#supplierSelect").select2('data');
+		setText("#supplierName", selectedElement);
+	});
 
-    $("#placeOfRestSelect").on("change", (event) => {
-        var selectedElement = $("#placeOfRestSelect").select2('data');
-        setText("#placeOfRestName", selectedElement);
-    });
+	$("#placeOfRestSelect").on("change", (event) => {
+		var selectedElement = $("#placeOfRestSelect").select2('data');
+		setText("#placeOfRestName", selectedElement);
+	});
 
-    $("#placeOfRestSelect").on("change", (event) => {
-        var selectedElement = $("#placeOfRestSelect").select2('data');
-        setText("#placeOfRestName", selectedElement);
-    });
+	$("#placeOfRestSelect").on("change", (event) => {
+		var selectedElement = $("#placeOfRestSelect").select2('data');
+		setText("#placeOfRestName", selectedElement);
+	});
 
     $('select.select2').select2();
 
@@ -94,7 +96,7 @@
             '#ArrivalId',
             '#TypeOfTransportId',
             '#ExchangeBaseRegistryTypeId',
-            '#yearOfRestSelect'
+            //'#yearOfRestSelect'
         ];
         //#endregion        
 
@@ -107,6 +109,8 @@
         dropdownListIds.forEach((id) => setDefaultDropDownListValue(id));
         select2DropDownIds.forEach((element) => setDefaultSelect2DropDownValue(element.nameId, element.selectId));
 
+        //var asd = document.
+        setDefaultDropDownListYearValue('#yearOfRest','#yearOfRestSelect');
         //#region Helpers
         function setDefaultSelect2DropDownValue(nameId, selectId) {
             setText(nameId, { id: '', text: '' });
@@ -125,8 +129,13 @@
             $(id).val('false');
 
         }
+        function setDefaultDropDownListYearValue(nameId, selectId) {
+            /*var hiddenValue = $(nameId).val();*/
+            setText(nameId, { id: nameId, text: hiddenValue });
+            $(selectId).select2('data', { id: nameId, text: hiddenValue });
+        }
         //#endregion        
     });
 
-
+    
 });
