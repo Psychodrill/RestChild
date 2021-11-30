@@ -181,8 +181,8 @@ function lockAttendantAddButton() {
     $('.remove-attendant-button').addClass('hidden');
     $('#AddAttendant').addClass('hidden');
     var count = $('input#Data_CountAttendants').length !== 0
-        ? $('input#Data_CountAttendants').val()
-        : $('select#Data_CountAttendants').select2('val');
+        ? $('input#Data_CountAttendants').val() :
+        $('select#Data_CountAttendants').select2('val');
     if (count) {
         var attendantsCount = parseInt(count);
         var attendants = $('.attendant-panel').length + ($('.is-accomp').select2('val') === 'True' ? 1 : 0) + ($('#is-agent-accomp').select2('val') === 'True' ? 1 : 0);
@@ -421,13 +421,21 @@ window.onload = function () {
     ToggleTypeOfTransportBlock();
     ToggleTypeOfCampBlock();
     // небходимо для скрытия лишних блоков при копировании заявления
-    var buf = $('#mainPlaces').select2('val');
-    //$('#mainPlaces').val('15');
-    //$('#mainPlaces').trigger("change");
-    //$('#mainPlaces').val(buf);
-    //$('#mainPlaces').trigger("change");
-    //$('.firstRequestCompanyHide').addClass('hidden');
+    //var buf = $('#mainPlaces').select2('val')
+    //TriggerRemoveTemplates();
+    // $('#Data_CountAttendants').select2('val', CountAttendants);
+    if (reApply) {
+        $('.type-of-rest').trigger("change");
+    }
+    //let typeOfRest = getTypeOfRest($('#typeOfRest-select2').val());
+    //if (typeOfRest.FirstRequestCompanySelect && inited) {
+    //    $('.firstRequestCompanyHide').addClass('hidden');
+    //}
 };
+function TriggerRemoveTemplates() {
+    $('#AddChild').click();
+    removeElement($('#Childs').children('fieldset:last').find('.remove-child-button'), 'Child');
+}
 function attendantChangeProxy($e) {
     var pb = $e.closest('fieldset.attendant-panel').find('.proxy-block');
     if ($e.prop('checked') && $('.TypeOfRestId').val() != CompensationEnum.toString()) {
@@ -932,6 +940,9 @@ $(function () {
             if (!$('#mainPlaces').select2('val') || $('#mainPlaces').select2('val') == '0') {
                 $('#mainPlaces').select2('val', 1);
             }
+            if (val.Id == 3 || val.Id == 12) {
+                $('#mainPlaces').select2('val', 1);
+            }
             $('#ChildsReference').removeClass('hidden');
             $('#ChildLinks').append($('#ChildLinksHidden').children());
             if (val.NeedPlacment || ($('#hasBooking').val() === 'False'
@@ -944,7 +955,12 @@ $(function () {
                 if (val.NeedPlacment) {
                     $('#PlacesAttendants').removeClass('hidden');
                     if (savedInited) {
-                        $('#Data_CountAttendants').select2('val', "1");
+                        if (CountAttendants > 0) {
+                            $('#Data_CountAttendants').select2('val', CountAttendants);
+                        }
+                        else {
+                            $('#Data_CountAttendants').select2('val', "1");
+                        }
                     }
                 }
                 else {
@@ -991,7 +1007,12 @@ $(function () {
                 }
                 if (inited) {
                     if (containsInArray(moneyAttendants, val.Id)) {
-                        $('#Data_CountAttendants').select2('val', "1");
+                        if (CountAttendants > 0) {
+                            $('#Data_CountAttendants').select2('val', CountAttendants);
+                        }
+                        else {
+                            $('#Data_CountAttendants').select2('val', "1");
+                        }
                     }
                     else {
                         $('#Data_CountAttendants').select2('val', null);
@@ -1010,6 +1031,7 @@ $(function () {
                     }
                 }
             }
+            $('#Data_CountAttendants').select2('val', CountAttendants);
             changeCountChildren();
             lockAttendantAddButton();
         }
@@ -1757,6 +1779,11 @@ function confirmButtonWithDecline(buttonName, actionCode, statusId) {
         ]
     });
 }
+//function TriggerRemoveTemplates() {
+//    $('#AddChild').click();
+//    //addChild();
+//    removeElement($('#Childs').children('fieldset:last').find('.remove-child-button'), 'Child');
+//}
 var arr;
 $('.copy-request').on('click', function (e) {
     arr = [];
