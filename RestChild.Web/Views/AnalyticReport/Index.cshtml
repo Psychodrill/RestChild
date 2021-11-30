@@ -22,10 +22,10 @@
                 <div class="col-md-4 form-group">
                     @{
                         var currentYear = DateTime.Now.Year.ToString();
-                        var selectedYear = Model.YearsOfRest.FirstOrDefault(i => i.Name == currentYear) ?? Model.YearsOfRest.OrderByDescending(i => i.Name).FirstOrDefault();
-                        var selectedYearName = selectedYear != null ? selectedYear.Name : string.Empty;
-                        Model.YearOfRest = selectedYearName;
-                        @Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.YearsOfRest.OrderBy(i => i.Name), "Id", "Name", selectedYear != null ? selectedYear.Id : 0), new { id = "yearOfRestSelect", @class = "form-control select2", autocomplete = "off" })
+                        var selectedYear = Model.YearsOfRest.Where(d=>d.DateFirstStage!=null).Max(y => y.Year);
+                        //var selectedYearName = selectedYear != null ? selectedYear.Name : string.Empty;
+                        //Model.YearOfRest = selectedYear;
+                        @Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.YearsOfRest.OrderBy(i => i.Year), "Id", "Year", Model.YearsOfRest.Select(y=>y.Year==selectedYear)), new { id = "yearOfRestSelect", @class = "form-control select2", autocomplete = "off" })
                         @Html.HiddenFor(m => m.YearOfRest, new { id = "yearOfRest" })
                     }
                 </div>
