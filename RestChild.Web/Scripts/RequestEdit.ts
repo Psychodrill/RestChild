@@ -217,16 +217,17 @@ function lockAttendantAddButton() {
     $('.remove-attendant-button').addClass('hidden');
     $('#AddAttendant').addClass('hidden');
 
-    let count = $('input#Data_CountAttendants').length !== 0
-        ? $('input#Data_CountAttendants').val()
-        : $('select#Data_CountAttendants').select2('val');
+    //let count =
+    //    //$('input#Data_CountAttendants').length !== 0
+    //    //? $('input#Data_CountAttendants').val() :
+    //     $('select#Data_CountAttendants').select2('val');
 
-    if (count) {
-        let attendantsCount = parseInt(count);
-        let attendants = $('.attendant-panel').length + ($('.is-accomp').select2('val') === 'True' ? 1 : 0) + ($('#is-agent-accomp').select2('val') === 'True' ? 1 : 0);
+    //if (count) {
+    //    let attendantsCount = parseInt(count);
+    //    let attendants = $('.attendant-panel').length + ($('.is-accomp').select2('val') === 'True' ? 1 : 0) + ($('#is-agent-accomp').select2('val') === 'True' ? 1 : 0);
 
-        changeCountAttendant(attendantsCount, attendants);
-    }
+       // changeCountAttendant(attendantsCount, attendants);
+    //}
 
 }
 
@@ -491,12 +492,19 @@ window.onload = () => {
     ToggleTypeOfCampBlock();
 
     // небходимо для скрытия лишних блоков при копировании заявления
-    var buf = $('#mainPlaces').select2('val')
-    $('#mainPlaces').val('15');
-    $('#mainPlaces').trigger("change");
-    $('#mainPlaces').val(buf);
-    $('#mainPlaces').trigger("change");
+    //var buf = $('#mainPlaces').select2('val')
+    //TriggerRemoveTemplates();
+    //$('.type-of-rest').trigger("change");
+    let typeOfRest = getTypeOfRest($('#typeOfRest-select2').val());
+    if (typeOfRest.FirstRequestCompanySelect && inited) {
+        $('.firstRequestCompanyHide').addClass('hidden');
+    }
 };
+
+function TriggerRemoveTemplates() {
+    $('#AddChild').click();
+    removeElement($('#Childs').children('fieldset:last').find('.remove-child-button'), 'Child');
+}
 
 function attendantChangeProxy($e) {
     let pb = $e.closest('fieldset.attendant-panel').find('.proxy-block');
@@ -1960,6 +1968,11 @@ function confirmButtonWithDecline(buttonName, actionCode, statusId) {
     });
 }
 
+//function TriggerRemoveTemplates() {
+//    $('#AddChild').click();
+//    //addChild();
+//    removeElement($('#Childs').children('fieldset:last').find('.remove-child-button'), 'Child');
+//}
 
 var arr;
 
