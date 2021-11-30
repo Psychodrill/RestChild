@@ -32,36 +32,33 @@ namespace RestChild.Domain
             else if (BtiAddress != null)
             {
                 var streetName = BtiAddress.BtiStreet != null ? BtiAddress.BtiStreet.Name : string.Empty;
-                res += "г. Москва, " + streetName;
+                res += "Город Москва, " + streetName;
                 res += (!string.IsNullOrWhiteSpace(streetName) ? ", " : "") + BtiAddress.ShortAddress;
             }
             else
             {
-                if (BtiRegion != null)
-                {
-                    res += BtiRegion.Name;
-                }
+                res += "Город Москва, ";
 
-                res += (!string.IsNullOrWhiteSpace(res) && !string.IsNullOrWhiteSpace(Street) ? ", " : "") + Street;
+                res += (!string.IsNullOrWhiteSpace(res) && !string.IsNullOrWhiteSpace(Street) ? " Улица " : "") + Street;
 
                 if (!string.IsNullOrWhiteSpace(House))
                 {
-                    res += ", д. " + House;
+                    res += " Дом " + House;
                 }
 
                 if (!string.IsNullOrWhiteSpace(Corpus))
                 {
-                    res += ", корп. " + Corpus;
+                    res += " Корпус " + Corpus;
                 }
 
                 if (!string.IsNullOrWhiteSpace(Stroenie))
                 {
-                    res += ", стр. " + Stroenie;
+                    res += " Строение " + Stroenie;
                 }
 
                 if (!string.IsNullOrWhiteSpace(Vladenie))
                 {
-                    res += ", влад. " + Vladenie;
+                    res += " Владение " + Vladenie;
                 }
             }
 
