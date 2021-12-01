@@ -14,7 +14,8 @@ $(function () {
     });
     $('#yearOfRestSelect').on("change", function (event) {
         var selectedElement = $("#yearOfRestSelect option:selected").text();
-        setText("#yearOfRest", { id: "#yearOfRest", text: selectedElement });
+        //setText("#yearOfRest", { id: "#yearOfRest", text: selectedElement })
+        setText("#yearOfRest", selectedElement);
     });
     $("#districtName").on("change", function (event) {
         var selectedElement = $("#districtName").select2('data');
