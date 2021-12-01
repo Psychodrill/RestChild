@@ -1,0 +1,89 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@using RestChild.Web.Extensions
+@model RestChild.Web.Models.OrganizationGBUViewModel
+@{
+    var title = Model.Data.Id > 0 ? "Редактирование ГБУ" : "Создание ГБУ";
+
+    ViewBag.Title = title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var isEdit = Security.HasRight(AccessRightEnum.Organization.GBUEdit);
+}
+
+<h2>@title</h2>
+<a href="@Url.Action("List", "OrganizationGBU")">Вернуться</a>
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("Save", "OrganizationGBU", FormMethod.Post, new {enctype = "multipart/form-data"}))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.Data.Id)
+            @Html.HiddenFor(model => model.Data.LastUpdateTick)
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        @if (isEdit)
+                        {
+                            <button type="submit" class="btn btn-default btn-primary">
+                                <i class="glyphicon glyphicon-pencil"></i> Сохранить
+                            </button>
+                        }
+                    </div>
+                </div>
+
+                @if (!(Model.IsValid ?? true))
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="summary-block">@Html.Raw(Model.ErrorMessage)</div>
+                        </div>
+                    </div>
+                }
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Название учреждения</label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.Data.ShortName, new {@class = "form-control", maxlength = 1000, autocomplete = "off"}).DisableIf(!isEdit)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Полное название учреждения</label>
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(model => model.Data.FullName, new {@class = "form-control", maxlength = 1000, autocomplete = "off"}).DisableIf(!isEdit)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Префектура</label>
+                    <div class="col-md-8">
+                        @Html.HiddenFor(r => r.Data.OrganisationId, new {@class = "form-control organisationSelect", @data_default_id = Model.Data.OrganisationId, @data_default_text = Model.NullSafe(x => x.Data.Organisation.Name)}).DisableIf(!isEdit)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Фактический адрес</label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.Data.FactAddress, new {@class = "form-control", maxlength = 1000, autocomplete = "off"}).DisableIf(!isEdit)
+                    </div>
+                </div>
+            </fieldset>
+        }
+    </div>
+</div>
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale("ru");
+    </script>
+
+    <script type="text/javascript" src="~/Scripts/Vocabulary/gbu.js"></script>
+}

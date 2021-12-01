@@ -107,6 +107,11 @@
         /// <summary>
         ///     Причина отказа - отказ от всех предложенных вариантов (минилок 2020)
         /// </summary>
-        RefuseAllVariantsCovid2020 = 302
+        RefuseAllVariantsCovid2020 = 302,
+
+        /// <summary>
+        ///     Отсутствие квоты на отдых и оздоровление.
+        /// </summary>
+        LackOfQuotaForRestAndHealthImprovement = 201705
     }
 }

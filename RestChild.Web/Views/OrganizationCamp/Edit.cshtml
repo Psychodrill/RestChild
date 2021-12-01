@@ -1,0 +1,97 @@
+﻿@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@using RestChild.Web.Extensions
+@model RestChild.Web.Models.OrganizationCampViewModel
+@{
+    var title = Model.Data.Id > 0 ? "Редактирование лагеря" : "Создание лагеря";
+
+    ViewBag.Title = title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var isEdit = Security.HasRight(AccessRightEnum.Organization.CampEdit);
+}
+
+<h2>@title</h2>
+<a href="@Url.Action("List", "OrganizationCamp")">Вернуться</a>
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.BeginForm("Save", "OrganizationCamp", FormMethod.Post, new {enctype = "multipart/form-data"}))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.Data.Id)
+            @Html.HiddenFor(model => model.Data.LastUpdateTick)
+            <fieldset class="form-horizontal">
+                @if (isEdit)
+                {
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-default btn-primary">
+                                <i class="glyphicon glyphicon-pencil"></i> Сохранить
+                            </button>
+                        </div>
+                    </div>
+                }
+
+                @if (!(Model.IsValid ?? true))
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="summary-block">@Html.Raw(Model.ErrorMessage)</div>
+                        </div>
+                    </div>
+                }
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Название учреждения</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.ShortName, new {@class = "form-control", maxlength = 1000, autocomplete = "off"}).DisableIf(!isEdit)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Полное название учреждения</label>
+                    <div class="col-md-9">
+                        @Html.TextAreaFor(model => model.Data.FullName, new {@class = "form-control", maxlength = 1000, autocomplete = "off"}).DisableIf(!isEdit)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Регион РФ</label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.Data.RegionId, new SelectList(Model.Regions.Select(t => new {Id = (long?) t.Id, t.Name}).ToList().InsertAt(new {Id = (long?) null, Name = "-- Не выбрано --"}), "Id", "Name"), new {@class = "form-control", autocomplete = "off"}).DisableIf(!isEdit)
+                    </div>
+                    <label class="col-md-1 control-label text-right">ИНН</label>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(model => model.Data.Inn, new {@class = "form-control integer", maxlength = 12, autocomplete = "off"}).DisableIf(!isEdit)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Фактический адрес</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.FactAddress, new {@class = "form-control", maxlength = 1000, autocomplete = "off"}).DisableIf(!isEdit)
+                    </div>
+                </div>
+            </fieldset>
+        }
+    </div>
+</div>
+
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+        moment.locale("ru");
+
+        $(function () {
+            $('select').select2();
+        });
+    </script>
+}

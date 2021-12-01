@@ -356,6 +356,10 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                                 PdfAddParagraph(document, 0, 10, Element.ALIGN_LEFT, 0,
                                     new Chunk($"{child.LastName} {child.FirstName} {child.MiddleName}, {child.DateOfBirth.FormatExGR(string.Empty)}, {child.Snils}", MainText));
+                                if (requests.Any())
+                                {
+                                    AddTableChildTours(document, requests);
+                                }
                             }
                         }
                     }
@@ -999,7 +1003,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     //    "документ, подтверждающий отнесение ребёнка, к одной из категорий детей, находящихся в трудной жизненной ситуации и указанных в пунктах 3.1.3, 3.1.5 - 3.1.13 Порядка, лица из числа детей-сирот к категории лиц из числа детей-сирот и детей, оставшихся без попечения родителей (заключение медико-социальной экспертизы, заключение Центральной психолого-медико-педагогической комиссии города Москвы, справки уполномоченного учреждения социальной защиты населения города Москвы и/или федеральных органов);"
                     //};
 
-                    //доработка для наркоманов
+                    
                     List<string> innerListOrphans = new List<string>();
                     List<string> innerListDisabled = new List<string>();
                     List<string> innerListLowIncome = new List<string>();
@@ -1759,11 +1763,50 @@ namespace RestChild.DocumentGeneration.PDFDocuments
             document.Add(p);
         }
 
+        /// <summary>
+        ///     Добавить таблицу
+        /// </summary>
+        private static void AddTableChildTours(Document doc, IEnumerable<Request> requests)
+        {
+            var table = new PdfPTable(3);
+            table.SetWidthPercentage(new float[] { 120, 230, 250 }, PageSize.A4);
+
+            table.AddCell(new Phrase("Год кампании", HeaderFont));
+            table.AddCell(new Phrase("Вид услуги (путевка, сертификат, компенсация)", HeaderFont));
+            table.AddCell(new Phrase("Организация отдыха и оздоровления (в случае предоставления путевки для отдыха и оздоровления), даты заезда", HeaderFont));
+
+            var moneyTypes = new[]
+            {
+                (long?) TypeOfRestEnum.MoneyOn18, (long?) TypeOfRestEnum.MoneyOn3To7,
+                (long?) TypeOfRestEnum.MoneyOn7To15, (long?) TypeOfRestEnum.MoneyOnInvalidOn4To17
+            };
+
+            foreach (var request in requests)
+            {
+                var year = request.YearOfRest?.Name;
+                if (request.ParentRequestId.HasValue &&
+                    request.YearOfRest?.Year - 1 == request.ParentRequest.YearOfRest?.Year)
+                {
+                    year = $"{request.ParentRequest.YearOfRest?.Name} (дополнительная кампания)";
+                }
+
+                table.AddCell(new Phrase(year, MainText));
+                table.AddCell(new Phrase(request.TypeOfRest?.Name, MainText));
+                table.AddCell(new Phrase(request.TourId.HasValue
+                    ? $"{request.Tour.Hotels?.Name}, c {request.Tour.DateIncome.FormatEx(string.Empty)} по {request.Tour.DateOutcome.FormatEx(string.Empty)}"
+                    : (request.RequestOnMoney && !moneyTypes.Contains(request.TypeOfRestId)
+                        ? "Осуществлен выбор сертификата на втором этапе заявочной кампании"
+                        : " "), MainText));
+            }
+
+            doc.Add(table);
+        }
+
 
         /// <summary>
         ///     Подпись работника
         /// </summary>
-        private static void SignWorkerBlock(Document document, Account account, string name = "Принял:")//костыль, который надо обязательно переделать
+        private static void SignWorkerBlock(Document document, Account account, string name = "Принял:")
         {
             
             account = account ?? new Account();

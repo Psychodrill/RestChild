@@ -1,0 +1,100 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.OrganizationGBUSearchModel
+
+@{
+    var isEdit = Security.HasRight(AccessRightEnum.Organization.GBUEdit);
+
+    ViewBag.Title = "Реестр ГБУ";
+    ViewBag.Caption = "Реестр ГБУ";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.NeedInsertButton = isEdit;
+    ViewBag.InsertAction = "Add";
+    ViewBag.Controller = "OrganizationGBU";
+    ViewBag.InsertButtonCaption = "Добавить ГБУ";
+
+
+}
+
+@section scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+
+    <script type="text/javascript">
+        moment.locale("ru");
+    </script>
+
+    <script type="text/javascript" src="~/Scripts/Vocabulary/gbu.js"></script>
+}
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section searchForm
+{
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Название</label>
+        <div class="col-md-10">
+            @Html.TextBoxFor(r => r.Name, new {@class = "form-control"})
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Префектура</label>
+        <div class="col-md-10">
+            @Html.HiddenFor(r => r.OrganisationId, new {@class = "form-control organisationSelect", @data_default_id = Model.OrganisationId, @data_default_text = Model.OrganisationName})
+        </div>
+    </div>
+}
+@section searchResult
+{
+    @if (Model.Results != null && Model.Results.Any())
+    {
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center" width="5%">№</th>
+                    <th class="text-center">Наименование ГБУ</th>
+                    <th class="text-center">Адресс</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ var rowNumber = Model.Results.FirstItemOnPage; }
+                @foreach (var gbu in Model.Results.ToList())
+                {
+                    <tr>
+                        <td class="text-center">@(rowNumber++)</td>
+                        <td class="text-center">@gbu.Data.ShortName</td>
+                        <td class="text-left">@gbu.Data.FactAddress</td>
+                        <td class="text-center">@Html.ActionLink(" ", "Edit", new { orgId = gbu.Data.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.PagedListPager(Model.Results, page =>
+                {
+                    Model.Results = null;
+                    Model.PageNumber = page;
+                    return Url.Action("List", Model);
+                }, new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
+}

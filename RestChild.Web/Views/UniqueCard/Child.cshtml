@@ -230,52 +230,83 @@
                     <tr>
                         <th>Год предоставления</th>
                         <th>Вид услуги</th>
+                        <th>Регион, период отдыха</th>
                         <th>Заявление</th>
+                        <th>Результат оказания услуги</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var d in requests.Where(y => y.Request.YearOfRest != null).ToList())
                     {
+                        bool isCert = d.Request.Certificates.Any(c => c.StateMachineStateId == StateMachineStateEnum.Certificate.PaidOff);
+                        var cert = isCert ? @d.Request.Certificates.Where(c => c.StateMachineStateId == StateMachineStateEnum.Certificate.PaidOff).FirstOrDefault() : null;
                         <tr>
                             <td>
                                 @(d.Request.YearOfRest.Name)
                             </td>
                             <td>
                                 <div>
-                                    @if (certificateIssued.Contains(d))
-                                    {
-                                        <span> Сертификат № @(d.Request.CertificateNumber) от @(d.Request.CertificateDate.FormatEx()) <br /></span>
-                                    }
-
                                     @(d.Request.TypeOfRest.Name)
-                                    @if (d.Request.Tour != null && d.Request.Tour.Hotels != null)
-                                    {
-                                        <div>@d.Request.Tour.Hotels.Name</div>
-                                        <div>
-                                            @if (d.Request.Tour.TimeOfRest != null)
-                                            {
-                                                <span>@d.Request.Tour.TimeOfRest.Name,</span>
-                                            }
-                                            c @d.Request.Tour.DateIncome.FormatEx() до @d.Request.Tour.DateOutcome.FormatEx()
-                                        </div>
-                                    }
-                                    @if (certificateIssued.Contains(d))
-                                    {
-                                        <span> @(d.Request.Price % 1 != null ? d.Request.Price/1 :00) руб. @(d.Request.Price%1!=null ? d.Request.Price % 1 : 00) коп. <br /></span>
-                                    }
                                 </div>
                                 @if (d.TypeViolation != null)
                                 {
                                     <div style="font-style: italic">
                                         @d.TypeViolation.Name
-                                    </div>
+                                    </div>  }
+                            </td>
+                            <td>
+                                @if (isCert)
+                                {
+                                    <div>@cert.Place</div>
+                                    <div>@cert.Region</div><br>
+                                    <div>Период отдыха</div>
+                                    <div>с @cert.RestDateFrom по @cert.RestDateTo</div> }
+                                else
+                                {
+                                    if (d.Request.Tour != null && d.Request.Tour.Hotels != null)
+                                    {
+                                        <div>@d.Request.Tour.Hotels.Name</div>
+                                        <div>
+                                            @if (d.Request.Tour.TimeOfRest != null)
+                                            {
+                                                <span>@d.Request.Tour.TimeOfRest.Name,</span>}
+                                            c @d.Request.Tour.DateIncome.FormatEx() до @d.Request.Tour.DateOutcome.FormatEx()
+                                        </div>}
                                 }
                             </td>
                             <td>
                                 <a href="@Url.Action("RequestEdit", "FirstRequestCompany", new {id = d.RequestId})" target="_blank">@d.Request.RequestNumber</a>
                             </td>
+                            <td>
+                                @if (isCert)
+                                {
+                                    <div>
+                                        @cert.StateMachineState.Name
+                                    </div><br>
+                                    <div>
+                                        Стоимость договора общая
+                                    </div>
+                                    <div>
+                                        @cert.FullPrice
+                                    </div><br>
+                                    <div>
+                                        Сумма отдыха ребёнка согласно калькуляции
+                                    </div>
+                                    <div>
+                                        @cert.PriceForChild
+                                    </div> }
+                                else
+                                {
+                                    if (d.Request.DeclineReasonId == (long)DeclineReasonEnum.LackOfQuotaForRestAndHealthImprovement)
+                                    {
+                                        <div>Отказ в предоставлении услуги (квота)</div> }
+                                    else
+                                    {
+                                        <div>@d.Request.Status.Name</div>}
+                                }
+                            </td>
                         </tr>
-                    }
+}
                 </tbody>
             </table>
         }

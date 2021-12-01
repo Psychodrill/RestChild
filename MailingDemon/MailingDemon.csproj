@@ -298,7 +298,9 @@
     <Compile Include="Tasks\SecurityEmailSendTask.cs" />
     <Compile Include="Tasks\SendEmails.cs" />
     <Compile Include="Tasks\SendMobileEmails.cs" />
+    <Compile Include="Tasks\SendMobileSmsTask.cs" />
     <Compile Include="Tasks\SendRequestEvent.cs" />
+    <Compile Include="Tasks\SendSms.cs" />
     <Compile Include="Tasks\TaskNameConfig.cs" />
     <Compile Include="Tasks\TaskName.cs" />
     <Compile Include="Tasks\BaseTask.cs" />

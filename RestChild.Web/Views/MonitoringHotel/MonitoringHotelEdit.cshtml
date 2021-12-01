@@ -1,0 +1,120 @@
+﻿@using RestChild.Web.Extensions
+@model RestChild.Web.Models.MonitoringHotel.MonitoringHotelModel
+
+@{
+	ViewBag.Title = "Реестр объектов";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="form-group row">
+	<div class="col-md-12">
+		<h2>Объект отдыха</h2>
+		@Html.ActionLink("Вернуться", "Search")
+	</div>
+</div>
+
+@using (Html.BeginForm("Save", "MonitoringHotel", FormMethod.Post, new { enctype = "multipart/form-data", id = "monitoringHotelForm" }))
+{
+	@Html.AntiForgeryToken()
+
+	@Html.HiddenFor(m => m.StateMachineActionString)
+
+	@Html.Partial("Assets/_StatePanel", Model.State)
+
+	@Html.HiddenFor(m => m.Data.Id)
+	@Html.HiddenFor(m => m.Data.RegionId)
+    @Html.HiddenFor(m => m.Data.HistoryLinkId)
+
+	if (!ViewData.ModelState.IsValid)
+	{
+		<div class="alert alert-danger" role="alert">
+			@Html.ValidationSummary(false)
+		</div>
+	}
+    <div class="row">
+        <div class="col-md-12">
+            <fieldset class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-default btn-primary">
+                            <i class="glyphicon glyphicon-pencil"></i> Сохранить
+                        </button>
+                        @if (Model.Data.Id > 0)
+                        {
+                            <a class="btn btn-default btn-danger" href="@Url.Action("Delete", "MonitoringHotel", new { @Id = Model.Data.Id })">
+                                <i class="glyphicon glyphicon-remove"></i> Удалить
+                            </a>
+                        }
+                        @if (Model.Data.HistoryLinkId.HasValue)
+                        {
+                            <a data-history-id="@Model.Data.HistoryLinkId" class="btn btn-default btn-hystory-link" href="#">История</a>
+                        }
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Сокращенное название<span class="requared">*</span></label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.ShortName, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                        @Html.ValidationMessageFor(model => model.Data.ShortName, "Заполните поле")
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Полное название</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.FullName, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Фактический адрес</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.FactAddress, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">ИНН</label>
+                    <div class="col-md-9">
+                        @Html.TextBoxFor(model => model.Data.Inn, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-3 control-label text-right">Регион</label>
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(m => m.DistrictId, new SelectList(Model.Districts, "Key", "Value"), new {@class = "form-control"})
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+    </div>
+
+}
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+    @Scripts.Render("~/Scripts/assets/HistoryLinkControl.js")
+    @Scripts.Render("~/Scripts/doT.js")
+    @Html.Partial("Assets/HistoryLinkTemplate")
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+    <script type="text/javascript">
+
+    	moment.locale('ru');
+
+        $(function () {
+            $('select').select2();
+        });
+
+    </script>
+}
+
+

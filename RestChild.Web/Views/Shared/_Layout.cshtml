@@ -241,7 +241,7 @@
                 @if (Security.HasRightForSomeOrganization(AccessRightEnum.Hotel.View))
                 {
                     <li>@Html.ActionLink("Реестр оздоровительных организаций", "Search", "Hotels")</li>
-                    if (Security.HasAnyRightsForSomeOrganization(new[] {AccessRightEnum.PlaceOfRestManage, AccessRightEnum.VocabularyManage, AccessRightEnum.Organization.View, AccessRightEnum.AccountManage, AccessRightEnum.CityView}))
+                    if (Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.PlaceOfRestManage, AccessRightEnum.VocabularyManage, AccessRightEnum.Organization.View, AccessRightEnum.AccountManage, AccessRightEnum.CityView }))
                     {
                         <li role="separator" class="divider"></li>
                     }
@@ -265,17 +265,29 @@
                 {
                     <li>@Html.ActionLink("Организации", "List", "Organization")</li>
                 }
-                @if (Security.HasAnyRights(new[] {AccessRightEnum.CityView}))
+                @if (Security.HasRight(AccessRightEnum.Organization.GBUView))
+                {
+                    <li>@Html.ActionLink("ГБУ подведомственные префектурам", "List", "OrganizationGBU")</li>
+                }
+                @if (Security.HasRight(AccessRightEnum.Organization.GBUView))
+                {
+                    <li>@Html.ActionLink("Справочник лагерей РФ", "List", "OrganizationCamp")</li>
+                }
+                @if (Security.HasAnyRights(new[] { AccessRightEnum.CityView }))
                 {
                     <li>@Html.ActionLink("Города", "Search", "City")</li>
                 }
-                @if (Security.HasAnyRights(new[] {AccessRightEnum.PedParty.PedPartyView, AccessRightEnum.PedParty.PedPartyManage}))
+                @if (Security.HasAnyRights(new[] { AccessRightEnum.PedParty.PedPartyView, AccessRightEnum.PedParty.PedPartyManage }))
                 {
                     <li>@Html.ActionLink("Педотряды", "Search", "PedParty")</li>
                 }
-                @if (Security.HasAnyRights(new[] {AccessRightEnum.ManageExchangeBaseRegistry}))
+                @if (Security.HasAnyRights(new[] { AccessRightEnum.ManageExchangeBaseRegistry }))
                 {
                     <li>@Html.ActionLink("Управление отправкой запросов в базовый регистр", "ManageExchangeBaseRegistry", "BaseRegistry")</li>
+                }
+                @if (Security.HasAnyRights(new[] { AccessRightEnum.VocabularyManage }))
+                {
+                    <li>@Html.ActionLink("Объекты отдыха", "Search", "MonitoringHotel")</li>
                 }
                 @if (Security.HasAnyRights(new[] {AccessRightEnum.MosgorturScheduleBookingView, AccessRightEnum.MosgorturBookingTargetsView, AccessRightEnum.MosgorturWorkingDaysView,
                                                   AccessRightEnum.MosgorturScheduleBookingViewClientDepartment, AccessRightEnum.MosgorturBookingTargetsViewClientDepartment, AccessRightEnum.MosgorturWorkingDaysViewClientDepartment,
@@ -284,7 +296,7 @@
                     <li role="separator" class="divider"></li>
                     if (Security.HasRight(AccessRightEnum.MosgorturScheduleBookingView) || Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewClientDepartment) || Security.HasRight(AccessRightEnum.MosgorturScheduleBookingViewBookingDepartment))
                     {
-                        <li>@Html.ActionLink("Реестр записи на приём в ГАУК «МОСГОРТУР»", "Search", "BookingMosgorturReestr", new {filter = System.Guid.NewGuid().ToString()}, null)</li>
+                        <li>@Html.ActionLink("Реестр записи на приём в ГАУК «МОСГОРТУР»", "Search", "BookingMosgorturReestr", new { filter = System.Guid.NewGuid().ToString() }, null)</li>
                     }
                     if (Security.HasRight(AccessRightEnum.MosgorturWorkingDaysView) || Security.HasRight(AccessRightEnum.MosgorturWorkingDaysViewClientDepartment) || Security.HasRight(AccessRightEnum.MosgorturWorkingDaysViewBookingDepartment))
                     {
@@ -295,7 +307,7 @@
                         <li>@Html.ActionLink("Цели обращения в ГАУК «МОСГОРТУР»", "Search", "BookingMosgorturTargets")</li>
                     }
                 }
-                @if (Security.HasAnyRights(new[] {AccessRightEnum.ZAGSIntegration, AccessRightEnum.DTSZNIntegration, AccessRightEnum.ChildTransfer}))
+                @if (Security.HasAnyRights(new[] { AccessRightEnum.ZAGSIntegration, AccessRightEnum.DTSZNIntegration, AccessRightEnum.ChildTransfer }))
                 {
                     <li role="separator" class="divider"></li>
                     if (Security.HasRight(AccessRightEnum.ZAGSIntegration))
