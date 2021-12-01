@@ -19,7 +19,6 @@ $(() => {
 
     $('#yearOfRestSelect').on("change", (event) => {
         var selectedElement = $("#yearOfRestSelect option:selected").text();
-        //setText("#yearOfRest", { id: "#yearOfRest", text: selectedElement })
         setText("#yearOfRest", selectedElement);
 	});
 

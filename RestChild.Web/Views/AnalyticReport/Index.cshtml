@@ -21,10 +21,8 @@
                 <label class="col-md-2 control-label text-right">Год кампании</label>
                 <div class="col-md-4 form-group">
                     @{
-                        var currentYear = DateTime.Now.Year.ToString();
+
                         var selectedYear = Model.YearsOfRest.Where(d=>d.DateFirstStage!=null).Max(y => y.Year);
-                        //var selectedYearName = selectedYear != null ? selectedYear.Name : string.Empty;
-                        //Model.YearOfRest = selectedYear;
                         @Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.YearsOfRest.OrderBy(i => i.Year), "Id", "Year", Model.YearsOfRest.FirstOrDefault(y => y.Year == selectedYear).Id), new { id = "yearOfRestSelect", @class = "form-control select2", autocomplete = "off" })
                         @Html.HiddenFor(m => m.YearOfRest, new { id = "yearOfRest", Value =selectedYear })
                     }
