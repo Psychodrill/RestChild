@@ -95,7 +95,8 @@ $(() => {
             '#ArrivalId',
             '#TypeOfTransportId',
             '#ExchangeBaseRegistryTypeId',
-            //'#yearOfRestSelect'
+            '#StatusId',
+            '#TypeOfRestId'
         ];
         //#endregion        
 
@@ -125,8 +126,7 @@ $(() => {
         }
 
         function setDefaultCheckBoxValue(id) {
-            $(id).val('false');
-
+            $(id).prop('checked', false);
         }
         function setDefaultDropDownListYearValue(nameId, selectId) {
 
