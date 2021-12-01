@@ -1,9 +1,9 @@
-﻿declare var defaultYearItem;
+﻿
 $(() => {
 	moment.locale('ru');
 	$('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
 
-    defaultYearItem = $("#yearOfRestSelect option:default");
+    var defaultYearItem = $("#yearOfRestSelect option:default");
 	function setText(id: string, select2Element: any) {
 		var str=null;
 		if (select2Element != null)
