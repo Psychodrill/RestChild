@@ -1,6 +1,7 @@
 $(function () {
     moment.locale('ru');
     $('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
+    defaultYearItem = $("#yearOfRestSelect option:default");
     function setText(id, select2Element) {
         var str = null;
         if (select2Element != null)
@@ -13,7 +14,6 @@ $(function () {
     });
     $('#yearOfRestSelect').on("change", function (event) {
         var selectedElement = $("#yearOfRestSelect option:selected").text();
-        //setText("#yearOfRest",selectedElement);
         setText("#yearOfRest", { id: "#yearOfRest", text: selectedElement });
     });
     $("#districtName").on("change", function (event) {
@@ -87,7 +87,6 @@ $(function () {
         textboxIds.forEach(function (id) { return setDefaultTextboxValue(id); });
         dropdownListIds.forEach(function (id) { return setDefaultDropDownListValue(id); });
         select2DropDownIds.forEach(function (element) { return setDefaultSelect2DropDownValue(element.nameId, element.selectId); });
-        //var asd = document.
         setDefaultDropDownListYearValue('#yearOfRest', '#yearOfRestSelect');
         //#region Helpers
         function setDefaultSelect2DropDownValue(nameId, selectId) {
@@ -104,9 +103,8 @@ $(function () {
             $(id).val('false');
         }
         function setDefaultDropDownListYearValue(nameId, selectId) {
-            var hiddenValue = $(nameId).val();
-            setText(nameId, { id: nameId, text: hiddenValue });
-            $(selectId).select2('data', { id: nameId, text: hiddenValue });
+            setText(nameId, { id: defaultYearItem.val(), text: defaultYearItem.text() });
+            $(selectId).select2('data', { id: defaultYearItem.val(), text: defaultYearItem.text() });
         }
         //#endregion        
     });
