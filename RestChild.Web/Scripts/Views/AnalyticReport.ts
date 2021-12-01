@@ -1,9 +1,9 @@
-﻿declare var defaultYear;
+﻿declare var defaultYearItem;
 $(() => {
 	moment.locale('ru');
 	$('.datepicker-anytime').datetimepicker({ showTodayButton: true, format: 'DD.MM.YYYY' });
 
-
+    defaultYearItem = $("#yearOfRestSelect option:default");
 	function setText(id: string, select2Element: any) {
 		var str=null;
 		if (select2Element != null)
@@ -19,7 +19,6 @@ $(() => {
 
 	$('#yearOfRestSelect').on("change", (event) => {
 		var selectedElement = $("#yearOfRestSelect option:selected").text();
-        //setText("#yearOfRest",selectedElement);
         setText("#yearOfRest", { id: "#yearOfRest", text: selectedElement })
 	});
 
@@ -109,8 +108,8 @@ $(() => {
         dropdownListIds.forEach((id) => setDefaultDropDownListValue(id));
         select2DropDownIds.forEach((element) => setDefaultSelect2DropDownValue(element.nameId, element.selectId));
 
-        //var asd = document.
-        setDefaultDropDownListYearValue('#yearOfRest','#yearOfRestSelect');
+        setDefaultDropDownListYearValue('#yearOfRest', '#yearOfRestSelect');
+
         //#region Helpers
         function setDefaultSelect2DropDownValue(nameId, selectId) {
             setText(nameId, { id: '', text: '' });
@@ -130,9 +129,10 @@ $(() => {
 
         }
         function setDefaultDropDownListYearValue(nameId, selectId) {
-            /*var hiddenValue = $(nameId).val();*/
-            setText(nameId, { id: nameId, text: hiddenValue });
-            $(selectId).select2('data', { id: nameId, text: hiddenValue });
+
+            setText(nameId, { id: defaultYearItem.val(), text: defaultYearItem.text() });
+            $(selectId).select2('data', { id: defaultYearItem.val(), text: defaultYearItem.text() });
+
         }
         //#endregion        
     });
