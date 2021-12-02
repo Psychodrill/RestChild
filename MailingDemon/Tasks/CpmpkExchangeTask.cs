@@ -179,7 +179,7 @@ namespace MailingDemon.Tasks
                     // нужно для формирования ответа для тех сущностей, которые были созданы в результате ручной проверки
                     var ebrsWithNullResponseText = unitOfWork.GetSet<RestChild.Domain.ExchangeBaseRegistry>()
                         .Where(x => x.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange &&
-                                    string.IsNullOrEmpty(x.ResponseText))
+                                    string.IsNullOrEmpty(x.ResponseText) && x.IsAddonRequest)
                         .ToList();
 
                     foreach (var ebr in ebrsWithNullResponseText)
@@ -195,13 +195,14 @@ namespace MailingDemon.Tasks
                                 var responseData = response.Content.ReadAsStringAsync().Result;
                                 var dto = JsonConvert.DeserializeObject<CpmpkResponseDto>(responseData);
 
-                                if (!ebr.NotActual && ebr.ExchangeBaseRegistryTypeId ==
-                                    (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange)
-                                {
-                                    ebr.NotActual = true;
-                                }
+                                //if (!ebr.NotActual && ebr.ExchangeBaseRegistryTypeId ==
+                                //    (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange)
+                                //{
+                                //    ebr.NotActual = true;
+                                //}
 
                                 ebr.ResponseText = responseData;
+                                ebr.IsProcessed = true;
                                 unitOfWork.SaveChanges();
                             }
                         }

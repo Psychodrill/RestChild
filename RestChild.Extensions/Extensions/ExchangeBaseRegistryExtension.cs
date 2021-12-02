@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
@@ -307,14 +308,31 @@ namespace RestChild.Extensions.Extensions
 
             if (self.ExchangeBaseRegistryTypeId == (long) ExchangeBaseRegistryTypeEnum.CpmpkExchange)
             {
-                request = new BenefitCheckRequest
+                if (!self.IsAddonRequest)
                 {
-                    LastName = self.Child?.LastName,
-                    FirstName = self.Child?.FirstName,
-                    MiddleName = self.Child?.MiddleName,
-                    DateOfBirth = self.Child?.DateOfBirth,
-                    CpmpkResponse = JsonConvert.DeserializeObject<CpmpkResponseDto>(self.ResponseText)
-                };
+                    request = new BenefitCheckRequest
+                    {
+                        LastName = self.Child?.LastName,
+                        FirstName = self.Child?.FirstName,
+                        MiddleName = self.Child?.MiddleName,
+                        DateOfBirth = self.Child?.DateOfBirth,
+                        CpmpkResponse = JsonConvert.DeserializeObject<CpmpkResponseDto>(self.ResponseText)
+                    };
+                }
+                else if (!string.IsNullOrWhiteSpace(self.SearchField))
+                {
+                    string[] fio = self.SearchField.Split('|');
+                    request = new BenefitCheckRequest
+                    {
+                        LastName = fio.Length > 0 ? Regex.Replace(fio[0], @"\b[a-zа-яё]", m => m.Value.ToUpper()) : "",
+                        FirstName = fio.Length > 1 ? Regex.Replace(fio[1], @"\b[a-zа-яё]", m => m.Value.ToUpper()) : "",
+                        MiddleName = fio.Length > 2 ? Regex.Replace(fio[2], @"\b[a-zа-яё]", m => m.Value.ToUpper()) : "",
+                        DateOfBirth = self.BirthDate,
+                        CpmpkResponse = JsonConvert.DeserializeObject<CpmpkResponseDto>(self.ResponseText)
+                    };
+                }
+
+                
             }
             else if (self.ExchangeBaseRegistryTypeId ==
                      (long) ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck)
