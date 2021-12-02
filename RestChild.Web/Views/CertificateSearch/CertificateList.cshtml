@@ -275,14 +275,14 @@
                                  }
                             </td>
                             <td style="min-width: 215px">
-                                @if (cert.Request.Tour != null)
+                                @if (cert.Place != null)
                                 {
-                                    @Html.Raw(cert.Request.NullSafe(r => r.Tour.Hotels.Name).FormatEx())
-                                    <div>
-                                        <small><i style="color: #666">@Html.Raw(cert.Request.NullSafe(r => r.Tour.Hotels.PlaceOfRest.Name).FormatEx())</i></small>
-                                    </div>
+                                    @Html.Raw(cert.Place.FormatEx())
+                                    @*<div>
+                                        <small><i style="color: #666">@Html.Raw(cert.Place).FormatEx())</i></small>
+                                    </div>*@
                                 }
-                                else if (cert.Request.PlaceOfRestId.HasValue)
+                                @*else if (cert.Request.PlaceOfRestId.HasValue)
                                 {
                                     <div>
                                         @Html.Raw(cert.Request.NullSafe(r => r.PlaceOfRest.Name).FormatEx())
@@ -299,34 +299,35 @@
                                             </div>
                                         }
                                     </div>
-                                }
+                                }*@
                             </td>
                             @*<td>
                                     @Html.Raw(cert.Request.TypeOfRest != null && cert.Request.TypeOfRest.Parent != null ? string.Format("{0} / {1}", cert.Request.TypeOfRest.Parent.Name, cert.Request.TypeOfRest.Name) : cert.Request.TypeOfRest != null ? cert.Request.TypeOfRest.Name : cert.Request.NullSafe(r => r.TypeOfRest.Name).FormatEx())
                                 </td>*@
-                            <td>
-                                <div>
-                                    @Html.Raw(cert.Request.Tour != null && cert.Request.Tour.TimeOfRest != null ? cert.Request.NullSafe(r => r.Tour.TimeOfRest.Name).FormatEx() : cert.Request.NullSafe(r => r.TimeOfRest.Name).FormatEx())
-                                </div>
-                                @if (cert.Request.Tour != null)
-                                {
-                                    <div>
-                                        <small><i style="color: #666">@string.Format("{0}-{1}", cert.Request.Tour.DateIncome.FormatEx(), cert.Request.Tour.DateOutcome.FormatEx())</i></small>
-                                    </div>
-                                }
-                                @if (cert.Request.TimesOfRest != null && cert.Request.TimesOfRest.Any())
-                                {
-                                    <div>
-                                        <i>Дополнительно:</i>
-                                        @foreach (var a in cert.Request.TimesOfRest ?? new List<RequestsTimeOfRest>())
-                                        {
-                                            <div>
-                                                <small><i style="color: #666">@Html.Raw(a.TimeOfRest.Name.FormatEx())</i></small>
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                            </td>
+                        <td>
+                            <div>@(cert.RestDateFrom.FormatEx()) - @(cert.RestDateTo.FormatEx())</div>
+                            @*<div>
+            @Html.Raw(cert.Request.Tour != null && cert.Request.Tour.TimeOfRest != null ? cert.Request.NullSafe(r => r.Tour.TimeOfRest.Name).FormatEx() : cert.Request.NullSafe(r => r.TimeOfRest.Name).FormatEx())
+        </div>
+        @if (cert.Request.Tour != null)
+        {
+            <div>
+                <small><i style="color: #666">@string.Format("{0}-{1}", cert.Request.Tour.DateIncome.FormatEx(), cert.Request.Tour.DateOutcome.FormatEx())</i></small>
+            </div>
+        }
+        @if (cert.Request.TimesOfRest != null && cert.Request.TimesOfRest.Any())
+        {
+            <div>
+                <i>Дополнительно:</i>
+                @foreach (var a in cert.Request.TimesOfRest ?? new List<RequestsTimeOfRest>())
+                {
+                    <div>
+                        <small><i style="color: #666">@Html.Raw(a.TimeOfRest.Name.FormatEx())</i></small>
+                    </div>
+                }
+            </div>
+        }*@
+                        </td>
                             @*<td>
                                     <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
                                 </td>

@@ -261,7 +261,12 @@
                                     }
                                     @if (certificateIssued.Contains(d))
                                     {
-                                        <span> @(d.Request.Price % 1 != null ? d.Request.Price/1 :00) руб. @(d.Request.Price%1!=null ? d.Request.Price % 1 : 00) коп. <br /></span>
+                                        <br /><span> Регион отдыха: @(d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).FirstOrDefault().Region) </span>
+                                        <span> Место отдыха: @(d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).FirstOrDefault().Place) </span> <br />
+                                        <span> Время отдыха с @(d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).FirstOrDefault().RestDateFrom.FormatEx()) по @(d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).FirstOrDefault().RestDateTo.FormatEx()) </span> <br />
+
+                                        <span> Стоимость отдыха ребёнка: @(d.Request.Certificates.Where(cert=>cert.RequestId == d.RequestId).FirstOrDefault().PriceForChild % 1 != null ? d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).FirstOrDefault().PriceForChild / 1 :00) руб. @*@(d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).FirstOrDefault().PriceForChild % 1!=null ? d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).FirstOrDefault().PriceForChild % 1 : 00) коп.*@ <br /></span>
+                                        <span> Полная стоимость отдыха: @(d.Request.Certificates.Where(cert=>cert.RequestId == d.RequestId).FirstOrDefault().FullPrice % 1 != null ? d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).FirstOrDefault().FullPrice / 1 :00) руб. @*@(d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).FirstOrDefault().PriceForChild % 1!=null ? d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).FirstOrDefault().PriceForChild % 1 : 00) коп.*@ <br /></span>
                                     }
                                 </div>
                                 @if (d.TypeViolation != null)
