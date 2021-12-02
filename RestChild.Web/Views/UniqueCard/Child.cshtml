@@ -244,7 +244,7 @@
                                 <div>
                                     @if (certificateIssued.Contains(d))
                                     {
-                                        <span> Сертификат № @(d.Request.CertificateNumber) от @(d.Request.CertificateDate.FormatEx()) <br /></span>
+                                        <span> № @(d.Request.CertificateNumber) от @(d.Request.CertificateDate.FormatEx()) <br /></span>
                                     }
 
                                     @(d.Request.TypeOfRest.Name)
@@ -259,7 +259,7 @@
                                             c @d.Request.Tour.DateIncome.FormatEx() до @d.Request.Tour.DateOutcome.FormatEx()
                                         </div>
                                     }
-                                    @if (certificateIssued.Contains(d))
+                                    @if (d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).Any())
                                     {
                                         <br /><span> Регион отдыха: @(d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).FirstOrDefault().Region) </span>
                                         <span> Место отдыха: @(d.Request.Certificates.Where(cert => cert.RequestId == d.RequestId).FirstOrDefault().Place) </span> <br />
