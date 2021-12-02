@@ -246,6 +246,11 @@
                             </td>
                             <td>
                                 <div>
+                                    @if (certificateIssued.Contains(d))
+                                    {
+                                        <span> № @(d.Request.CertificateNumber) от @(d.Request.CertificateDate.FormatEx()) <br /></span>
+                                    }
+
                                     @(d.Request.TypeOfRest.Name)
                                 </div>
                                 @if (d.TypeViolation != null)

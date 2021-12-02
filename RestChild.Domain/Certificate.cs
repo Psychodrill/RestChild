@@ -157,6 +157,23 @@ namespace RestChild.Domain
       /// </summary>
       [Display(Description = "Дата синхронизации")]
       [DataMember(Name = "eidSyncDate", EmitDefaultValue = false)]
-      public virtual DateTime? EidSyncDate { get; set; }      
-   }
+      public virtual DateTime? EidSyncDate { get; set; }
+
+        /// <summary>
+        /// связь погашения сертификата и заявления
+        /// </summary>
+        [ForeignKey("Organizations")]
+        [DataMember(Name = "organizationsId")]
+        [Display(Description = "Связь сертификата с организацией отдыха")]
+        public virtual long? OrganizationsId { get; set; }
+
+
+        /// <summary>
+        /// связь погашения сертификата и заявления
+        /// </summary>
+       // [InverseProperty("Certificates")]
+        [Display(Description = "Связь сертификата с организацией отдыха")]
+        [DataMember(Name = "organizations", EmitDefaultValue = false)]
+        public virtual Organization Organizations { get; set; }
+    }
 }

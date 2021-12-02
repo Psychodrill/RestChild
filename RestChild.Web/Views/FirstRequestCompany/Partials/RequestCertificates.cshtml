@@ -8,35 +8,35 @@
         <div class="row form-group">
             <table class="table table-bordered">
                 <thead>
-                <tr>
-                    <th>Номер заявления</th>
-                    <th>Льготники</th>
-                </tr>
+                    <tr>
+                        <th>Номер заявления</th>
+                        <th>Льготники</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>
-                        <a href="@Url.Action("RequestEdit", new {@id = Model.Data.ParentRequest.Id})" target="_blank">@Model.Data.ParentRequest.RequestNumber</a>
-                    </td>
-                    <td>
-                        @if (Model.Data.ParentRequest.Child.Any())
-                        {
-                            <ul>
-                                @foreach (var c in Model.Data.ParentRequest.Child.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ThenBy(c => c.MiddleName).ToList())
-                                {
-                                    <li>
-                                        @(string.Format("{0} {1} {2}", c.LastName, c.FirstName, c.MiddleName))
-                                    </li>
-                                }
-                            </ul>
-                        }
-                        else
-                        {
-                            var applicant = Model.Data.ParentRequest.Applicant;
-                            @(string.Format("{0} {1} {2}", applicant.LastName, applicant.FirstName, applicant.MiddleName))
-                        }
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            <a href="@Url.Action("RequestEdit", new {@id = Model.Data.ParentRequest.Id})" target="_blank">@Model.Data.ParentRequest.RequestNumber</a>
+                        </td>
+                        <td>
+                            @if (Model.Data.ParentRequest.Child.Any())
+                            {
+                                <ul>
+                                    @foreach (var c in Model.Data.ParentRequest.Child.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ThenBy(c => c.MiddleName).ToList())
+                                    {
+                                        <li>
+                                            @(string.Format("{0} {1} {2}", c.LastName, c.FirstName, c.MiddleName))
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                var applicant = Model.Data.ParentRequest.Applicant;
+                                @(string.Format("{0} {1} {2}", applicant.LastName, applicant.FirstName, applicant.MiddleName))
+                            }
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -50,37 +50,37 @@
         <div class="row form-group">
             <table class="table table-bordered">
                 <thead>
-                <tr>
-                    <th>Номер заявление</th>
-                    <th>Льготники</th>
-                </tr>
+                    <tr>
+                        <th>Номер заявление</th>
+                        <th>Льготники</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach (var r in Model.Data.AddonRequests.Where(a => !a.TypeOfRest.Commercial && !a.IsDeleted))
-                {
-                    <tr>
-                        <td>
-                            <a href="@Url.Action("RequestEdit", new {@id = r.Id})" target="_blank">@r.RequestNumber</a>
-                        </td>
-                        <td>
-                            @if (r.Child.Any())
-                            {
-                                <ul>
-                                    @foreach (var c in r.Child.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ThenBy(c => c.MiddleName).ToList())
-                                    {
-                                        <li>
-                                            @(string.Format("{0} {1} {2}", c.LastName, c.FirstName, c.MiddleName))
-                                        </li>
-                                    }
-                                </ul>
-                            }
-                            else
-                            {
-                                @(string.Format("{0} {1} {2}", r.Applicant.LastName, r.Applicant.FirstName, r.Applicant.MiddleName))
-                            }
-                        </td>
-                    </tr>
-                }
+                    @foreach (var r in Model.Data.AddonRequests.Where(a => !a.TypeOfRest.Commercial && !a.IsDeleted))
+                    {
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("RequestEdit", new {@id = r.Id})" target="_blank">@r.RequestNumber</a>
+                            </td>
+                            <td>
+                                @if (r.Child.Any())
+                                {
+                                    <ul>
+                                        @foreach (var c in r.Child.OrderBy(c => c.LastName).ThenBy(c => c.FirstName).ThenBy(c => c.MiddleName).ToList())
+                                        {
+                                            <li>
+                                                @(string.Format("{0} {1} {2}", c.LastName, c.FirstName, c.MiddleName))
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    @(string.Format("{0} {1} {2}", r.Applicant.LastName, r.Applicant.FirstName, r.Applicant.MiddleName))
+                                }
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -94,6 +94,15 @@
 
     <fieldset class="bs-callout bs-callout-info">
         <h3 id="RequestCertificates" class="anchor bs-callout-info">Сведения о погашенном сертификате</h3>
+        @if (cert.OrganizationsId.HasValue)
+        {
+            <div class="row form-group">
+                <label class="col-md-2 control-label">Партнёр</label>
+                <div class="col-md-4 line-height35">
+                    @cert.Organizations.Name
+                </div>
+            </div>
+        }
         <div class="row form-group">
             <label class="col-md-2 control-label">Номер договора с отдыхающим</label>
             <div class="col-md-4 line-height35">
