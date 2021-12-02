@@ -226,6 +226,10 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                     var font = new Font(customFont, 10);
 
+                    //var asd = request.CertificateDate.Value.ToShortDateString().ToArray();
+                    //var sdfd = asd.SkipWhile(x => x.Equals('0'));
+                    //var sa=string.Concat(sdfd);
+
                     using (var readerTemplate = new PdfReader(templateStream))
                     {
                         using (var pdfStamper = new PdfStamper(readerTemplate, newStream, '1'))
