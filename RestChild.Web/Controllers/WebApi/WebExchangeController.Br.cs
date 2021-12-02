@@ -536,7 +536,7 @@ namespace RestChild.Web.Controllers.WebApi
 
 
         /// <summary>
-        ///     Рукная проверка ребёнка на свидетельство о рождении СМЭВ
+        ///     Ручная проверка ребёнка на свидетельство о рождении СМЭВ
         /// </summary>
         internal BaseResponse AdditionalRelationshipSmev(BenefitCheckRequest model)
         {
@@ -1103,7 +1103,7 @@ namespace RestChild.Web.Controllers.WebApi
         }
 
         /// <summary>
-        ///     проверка ребёнка на свидетельство о рождении ЕГР ЗАГС (11827)
+        ///     Системная проверка ребёнка на свидетельство о рождении ЕГР ЗАГС (11827)
         /// </summary>
         internal int CheckChildForRelationshipEGRZAGS(string requestNumber, Child child, int count)
         {
