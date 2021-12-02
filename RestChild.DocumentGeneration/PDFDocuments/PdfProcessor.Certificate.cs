@@ -224,7 +224,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     streamTemplate?.CopyTo(templateStream);
                     templateStream.Seek(0, SeekOrigin.Begin);
 
-                    var font = new Font(customFont, 8);
+                    var font = new Font(customFont, 10);
 
                     using (var readerTemplate = new PdfReader(templateStream))
                     {
@@ -232,108 +232,127 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                         {
                             var over = pdfStamper.GetOverContent(1);
                             over.BeginText();
-                            over.SetFontAndSize(customFont, 14);
-                            over.ShowTextAligned(Element.ALIGN_LEFT,
-                                request.CertificateNumber.FormatEx(), 560, 470, 0);
+                            over.SetFontAndSize(customFont, 12);
+                            over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate.Value.ToShortDateString()/*GetDayMonth(request.CertificateDate)*/, 590, 495, 0);
+                            over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 690, 495, 0);
                             over.SetFontAndSize(customFont, 10);
-                            over.ShowTextAligned(Element.ALIGN_LEFT,
-                                $"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}", 160, 382, 0);
-                            over.ShowTextAligned(Element.ALIGN_LEFT,
-                                $"{applicant.DateOfBirth.FormatEx()}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}",
-                                100,
-                                345, 0);
 
-                            over.SetFontAndSize(customFont, 8);
-                            float row = 285;
+                            float row = 470;
 
                             var requestChildren = request.Child.Where(c => !c.IsDeleted).ToList();
 
-                            var childCount = 0;
-                            var nextOver = false;
-
+                            bool isFirstString = true;
                             foreach (var child in requestChildren)
                             {
-                                over.SetFontAndSize(customFont, 8);
+                                
+                                over.SetFontAndSize(customFont, 12);
                                 over.ShowTextAligned(Element.ALIGN_LEFT,
-                                    $"{child.LastName} {child.FirstName} {child.MiddleName}", 110, row, 0);
+                                    $"{child.LastName} {child.FirstName} {child.MiddleName}", 200, row, 0);
 
-                                WriteByTable(over, font, 515, row, 230,
+                                WriteByTable(over, font, 500, row, 230,
                                     $"{child.DateOfBirth.FormatEx()}, {child.DocumentSeria} {child.DocumentNumber}",
                                     Element.ALIGN_CENTER);
-
-                                row = row - 30;
-                                childCount++;
-                                if (childCount == 7)
+                                if (isFirstString)
                                 {
-                                    over.EndText();
-                                    over = pdfStamper.GetOverContent(2);
-                                    over.BeginText();
-                                    row = 487;
-                                    nextOver = true;
+                                    row = row - 24;
+                                    isFirstString = false;
                                 }
+                                else
+                                {
+                                    row = row - 20.3f;
+                                }
+
+
                             }
 
-                            if (!nextOver)
-                            {
-                                over.EndText();
-                                over = pdfStamper.GetOverContent(2);
-                                over.BeginText();
-                            }
-
-                            over.SetFontAndSize(customFont, 10);
-                            var price = Settings.Default.CertificateOnMoneyPricePerChild *
-                                        (requestChildren.Count);
-
-                            var declination = new Склонятель();
                             over.ShowTextAligned(Element.ALIGN_LEFT,
-                                $"{price:### ### ### ### ### ### ##0} ({declination.Пропись(price, "рублей")}) рублей",
-                                198, 222, 0);
-                            row = 177;
+                                $@"{request.RequestNumber} {applicant.LastName} {applicant.FirstName} {applicant.MiddleName} {applicant.DocumentType.Name} {applicant.DocumentSeria} {applicant.DocumentNumber}",290, 145, 0);
+
+                            over.EndText();
+                            over = pdfStamper.GetOverContent(2);
+                            over.BeginText();
 
                             over.SetFontAndSize(customFont, 8);
-                            if (!string.IsNullOrWhiteSpace(request.BankLastName))
+                            row = 456;
+                            isFirstString = true;
+                            var attendants = request.Attendant.Where(c => !c.IsDeleted).ToList();
+
+                            foreach (var attendant in attendants)
                             {
+
+                                over.SetFontAndSize(customFont, 12);
                                 over.ShowTextAligned(Element.ALIGN_LEFT,
-                                    $"Получатель: {$"{request.BankLastName} {request.BankFirstName} {request.BankMiddleName}".Trim()}",
-                                    420, row, 0);
+                                    $"{attendant.LastName} {attendant.FirstName} {attendant.MiddleName}", 200, row, 0);
 
-                                row = row - 32;
-                            }
-                            else if (applicant.DocumentType != null)
-                            {
-                                over.ShowTextAligned(Element.ALIGN_LEFT,
-                                    $"Получатель: {$"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}".Trim()}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}",
-                                    420, row, 0);
+                                WriteByTable(over, font, 500, row, 230,
+                                    $"{attendant.DateOfBirth.FormatEx()}, {attendant.DocumentSeria} {attendant.DocumentNumber}",
+                                    Element.ALIGN_CENTER);
+                                if (isFirstString)
+                                {
+                                    row = row - 27;
+                                    isFirstString = false;
+                                }
+                                else
+                                {
+                                    row = row - 20.3f;
+                                }
 
-                                row = row - 32;
-                            }
-
-                            var account = new List<string>();
-                            if (!string.IsNullOrWhiteSpace(request.BankName))
-                            {
-                                account.Add(
-                                    $"{request.BankName} {(!string.IsNullOrWhiteSpace(request.BankBik) ? $"(БИК:{request.BankBik}{(!string.IsNullOrWhiteSpace(request.BankInn) ? $", ИНН:{request.BankInn}" : string.Empty)}{(!string.IsNullOrWhiteSpace(request.BankKpp) ? $", КПП:{request.BankKpp}" : string.Empty)})" : string.Empty)}");
                             }
 
-                            if (!string.IsNullOrWhiteSpace(request.BankAccount))
-                            {
-                                account.Add($"р/с: {request.BankAccount}");
-                            }
+                            //over.SetFontAndSize(customFont, 10);
+                            //var price = Settings.Default.CertificateOnMoneyPricePerChild *
+                            //            (requestChildren.Count);
 
-                            if (!string.IsNullOrWhiteSpace(request.BankCorr))
-                            {
-                                account.Add($"к/с: {request.BankCorr}");
-                            }
+                            //var declination = new Склонятель();
+                            //over.ShowTextAligned(Element.ALIGN_LEFT,
+                            //    $"{price:### ### ### ### ### ### ##0} ({declination.Пропись(price, "рублей")}) рублей",
+                            //    198, 222, 0);
+                            //row = 177;
 
-                            if (!string.IsNullOrWhiteSpace(request.BankCardNumber))
-                            {
-                                account.Add($"Номер карты: {request.BankCardNumber}");
-                            }
+                            //over.SetFontAndSize(customFont, 8);
+                            //if (!string.IsNullOrWhiteSpace(request.BankLastName))
+                            //{
+                            //    over.ShowTextAligned(Element.ALIGN_LEFT,
+                            //        $"Получатель: {$"{request.BankLastName} {request.BankFirstName} {request.BankMiddleName}".Trim()}",
+                            //        420, row, 0);
 
-                            if (account.Any())
-                            {
-                                WriteByTable(over, font, 95, row, 650, string.Join(", ", account));
-                            }
+                            //    row = row - 32;
+                            //}
+                            //else if (applicant.DocumentType != null)
+                            //{
+                            //    over.ShowTextAligned(Element.ALIGN_LEFT,
+                            //        $"Получатель: {$"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}".Trim()}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}",
+                            //        420, row, 0);
+
+                            //    row = row - 32;
+                            //}
+
+                            //var account = new List<string>();
+                            //if (!string.IsNullOrWhiteSpace(request.BankName))
+                            //{
+                            //    account.Add(
+                            //        $"{request.BankName} {(!string.IsNullOrWhiteSpace(request.BankBik) ? $"(БИК:{request.BankBik}{(!string.IsNullOrWhiteSpace(request.BankInn) ? $", ИНН:{request.BankInn}" : string.Empty)}{(!string.IsNullOrWhiteSpace(request.BankKpp) ? $", КПП:{request.BankKpp}" : string.Empty)})" : string.Empty)}");
+                            //}
+
+                            //if (!string.IsNullOrWhiteSpace(request.BankAccount))
+                            //{
+                            //    account.Add($"р/с: {request.BankAccount}");
+                            //}
+
+                            //if (!string.IsNullOrWhiteSpace(request.BankCorr))
+                            //{
+                            //    account.Add($"к/с: {request.BankCorr}");
+                            //}
+
+                            //if (!string.IsNullOrWhiteSpace(request.BankCardNumber))
+                            //{
+                            //    account.Add($"Номер карты: {request.BankCardNumber}");
+                            //}
+
+                            //if (account.Any())
+                            //{
+                            //    WriteByTable(over, font, 95, row, 650, string.Join(", ", account));
+                            //}
 
                             over.EndText();
                         }
