@@ -132,7 +132,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                         }
                     }
 
-                    var font = new Font(customFont, 10);
+                    var font = new Font(customFont, 12);
 
                     templateStream.Seek(0, SeekOrigin.Begin);
                     using (var readerTemplate = new PdfReader(templateStream))
@@ -145,9 +145,9 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                                 var over = pdfStamper.GetOverContent(page);
                                 over.BeginText();
                                 over.SetFontAndSize(customFont, 14);
-                                over.ShowTextAligned(Element.ALIGN_LEFT, GetDayMonth(request.CertificateDate), 280, 445, 0);
-                                over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 475, 445, 0);
-                                over.SetFontAndSize(customFont, 10);
+                                over.ShowTextAligned(Element.ALIGN_LEFT, GetDayMonth(request.CertificateDate), 280, 458, 0);
+                                over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 475, 458, 0);
+                                over.SetFontAndSize(customFont, 12);
 
                                 WriteByTable(over, font, 270, 392, 500, $"{applicant.LastName}  {applicant.FirstName}  {applicant.MiddleName}".Trim());
 
@@ -164,9 +164,9 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                                     page++;
                                     over.BeginText();
                                     over.SetFontAndSize(customFont, 14);
-                                    over.ShowTextAligned(Element.ALIGN_LEFT, GetDayMonth(request.CertificateDate), 280, 445, 0);
-                                    over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 475, 445, 0);
-                                    over.SetFontAndSize(customFont, 10);
+                                    over.ShowTextAligned(Element.ALIGN_LEFT, GetDayMonth(request.CertificateDate), 280, 458, 0);
+                                    over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 475, 458, 0);
+                                    over.SetFontAndSize(customFont, 12);
 
                                     WriteByTable(over, font, 270, 392, 500, $"{child.LastName}  {child.FirstName}  {child.MiddleName}".Trim());
 
