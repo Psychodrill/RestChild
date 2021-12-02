@@ -182,7 +182,7 @@
         </div>
     </div>
     <div class="row form-group">
-        <label class="col-md-3 control-label">Email @*@if(Model[i].Data.Request.SourceId == 1){<span class="requared">*</span>}*@</label>
+        <label class="col-md-3 control-label">Email @if(Model[i].Data.Request.SourceId == 1){<span class="requared">*</span>}</label>
         <div class="col-md-9">
             @Html.TextBoxFor(r => r[i].Data.Email, new {@class = "form-control required input-mask-email", autocomplete = "off"}).DisableIf(Model[i].Data.IsDeleted)
             <span class="field-validation-error">@Model[i].EmailEm.FormatEx(string.Empty)</span>
