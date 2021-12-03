@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml;
@@ -252,11 +253,11 @@ namespace RestChild.DocumentGeneration.PDFDocuments
         /// <summary>
         ///     Уведомление об отказе в предоставлении услуг отдыха и оздоровления (Отсутствие квоты)
         /// </summary>
-        internal static IDocument NotificationRefuse10805(IUnitOfWork unitOfWork, Request request, ICollection<long> years)
+        internal static IDocument NotificationRefuse10805(IUnitOfWork unitOfWork, Request request, IEnumerable<int> years, IDbSet<ListTravelersRequest> listTravelersRequest )
         {
             var applicant = request.Applicant ?? new Applicant { DocumentType = new DocumentType { Name = string.Empty } };
 
-            var listTravelersRequest = unitOfWork.GetSet<ListTravelersRequest>().FirstOrDefault(ss => ss.RequestId == request.Id);
+           // var listTravelersRequest = unitOfWork.GetSet<ListTravelersRequest>().FirstOrDefault(ss => ss.RequestId == request.Id);
 
             using (var ms = new MemoryStream())
             {
@@ -332,9 +333,12 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, 0, new Chunk("Основание: ", HeaderFont),
                         new Chunk("пункты 3.9. и 9.1.1. Порядка организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденного постановлением Правительства Москвы от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\".", MainText));
 
-                    if (request.Child != null && request.Child.Any(c => !c.IsDeleted) && listTravelersRequest != null && listTravelersRequest.Details.Any(ss => ss.Detail != "[]"))
-                    {
-                        var details = listTravelersRequest.Details.Where(ss => ss.Detail != "[]").Select(ss => ss.Detail).ToList().SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>).ToArray();
+                    //if (request.Child != null && request.Child.Any(c => !c.IsDeleted) && listTravelersRequest != null && listTravelersRequest.Details.Any(ss => ss.Detail != "[]"))
+                    //{
+                        var details = listTravelersRequest?.SelectMany(d => d.Details)
+                                   .Where(ss => ss.Detail != "[]")
+                                   .Select(ss => ss.Detail)
+                                   .SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>).ToList();
 
                         var firstLine = true;
 
@@ -343,7 +347,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                             var requestIds = details.Where(ss => ss.ChildId == child.Id).Select(ss => ss.Id).Distinct().ToArray();
                             if (requestIds.Length > 0)
                             {
-                                var requests = unitOfWork.GetSet<Request>().Where(ss => requestIds.Contains(ss.Id) && years.Contains((long)ss.YearOfRestId)).ToList();
+                                var requests = unitOfWork.GetSet<Request>().Where(ss => requestIds.Contains(ss.Id) && years.Contains(ss.YearOfRest.Year)).ToList();
                                 if (firstLine)
                                 {
                                     PdfAddParagraph(document, WordProcessor.Space, 0, 1, Element.ALIGN_LEFT, 0, MainText);
@@ -356,15 +360,13 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                                 PdfAddParagraph(document, 0, 10, Element.ALIGN_LEFT, 0,
                                     new Chunk($"{child.LastName} {child.FirstName} {child.MiddleName}, {child.DateOfBirth.FormatExGR(string.Empty)}, {child.Snils}", MainText));
-                                if (requests.Any())
-                                {
-                                    AddTableChildTours(document, requests);
-                                }
+
+                                
+                                GetPdfTable( requests, document, years);
                             }
                         }
-                    }
 
-                    document.Close();
+
                 }
 
                 return new DocumentResult
@@ -1763,23 +1765,6 @@ namespace RestChild.DocumentGeneration.PDFDocuments
             document.Add(p);
         }
 
-        /// <summary>
-        ///     Добавить таблицу
-        /// </summary>
-        private static void AddTableChildTours(Document doc, IEnumerable<Request> requests)
-        {
-            var table = new PdfPTable(3);
-            table.SetWidthPercentage(new float[] { 120, 230, 250 }, PageSize.A4);
-
-            table.AddCell(new Phrase("Год кампании", HeaderFont));
-            table.AddCell(new Phrase("Вид услуги (путевка, сертификат, компенсация)", HeaderFont));
-            table.AddCell(new Phrase("Организация отдыха и оздоровления (в случае предоставления путевки для отдыха и оздоровления), даты заезда", HeaderFont));
-
-            var moneyTypes = new[]
-            {
-                (long?) TypeOfRestEnum.MoneyOn18, (long?) TypeOfRestEnum.MoneyOn3To7,
-                (long?) TypeOfRestEnum.MoneyOn7To15, (long?) TypeOfRestEnum.MoneyOnInvalidOn4To17
-            };
 
             foreach (var request in requests)
             {
