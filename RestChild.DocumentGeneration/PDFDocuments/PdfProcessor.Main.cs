@@ -366,7 +366,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                             }
                         }
 
-
+                    document.Close();
                 }
 
                 return new DocumentResult
@@ -1766,25 +1766,77 @@ namespace RestChild.DocumentGeneration.PDFDocuments
         }
 
 
-            foreach (var request in requests)
-            {
-                var year = request.YearOfRest?.Name;
-                if (request.ParentRequestId.HasValue &&
-                    request.YearOfRest?.Year - 1 == request.ParentRequest.YearOfRest?.Year)
-                {
-                    year = $"{request.ParentRequest.YearOfRest?.Name} (дополнительная кампания)";
-                }
+        private static void GetPdfTable(List<Request> requests, Document doc, IEnumerable<int> years)
+        {
+            PdfPTable pdfTable = new PdfPTable(3);
+            pdfTable.SetWidthPercentage(new float[3] { 100, 220, 280 }, PageSize.A4);
+            pdfTable.NormalizeHeadersFooters();
+            pdfTable.SplitLate = false;
+            //pdfTable.DefaultCell.Padding = 3;
+            //pdfTable.WidthPercentage = 30;
+            //pdfTable.HorizontalAlignment = Element.ALIGN_LEFT;
+            pdfTable.DefaultCell.BorderWidth = 0.5f;
 
-                table.AddCell(new Phrase(year, MainText));
-                table.AddCell(new Phrase(request.TypeOfRest?.Name, MainText));
-                table.AddCell(new Phrase(request.TourId.HasValue
-                    ? $"{request.Tour.Hotels?.Name}, c {request.Tour.DateIncome.FormatEx(string.Empty)} по {request.Tour.DateOutcome.FormatEx(string.Empty)}"
-                    : (request.RequestOnMoney && !moneyTypes.Contains(request.TypeOfRestId)
-                        ? "Осуществлен выбор сертификата на втором этапе заявочной кампании"
-                        : " "), MainText));
+            PdfPCell pdfPCell; // Создаем ячейку
+
+            pdfPCell = new PdfPCell(new Phrase("Год кампании", HeaderFont));
+            pdfPCell.BorderColor = new BaseColor(0, 0, 0); // Цвет границы ячейки, по умолчанию черный
+            pdfPCell.BackgroundColor = new BaseColor(255, 255, 255); // Цвет фона ячейки
+            pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfPCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfTable.AddCell(pdfPCell);
+
+            pdfPCell = new PdfPCell(new Phrase("Вид услуги (путевка, сертификат, компенсация)", HeaderFont));
+            pdfPCell.BorderColor = new BaseColor(0, 0, 0); // Цвет границы ячейки, по умолчанию черный
+            pdfPCell.BackgroundColor = new BaseColor(255, 255, 255); // Цвет фона ячейки
+            pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfPCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfTable.AddCell(pdfPCell);
+
+            pdfPCell = new PdfPCell(new Phrase("Организация отдыха и оздоровления (в случае предоставления путевки для отдыха и оздоровления), даты заезда", HeaderFont));
+            pdfPCell.BorderColor = new BaseColor(0, 0, 0); // Цвет границы ячейки, по умолчанию черный
+            pdfPCell.BackgroundColor = new BaseColor(255, 255, 255); // Цвет фона ячейки
+            pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfPCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfTable.AddCell(pdfPCell);
+
+            var moneyTypes = new[]
+            {
+                (long?) TypeOfRestEnum.MoneyOn18, (long?) TypeOfRestEnum.MoneyOn3To7,
+                (long?) TypeOfRestEnum.MoneyOn7To15, (long?) TypeOfRestEnum.MoneyOnInvalidOn4To17
+            };
+
+            foreach (int year in years)
+            {
+                Request request = requests.FirstOrDefault(req => req.YearOfRest.Year == year);
+
+                pdfPCell = new PdfPCell(new Phrase(year.ToString(), HeaderFont));
+                pdfPCell.BorderColor = new BaseColor(0, 0, 0);
+                pdfPCell.BackgroundColor = new BaseColor(255, 255, 255);
+                pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfPCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfTable.AddCell(pdfPCell);
+
+                pdfPCell = new PdfPCell(new Phrase(request?.TypeOfRest?.Name, HeaderFont));
+                pdfPCell.BorderColor = new BaseColor(0, 0, 0);
+                pdfPCell.BackgroundColor = new BaseColor(255, 255, 255);
+                pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfPCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfTable.AddCell(pdfPCell);
+
+                pdfPCell = new PdfPCell(new Phrase(request == null ? "" :
+                            request.TourId.HasValue
+                            ? $"{request.Tour.Hotels?.Name}, c {request.Tour.DateIncome.FormatEx(string.Empty)} по {request.Tour.DateOutcome.FormatEx(string.Empty)}" : (request.RequestOnMoney && !moneyTypes.Contains(request.TypeOfRestId) ? "Осуществлен выбор сертификата на втором этапе заявочной кампании" : ""), HeaderFont));
+                pdfPCell.BorderColor = new BaseColor(0, 0, 0);
+                pdfPCell.BackgroundColor = new BaseColor(255, 255, 255);
+                pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfPCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfTable.AddCell(pdfPCell);
+
+
             }
 
-            doc.Add(table);
+            doc.Add(pdfTable);
         }
 
 
