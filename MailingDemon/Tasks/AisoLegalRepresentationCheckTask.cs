@@ -101,7 +101,7 @@ namespace MailingDemon.Tasks
                                 var r = unitOfWork.GetSet<Request>().FirstOrDefault(ss =>
                                     ss.Id != request.Id &&
                                     yid.Any(sx => sx == ss.YearOfRestId) &&
-                                    ss.StatusId == (long) StatusEnum.CertificateIssued &&
+                                    (ss.StatusId == (long) StatusEnum.CertificateIssued || (ss.StatusId == (long)StatusEnum.Reject && ss.DeclineReasonId == 201705)) &&
                                     ss.Applicant.Snils == applicant.Snils &&
                                     ss.Child.Any(sx => sx.Snils == child.Snils)
                                 );
@@ -113,7 +113,7 @@ namespace MailingDemon.Tasks
                                     attendant = unitOfWork.GetSet<Applicant>().FirstOrDefault(ss =>
                                         ss.RequestId != request.Id &&
                                         yid.Any(sx => sx == ss.Request.YearOfRestId) &&
-                                        ss.Request.StatusId == (long) StatusEnum.CertificateIssued &&
+                                        (ss.Request.StatusId == (long) StatusEnum.CertificateIssued || (ss.Request.StatusId == (long) StatusEnum.Reject && ss.Request.DeclineReasonId == 201705)) &&
                                         ss.Snils == applicant.Snils &&
                                         ss.Request.Child.Any(sx => sx.Snils == child.Snils)
                                     );
