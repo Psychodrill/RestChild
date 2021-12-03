@@ -366,6 +366,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                             }
                         }
 
+                    document.Close();
 
                 }
 
