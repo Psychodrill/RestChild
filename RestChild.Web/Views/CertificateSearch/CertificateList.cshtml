@@ -118,7 +118,7 @@
     <div class="form-group">
         <label class="col-md-2 control-label text-right">Место отдыха (регион)</label>
         <div class="col-md-4">
-            @Html.DropDownListFor(r => r.Region, new SelectList(ViewBag.PlacesOfRest, "Name", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+            @Html.DropDownListFor(r => r.PlaceOfRestId, new SelectList(ViewBag.PlacesOfRest, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
         </div>
         @*<label class="col-md-2 control-label text-right">Организация-партнёр</label>
             <div class="col-md-4">

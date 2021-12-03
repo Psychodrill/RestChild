@@ -115,9 +115,11 @@ namespace RestChild.Web.Controllers.WebApi
                 query = query.Where(r => r.Place == search.HotelName);
             }
 
-            if (!search.Region.IsNullOrEmpty())
+            if (search.PlaceOfRestId>0)
             {
-                query = query.Where(q => q.Region == search.Region);
+                var contract = UnitOfWork.GetById<Contract>(search.ContractId);
+                var placeofrest = UnitOfWork.GetById<PlaceOfRest>(search.PlaceOfRestId);
+                query = query.Where(q => q.Region == placeofrest.Name);
             }
 
             if (search.ContractDate.HasValue)
@@ -178,7 +180,7 @@ namespace RestChild.Web.Controllers.WebApi
             }
             if (search.OrganizationId > 0)
             {
-                query = query.Where(q => q.OrganizationsId == search.OrganizationId);
+                query = query.Where(q => q.Organizations.Id == search.OrganizationId);
             }
             return query;
         }
