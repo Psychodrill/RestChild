@@ -270,7 +270,7 @@
                             <td>
                                 @if (cert.Request.Attendant.Any())
                                 {
-                                    foreach (var attendant in cert.Request.Attendant)
+                                    foreach (var attendant in cert.Request.Attendant.Where(at=>!at.IsDeleted))
                                     {
                                         <text>
                                             <div>
