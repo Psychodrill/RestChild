@@ -239,7 +239,7 @@
                                 </div>
                             </td>
                             <td>@cert.Organizations.Name</td>
-                            <td>№@cert.Request.CertificateNumber.FormatEx() от @cert.Request.CertificateDate.FormatEx()</td>
+                            <td>@cert.Request.CertificateNumber.FormatEx() от @cert.Request.CertificateDate.FormatEx()</td>
                             <td>
                                 @cert.Request.Applicant.NullSafe(a => a.LastName).FormatEx()
                                 @cert.Request.Applicant.NullSafe(a => a.FirstName).FormatEx()
