@@ -1213,16 +1213,14 @@ namespace RestChild.DocumentGeneration
 
             var lokYear = request.YearOfRest?.Year ?? 2021;
             var yearIds = unitOfWork.GetSet<YearOfRest>().Where(ss => ss.Year < lokYear).OrderByDescending(ss => ss.Year)
-                .Take(3).Select(ss => ss.Id).ToList();
+                                                         .Take(3).Select(ss => ss.Id).ToList();
+            IEnumerable<int> years = unitOfWork.GetSet<YearOfRest>().Where(x => yearIds.Contains(x.Id)).Select(x => x.Year).OrderBy(x => x).ToList();
+            var listTravelersRequest = unitOfWork.GetSet<ListTravelersRequest>();
 
             if (forMpguPortal)
             {
-                return PdfProcessor.NotificationRefuse10805(unitOfWork, request, yearIds);
+                return PdfProcessor.NotificationRefuse10805(unitOfWork, request, years, listTravelersRequest);
             }
-
-            var listTravelersRequest = unitOfWork.GetSet<ListTravelersRequest>();
-
-
 
             using (var ms = new MemoryStream())
             {
@@ -1388,7 +1386,7 @@ namespace RestChild.DocumentGeneration
                                                        .SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>).ToList();
                      //var details = details1.SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>).ToList();
 
-                    IEnumerable<int> years = unitOfWork.GetSet<YearOfRest>().Where(x => yearIds.Contains(x.Id)).Select(x => x.Year).OrderBy(x=>x).ToList();
+                    //IEnumerable<int> years = unitOfWork.GetSet<YearOfRest>().Where(x => yearIds.Contains(x.Id)).Select(x => x.Year).OrderBy(x=>x).ToList();
 
                     IEnumerable<Request> requests = new List<Request>();
 

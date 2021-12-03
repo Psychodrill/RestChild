@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using DocumentFormat.OpenXml;
@@ -252,11 +253,11 @@ namespace RestChild.DocumentGeneration.PDFDocuments
         /// <summary>
         ///     Уведомление об отказе в предоставлении услуг отдыха и оздоровления (Отсутствие квоты)
         /// </summary>
-        internal static IDocument NotificationRefuse10805(IUnitOfWork unitOfWork, Request request, ICollection<long> years)
+        internal static IDocument NotificationRefuse10805(IUnitOfWork unitOfWork, Request request, IEnumerable<int> years, IDbSet<ListTravelersRequest> listTravelersRequest )
         {
             var applicant = request.Applicant ?? new Applicant { DocumentType = new DocumentType { Name = string.Empty } };
 
-            var listTravelersRequest = unitOfWork.GetSet<ListTravelersRequest>().FirstOrDefault(ss => ss.RequestId == request.Id);
+           // var listTravelersRequest = unitOfWork.GetSet<ListTravelersRequest>().FirstOrDefault(ss => ss.RequestId == request.Id);
 
             using (var ms = new MemoryStream())
             {
@@ -332,9 +333,12 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, 0, new Chunk("Основание: ", HeaderFont),
                         new Chunk("пункты 3.9. и 9.1.1. Порядка организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденного постановлением Правительства Москвы от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\".", MainText));
 
-                    if (request.Child != null && request.Child.Any(c => !c.IsDeleted) && listTravelersRequest != null && listTravelersRequest.Details.Any(ss => ss.Detail != "[]"))
-                    {
-                        var details = listTravelersRequest.Details.Where(ss => ss.Detail != "[]").Select(ss => ss.Detail).ToList().SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>).ToArray();
+                    //if (request.Child != null && request.Child.Any(c => !c.IsDeleted) && listTravelersRequest != null && listTravelersRequest.Details.Any(ss => ss.Detail != "[]"))
+                    //{
+                        var details = listTravelersRequest?.SelectMany(d => d.Details)
+                                   .Where(ss => ss.Detail != "[]")
+                                   .Select(ss => ss.Detail)
+                                   .SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>).ToList();
 
                         var firstLine = true;
 
@@ -343,7 +347,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                             var requestIds = details.Where(ss => ss.ChildId == child.Id).Select(ss => ss.Id).Distinct().ToArray();
                             if (requestIds.Length > 0)
                             {
-                                var requests = unitOfWork.GetSet<Request>().Where(ss => requestIds.Contains(ss.Id) && years.Contains((long)ss.YearOfRestId)).ToList();
+                                var requests = unitOfWork.GetSet<Request>().Where(ss => requestIds.Contains(ss.Id) && years.Contains(ss.YearOfRest.Year)).ToList();
                                 if (firstLine)
                                 {
                                     PdfAddParagraph(document, WordProcessor.Space, 0, 1, Element.ALIGN_LEFT, 0, MainText);
@@ -356,11 +360,13 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                                 PdfAddParagraph(document, 0, 10, Element.ALIGN_LEFT, 0,
                                     new Chunk($"{child.LastName} {child.FirstName} {child.MiddleName}, {child.DateOfBirth.FormatExGR(string.Empty)}, {child.Snils}", MainText));
+
+                                
+                                GetPdfTable( requests, document, years);
                             }
                         }
-                    }
 
-                    document.Close();
+
                 }
 
                 return new DocumentResult
@@ -1757,6 +1763,79 @@ namespace RestChild.DocumentGeneration.PDFDocuments
             PdfAddParagraph(document, "(ГАУК \"МОСГОРТУР\")", 0, 1, Element.ALIGN_CENTER, 0, HeaderFont);
             var p = new Paragraph(new Chunk(new LineSeparator(0.0F, 100.0F, BaseColor.BLACK, Element.ALIGN_LEFT, 1)));
             document.Add(p);
+        }
+
+        private static void GetPdfTable(List<Request> requests, Document doc, IEnumerable<int>years)
+        {
+            PdfPTable pdfTable = new PdfPTable(3);
+            pdfTable.SetWidthPercentage(new float[3] { 100, 220, 280 }, PageSize.A4);
+            pdfTable.NormalizeHeadersFooters();
+            pdfTable.SplitLate = false;
+            //pdfTable.DefaultCell.Padding = 3;
+            //pdfTable.WidthPercentage = 30;
+            //pdfTable.HorizontalAlignment = Element.ALIGN_LEFT;
+            pdfTable.DefaultCell.BorderWidth = 0.5f;
+
+            PdfPCell pdfPCell; // Создаем ячейку
+
+            pdfPCell = new PdfPCell(new Phrase("Год кампании", HeaderFont));
+            pdfPCell.BorderColor = new BaseColor(0, 0, 0); // Цвет границы ячейки, по умолчанию черный
+            pdfPCell.BackgroundColor = new BaseColor(255, 255, 255); // Цвет фона ячейки
+            pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfPCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfTable.AddCell(pdfPCell);
+
+            pdfPCell = new PdfPCell(new Phrase("Вид услуги (путевка, сертификат, компенсация)", HeaderFont));
+            pdfPCell.BorderColor = new BaseColor(0, 0, 0); // Цвет границы ячейки, по умолчанию черный
+            pdfPCell.BackgroundColor = new BaseColor(255, 255, 255); // Цвет фона ячейки
+            pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfPCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfTable.AddCell(pdfPCell);
+
+            pdfPCell = new PdfPCell(new Phrase("Организация отдыха и оздоровления (в случае предоставления путевки для отдыха и оздоровления), даты заезда", HeaderFont));
+            pdfPCell.BorderColor = new BaseColor(0, 0, 0); // Цвет границы ячейки, по умолчанию черный
+            pdfPCell.BackgroundColor = new BaseColor(255, 255, 255); // Цвет фона ячейки
+            pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfPCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfTable.AddCell(pdfPCell);
+
+            var moneyTypes = new[]
+{
+                (long?) TypeOfRestEnum.MoneyOn18, (long?) TypeOfRestEnum.MoneyOn3To7,
+                (long?) TypeOfRestEnum.MoneyOn7To15, (long?) TypeOfRestEnum.MoneyOnInvalidOn4To17
+            };
+
+            foreach (int year in years)
+            {
+                Request request = requests.FirstOrDefault(req => req.YearOfRest.Year == year);
+
+                pdfPCell = new PdfPCell(new Phrase(year.ToString(), HeaderFont));
+                pdfPCell.BorderColor = new BaseColor(0, 0, 0);
+                pdfPCell.BackgroundColor = new BaseColor(255, 255, 255);
+                pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfPCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfTable.AddCell(pdfPCell);
+
+                pdfPCell = new PdfPCell(new Phrase(request?.TypeOfRest?.Name, HeaderFont));
+                pdfPCell.BorderColor = new BaseColor(0, 0, 0);
+                pdfPCell.BackgroundColor = new BaseColor(255, 255, 255);
+                pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfPCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfTable.AddCell(pdfPCell);
+
+                pdfPCell = new PdfPCell(new Phrase(request == null ? "" :
+                            request.TourId.HasValue
+                            ? $"{request.Tour.Hotels?.Name}, c {request.Tour.DateIncome.FormatEx(string.Empty)} по {request.Tour.DateOutcome.FormatEx(string.Empty)}": (request.RequestOnMoney && !moneyTypes.Contains(request.TypeOfRestId)? "Осуществлен выбор сертификата на втором этапе заявочной кампании": ""), HeaderFont));
+                pdfPCell.BorderColor = new BaseColor(0, 0, 0);
+                pdfPCell.BackgroundColor = new BaseColor(255, 255, 255);
+                pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfPCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfTable.AddCell(pdfPCell);
+
+
+            }
+
+            doc.Add(pdfTable);
         }
 
 
