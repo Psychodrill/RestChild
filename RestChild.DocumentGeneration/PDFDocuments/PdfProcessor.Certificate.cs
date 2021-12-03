@@ -139,21 +139,21 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     {
                         using (var pdfStamper = new PdfStamper(readerTemplate, newStream, '1'))
                         {
-                            var page = 1;
+                            var page = 2;
                             if (request.TypeOfRestId == (long) TypeOfRestEnum.MoneyOn18)
                             {
                                 var over = pdfStamper.GetOverContent(page);
                                 over.BeginText();
                                 over.SetFontAndSize(customFont, 14);
-                                over.ShowTextAligned(Element.ALIGN_LEFT, GetDayMonth(request.CertificateDate), 280, 458, 0);
+                                over.ShowTextAligned(Element.ALIGN_LEFT, request.DateRequest.Value.ToLongDateString(), 280, 458, 0);
                                 over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 475, 458, 0);
                                 over.SetFontAndSize(customFont, 12);
 
-                                WriteByTable(over, font, 270, 392, 500, $"{applicant.LastName}  {applicant.FirstName}  {applicant.MiddleName}".Trim());
+                                WriteByTable(over, font, 270, 400, 500, $"{applicant.LastName}  {applicant.FirstName}  {applicant.MiddleName}".Trim());
 
-                                WriteByTable(over, font, 100, 358, 500, $"{applicant.DateOfBirth.FormatEx()},  {applicant.DocumentType.Name},  {applicant.DocumentSeria},  {applicant.DocumentNumber}".Trim());
+                                WriteByTable(over, font, 40, 366, 700, $"{applicant.DateOfBirth.FormatEx()},  {applicant.DocumentType.Name},  {applicant.DocumentSeria},  {applicant.DocumentNumber}".Trim(),1);
 
-                                WriteByTable(over, font, 335, 235, 500, $"{request.RequestNumber}, {applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}".Trim());
+                                WriteByTable(over, font, 270, 243, 500, $"{request.RequestNumber}, {applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}".Trim());
                                 over.EndText();
                             }
                             else
@@ -164,13 +164,13 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                                     page++;
                                     over.BeginText();
                                     over.SetFontAndSize(customFont, 14);
-                                    over.ShowTextAligned(Element.ALIGN_LEFT, GetDayMonth(request.CertificateDate), 280, 458, 0);
+                                    over.ShowTextAligned(Element.ALIGN_LEFT, request.DateRequest.Value.ToLongDateString(), 280, 458, 0);
                                     over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 475, 458, 0);
                                     over.SetFontAndSize(customFont, 12);
 
-                                    WriteByTable(over, font, 270, 392, 500, $"{child.LastName}  {child.FirstName}  {child.MiddleName}".Trim());
+                                    WriteByTable(over, font, 270, 400, 500, $"{child.LastName}  {child.FirstName}  {child.MiddleName}".Trim());
 
-                                    WriteByTable(over, font, 100, 358, 500, $"{child.DateOfBirth.FormatEx()},  {child.DocumentType.Name},  {child.DocumentSeria},  {child.DocumentNumber}".Trim());
+                                    WriteByTable(over, font, 40, 366, 700, $"{child.DateOfBirth.FormatEx()},  {child.DocumentType.Name},  {child.DocumentSeria},  {child.DocumentNumber}".Trim(),1);
 
                                     if (applicant.IsAccomp || request.Attendant.Any(a => a.IsAccomp && !a.IsDeleted))
                                     {
@@ -180,13 +180,13 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                                                 : request.Attendant.FirstOrDefault(a => a.IsAccomp && !a.IsDeleted)) ??
                                             new Applicant { DocumentType = new DocumentType { Name = string.Empty } };
 
-                                        WriteByTable(over, font, 360, 325, 500, $"{attendant.LastName} {attendant.FirstName} {attendant.MiddleName}".Trim());
+                                        WriteByTable(over, font, 360, 333, 400, $"{attendant.LastName} {attendant.FirstName} {attendant.MiddleName}".Trim());
 
-                                        WriteByTable(over, font, 100, 285, 500, $"{attendant.DateOfBirth.FormatEx()}, {attendant.DocumentType.Name}, {attendant.DocumentSeria}, {attendant.DocumentNumber}".Trim());
+                                        WriteByTable(over, font, 40, 293, 700, $"{attendant.DateOfBirth.FormatEx()}, {attendant.DocumentType.Name}, {attendant.DocumentSeria}, {attendant.DocumentNumber}".Trim(),1);
 
                                     }
 
-                                    WriteByTable(over, font, 335, 235, 500, $"{request.RequestNumber}, {applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}".Trim());
+                                    WriteByTable(over, font, 270, 243, 500, $"{request.RequestNumber}, {applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}".Trim());
 
                                     over.EndText();
                                 }
@@ -238,7 +238,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                             over.BeginText();
                             over.SetFontAndSize(customFont, 12);
                             over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate.Value.ToShortDateString()/*GetDayMonth(request.CertificateDate)*/, 590, 495, 0);
-                            over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 690, 495, 0);
+                            over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 686, 495, 0);
                             over.SetFontAndSize(customFont, 10);
 
                             float row = 470;
@@ -251,7 +251,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                                 
                                 over.SetFontAndSize(customFont, 12);
                                 over.ShowTextAligned(Element.ALIGN_LEFT,
-                                    $"{child.LastName} {child.FirstName} {child.MiddleName}", 200, row, 0);
+                                    $"{child.LastName} {child.FirstName} {child.MiddleName}", 180, row, 0);
 
                                 WriteByTable(over, font, 500, row, 230,
                                     $"{child.DateOfBirth.FormatEx()}, {child.DocumentSeria} {child.DocumentNumber}",
@@ -268,15 +268,19 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
 
                             }
-
-                            over.ShowTextAligned(Element.ALIGN_LEFT,
-                                $@"{request.RequestNumber} {applicant.LastName} {applicant.FirstName} {applicant.MiddleName} {applicant.DocumentType.Name} {applicant.DocumentSeria} {applicant.DocumentNumber}",290, 145, 0);
-
+                            over.SetFontAndSize(customFont, 12);
+                            //over.ShowTextAligned(Element.ALIGN_LEFT,
+                             //   $@"{request.RequestNumber} {applicant.LastName} {applicant.FirstName} {applicant.MiddleName} {applicant.DocumentType.Name} {applicant.DocumentSeria} {applicant.DocumentNumber}",290, 145, 0);
+                            WriteByTable(over, new Font(customFont,12), 290, 145, 500, $"{request.RequestNumber}, {applicant.LastName} {applicant.FirstName} {applicant.MiddleName}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}".Trim());
                             over.EndText();
                             over = pdfStamper.GetOverContent(2);
                             over.BeginText();
 
-                            over.SetFontAndSize(customFont, 8);
+                            over.SetFontAndSize(customFont, 12);
+                            over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate.Value.ToShortDateString()/*GetDayMonth(request.CertificateDate)*/, 590, 495, 0);
+                            over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 686, 495, 0);
+                            over.SetFontAndSize(customFont, 10);
+
                             row = 456;
                             isFirstString = true;
                             var attendants = request.Attendant.Where(c => !c.IsDeleted).ToList();
