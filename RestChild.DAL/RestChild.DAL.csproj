@@ -72,6 +72,7 @@
     <Compile Include="Configurations\Configuration.ExchangeBaseRegistryType.cs" />
     <Compile Include="Configurations\Configuration.FileTypes.cs" />
     <Compile Include="Configurations\Configuration.FormOfRest.cs" />
+    <Compile Include="Configurations\Configuration.AnalyticsViewRowType.cs" />
     <Compile Include="Configurations\Configuration.MgtVisitBookingPersonType.cs" />
     <Compile Include="Configurations\Configuration.MgtVisitBookingVisitStatus.cs" />
     <Compile Include="Configurations\Configuration.MgtDepartment.cs" />
