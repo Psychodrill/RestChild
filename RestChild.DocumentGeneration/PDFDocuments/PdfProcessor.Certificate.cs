@@ -343,7 +343,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                         over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 470, 404 + y_delta, 0);
 
                         var text = $"{child.LastName} {child.FirstName} {child.MiddleName}".Trim();
-                        WriteByTable(over, text.Length > 108 ? font8 : font12, 280, 365 + y_delta, 500, text);
+                        WriteByTable(over, text.Length > 108 ? font10 : font12, 280, 365 + y_delta, 500, text);
                         over.ShowTextAligned(Element.ALIGN_LEFT, $"{child.DateOfBirth.FormatEx()}, {child.DocumentType.Name}, {child.DocumentSeria} {child.DocumentNumber}", 100, 334 + y_delta, 0);
 
                         if (request.TypeOfRestId != (long) TypeOfRestEnum.YouthRestOrphanCamps && (request.TypeOfRest?.NeedAccomodation ?? false))
@@ -356,8 +356,8 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                             var text_name = $"{attendant.LastName} {attendant.FirstName} {attendant.MiddleName}".Trim();
                             var text_docs = $"{attendant.DateOfBirth.FormatEx()}, {attendant.DocumentType.Name}, {attendant.DocumentSeria}, {attendant.DocumentNumber}";
 
-                            WriteByTable(over, text.Length > 108 ? font8 : font12, 400, 295 + y_delta, 500, text_name);
-                            WriteByTable(over, text.Length > 108 ? font8 : font12, 100, 258 + y_delta, 500, text_docs);
+                            WriteByTable(over, text.Length > 108 ? font10 : font12, 400, 295 + y_delta, 500, text_name);
+                            WriteByTable(over, text.Length > 108 ? font10 : font12, 100, 258 + y_delta, 500, text_docs);
                         }
 
                         over.ShowTextAligned(Element.ALIGN_LEFT, request.NullSafe(r => r.Tour.DateIncome.Value.ToLongDateString()) ?? string.Empty, 180, 229 + y_delta, 0);
@@ -371,7 +371,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                         if (applicant.DocumentType != null)
                         {
                             text = $"{request.RequestNumber}, {$"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}".Trim()}, {applicant.DocumentType.Name}, {applicant.DocumentSeria} {applicant.DocumentNumber}";
-                            WriteByTable(over, text.Length > 79 ? font8 : font12, 260, 106 + y_delta, 550, text);
+                            WriteByTable(over, text.Length > 79 ? font10 : font12, 260, 106 + y_delta, 550, text);
                         }
 
                         over.EndText();
@@ -461,7 +461,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                         text =
                             $"{request.RequestNumber}, {$"{applicant.LastName} {applicant.FirstName} {applicant.MiddleName}".Trim()}, {applicant.DocumentType?.Name} {applicant.DocumentSeria} {applicant.DocumentNumber}";
-                        WriteByTable(over, text.Length > 79 ? font8 : font12, 220, 50,550, text, Element.ALIGN_CENTER);
+                        WriteByTable(over, text.Length > 79 ? font10 : font12, 220, 50,550, text, Element.ALIGN_CENTER);
 
                         over.EndText();
 
