@@ -15,7 +15,7 @@ namespace RestChild.Web.Controllers
     ///     Контроллер лагерей всех регионов РФ
     /// </summary>
     [Authorize]
-    public class OrganizationCampController : BaseController
+    public partial class OrganizationCampController : BaseController
     {
         /// <summary>
         ///     Вход по умолчанию
@@ -36,24 +36,26 @@ namespace RestChild.Web.Controllers
                 return RedirectToAvalibleAction();
             }
 
-            var q = UnitOfWork.GetSet<MonitoringHotel>().AsQueryable();
+            //var q = UnitOfWork.GetSet<MonitoringHotel>().AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(filterModel.Name))
-            {
-                q = q.Where(ss =>
-                    ss.ShortName.ToLower().Contains(filterModel.Name.ToLower()) ||
-                    ss.FullName.ToLower().Contains(filterModel.Name.ToLower()));
-            }
+            //if (!string.IsNullOrWhiteSpace(filterModel.Name))
+            //{
+            //    q = q.Where(ss =>
+            //        ss.ShortName.ToLower().Contains(filterModel.Name.ToLower()) ||
+            //        ss.FullName.ToLower().Contains(filterModel.Name.ToLower()));
+            //}
 
-            if (filterModel.RegionId.HasValue && filterModel.RegionId.Value > 0)
-            {
-                q = q.Where(ss => ss.RegionId == filterModel.RegionId.Value);
-            }
+            //if (filterModel.RegionId.HasValue && filterModel.RegionId.Value > 0)
+            //{
+            //    q = q.Where(ss => ss.RegionId == filterModel.RegionId.Value);
+            //}
 
-            if (!string.IsNullOrWhiteSpace(filterModel.Inn))
-            {
-                q = q.Where(ss => ss.Inn.ToLower().Contains(filterModel.Inn.ToLower()));
-            }
+            //if (!string.IsNullOrWhiteSpace(filterModel.Inn))
+            //{
+            //    q = q.Where(ss => ss.Inn.ToLower().Contains(filterModel.Inn.ToLower()));
+            //}
+
+            var q = GetOrganizationCampQuery(filterModel);
 
             var totalCount = q.Count();
             var entity = q.OrderBy(ss => ss.ShortName).Skip(filterModel.StartRecord)
@@ -158,6 +160,30 @@ namespace RestChild.Web.Controllers
         private static void FillCollections(OrganizationCampViewModel model, IUnitOfWork uw)
         {
             model.Regions = uw.GetSet<StateDistrict>().Where(ss => ss.IsActive).ToList();
+        }
+
+        private IQueryable<MonitoringHotel> GetOrganizationCampQuery(OrganizationCampSearchModel filter)
+        {
+            var q = UnitOfWork.GetSet<MonitoringHotel>().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter.Name))
+            {
+                q = q.Where(ss =>
+                    ss.ShortName.ToLower().Contains(filter.Name.ToLower()) ||
+                    ss.FullName.ToLower().Contains(filter.Name.ToLower()));
+            }
+
+            if (filter.RegionId.HasValue && filter.RegionId.Value > 0)
+            {
+                q = q.Where(ss => ss.RegionId == filter.RegionId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(filter.Inn))
+            {
+                q = q.Where(ss => ss.Inn.ToLower().Contains(filter.Inn.ToLower()));
+            }
+
+            return q;
         }
 
     }

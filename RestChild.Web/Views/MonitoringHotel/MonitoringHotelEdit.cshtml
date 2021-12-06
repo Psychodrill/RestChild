@@ -76,7 +76,7 @@
                 <div class="form-group">
                     <label class="col-md-3 control-label text-right">ИНН</label>
                     <div class="col-md-9">
-                        @Html.TextBoxFor(model => model.Data.Inn, new {@class = "form-control", autocomplete = "off"}).DisableIf(!Model.IsEditable)
+                        @Html.TextBoxFor(model => model.Data.Inn, new {@class = "form-control", autocomplete = "off", maxlength = 12 }).DisableIf(!Model.IsEditable)
                     </div>
                 </div>
 

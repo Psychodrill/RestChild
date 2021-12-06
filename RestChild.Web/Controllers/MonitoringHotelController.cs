@@ -21,7 +21,7 @@ namespace RestChild.Web.Controllers
     /// <summary>
     ///     Контроллер поиска объектов отдыха
     /// </summary>
-    public class MonitoringHotelController : BaseController
+    public partial class MonitoringHotelController : BaseController
     {
         public StateController ApiStateController { get; set; }
 

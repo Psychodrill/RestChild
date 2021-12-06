@@ -21,13 +21,18 @@
     <div class="form-group">
         <label class="col-md-2 control-label text-right">Название</label>
         <div class="col-md-4">
-            @Html.TextBoxFor(m => m.Name, new {@class = "form-control"})
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
         </div>
         <label class="col-md-1 control-label text-right">ИНН</label>
         <div class="col-md-4">
-            @Html.TextBoxFor(m => m.INN, new {@class = "form-control"})
+            @Html.TextBoxFor(m => m.INN, new { @class = "form-control", maxlength = 12 })
         </div>
     </div>
+}
+
+@section additionalFilters
+{
+    <a class="btn btn-default" href="@Url.Action("ExcelMonitoringHotelList", "MonitoringHotel", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
 }
 
 @section searchResult{
@@ -35,28 +40,28 @@
     {
         <table class="table table-striped table-hover">
             <thead>
-            <tr>
-                <th class="text-center" width="5%">№</th>
-                <th>Сокращенное название</th>
-                <th>Полное название</th>
-                <th>ИНН</th>
-                <th></th>
-            </tr>
+                <tr>
+                    <th class="text-center" width="5%">№</th>
+                    <th>Сокращенное название</th>
+                    <th>Полное название</th>
+                    <th>ИНН</th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
-            @{
-                int rowNumber = Model.Results.FirstItemOnPage;
-            }
-            @foreach (var obj in Model.Results)
-            {
-                <tr>
-                    <td class="text-center">@(rowNumber++)</td>
-                    <td>@obj.ShortName</td>
-                    <td>@obj.FullName</td>
-                    <td>@obj.Inn</td>
-                    <td class="text-center">@Html.ActionLink(" ", "Edit", new {id = @obj.Id}, new {@class = " glyphicon glyphicon-pencil", target = "_blank"})</td>
-                </tr>
-            }
+                @{
+                    int rowNumber = Model.Results.FirstItemOnPage;
+                }
+                @foreach (var obj in Model.Results)
+                {
+                    <tr>
+                        <td class="text-center">@(rowNumber++)</td>
+                        <td>@obj.ShortName</td>
+                        <td>@obj.FullName</td>
+                        <td>@obj.Inn</td>
+                        <td class="text-center">@Html.ActionLink(" ", "Edit", new { id = @obj.Id }, new { @class = " glyphicon glyphicon-pencil", target = "_blank" })</td>
+                    </tr>
+                }
             </tbody>
         </table>
         <div class="row">
@@ -66,7 +71,7 @@
                     Model.Results = null;
                     Model.PageNumber = page;
                     return Url.Action("Search", Model);
-                }, new PagedListRenderOptions {DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} "})
+                }, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
             </div>
         </div>
     }

@@ -280,6 +280,8 @@
     <Compile Include="Controllers\MonitoringController.SmallLeisureInfo.Excel.cs" />
     <Compile Include="Controllers\MonitoringController.SmallLeisureInfo.Excel.Upload.cs" />
     <Compile Include="Controllers\MonitoringHotelController.cs" />
+    <Compile Include="Controllers\OrganizationCampController.Excel.cs" />
+    <Compile Include="Controllers\OrganizationGBUController.Excel.cs" />
     <Compile Include="Controllers\NewBoutController.Children.cs" />
     <Compile Include="Controllers\NewBoutController.cs" />
     <Compile Include="Controllers\OrganizationCampController.cs" />
@@ -291,6 +293,7 @@
     <Compile Include="Controllers\OrphanController.PupilGroupList.cs" />
     <Compile Include="Controllers\OrphanController.Pupils.cs" />
     <Compile Include="Controllers\PedPartyController.cs" />
+    <Compile Include="Controllers\MonitoringHotelController.Excel.cs" />
     <Compile Include="Controllers\RequestCurrentPeriodController.Excel.cs" />
     <Compile Include="Controllers\RequestNotitificationController.cs" />
     <Compile Include="Controllers\TagController.cs" />

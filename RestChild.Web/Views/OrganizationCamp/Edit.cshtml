@@ -4,12 +4,12 @@
 @using RestChild.Web.Extensions
 @model RestChild.Web.Models.OrganizationCampViewModel
 @{
-    var title = Model.Data.Id > 0 ? "Редактирование лагеря" : "Создание лагеря";
+    var title = Model.Data.Id > 0 ? "Просмотр лагеря" : "Создание лагеря";
 
     ViewBag.Title = title;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    var isEdit = Security.HasRight(AccessRightEnum.Organization.CampEdit);
+    var isEdit = false;
 }
 
 <h2>@title</h2>

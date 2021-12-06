@@ -13,7 +13,7 @@ namespace RestChild.Web.Controllers
     ///     Контроллер ГБУ подведомственных префектурам
     /// </summary>
     [Authorize]
-    public class OrganizationGBUController : BaseController
+    public partial class OrganizationGBUController : BaseController
     {
         /// <summary>
         ///     Вход по умолчанию
@@ -34,21 +34,7 @@ namespace RestChild.Web.Controllers
                 return RedirectToAvalibleAction();
             }
 
-            var q = UnitOfWork.GetSet<MonitoringGBU>().AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(filterModel.Name))
-            {
-                q = q.Where(ss =>
-                    ss.ShortName.ToLower().Contains(filterModel.Name.ToLower()) ||
-                    ss.FullName.ToLower().Contains(filterModel.Name.ToLower()));
-            }
-
-            if (filterModel.OrganisationId.HasValue && filterModel.OrganisationId.Value > 0)
-            {
-                q = q.Where(ss => ss.OrganisationId == filterModel.OrganisationId.Value);
-                filterModel.OrganisationName = UnitOfWork.GetSet<Organization>()
-                    .Where(ss => ss.Id == filterModel.OrganisationId.Value).Select(ss => ss.Name).FirstOrDefault();
-            }
+            var q = GetOrganizationGBUQuery(filterModel);
 
             var totalCount = q.Count();
             var entity = q.OrderBy(ss => ss.ShortName).Skip(filterModel.StartRecord).Take(filterModel.PageSize).ToList();
@@ -125,8 +111,27 @@ namespace RestChild.Web.Controllers
 
                 return RedirectToAction(nameof(Edit), new {orgId = gbu.Id});
             }
+        }
 
+        private IQueryable<MonitoringGBU> GetOrganizationGBUQuery(OrganizationGBUSearchModel filter)
+        {
+            var q = UnitOfWork.GetSet<MonitoringGBU>().AsQueryable();
 
+            if (!string.IsNullOrWhiteSpace(filter.Name))
+            {
+                q = q.Where(ss =>
+                    ss.ShortName.ToLower().Contains(filter.Name.ToLower()) ||
+                    ss.FullName.ToLower().Contains(filter.Name.ToLower()));
+            }
+
+            if (filter.OrganisationId.HasValue && filter.OrganisationId.Value > 0)
+            {
+                q = q.Where(ss => ss.OrganisationId == filter.OrganisationId.Value);
+                filter.OrganisationName = UnitOfWork.GetSet<Organization>()
+                    .Where(ss => ss.Id == filter.OrganisationId.Value).Select(ss => ss.Name).FirstOrDefault();
+            }
+
+            return q;
         }
     }
 }
