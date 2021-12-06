@@ -364,9 +364,9 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                         over.ShowTextAligned(Element.ALIGN_LEFT, request.NullSafe(r => r.Tour.DateOutcome.Value.ToLongDateString()) ?? string.Empty, 300, 229 + y_delta, 0);
 
-                        over.ShowTextAligned(Element.ALIGN_LEFT, request.NullSafe(r => r.TransferTo.Name) ?? string.Empty, 340, 155 + y_delta, 0);
+                        over.ShowTextAligned(Element.ALIGN_LEFT, request.NullSafe(r => r.TransferTo.Name) ?? string.Empty, 300, 155 + y_delta, 0);
 
-                        over.ShowTextAligned(Element.ALIGN_LEFT, request.NullSafe(r => r.TransferFrom.Name) ?? string.Empty, 340, 131 + y_delta, 0);
+                        over.ShowTextAligned(Element.ALIGN_LEFT, request.NullSafe(r => r.TransferFrom.Name) ?? string.Empty, 300, 131 + y_delta, 0);
 
                         if (applicant.DocumentType != null)
                         {
