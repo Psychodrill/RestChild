@@ -34,125 +34,125 @@ namespace RestChild.DAL.Configurations
         /// </summary>
         public static void Seed(Context context)
         {
-            DetachAllEntitys(context);
+            //DetachAllEntitys(context);
 
-            TypeViolation(context);
+            //TypeViolation(context);
 
-            CategoryIncidents(context);
+            //CategoryIncidents(context);
 
-            BoutJournalType(context);
+            //BoutJournalType(context);
 
-            TieColor(context);
+            //TieColor(context);
 
-            AccessRight(context);
+            //AccessRight(context);
 
-            StateMachine(context);
+            //StateMachine(context);
 
-            StateMachineState(context);
+            //StateMachineState(context);
 
-            TypeOfTransport(context);
+            //TypeOfTransport(context);
 
-            TypeOfCamp(context);
+            //TypeOfCamp(context);
 
-            TypeOfTransportInRequest(context);
+            //TypeOfTransportInRequest(context);
 
-            TypeOfLinkPeople(context);
+            //TypeOfLinkPeople(context);
 
-            TypeOfService(context);
+            //TypeOfService(context);
 
-            TypeOfGroupCheck(context);
+            //TypeOfGroupCheck(context);
 
-            TypeOfRest(context);
+            //TypeOfRest(context);
 
-            TypeRequestInformationVoucher(context);
+            //TypeRequestInformationVoucher(context);
 
-            Status(context);
+            //Status(context);
 
-            StatusAction(context);
+            //StatusAction(context);
 
-            Beneficiaries(context);
+            //Beneficiaries(context);
 
-            RestrictionGroup(context);
+            //RestrictionGroup(context);
 
-            TypeOfRestriction(context);
+            //TypeOfRestriction(context);
 
-            BenefitType(context);
+            //BenefitType(context);
 
-            TypeOfRestBenefitRestriction(context);
+            //TypeOfRestBenefitRestriction(context);
 
-            ReportTable(context);
+            //ReportTable(context);
 
-            ReportTableRow(context);
+            //ReportTableRow(context);
 
-            ReportSheet(context);
+            //ReportSheet(context);
 
-            Source(context);
+            //Source(context);
 
-            NotNeedTicketReason(context);
+            //NotNeedTicketReason(context);
 
-            TypeOfCalculation(context);
+            //TypeOfCalculation(context);
 
-            DocumentType(context);
+            //DocumentType(context);
 
-            StateMachineAction(context);
+            //StateMachineAction(context);
 
-            StateMachineFromStatus(context);
+            //StateMachineFromStatus(context);
 
-            DeclineReason(context);
+            //DeclineReason(context);
 
-            FileTypes(context);
+            //FileTypes(context);
 
-            ExchangeBaseRegistryType(context);
+            //ExchangeBaseRegistryType(context);
 
-            RequestFileType(context);
+            //RequestFileType(context);
 
-            TradeUnionStatusByChild(context);
+            //TradeUnionStatusByChild(context);
 
-            RequestStatusChainForMpgu(context);
+            //RequestStatusChainForMpgu(context);
 
-            ApplicantType(context);
+            //ApplicantType(context);
 
-            StatusByChild(context);
+            //StatusByChild(context);
 
-            Reports(context);
+            //Reports(context);
 
-            TypeOfLimitList(context);
+            //TypeOfLimitList(context);
 
-            RepresentInterest(context);
+            //RepresentInterest(context);
 
-            TypeOfTransfer(context);
+            //TypeOfTransfer(context);
 
-            MgtVisitBookingPersonType(context);
+            //MgtVisitBookingPersonType(context);
 
-            SecurityJournalType(context);
+            //SecurityJournalType(context);
 
-            MgtDepartment(context);
+            //MgtDepartment(context);
 
-            MgtVisitBookingVisitStatus(context);
+            //MgtVisitBookingVisitStatus(context);
 
-            MgtVisitTargets(context);
+            //MgtVisitTargets(context);
 
-            SecuritySettings(context);
+            //SecuritySettings(context);
 
-            OrganizationCollaboratorPostType(context);
+            //OrganizationCollaboratorPostType(context);
 
-            FormOfRest(context);
+            //FormOfRest(context);
 
-            TypeOfDrug(context);
+            //TypeOfDrug(context);
 
-            PupilGroupVacationPeriod(context);
+            //PupilGroupVacationPeriod(context);
 
-            TypeOfRestERL(context);
+            //TypeOfRestERL(context);
 
-            BenefitTypeERL(context);
+            //BenefitTypeERL(context);
 
-            BtiDistrict(context);
+            //BtiDistrict(context);
 
-            SmallLeisureSubtype(context);
+            //SmallLeisureSubtype(context);
 
-            MonitoringFinancialSource(context);
+            //MonitoringFinancialSource(context);
 
-            TradeUnionCamperPrivilegePart(context);
+            //TradeUnionCamperPrivilegePart(context);
         }
     }
 }
