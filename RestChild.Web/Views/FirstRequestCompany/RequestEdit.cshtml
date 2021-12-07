@@ -598,7 +598,7 @@
 		var placesOfRestRequiringTransportSelection = @Html.Raw(Json.Encode(Model.PlacesOfRestRequiringTransportSelection.ToList()));
         var isCamping = @Html.Raw(Json.Encode((long)TypeOfCampEnum.IsCamping));
         var typeOfRestRequiringCampTypeSelection = @Html.Raw(Json.Encode((long)TypeOfRestEnum.ChildRest));
-    var CountAttendants = @Html.Raw(Json.Encode(Model.Data.CountAttendants));
+    var CountAttendants = @Html.Raw(Json.Encode(Model.Data.Attendant.Count));
     var reApply = @Html.Raw(Json.Encode(ViewBag.ReApply));
 </script>
 

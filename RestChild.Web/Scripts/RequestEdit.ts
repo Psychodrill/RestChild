@@ -219,7 +219,7 @@ function lockAttendantAddButton() {
     $('.remove-attendant-button').addClass('hidden');
     $('#AddAttendant').addClass('hidden');
 
-    let count =
+    let count = ((CountAttendants !== 0 && CountAttendants !== $('input#Data_CountAttendants').val()) && $('input#Data_CountAttendants').length !== 0 || CountAttendants == $('select#Data_CountAttendants').select2('val')) ? CountAttendants :
         $('input#Data_CountAttendants').length !== 0
         ? $('input#Data_CountAttendants').val() :
          $('select#Data_CountAttendants').select2('val');
