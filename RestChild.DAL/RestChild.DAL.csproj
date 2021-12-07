@@ -1281,6 +1281,10 @@
     <Compile Include="Migrations\202108251158089_Task144666Migration.Designer.cs">
       <DependentUpon>202108251158089_Task144666Migration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202110191441356_FixTheDifference.cs" />
+    <Compile Include="Migrations\202110191441356_FixTheDifference.designer.cs">
+      <DependentUpon>202110191441356_FixTheDifference.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="RepositoryExtensions\Repository.cs" />
     <Compile Include="UnitOfWork.cs" />
@@ -2170,6 +2174,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202108251158089_Task144666Migration.resx">
       <DependentUpon>202108251158089_Task144666Migration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110191441356_FixTheDifference.resx">
+      <DependentUpon>202110191441356_FixTheDifference.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
