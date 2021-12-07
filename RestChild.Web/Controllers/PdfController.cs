@@ -140,9 +140,9 @@ namespace RestChild.Web.Controllers
                 return null;
             }
 
-            var outputStream = new FileStream(filename, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite, 512,
+            var outputStream = new FileStream(Path.Combine(Path.GetTempPath(), filename), FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite, 512,
                 FileOptions.DeleteOnClose | FileFlagNoBuffering);
-            HttpContext.Response.AddHeader("content-disposition", "attachment; filename=certificate.pdf");
+            HttpContext.Response.AddHeader("content-disposition", string.Format("attachment; filename={0}",filename));
             return new FileStreamResult(outputStream, "application/pdf");
         }
 
@@ -232,10 +232,10 @@ namespace RestChild.Web.Controllers
 
         internal static string CertificateForRequestTemporyFile(IUnitOfWork unitOfWork, long requestId)
         {
-            var filename = GetTempFileName();
 
             var certArray = PdfProcessor.CertificateForRequestTemporaryFile(unitOfWork, requestId);
-            using (var fs = new FileStream(filename, FileMode.OpenOrCreate))
+            string filename = certArray.FileName;
+            using (var fs = new FileStream(Path.Combine(Path.GetTempPath(),filename), FileMode.OpenOrCreate))
             {
                 fs.Write(certArray.FileBody, 0, certArray.FileBody.Length);
             }
