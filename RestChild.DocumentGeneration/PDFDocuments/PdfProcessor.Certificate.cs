@@ -56,30 +56,32 @@ namespace RestChild.DocumentGeneration.PDFDocuments
             }
 
             byte[] result;
+            string fileName;
 
             using (var memoryStream = new MemoryStream())
             {
                 var multiTypeRequest = request.Child.Count(c => !c.IsDeleted) > 1;
+                
                 if (request.RequestOnMoney)
                 {
                     if (!multiTypeRequest)
                     {
-                        CertificateOnMoney(request, memoryStream);
+                        fileName  =CertificateOnMoney(request, memoryStream);
                     }
                     else
                     {
-                        CertificateOnMoneyMulti(request, memoryStream);
+                        fileName = CertificateOnMoneyMulti(request, memoryStream);
                     }
                 }
                 else
                 {
                     if (!multiTypeRequest && request.CountAttendants <= 1)
                     {
-                        CertificateOnRestSingle(request, memoryStream);
+                        fileName = CertificateOnRestSingle(request, memoryStream);
                     }
                     else
                     {
-                        CertificateOnRestMulti(request, memoryStream);
+                        fileName = CertificateOnRestMulti(request, memoryStream);
                     }
                 }
 
@@ -88,7 +90,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
             return new DocumentResult
             {
-                FileName = "Сертификат.pdf",
+                FileName = fileName,
                 FileBody = result,
                 MimeTypeShort = Extension,
                 MimeType = MimeType
@@ -98,7 +100,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
         /// <summary>
         ///     сертификат на отдых 1 ребенок
         /// </summary>
-        private static void CertificateOnMoney(Request request, Stream newStream)
+        private static string CertificateOnMoney(Request request, Stream newStream)
         {
             var applicant = request.Applicant ?? new Applicant {DocumentType = new DocumentType {Name = string.Empty}};
 
@@ -147,7 +149,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                                 var over = pdfStamper.GetOverContent(page);
                                 over.BeginText();
                                 over.SetFontAndSize(customFont, 14);
-                                over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate.Value.ToLongDateString() ?? request.DateChangeStatus.Value.ToLongDateString() ?? DateTime.Now.ToLongDateString(), 280, 458, 0);
+                                over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate?.ToLongDateString()?? request.DateChangeStatus?.ToLongDateString() ?? DateTime.Now.ToLongDateString(), 280, 458, 0);
                                 over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 475, 458, 0);
                                 over.SetFontAndSize(customFont, 12);
 
@@ -166,7 +168,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                                     page++;
                                     over.BeginText();
                                     over.SetFontAndSize(customFont, 14);
-                                    over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate.Value.ToLongDateString() ?? request.DateChangeStatus.Value.ToLongDateString() ?? DateTime.Now.ToLongDateString(), 280, 458, 0);
+                                    over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate?.ToLongDateString() ?? request.DateChangeStatus?.ToLongDateString() ?? DateTime.Now.ToLongDateString(), 280, 458, 0);
                                     over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 475, 458, 0);
 
                                     WriteByTable(over, font12, 270, 400, 500, $"{child.LastName}  {child.FirstName}  {child.MiddleName}".Trim());
@@ -196,12 +198,13 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     }
                 }
             }
+            return "Сертификат.pdf";
         }
 
         /// <summary>
         ///     сертификат на отдых много детей
         /// </summary>
-        private static void CertificateOnMoneyMulti(Request request, Stream newStream)
+        private static string CertificateOnMoneyMulti(Request request, Stream newStream)
         {
             var applicant = request.Applicant ?? new Applicant {DocumentType = new DocumentType {Name = string.Empty}};
 
@@ -221,7 +224,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                             var over = pdfStamper.GetOverContent(1);
                             over.BeginText();
                             over.SetFontAndSize(customFont, 12);
-                            over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate.Value.ToShortDateString() ?? request.DateChangeStatus.Value.ToShortDateString() ?? DateTime.Now.ToShortDateString()/*GetDayMonth(request.CertificateDate)*/, 590, 495, 0);
+                            over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate?.ToShortDateString() ?? request.DateChangeStatus?.ToShortDateString() ?? DateTime.Now.ToShortDateString()/*GetDayMonth(request.CertificateDate)*/, 590, 495, 0);
                             over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 686, 495, 0);
                             over.SetFontAndSize(customFont, 10);
 
@@ -261,7 +264,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                             over.BeginText();
 
                             over.SetFontAndSize(customFont, 12);
-                            over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate.Value.ToShortDateString() ?? request.DateChangeStatus.Value.ToShortDateString() ?? DateTime.Now.ToShortDateString()/*GetDayMonth(request.CertificateDate)*/, 590, 495, 0);
+                            over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate?.ToShortDateString() ?? request.DateChangeStatus?.ToShortDateString() ?? DateTime.Now.ToShortDateString()/*GetDayMonth(request.CertificateDate)*/, 590, 495, 0);
                             over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 686, 495, 0);
                             over.SetFontAndSize(customFont, 10);
 
@@ -296,12 +299,13 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     }
                 }
             }
+            return "Сертификат.pdf";
         }
 
         /// <summary>
         ///     сертификат на отдых 1 ребенок
         /// </summary>
-        private static void CertificateOnRestSingle(Request request, Stream newStream)
+        private static string  CertificateOnRestSingle(Request request, Stream newStream)
         {
             var applicant = request.Applicant ?? new Applicant {DocumentType = new DocumentType {Name = string.Empty}};
 
@@ -339,7 +343,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                         over.BeginText();
                         over.SetFontAndSize(customFont, 14);
-                        over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate.Value.ToLongDateString()?? request.DateChangeStatus.Value.ToLongDateString() ?? DateTime.Now.ToLongDateString(), 275, 404 + y_delta, 0);
+                        over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate?.ToLongDateString()?? request.DateChangeStatus?.ToLongDateString() ?? DateTime.Now.ToLongDateString(), 275, 404 + y_delta, 0);
                         over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 470, 404 + y_delta, 0);
 
                         var text = $"{child.LastName} {child.FirstName} {child.MiddleName}".Trim();
@@ -392,12 +396,13 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     }
                 }
             }
+            return "Путёвка.pdf";
         }
 
         /// <summary>
         ///     сертификат на отдых множественный
         /// </summary>
-        private static void CertificateOnRestMulti(Request request, Stream newStream)
+        private static string CertificateOnRestMulti(Request request, Stream newStream)
         {
 
             var assembly = Assembly.Load("RestChild.Templates");
@@ -417,7 +422,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                         over.BeginText();
                         over.SetFontAndSize(customFont, headerTextSize);
-                        over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate.Value.ToShortDateString() ?? request.DateChangeStatus.Value.ToShortDateString() ?? DateTime.Now.ToShortDateString(), 565, 493, 0);
+                        over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate?.ToShortDateString() ?? request.DateChangeStatus?.ToShortDateString() ?? DateTime.Now.ToShortDateString(), 565, 493, 0);
                         over.SetFontAndSize(customFont, headerTextSize);
                         over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 694, 493, 0);
 
@@ -470,7 +475,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                         over = pdfStamper.GetOverContent(2);
                         over.BeginText();
                         over.SetFontAndSize(customFont, headerTextSize);
-                        over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate.Value.ToShortDateString() ?? request.DateChangeStatus.Value.ToShortDateString() ?? DateTime.Now.ToShortDateString(), 570, 490, 0);
+                        over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateDate?.ToShortDateString() ?? request.DateChangeStatus?.ToShortDateString() ?? DateTime.Now.ToShortDateString(), 570, 490, 0);
                         over.SetFontAndSize(customFont, headerTextSize);
                         over.ShowTextAligned(Element.ALIGN_LEFT, request.CertificateNumber.FormatEx(), 692, 490, 0);
 
@@ -504,6 +509,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     }
                 }
             }
+            return "Путёвка.pdf";
         }
 
         private static void WriteByTable(PdfContentByte over, Font font, float posX, float posY, float width,

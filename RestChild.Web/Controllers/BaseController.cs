@@ -39,6 +39,10 @@ namespace RestChild.Web.Controllers
         {
             return Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         }
+        public static string GetTempFileName(string fileName)
+        {
+            return Path.Combine(Path.GetTempPath(), fileName);
+        }
 
         protected internal virtual FileStreamDeleteOnCloseResult FileAndDeleteOnClose(string fileName, string contentType, string fileDownloadName)
         {
