@@ -367,6 +367,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                         }
 
                     document.Close();
+
                 }
 
                 return new DocumentResult
@@ -1005,7 +1006,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     //    "документ, подтверждающий отнесение ребёнка, к одной из категорий детей, находящихся в трудной жизненной ситуации и указанных в пунктах 3.1.3, 3.1.5 - 3.1.13 Порядка, лица из числа детей-сирот к категории лиц из числа детей-сирот и детей, оставшихся без попечения родителей (заключение медико-социальной экспертизы, заключение Центральной психолого-медико-педагогической комиссии города Москвы, справки уполномоченного учреждения социальной защиты населения города Москвы и/или федеральных органов);"
                     //};
 
-                    
+                    //доработка для наркоманов
                     List<string> innerListOrphans = new List<string>();
                     List<string> innerListDisabled = new List<string>();
                     List<string> innerListLowIncome = new List<string>();
@@ -1765,8 +1766,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
             document.Add(p);
         }
 
-
-        private static void GetPdfTable(List<Request> requests, Document doc, IEnumerable<int> years)
+        private static void GetPdfTable(List<Request> requests, Document doc, IEnumerable<int>years)
         {
             PdfPTable pdfTable = new PdfPTable(3);
             pdfTable.SetWidthPercentage(new float[3] { 100, 220, 280 }, PageSize.A4);
@@ -1801,7 +1801,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
             pdfTable.AddCell(pdfPCell);
 
             var moneyTypes = new[]
-            {
+{
                 (long?) TypeOfRestEnum.MoneyOn18, (long?) TypeOfRestEnum.MoneyOn3To7,
                 (long?) TypeOfRestEnum.MoneyOn7To15, (long?) TypeOfRestEnum.MoneyOnInvalidOn4To17
             };
@@ -1826,7 +1826,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                 pdfPCell = new PdfPCell(new Phrase(request == null ? "" :
                             request.TourId.HasValue
-                            ? $"{request.Tour.Hotels?.Name}, c {request.Tour.DateIncome.FormatEx(string.Empty)} по {request.Tour.DateOutcome.FormatEx(string.Empty)}" : (request.RequestOnMoney && !moneyTypes.Contains(request.TypeOfRestId) ? "Осуществлен выбор сертификата на втором этапе заявочной кампании" : ""), HeaderFont));
+                            ? $"{request.Tour.Hotels?.Name}, c {request.Tour.DateIncome.FormatEx(string.Empty)} по {request.Tour.DateOutcome.FormatEx(string.Empty)}": (request.RequestOnMoney && !moneyTypes.Contains(request.TypeOfRestId)? "Осуществлен выбор сертификата на втором этапе заявочной кампании": ""), HeaderFont));
                 pdfPCell.BorderColor = new BaseColor(0, 0, 0);
                 pdfPCell.BackgroundColor = new BaseColor(255, 255, 255);
                 pdfPCell.HorizontalAlignment = Element.ALIGN_CENTER;
@@ -1843,7 +1843,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
         /// <summary>
         ///     Подпись работника
         /// </summary>
-        private static void SignWorkerBlock(Document document, Account account, string name = "Принял:")
+        private static void SignWorkerBlock(Document document, Account account, string name = "Принял:")//костыль, который надо обязательно переделать
         {
             
             account = account ?? new Account();

@@ -63,8 +63,8 @@ namespace RestChild.ConsoleProjects
 
                 ///var q = uw.GetById<Request>(1111);
 
-                var cert = PdfProcessor.CertificateForRequestTemporaryFile(uw, 56332);
-                using (var fs = new FileStream("D:\\Publish\\Сертификат.pdf", FileMode.OpenOrCreate, FileAccess.Write))
+                var cert = PdfProcessor.CertificateForRequestTemporaryFile(uw, 55658);
+                using (var fs = new FileStream("C:\\Publish\\Сертификат.pdf", FileMode.OpenOrCreate, FileAccess.Write))
                 {
                     fs.Write(cert.FileBody, 0, cert.FileBody.Length);
                 }
