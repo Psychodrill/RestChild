@@ -2144,5 +2144,133 @@ namespace RestChild.Web.Controllers.WebApi
             UnitOfWork.RequestChangeStatusInternal(AccessRightEnum.Status.FcToReject,
                                                     requestToReject, declineReason, false);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="requestId"></param>
+        /// <returns></returns>
+        [Route("api/RequestToAisoLegalRepresentationCheck")]
+        [HttpGet]
+        public ExchangeBaseRegistry RequestToAisoLegalRepresentationCheck(long requestId)
+        {
+            var requestForCheck = UnitOfWork.GetById<Request>(requestId);
+
+            if (requestForCheck != null)
+            {
+                return AisoLegalRepresentationCheckRequest(requestForCheck);
+            }
+            return null;
+        }
+
+        public ExchangeBaseRegistry AisoLegalRepresentationCheckRequest(Request request)
+        {
+            using (var unitOfWork = new UnitOfWork())
+            {
+                
+                var benefitTypes = new long[] { 8, 9, 7, 41, 4, 5, 6, 47, 30, 36, 37, 3, 49, 50, 44 };
+
+
+                var checkAttendants = new List<Applicant> { request.Applicant };
+
+                checkAttendants.AddRange(request.Attendant.Where(a =>
+                    a.ApplicantTypeId != (long)ApplicantTypeEnum.Confidant && a.ApplicantTypeId.HasValue &&
+                    a.IsAccomp));
+
+                if (request.Child.Any(ss =>
+                    benefitTypes.Any(sx => sx == ss.BenefitType?.Id) ||
+                    benefitTypes.Any(sx => sx == ss.BenefitType?.SameBenefitId)))
+                {
+                    var yid = new List<long>();
+                    var y = request.YearOfRest;
+                    for (var i = 1; i <= 3; i++)
+                    {
+                        yid.Add(unitOfWork.GetSet<YearOfRest>().First(ss => ss.Year == y.Year - i).Id);
+                    }
+
+                    foreach (var child in request.Child.Where(ss =>
+                        benefitTypes.Any(sx => sx == ss.BenefitType?.Id) ||
+                        benefitTypes.Any(sx => sx == ss.BenefitType?.SameBenefitId)).ToList())
+                    {
+                        foreach (var applicant in checkAttendants)
+                        {
+                            var r = unitOfWork.GetSet<Request>().FirstOrDefault(ss =>
+                                ss.Id != request.Id &&
+                                yid.Any(sx => sx == ss.YearOfRestId) &&
+                                //(ss.StatusId == (long)StatusEnum.CertificateIssued || (ss.StatusId == (long)StatusEnum.Reject && ss.DeclineReasonId == 201705)) &&
+                                ss.StatusId == (long)StatusEnum.Reject && ss.DeclineReasonId == 201705 &&
+                                ss.Applicant.Snils == applicant.Snils &&
+                                ss.Child.Any(sx => sx.Snils == child.Snils)
+                            );
+
+                            Applicant attendant = null;
+
+                            if (r == null)
+                            {
+                                attendant = unitOfWork.GetSet<Applicant>().FirstOrDefault(ss =>
+                                    ss.RequestId != request.Id &&
+                                    yid.Any(sx => sx == ss.Request.YearOfRestId) &&
+                                    //(ss.Request.StatusId == (long)StatusEnum.CertificateIssued || (ss.Request.StatusId == (long)StatusEnum.Reject && ss.Request.DeclineReasonId == 201705)) &&
+                                    ss.Request.StatusId == (long)StatusEnum.Reject && ss.Request.DeclineReasonId == 201705 &&
+                                    ss.Snils == applicant.Snils &&
+                                    ss.Request.Child.Any(sx => sx.Snils == child.Snils)
+                                );
+
+                                r = attendant?.Request;
+                            }
+                            else
+                            {
+                                attendant = r.Applicant;
+                            }
+
+                            if (r != null && attendant != null)
+                            {
+                                return new RestChild.Domain.ExchangeBaseRegistry
+                                {
+                                    RequestGuid = Guid.NewGuid().ToString(),
+                                    ChildId = child.Id,
+                                    ApplicantId = applicant.Id,
+                                    RequestText = request.Id.ToString() + " Status: " + request.StatusId.ToString(),
+                                    ResponseText =
+                                        $"Заявление: {r.RequestNumber}</br>Законный представитель: {applicant.LastName} {applicant.FirstName} {applicant.MiddleName} - {applicant.DateOfBirth:dd.MM.yyyy} для ребёнка {child.LastName} {child.FirstName} {child.MiddleName} - {child.DateOfBirth:dd.MM.yyyy}",
+                                    SendDate = DateTime.Now,
+                                    ResponseDate = DateTime.Now,
+                                    IsProcessed = false,
+                                    IsIncoming = false,
+                                    OperationType = "AisoLegalRepresentationCheckRequest",
+                                    Success = true,
+                                    ExchangeBaseRegistryTypeId =
+                                        (long)ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck,
+                                    ServiceNumber = "б/н",
+                                    ResponseGuid = "б/н"
+                                };
+                            }
+                            else
+                            {
+                                return new RestChild.Domain.ExchangeBaseRegistry
+                                {
+                                    RequestGuid = Guid.NewGuid().ToString(),
+                                    ChildId = child.Id,
+                                    ApplicantId = applicant.Id,
+                                    RequestText = request.Id.ToString() + " Status: " + request.StatusId.ToString(),
+                                    ResponseText =
+                                        $"Запрашиваемые сведения для </br>законного представителя: {applicant.LastName} {applicant.FirstName} {applicant.MiddleName} - {applicant.DateOfBirth:dd.MM.yyyy} и ребёнка {child.LastName} {child.FirstName} {child.MiddleName} - {child.DateOfBirth:dd.MM.yyyy} не подтверждены",
+                                    SendDate = DateTime.Now,
+                                    ResponseDate = DateTime.Now,
+                                    IsProcessed = false,
+                                    IsIncoming = false,
+                                    OperationType = "AisoLegalRepresentationCheckRequest",
+                                    Success = false,
+                                    ExchangeBaseRegistryTypeId =
+                                        (long)ExchangeBaseRegistryTypeEnum.AisoLegalRepresentationCheck,
+                                    ServiceNumber = "б/н",
+                                    ResponseGuid = "б/н"
+                                };
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+        }
     }
 }

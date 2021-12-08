@@ -20,13 +20,17 @@
 @section searchForm
 {
     <div class="form-group">
-        <label class="col-md-2 control-label text-right">Договор взаимодействия</label>
+        @*<label class="col-md-2 control-label text-right">Договор взаимодействия</label>
+            <div class="col-md-4">
+                @Html.DropDownListFor(r => r.ContractId, new SelectList(ViewBag.Contracts, "Id", "SignNumber"), new { @class = "form-control select2", autocomplete = "off" })
+            </div>*@
+        <label class="col-md-2 control-label text-right">Партнёр</label>
         <div class="col-md-4">
-            @Html.DropDownListFor(r => r.ContractId, new SelectList(ViewBag.Contracts, "Id", "SignNumber"), new { @class = "form-control select2", autocomplete = "off" })
+            @Html.DropDownListFor(r => r.OrganizationId, new SelectList(ViewBag.Organizations, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
         </div>
-        <label class="col-md-2 control-label text-right">Организация</label>
+        <label class="col-md-2 control-label text-right">Организация отдыха</label>
         <div class="col-md-4">
-            @Html.DropDownListFor(r => r.HotelName, new SelectList(ViewBag.Organizations, "Name", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+            @Html.DropDownListFor(r => r.HotelName, new SelectList(ViewBag.Hotels, "Name", "Name"), new { @class = "form-control select2", autocomplete = "off" })
         </div>
     </div>
     <div class="form-group">
@@ -116,9 +120,9 @@
         <div class="col-md-4">
             @Html.DropDownListFor(r => r.PlaceOfRestId, new SelectList(ViewBag.PlacesOfRest, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
         </div>
-        @*<label class="col-md-2 control-label text-right">Статус</label>
+        @*<label class="col-md-2 control-label text-right">Организация-партнёр</label>
             <div class="col-md-4">
-                @Html.DropDownListFor(r => r.StateMachineStateId, new SelectList(ViewBag.StatusOfRest, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
+                @Html.DropDownListFor(r => r.OrganizationId, new SelectList(ViewBag.Organizations, "Id", "Name"), new { @class = "form-control select2", autocomplete = "off" })
             </div>*@
     </div>
     <div class="form-group">
@@ -197,8 +201,9 @@
             <thead>
                 <tr>
                     <!--th>№</th-->
-                    <th>Договор</th>
-                    <th>Наименование организации</th>
+                    <th>Договор с отдыхающим</th>
+                    <th>Наименование организации отдыха</th>
+                    <th>Наименование партнёра</th>
                     <th>Номер сертификата и дата выдачи</th>
                     <th>ФИО заявителя</th>
                     <th>ФИО ребёнка</th>
@@ -227,18 +232,14 @@
                                 <div class="wordbreak">
                                     @cert.ContractNumber.FormatEx()
                                 </div>
-                                @*@if (cert.StateMachineStateId != RestChild.Comon.Enumeration.StateMachineStateEnum.Deleted)
-                                    {
-                                        <img src="~/Content/images/patch-check.svg" alt="check" />
-                                    }*@
-
                             </td>
                             <td>
                                 <div class="wordbreak">
                                     @cert.Place
                                 </div>
                             </td>
-                            <td>№@cert.Request.CertificateNumber.FormatEx() от @cert.Request.CertificateDate.FormatEx()</td>
+                            <td>@cert.Organizations.Name</td>
+                            <td>@cert.Request.CertificateNumber.FormatEx() от @cert.Request.CertificateDate.FormatEx()</td>
                             <td>
                                 @cert.Request.Applicant.NullSafe(a => a.LastName).FormatEx()
                                 @cert.Request.Applicant.NullSafe(a => a.FirstName).FormatEx()
@@ -269,63 +270,72 @@
                             <td>
                                 @if (cert.Request.Attendant.Any())
                                 {
-                                    cert.Request.Attendant.FirstOrDefault().LastName.FormatEx();
-                                    cert.Request.Attendant.FirstOrDefault().FirstName.FormatEx();
-                                    cert.Request.Attendant.FirstOrDefault().MiddleName.FormatEx();
-                                 }
+                                    foreach (var attendant in cert.Request.Attendant.Where(at=>!at.IsDeleted))
+                                    {
+                                        <text>
+                                            <div>
+                                                @attendant.NullSafe(a => a.LastName).FormatEx()
+                                                @attendant.NullSafe(a => a.FirstName).FormatEx()
+                                                @attendant.NullSafe(a => a.MiddleName).FormatEx()
+                                            </div>
+                                        </text>
+                                    }
+                                    <br />
+                                }
                             </td>
                             <td style="min-width: 215px">
-                                @if (cert.Request.Tour != null)
+                                @if (cert.Region != null)
                                 {
-                                    @Html.Raw(cert.Request.NullSafe(r => r.Tour.Hotels.Name).FormatEx())
-                                    <div>
-                                        <small><i style="color: #666">@Html.Raw(cert.Request.NullSafe(r => r.Tour.Hotels.PlaceOfRest.Name).FormatEx())</i></small>
-                                    </div>
+                                    @Html.Raw(cert.Region)
+                                    @*<div>
+                                            <small><i style="color: #666">@Html.Raw(cert.Place).FormatEx())</i></small>
+                                        </div>*@
                                 }
-                                else if (cert.Request.PlaceOfRestId.HasValue)
-                                {
-                                    <div>
-                                        @Html.Raw(cert.Request.NullSafe(r => r.PlaceOfRest.Name).FormatEx())
-                                        @if (cert.Request.PlacesOfRest != null && cert.Request.PlacesOfRest.Any())
-                                        {
-                                            <div>
-                                                <i>Дополнительно:</i>
-                                                @foreach (var a in cert.Request.PlacesOfRest ?? new List<RequestPlaceOfRest>())
-                                                {
-                                                    <div>
-                                                        <small><i style="color: #666">@Html.Raw(a.PlaceOfRest.Name.FormatEx())</i></small>
-                                                    </div>
-                                                }
-                                            </div>
-                                        }
-                                    </div>
-                                }
+                                @*else if (cert.Request.PlaceOfRestId.HasValue)
+                                    {
+                                        <div>
+                                            @Html.Raw(cert.Request.NullSafe(r => r.PlaceOfRest.Name).FormatEx())
+                                            @if (cert.Request.PlacesOfRest != null && cert.Request.PlacesOfRest.Any())
+                                            {
+                                                <div>
+                                                    <i>Дополнительно:</i>
+                                                    @foreach (var a in cert.Request.PlacesOfRest ?? new List<RequestPlaceOfRest>())
+                                                    {
+                                                        <div>
+                                                            <small><i style="color: #666">@Html.Raw(a.PlaceOfRest.Name.FormatEx())</i></small>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    }*@
                             </td>
                             @*<td>
                                     @Html.Raw(cert.Request.TypeOfRest != null && cert.Request.TypeOfRest.Parent != null ? string.Format("{0} / {1}", cert.Request.TypeOfRest.Parent.Name, cert.Request.TypeOfRest.Name) : cert.Request.TypeOfRest != null ? cert.Request.TypeOfRest.Name : cert.Request.NullSafe(r => r.TypeOfRest.Name).FormatEx())
                                 </td>*@
                             <td>
-                                <div>
-                                    @Html.Raw(cert.Request.Tour != null && cert.Request.Tour.TimeOfRest != null ? cert.Request.NullSafe(r => r.Tour.TimeOfRest.Name).FormatEx() : cert.Request.NullSafe(r => r.TimeOfRest.Name).FormatEx())
-                                </div>
-                                @if (cert.Request.Tour != null)
-                                {
-                                    <div>
-                                        <small><i style="color: #666">@string.Format("{0}-{1}", cert.Request.Tour.DateIncome.FormatEx(), cert.Request.Tour.DateOutcome.FormatEx())</i></small>
+                                <div>@(cert.RestDateFrom.FormatEx())-@(cert.RestDateTo.FormatEx())</div>
+                                @*<div>
+                                        @Html.Raw(cert.Request.Tour != null && cert.Request.Tour.TimeOfRest != null ? cert.Request.NullSafe(r => r.Tour.TimeOfRest.Name).FormatEx() : cert.Request.NullSafe(r => r.TimeOfRest.Name).FormatEx())
                                     </div>
-                                }
-                                @if (cert.Request.TimesOfRest != null && cert.Request.TimesOfRest.Any())
-                                {
-                                    <div>
-                                        <i>Дополнительно:</i>
-                                        @foreach (var a in cert.Request.TimesOfRest ?? new List<RequestsTimeOfRest>())
-                                        {
-                                            <div>
-                                                <small><i style="color: #666">@Html.Raw(a.TimeOfRest.Name.FormatEx())</i></small>
-                                            </div>
-                                        }
-                                    </div>
-                                }
+                                    @if (cert.Request.Tour != null)
+                                    {
+                                        <div>
+                                            <small><i style="color: #666">@string.Format("{0}-{1}", cert.Request.Tour.DateIncome.FormatEx(), cert.Request.Tour.DateOutcome.FormatEx())</i></small>
+                                        </div>
+                                    }
+                                    @if (cert.Request.TimesOfRest != null && cert.Request.TimesOfRest.Any())
+                                    {
+                                        <div>
+                                            <i>Дополнительно:</i>
+                                            @foreach (var a in cert.Request.TimesOfRest ?? new List<RequestsTimeOfRest>())
+                                            {
+                                                <div>
+                                                    <small><i style="color: #666">@Html.Raw(a.TimeOfRest.Name.FormatEx())</i></small>
+                                                </div>
+                                            }
+                                        </div>
+                                    }*@
                             </td>
                             @*<td>
                                     <span class="@(cert.IsNullOrEmpty() ? "glyphicon glyphicon-ok text-success" : "glyphicon glyphicon-remove text-danger")"></span>
@@ -384,7 +394,7 @@
 {
     <script>
         function openCertificate(action) {
-        window.open(action, '_blank');
+            window.open(action, '_blank');
         }
     </script>
 

@@ -7,6 +7,7 @@ $(function () {
     //  Проверка адреса регистрации
     var getRegistrationAddress = '38D6E2D8-CE98-4916-A267-D4469FDE6295';
     var getExtractFromFGISFRI = '3e8fe0c1-1501-477a-b492-5fa1037d1d97';
+    var getRelationshipSmev = "49C8F097-361C-48F5-A70A-909C0B89F061";
     $('select').select2();
     $('.date input, input.date').inputmask("d.m.y", {
         placeholder: "дд.мм.гггг",
@@ -77,10 +78,10 @@ $(function () {
             }
         }
         else {
-            if (!$('#dialogNumber').val() && uid !== getCPMPK) {
+            if (!$('#dialogNumber').val() && uid !== getCPMPK && uid !== getRelationshipSmev) {
                 errorMsg = errorMsg + '<li>Не заполнен номер документа</li>';
             }
-            if (!$('#snils').val() && getSnilsAction !== uid && uid !== getCPMPK) {
+            if (!$('#snils').val() && getSnilsAction !== uid && uid !== getCPMPK && uid !== getRegistrationAddress && uid !== getRelationshipSmev) {
                 errorMsg = errorMsg + '<li>Не заполнен СНИЛС</li>';
             }
         }
@@ -132,6 +133,11 @@ $(function () {
             $snilsBlock.addClass('hidden');
             $addonSnils.addClass('hidden');
             $registrationAddress.removeClass('hidden');
+        }
+        else if (uid == getRelationshipSmev) {
+            $snilsBlock.addClass('hidden');
+            $addonSnils.addClass('hidden');
+            $otherBlock.addClass('hidden');
         }
         else {
             $snilsBlock.removeClass('hidden');

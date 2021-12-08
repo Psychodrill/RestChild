@@ -279,8 +279,13 @@
     <Compile Include="Controllers\MonitoringController.SmallLeisureInfo.cs" />
     <Compile Include="Controllers\MonitoringController.SmallLeisureInfo.Excel.cs" />
     <Compile Include="Controllers\MonitoringController.SmallLeisureInfo.Excel.Upload.cs" />
+    <Compile Include="Controllers\MonitoringHotelController.cs" />
+    <Compile Include="Controllers\OrganizationCampController.Excel.cs" />
+    <Compile Include="Controllers\OrganizationGBUController.Excel.cs" />
     <Compile Include="Controllers\NewBoutController.Children.cs" />
     <Compile Include="Controllers\NewBoutController.cs" />
+    <Compile Include="Controllers\OrganizationCampController.cs" />
+    <Compile Include="Controllers\OrganizationGBUController.cs" />
     <Compile Include="Controllers\OrphanController.Colloborators.cs" />
     <Compile Include="Controllers\OrphanController.cs" />
     <Compile Include="Controllers\OrphanController.Excel.cs" />
@@ -288,6 +293,7 @@
     <Compile Include="Controllers\OrphanController.PupilGroupList.cs" />
     <Compile Include="Controllers\OrphanController.Pupils.cs" />
     <Compile Include="Controllers\PedPartyController.cs" />
+    <Compile Include="Controllers\MonitoringHotelController.Excel.cs" />
     <Compile Include="Controllers\RequestCurrentPeriodController.Excel.cs" />
     <Compile Include="Controllers\RequestNotitificationController.cs" />
     <Compile Include="Controllers\TagController.cs" />
@@ -2226,6 +2232,12 @@
     <Content Include="Views\Monitoring\EditorTemplates\Files.cshtml" />
     <Content Include="Views\CertificateSearch\CertificateList.cshtml" />
     <Content Include="Views\CertificateSearch\CertificateView.cshtml" />
+    <Content Include="Views\MonitoringHotel\MonitoringHotelEdit.cshtml" />
+    <Content Include="Views\MonitoringHotel\MonitoringHotelList.cshtml" />
+    <Content Include="Views\OrganizationCamp\Edit.cshtml" />
+    <Content Include="Views\OrganizationCamp\List.cshtml" />
+    <Content Include="Views\OrganizationGBU\Edit.cshtml" />
+    <Content Include="Views\OrganizationGBU\List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -2403,6 +2415,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

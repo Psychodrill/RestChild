@@ -908,7 +908,7 @@ namespace RestChild.Web.Controllers
                     if (request.Attendant != null && request.Attendant.Any(a => !a.IsAgent))
                     {
                         AppendBlock(doc, "Сведения о сопровождающих", null);
-                        foreach (var attendant in request.Attendant.Where(a => !a.IsAgent)?.ToList() ??
+                        foreach (var attendant in request.Attendant.Where(a => !a.IsAgent && !a.IsDeleted)?.ToList() ??
                                                   new List<Applicant>())
                         {
                             var block = new List<Tuple<string, string>>

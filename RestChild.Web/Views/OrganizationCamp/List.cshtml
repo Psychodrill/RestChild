@@ -1,0 +1,117 @@
+﻿@using PagedList.Mvc
+@using RestChild.Comon
+@using RestChild.Comon.Enumeration
+@using RestChild.Web.Controllers
+@model RestChild.Web.Models.OrganizationCampSearchModel
+
+@{
+    var isEdit = Security.HasRight(AccessRightEnum.Organization.CampEdit);
+
+    ViewBag.Title = "Реестр лагерей всех регионов РФ";
+    ViewBag.Caption = "Реестр лагерей всех регионов РФ";
+    Layout = "~/Views/Shared/_SearchLayout.cshtml";
+    ViewBag.NeedInsertButton = false;
+    //ViewBag.InsertAction = "Add";
+    ViewBag.Controller = "OrganizationCamp";
+    //ViewBag.InsertButtonCaption = "Добавить лагерь";
+
+
+}
+
+@section scripts {
+    @Scripts.Render("~/Scripts/select2.min.js")
+    @Scripts.Render("~/Scripts/select2_locale_ru.js")
+
+    <script type="text/javascript" src="~/Scripts/moment.js"></script>
+    <script type="text/javascript" src="~/Scripts/moment-with-locales.js"></script>
+
+    <script type="text/javascript">
+        moment.locale("ru");
+
+        $(function () {
+            $('select').select2();
+        });
+    </script>
+}
+
+@section styles{
+    @Styles.Render("~/Content/css/select2.css")
+    @Styles.Render("~/Content/css/select2-bootstrap.css")
+}
+
+@section searchForm
+{
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Название</label>
+        <div class="col-md-10">
+            @Html.TextBoxFor(r => r.Name, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label text-right">Региор РФ</label>
+        <div class="col-md-4">
+            @Html.DropDownListFor(model => model.RegionId, new SelectList(Model.Regions.Select(t => new { Id = (long?)t.Id, t.Name }).ToList().InsertAt(new { Id = (long?)null, Name = "-- Не выбрано --" }), "Id", "Name"), new { @class = "form-control", autocomplete = "off" })
+        </div>
+        <label class="col-md-2 control-label text-right">ИНН</label>
+        <div class="col-md-4">
+            @Html.TextBoxFor(r => r.Inn, new { @class = "form-control" })
+        </div>
+
+    </div>
+}
+
+@section additionalFilters
+{
+    <a class="btn btn-default" href="@Url.Action("ExcelOrganizationCampList", "OrganizationCamp", Model)"><span class="glyphicon glyphicon-list-alt"></span> Экспорт в Excel</a>
+}
+
+@section searchResult
+{
+    @if (Model.Results != null && Model.Results.Any())
+    {
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th class="text-center" width="5%">№</th>
+                    <th class="text-center">Наименование лагеря</th>
+                    <th class="text-center">Регион</th>
+                    <th class="text-center">ИНН</th>
+                    <th class="text-center">Адресс</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ var rowNumber = Model.Results.FirstItemOnPage; }
+                @foreach (var camp in Model.Results.ToList())
+                {
+                    <tr>
+                        <td class="text-center">@(rowNumber++)</td>
+                        <td class="text-center">@camp.Data.ShortName</td>
+                        <td class="text-center">@(camp.NullSafe(x => x.Data.Region.Name))</td>
+                        <td class="text-center">@camp.Data.Inn</td>
+                        <td class="text-left">@camp.Data.FactAddress</td>
+                        <td class="text-center">@Html.ActionLink(" ", "Edit", new { orgId = camp.Data.Id }, new { @class = " glyphicon glyphicon-info-sign", target = "_blank" })</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-md-12">
+                @Html.PagedListPager(Model.Results, page =>
+                {
+                    Model.Results = null;
+                    Model.PageNumber = page;
+                    return Url.Action("List", Model);
+                }, new PagedListRenderOptions { DisplayItemSliceAndTotal = true, ItemSliceAndTotalFormat = "Всего записей: {2} " })
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <p>Поиск не дал результатов</p>
+            </div>
+        </div>
+    }
+}

@@ -47,7 +47,6 @@ namespace RestChild.Web.Controllers
         public WebHotelsController HotelController { get; set; }
         public WebContractController ContractController { get; set; }
 
-
         public ActionResult CertificateList(CertificateFilterModel model)
         {
             if (!Security.HasAnyRightsForSomeOrganization(new[] { AccessRightEnum.RequestView }))
@@ -81,8 +80,8 @@ namespace RestChild.Web.Controllers
         /// <param name="filter"></param>
         private void PrepareVocabulary(Certificate certificate = null, CertificateSearchFilterModel filter = null)
         {
-            ViewBag.Organizations =
-                HotelController.Get().OrderBy(p => p.Id)
+            ViewBag.Hotels =
+                HotelController.Get().OrderBy(p => p.Name)
                 .InsertAt(new Hotels { Id = 0, Name = DefaultOptionValue }, 0);
 
             ViewBag.PlacesOfRest =
@@ -99,7 +98,9 @@ namespace RestChild.Web.Controllers
                     .OrderBy(p => p.Id == (long)StatusEnum.Draft ? 0 : 1)
                     .ThenBy(p => p.Name)
                     .ToList()
-                    .InsertAt(new Status {Id = 0, Name = DefaultOptionValue },0);
+                    .InsertAt(new Status {Id = 0, Name = DefaultOptionValue },0);            
+
+            ViewBag.Organizations = UnitOfWork.GetAll<Organization>().Where(c => !c.Id.IsNullOrEmpty() && !c.IsDeleted /*&& c.IsHotel*/).OrderBy(p => p.Name).ToList().InsertAt(new Organization { Id = 0, Name = DefaultOptionValue }, 0);
         }
 
         /// <summary>

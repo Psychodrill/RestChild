@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace MailingDemon.Tasks
     [Task]
     public class MapRequestInList2021 : BaseTask
     {
-        private readonly int _yearOfCompany = 2021;
+        private readonly int _yearOfCompany = 2022;
 
         protected override void Execute()
         {

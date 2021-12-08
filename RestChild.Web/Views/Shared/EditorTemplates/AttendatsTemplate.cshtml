@@ -7,11 +7,13 @@
 @model List<RestChild.Web.Models.ApplicantViewModel>
 @{
     var canExclude = Security.HasRight(AccessRightEnum.ExcludeChild);
+    var count = Model.Count;
 }
 
-@for (var index = 0; index < Model.Count; index++)
+@for (var index = 0; index < count; index++)
 {
     var i = index;
+    // if (Model[i].Data.IsDeleted) { count++; }
     long? typeOfRestId = null;
     var isFirstCompany = false;
 
@@ -87,7 +89,7 @@
 
     @if (Model[i].Data != null && Model[i].Data.Request != null && Model[i].Data.Request.StatusId == (long) StatusEnum.CertificateIssued && Model[i].Data.Request.DeclineReasonId == null)
     {
-        if (!Model[i].Data.IsDeleted || !canExclude)
+        if (!Model[i].Data.IsDeleted /*&& !canExclude*/)
         {
             if (Security.HasRight(AccessRightEnum.ReplacingAccompanying))
             {
@@ -180,7 +182,7 @@
         </div>
     </div>
     <div class="row form-group">
-        <label class="col-md-3 control-label">Email</label>
+        <label class="col-md-3 control-label">Email @if(Model[i].Data.Request.SourceId == 1){<span class="requared">*</span>}</label>
         <div class="col-md-9">
             @Html.TextBoxFor(r => r[i].Data.Email, new {@class = "form-control required input-mask-email", autocomplete = "off"}).DisableIf(Model[i].Data.IsDeleted)
             <span class="field-validation-error">@Model[i].EmailEm.FormatEx(string.Empty)</span>

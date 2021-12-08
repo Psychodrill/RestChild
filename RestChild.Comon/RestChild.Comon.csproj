@@ -316,6 +316,10 @@
     <Compile Include="Services\SearchToursParams.cs" />
     <Compile Include="Sex.cs" />
     <Compile Include="SMS\IMessage.cs" />
+    <Compile Include="SMS\OutputMessage.cs" />
+    <Compile Include="SMS\ResponseMessage.cs" />
+    <Compile Include="SMS\ResponseMessageResult.cs" />
+    <Compile Include="SMS\SMSSendClient.cs" />
     <Compile Include="Tasks\BaseTask.cs" />
     <Compile Include="Tasks\RepeaterTask.cs" />
     <Compile Include="Serialization.cs" />

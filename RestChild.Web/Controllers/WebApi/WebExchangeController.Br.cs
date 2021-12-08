@@ -536,7 +536,7 @@ namespace RestChild.Web.Controllers.WebApi
 
 
         /// <summary>
-        ///     проверка ребёнка на свидетельство о рождении СМЭВ
+        ///     Ручная проверка ребёнка на свидетельство о рождении СМЭВ
         /// </summary>
         internal BaseResponse AdditionalRelationshipSmev(BenefitCheckRequest model)
         {
@@ -685,7 +685,10 @@ namespace RestChild.Web.Controllers.WebApi
                     ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.CpmpkExchange,
                     ServiceNumber = "б/н",
                     ResponseGuid = "б/н",
-                    EidSendStatus = 0
+                    EidSendStatus = 0,
+                    SearchField = $"{model.LastName?.ToLower().Trim()}|{model.FirstName?.ToLower().Trim()}|{model.MiddleName?.ToLower().Trim()}",
+                    BirthDate = model.DateOfBirth,
+                    IsAddonRequest = true
                 });
 
                 UnitOfWork.SaveChanges();
@@ -770,7 +773,10 @@ namespace RestChild.Web.Controllers.WebApi
                     OperationType = "SendTask",
                     RequestGuid = messageV6.CoordinateTaskDataMessage.Task.TaskId,
                     ServiceNumber = messageV6.CoordinateTaskDataMessage.Task.TaskNumber,
-                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.PassportRegistration
+                    ExchangeBaseRegistryTypeId = (long)ExchangeBaseRegistryTypeEnum.PassportRegistration,
+                    IsAddonRequest = true,
+                    SearchField = $"{model.LastName?.ToLower().Trim()}|{model.FirstName?.ToLower().Trim()}|{model.MiddleName?.ToLower().Trim()}",
+                    BirthDate = model.DateOfBirth
                 });
 
                 UnitOfWork.SaveChanges();
@@ -1097,7 +1103,7 @@ namespace RestChild.Web.Controllers.WebApi
         }
 
         /// <summary>
-        ///     проверка ребёнка на свидетельство о рождении ЕГР ЗАГС (11827)
+        ///     Системная проверка ребёнка на свидетельство о рождении ЕГР ЗАГС (11827)
         /// </summary>
         internal int CheckChildForRelationshipEGRZAGS(string requestNumber, Child child, int count)
         {
