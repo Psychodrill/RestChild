@@ -30,7 +30,7 @@ namespace RestChild.DAL.Configurations
                 UrlToRulesOfRest = "regulations.pdf",
                 UrlToListRestriction = "contraindications.pdf",
                 UrlToRoolAttendant = "conditions.pdf",
-                ForTour = false,
+                ForTour = true,
                 NeedAccomodation = false,
                 NeedBookingDate = true,
                 HaveAddonService = true,

@@ -23,7 +23,7 @@ namespace RestChild.Web.Logic.AnalyticReport
         {
             var yearOfRestIds = String.Empty;
             
-            long? typeOfRest = filter.TypeOfRestId.GetValueOrDefault(0);
+            long? typeOfRestId = filter.TypeOfRestId.GetValueOrDefault(0);
 
             if (filter.NextYearsIncluded)
             {
@@ -80,7 +80,12 @@ namespace RestChild.Web.Logic.AnalyticReport
 	            where a.RequestId is not null
 	            group by a.RequestId
             ) tr on tr.Id = r.Id
-            where r.IsDeleted=0
+            where r.IsDeleted=0 AND (r.StatusId >0 AND r.StatusId not in (1030,1046,7704, 1058, 1080, 1090))
+
+            SELECT ParentId, Id INTO #typeOfRestIds
+			from TypeOfRest 
+			WHERE Id ={typeOfRestId} OR ParentId ={typeOfRestId} OR ParentId IN (SELECT  Id FROM [RestChildAiso].[dbo].[TypeOfRest] WHERE ParentId ={typeOfRestId}) 
+
             --and r.StatusId in (1050, 1052, 1055)"
             +"\n"+ (filter.StatusId != null ? $" and r.StatusId = {filter.StatusId} " : " ") +"\n"+
             $@"--and r.YearOfRestId=7
@@ -105,11 +110,12 @@ namespace RestChild.Web.Logic.AnalyticReport
             where r.IsDeleted=0
             --and r.YearOfRestId=7
             and r.IsFirstCompany=1
-            and (r.[CountAttendants]>0 or tr.Id=14)
-            and (r.TypeOfRestId={typeOfRest} or {typeOfRest} =0)
+            --and (r.[CountAttendants]>0 or tr.Id=14)
+            and (r.TypeOfRestId in (SELECT Id FROM #typeOfRestIds) or {typeOfRestId} =0)
             group by tr.Name,t.Month, t.[DayOfMonth], t.Name, p.Name, case when tr.Id=14 then 1 else r.CountAttendants end, r.CountPlace, rg.Name, t3.R, st.Name
             order by tr.Name, t.Month, t.[DayOfMonth], t3.R
 
+            DROP TABLE #typeOfRestIds
             IF OBJECT_ID('tempdb..#B09DFB1D_TMP') IS NOT NULL DROP TABLE #B09DFB1D_TMP
             IF OBJECT_ID('tempdb..#B09DFB1D_TMP2') IS NOT NULL DROP TABLE #B09DFB1D_TMP2
             IF OBJECT_ID('tempdb..#B09DFB1D_TMP3') IS NOT NULL DROP TABLE #B09DFB1D_TMP3
