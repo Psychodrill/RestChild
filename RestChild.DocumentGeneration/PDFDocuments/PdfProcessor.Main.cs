@@ -383,7 +383,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
         /// <summary>
         ///     Уведомление формируемое при не участии в выборе альтернативной путёвки
         /// </summary>
-        internal static IDocument NotificationRefuse108013(Request request)
+        internal static IDocument NotificationRefuseNotParticipate(Request request)
         {
             var applicant = request.Applicant ?? new Applicant { DocumentType = new DocumentType { Name = string.Empty } };
 

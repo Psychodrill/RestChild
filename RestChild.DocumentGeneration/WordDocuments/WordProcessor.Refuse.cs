@@ -1429,7 +1429,7 @@ namespace RestChild.DocumentGeneration
 
             if (forMpguPortal)
             {
-                return PdfProcessor.NotificationRefuse108013(request);
+                return PdfProcessor.NotificationRefuseNotParticipate(request);
             }
 
             using (var ms = new MemoryStream())
@@ -1795,10 +1795,17 @@ namespace RestChild.DocumentGeneration
         }
 
         /// <summary>
-        ///     получить данные по уведомлению
+        ///     Уведомление об отказе в предоставлении услуг отдыха и оздоровления в связи с неучастием заявителя
         /// </summary>
         private static IDocument NotificationRefuseContent(Request request, Account account)
         {
+            var forMpguPortal = request.SourceId == (long)SourceEnum.Mpgu;
+
+           // if (forMpguPortal)
+            //{
+                return PdfProcessor.NotificationRefuseNotParticipate(request);
+           // }
+
             using (var ms = new MemoryStream())
             {
                 string notificationName;
