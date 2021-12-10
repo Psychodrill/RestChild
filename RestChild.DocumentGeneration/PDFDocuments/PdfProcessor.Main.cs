@@ -1841,142 +1841,59 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
 
         /// <summary>
-        ///     Подпись работника
+        ///     Подпись работника  // закомментировано до времён когда кто нибудь пожелает блок подписи в пдф
         /// </summary>
-        private static void SignWorkerBlock(Document document, Account account, string name = "Принял:")//костыль, который надо обязательно переделать
-        {
+        //private static void SignWorkerBlock(Document document, Account account, string name = "Принял:")//костыль, который надо обязательно переделать
+        //{
             
-            account = account ?? new Account();
-            var titleRequestRunProperties = new RunProperties();
-            titleRequestRunProperties.AppendChild(new RunFonts
-            {
-                Ascii = "Times New Roman",
-                HighAnsi = "Times New Roman",
-                ComplexScript = "Times New Roman"
-            });
-            titleRequestRunProperties.AppendChild(new FontSize { Val = "22" });
+        //    account = account ?? new Account();
+        //    var titleRequestRunProperties = new RunProperties();
+        //    titleRequestRunProperties.AppendChild(new RunFonts
+        //    {
+        //        Ascii = "Times New Roman",
+        //        HighAnsi = "Times New Roman",
+        //        ComplexScript = "Times New Roman"
+        //    });
+        //    titleRequestRunProperties.AppendChild(new FontSize { Val = "22" });
 
-            var tblProp = new TableProperties(
-                new TableBorders(
-                    new TopBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
-                    new BottomBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
-                    new LeftBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
-                    new RightBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
-                    new InsideHorizontalBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
-                    new InsideVerticalBorder { Val = new EnumValue<BorderValues>(BorderValues.None) }));
+        //    var tblProp = new TableProperties(
+        //        new TableBorders(
+        //            new TopBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
+        //            new BottomBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
+        //            new LeftBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
+        //            new RightBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
+        //            new InsideHorizontalBorder { Val = new EnumValue<BorderValues>(BorderValues.None) },
+        //            new InsideVerticalBorder { Val = new EnumValue<BorderValues>(BorderValues.None) }));
 
-            var captionRunProperties = new RunProperties().SetFont().SetFontSizeSupperscript();
-
-
-
-            var table = new Table();
-            table.AppendChild(tblProp.CloneNode(true));
-
-            //отступ - нулевая строка
-            PdfAddParagraph(document, 0, 20, Element.ALIGN_CENTER, 0);
-                //document.AppendChild(new Paragraph(
-                //new ParagraphProperties(new Justification { Val = JustificationValues.Both },
-                //new SpacingBetweenLines { After = Size20 })));
+        //    var captionRunProperties = new RunProperties().SetFont().SetFontSizeSupperscript();
 
 
-            PdfAddParagraph(document, 0, 0, Element.ALIGN_JUSTIFIED, 0,
-                            new Chunk("Исполнитель: ", MainText),
-                            new Chunk("                                             ", MainText),
-                            new Chunk("_________________________", MainText),
-                            new Chunk("     ", MainText),
-                            new Chunk("_________________________", MainText));
-            PdfAddParagraph(document, 0, 0, Element.ALIGN_JUSTIFIED, 0,
-                            new Chunk("                  ", SmallText),
-                            new Chunk("                                                                                           ", SmallText),
-                            new Chunk("(ФИО работника, должность)", SmallText),
-                            new Chunk("                  ", SmallText),
-                            new Chunk("      (подпись работника)   ", SmallText));
 
-            
-            //var row = new TableRow();
+        //    var table = new Table();
+        //    table.AppendChild(tblProp.CloneNode(true));
 
-            //var cell = new TableCell();
-            //cell.Append(new TableCellProperties(
-            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "1231" }),
-            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
-            //cell.Append(PdfAddParagraph(document, 0, 1, Element.ALIGN_CENTER, 0));
-            //row.AppendChild(cell);
+        //    //отступ - нулевая строка
+        //    PdfAddParagraph(document, 0, 20, Element.ALIGN_CENTER, 0);
+        //        //document.AppendChild(new Paragraph(
+        //        //new ParagraphProperties(new Justification { Val = JustificationValues.Both },
+        //        //new SpacingBetweenLines { After = Size20 })));
 
 
-            //cell = new TableCell();
-            //cell.Append(new TableCellProperties(
-            //    new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "6931" },
-            //    new TableCellBorders(new BottomBorder { Val = new EnumValue<BorderValues>(BorderValues.Single) }),
-            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom }
-            //));
-            //cell.AppendChild(new Paragraph(
-            //    new ParagraphProperties(new Justification { Val = JustificationValues.Center }),
-            //    new Run(titleRequestRunProperties.CloneNode(true),
-            //        new Text(
-            //            $"{account?.Name?.FormatEx()}{(string.IsNullOrWhiteSpace(account?.Position) ? string.Empty : $", {account.Position}")}"))));
-            //row.AppendChild(cell);
-
-            //cell = new TableCell();
-            //cell.Append(new TableCellProperties(
-            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "55" }),
-            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
-            //cell.AppendChild(new Paragraph(new Run(new Text(Space))));
-            //row.AppendChild(cell);
-
-            //cell = new TableCell();
-            //cell.Append(new TableCellProperties(
-            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "2931" },
-            //        new TableCellBorders(new BottomBorder { Val = new EnumValue<BorderValues>(BorderValues.Single) })),
-            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
-            //cell.AppendChild(new Paragraph(new Run(new Text(Space))));
-            //row.AppendChild(cell);
-
-            //table.AppendChild(row);
-            //// -----------------------------------------------------------
-            //row = new TableRow();
-
-            //cell = new TableCell();
-            //cell.Append(new TableCellProperties(
-            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "1231" }),
-            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
-            //cell.AppendChild(new Paragraph(
-            //    new ParagraphProperties(new Justification { Val = JustificationValues.Center }),
-            //    new Run(titleRequestRunProperties.CloneNode(true),
-            //        new Text(Space))));
-            //row.AppendChild(cell);
+        //    PdfAddParagraph(document, 0, 0, Element.ALIGN_JUSTIFIED, 0,
+        //                    new Chunk("Исполнитель: ", MainText),
+        //                    new Chunk("                                             ", MainText),
+        //                    new Chunk("_________________________", MainText),
+        //                    new Chunk("     ", MainText),
+        //                    new Chunk("_________________________", MainText));
+        //    PdfAddParagraph(document, 0, 0, Element.ALIGN_JUSTIFIED, 0,
+        //                    new Chunk("                  ", SmallText),
+        //                    new Chunk("                                                                                           ", SmallText),
+        //                    new Chunk("(ФИО работника, должность)", SmallText),
+        //                    new Chunk("                  ", SmallText),
+        //                    new Chunk("      (подпись работника)   ", SmallText));
 
 
-            //cell = new TableCell();
-            //cell.Append(new TableCellProperties(
-            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "6931" }),
-            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
-            //cell.AppendChild(new Paragraph(
-            //    new ParagraphProperties(new Justification { Val = JustificationValues.Center }),
-            //    new Run(captionRunProperties.CloneNode(true), new Text("(Ф.И.О. работника, должность)"))));
-            //row.AppendChild(cell);
-
-            //cell = new TableCell();
-            //cell.Append(new TableCellProperties(
-            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "55" }),
-            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
-            //cell.AppendChild(new Paragraph(new Run(new Text(Space))));
-            //row.AppendChild(cell);
-
-            //cell = new TableCell();
-            //cell.Append(new TableCellProperties(
-            //        new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "2931" }),
-            //    new TableCellVerticalAlignment { Val = TableVerticalAlignmentValues.Bottom });
-            //cell.AppendChild(new Paragraph(
-            //    new ParagraphProperties(new Justification { Val = JustificationValues.Center }),
-            //    new Run(titleRequestRunProperties.CloneNode(true), captionRunProperties.CloneNode(true),
-            //        new Text("(подпись работника)"))));
-            //row.AppendChild(cell);
-
-
-            //table.AppendChild(row);
-
-            //doc.AppendChild(table);
-        }
+        //}
 
 
         #endregion
