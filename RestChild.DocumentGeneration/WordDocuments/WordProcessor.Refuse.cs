@@ -1801,10 +1801,10 @@ namespace RestChild.DocumentGeneration
         {
             var forMpguPortal = request.SourceId == (long)SourceEnum.Mpgu;
 
-           // if (forMpguPortal)
-            //{
+            if (forMpguPortal)
+            {
                 return PdfProcessor.NotificationRefuseNotParticipate(request);
-           // }
+            }
 
             using (var ms = new MemoryStream())
             {
