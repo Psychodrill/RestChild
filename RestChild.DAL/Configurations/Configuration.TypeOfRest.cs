@@ -304,7 +304,7 @@ namespace RestChild.DAL.Configurations
                     NeedAccomodation = false,
                     NeedBookingDate = true,
                     HaveAddonService = true,
-                    ForTour = false,
+                    ForTour = true,
                     FirstRequestCompanySelect = false,
                     ServiceCodeFirstCompany = "048003",
                     NotChildren = true,
