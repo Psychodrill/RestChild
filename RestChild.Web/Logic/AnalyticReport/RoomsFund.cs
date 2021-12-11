@@ -21,13 +21,15 @@ namespace RestChild.Web.Logic.AnalyticReport
         /// </summary>
         public static BaseExcelTable GetRoomsFund(this IUnitOfWork unitOfWork, AnalyticReportFilter filter)
         {
-            var yearOfRestIds = String.Empty;
-            
+            var year = unitOfWork.GetSet<YearOfRest>().Where(y => y.Id == filter.YearOfRestId).FirstOrDefault().Year;
+
+            var yearOfRestIds = string.Empty;
+
             long? typeOfRestId = filter.TypeOfRestId.GetValueOrDefault(0);
 
             if (filter.NextYearsIncluded)
             {
-                var yors = unitOfWork.GetSet<YearOfRest>().Where(y => y.Id >= filter.YearOfRestId).OrderBy(x => x.Id);
+                var yors = unitOfWork.GetSet<YearOfRest>().Where(y => y.Year >= year).OrderBy(x => x.Id);
                 yearOfRestIds = string.Join(",", yors.Select(y => y.Id).ToList());
             }
             else
@@ -86,9 +88,6 @@ namespace RestChild.Web.Logic.AnalyticReport
 			from TypeOfRest 
 			WHERE Id ={typeOfRestId} OR ParentId ={typeOfRestId} OR ParentId IN (SELECT  Id FROM [RestChildAiso].[dbo].[TypeOfRest] WHERE ParentId ={typeOfRestId}) 
 
-            --and r.StatusId in (1050, 1052, 1055)"
-            +"\n"+ (filter.StatusId != null ? $" and r.StatusId = {filter.StatusId} " : " ") +"\n"+
-            $@"--and r.YearOfRestId=7
             select c.RequestId,
             min(isnull(tr.RestrictionGroupId,3)) as RestrictionGroupId into #B09DFB1D_TMP4
             from
@@ -108,10 +107,11 @@ namespace RestChild.Web.Logic.AnalyticReport
             left join dbo.TypeOfRest tr on tr.Id=r.TypeOfRestId
             inner join dbo.Status st on st.Id=r.StatusId
             where r.IsDeleted=0
-            --and r.YearOfRestId=7
+            and r.YearOfRestId IN ({yearOfRestIds})
             and r.IsFirstCompany=1
             --and (r.[CountAttendants]>0 or tr.Id=14)
             and (r.TypeOfRestId in (SELECT Id FROM #typeOfRestIds) or {typeOfRestId} =0)
+            and (r.StatusId = {filter.StatusId??0} OR {filter.StatusId??0} =0)
             group by tr.Name,t.Month, t.[DayOfMonth], t.Name, p.Name, case when tr.Id=14 then 1 else r.CountAttendants end, r.CountPlace, rg.Name, t3.R, st.Name
             order by tr.Name, t.Month, t.[DayOfMonth], t3.R
 

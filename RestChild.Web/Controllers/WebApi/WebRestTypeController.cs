@@ -57,5 +57,10 @@ namespace RestChild.Web.Controllers.WebApi
 		{
 			return UnitOfWork.GetSet<TypeOfRest>().Where(t => t.IsActive && t.ForTour && t.Commercial).OrderBy(t=>t.Name).ToList();
 		}
-	}
+
+        //public IEnumerable<TypeOfRest> GetGeneralTypes()
+        //{
+        //    return UnitOfWork.GetSet<TypeOfRest>().Where(t => t.IsActive && t.ParentId==null && !t.Commercial).ToList();
+        //}
+    }
 }

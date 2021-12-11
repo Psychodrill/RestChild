@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
+using System.Collections.Generic;
 using OfficeOpenXml.Style;
 using RestChild.Comon.Enumeration;
 using RestChild.Comon.ToExcel;
@@ -68,6 +69,23 @@ namespace RestChild.Web.Controllers
                                                                                                         /*row.Id == 2040)*/.ToList()// Проверка СНИЛС
             };
 
+            if(ReportType== AccessRightEnum.AnalyticReports.RoomsFund)
+            {
+                ICollection<TypeOfRest> tor = analyticReportFilter.TypeOfRests;
+                ICollection<Status> statuses = analyticReportFilter.Statuses;
+                analyticReportFilter.TypeOfRests = tor.Where(t=>t.ParentId==null).ToList();
+                analyticReportFilter.Statuses = statuses.Where(s => s.Id > 0 &&
+                                                                   s.Id != (long)StatusEnum.RegistrationDecline &&
+                                                                   s.Id != (long)StatusEnum.CancelByApplicant &&
+                                                                   s.Id != (long)StatusEnum.Reject &&
+                                                                   s.Id != (long)StatusEnum.WaitApplicantMoney &&
+                                                                   s.Id != (long)StatusEnum.OperatorCheck &&
+                                                                   s.Id != (long)StatusEnum.WaitForOrganizationSelection
+                                                                   ).ToList();
+
+                //analyticReportFilter.TypeOfRests = ApiRestTypeController.GetGeneralTypes().ToList();
+
+            }
             FilterVisibility(analyticReportFilter);
 
             return View("Index", analyticReportFilter);

@@ -120,6 +120,11 @@
         /// <summary>
         ///     Окончание первого этапа компании
         /// </summary>
-        EndOfCompanyFirstStep = 1148
+        EndOfCompanyFirstStep = 1148,
+
+        /// <summary>
+        ///     Приостановление предоставления услуги. Ожидание выбора организации отдыха и оздоровления
+        /// </summary>
+        WaitForOrganizationSelection = 1058
     }
 }
