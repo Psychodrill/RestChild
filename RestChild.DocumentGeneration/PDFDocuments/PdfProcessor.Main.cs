@@ -342,13 +342,19 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                         var firstLine = true;
 
+                        IEnumerable<Request> requests = new List<Request>();
                         foreach (var child in request.Child.Where(c => !c.IsDeleted).ToList())
                         {
                             var requestIds = details.Where(ss => ss.ChildId == child.Id).Select(ss => ss.Id).Distinct().ToArray();
                             if (requestIds.Length > 0)
                             {
-                                var requests = unitOfWork.GetSet<Request>().Where(ss => requestIds.Contains(ss.Id) && years.Contains(ss.YearOfRest.Year)).ToList();
-                                if (firstLine)
+                                requests = unitOfWork.GetSet<Request>().Where(re => requestIds.Any(req => req == re.Id)).ToList();
+                                var descendantRequests = unitOfWork.GetSet<Request>().Where(ss => ss.ParentRequestId!=null && requestIds.Contains((long)ss.ParentRequestId)&& years.Contains(ss.YearOfRest.Year)).ToList();
+
+                                var resultRequests = requests.Join(descendantRequests, r => r.Id, dr => dr.ParentRequestId, (r, dr) => new Request { Id = r.Id , Tour= r.Tour, TourId = r.TourId, TypeOfRest= r.TypeOfRest, RequestOnMoney = r.RequestOnMoney, TypeOfRestId=r.TypeOfRestId, YearOfRest =dr.YearOfRest}).ToList();
+
+                                 //ICollection<NotRespondedRequestsRow> resultsByApplicants = requests.Join(applications, ra => ra.Applicant.Id, a => a.Applicant.Id, (ra, a) => new NotRespondedRequestsRow { RequestId = a.Id, Child = null, Applicant = a.Applicant, RequestNumber = a.RequestNumber, TypeOfRest = a.TypeOfRest.Name, ExchangeBaseRegistryTypeName = ra.ExchangeBaseRegistryType.Name, RequestDateTime = a.DateRequest }).ToList();
+                            if (firstLine)
                                 {
                                     PdfAddParagraph(document, WordProcessor.Space, 0, 1, Element.ALIGN_LEFT, 0, MainText);
 
@@ -362,7 +368,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                                     new Chunk($"{child.LastName} {child.FirstName} {child.MiddleName}, {child.DateOfBirth.FormatExGR(string.Empty)}, {child.Snils}", MainText));
 
                                 
-                                GetPdfTable( requests, document, years);
+                                GetPdfTable( resultRequests, document, years);
                             }
                         }
 

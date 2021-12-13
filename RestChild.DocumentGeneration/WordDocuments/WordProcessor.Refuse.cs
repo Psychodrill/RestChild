@@ -1396,13 +1396,18 @@ namespace RestChild.DocumentGeneration
 
                         requests = unitOfWork.GetSet<Request>().Where(re => requestIds.Any(req => req == re.Id)).ToList();
 
+                        //var requests = unitOfWork.GetSet<Request>().Where(ss => requestIds.Contains(ss.Id) && years.Contains(ss.YearOfRest.Year)).ToList();
+                        var descendantRequests = unitOfWork.GetSet<Request>().Where(ss => ss.ParentRequestId != null && requestIds.Contains((long)ss.ParentRequestId) && years.Contains(ss.YearOfRest.Year)).ToList();
+
+                        var resultRequests = requests.Join(descendantRequests, r => r.Id, dr => dr.ParentRequestId, (r, dr) => new Request { Id = r.Id, Tour = r.Tour, TourId = r.TourId, TypeOfRest = r.TypeOfRest, RequestOnMoney = r.RequestOnMoney, TypeOfRestId = r.TypeOfRestId, YearOfRest = dr.YearOfRest }).ToList();
+
                         doc.AppendChild(
                             new Paragraph(new ParagraphProperties(new Justification {Val = JustificationValues.Left},
                                           new SpacingBetweenLines {After = Size20}),
                                           new Run(titleRequestRunProperties.CloneNode(true),
                                                   new Text($"{child.LastName} {child.FirstName} {child.MiddleName}, {child.DateOfBirth.FormatExGR(string.Empty)}, {child.Snils}"))));
 
-                        AddTableChildTours(doc, requests, years);
+                        AddTableChildTours(doc, resultRequests, years);
 
                     }
 
