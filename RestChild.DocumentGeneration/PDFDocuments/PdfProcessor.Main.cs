@@ -333,8 +333,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                     PdfAddParagraph(document, 0, 1, Element.ALIGN_JUSTIFIED, 0, new Chunk("Основание: ", HeaderFont),
                         new Chunk("пункты 3.9. и 9.1.1. Порядка организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации, утвержденного постановлением Правительства Москвы от 22 февраля 2017 г. № 56-ПП \"Об организации отдыха и оздоровления детей, находящихся в трудной жизненной ситуации\".", MainText));
 
-                    //if (request.Child != null && request.Child.Any(c => !c.IsDeleted) && listTravelersRequest != null && listTravelersRequest.Details.Any(ss => ss.Detail != "[]"))
-                    //{
+
                         var details = listTravelersRequest?.SelectMany(d => d.Details)
                                    .Where(ss => ss.Detail != "[]")
                                    .Select(ss => ss.Detail)
@@ -353,7 +352,7 @@ namespace RestChild.DocumentGeneration.PDFDocuments
 
                                 var resultRequests = requests.Join(descendantRequests, r => r.Id, dr => dr.ParentRequestId, (r, dr) => new Request { Id = r.Id , Tour= r.Tour, TourId = r.TourId, TypeOfRest= r.TypeOfRest, RequestOnMoney = r.RequestOnMoney, TypeOfRestId=r.TypeOfRestId, YearOfRest =dr.YearOfRest}).ToList();
 
-                                 //ICollection<NotRespondedRequestsRow> resultsByApplicants = requests.Join(applications, ra => ra.Applicant.Id, a => a.Applicant.Id, (ra, a) => new NotRespondedRequestsRow { RequestId = a.Id, Child = null, Applicant = a.Applicant, RequestNumber = a.RequestNumber, TypeOfRest = a.TypeOfRest.Name, ExchangeBaseRegistryTypeName = ra.ExchangeBaseRegistryType.Name, RequestDateTime = a.DateRequest }).ToList();
+                                
                             if (firstLine)
                                 {
                                     PdfAddParagraph(document, WordProcessor.Space, 0, 1, Element.ALIGN_LEFT, 0, MainText);
