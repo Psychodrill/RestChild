@@ -304,10 +304,10 @@ namespace RestChild.DocumentGeneration
         {
             var forMpguPortal = request.SourceId == (long) SourceEnum.Mpgu;
 
-            if (forMpguPortal)
-            {
-                return PdfProcessor.NotificationRefuse1090(request);
-            }
+            //if (forMpguPortal)
+            //{
+            //    return PdfProcessor.NotificationRefuse1090(request);
+            //}
 
             using (var ms = new MemoryStream())
             {
@@ -756,10 +756,10 @@ namespace RestChild.DocumentGeneration
         {
             var forMpguPortal = request.SourceId == (long) SourceEnum.Mpgu;
 
-            if (forMpguPortal)
-            {
-                return PdfProcessor.NotificationRefuse1080(request);
-            }
+            //if (forMpguPortal)
+            //{
+            //    return PdfProcessor.NotificationRefuse1080(request);
+            //}
 
             using (var ms = new MemoryStream())
             {
@@ -957,10 +957,10 @@ namespace RestChild.DocumentGeneration
         {
             var forMpguPortal = request.SourceId == (long) SourceEnum.Mpgu;
 
-            if (forMpguPortal)
-            {
-                return PdfProcessor.NotificationRefuse10802(request);
-            }
+            //if (forMpguPortal)
+            //{
+            //    return PdfProcessor.NotificationRefuse10802(request);
+            //}
 
             using (var ms = new MemoryStream())
             {
@@ -1217,10 +1217,10 @@ namespace RestChild.DocumentGeneration
             IEnumerable<int> years = unitOfWork.GetSet<YearOfRest>().Where(x => yearIds.Contains(x.Id)).Select(x => x.Year).OrderBy(x => x).ToList();
             var listTravelersRequest = unitOfWork.GetSet<ListTravelersRequest>();
 
-            if (forMpguPortal)
-            {
-                return PdfProcessor.NotificationRefuse10805(unitOfWork, request, years, listTravelersRequest);
-            }
+            //if (forMpguPortal)
+            //{
+            //    return PdfProcessor.NotificationRefuse10805(unitOfWork, request, years, listTravelersRequest);
+            //}
 
             using (var ms = new MemoryStream())
             {
@@ -1432,10 +1432,10 @@ namespace RestChild.DocumentGeneration
         {
             var forMpguPortal = request.SourceId == (long)SourceEnum.Mpgu;
 
-            if (forMpguPortal)
-            {
-                return PdfProcessor.NotificationRefuseNotParticipate(request);
-            }
+            //if (forMpguPortal)
+            //{
+            //    return PdfProcessor.NotificationRefuseNotParticipate(request);
+            //}
 
             using (var ms = new MemoryStream())
             {
