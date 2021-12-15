@@ -9,6 +9,7 @@ using RestChild.Extensions.Filter;
 using RestChild.Web.Controllers.WebApi;
 using RestChild.Web.Logic;
 using RestChild.Web.Logic.AnalyticReport;
+using System.Globalization;
 
 namespace RestChild.Web.Controllers
 {
@@ -69,10 +70,12 @@ namespace RestChild.Web.Controllers
                                                                                                         /*row.Id == 2040)*/.ToList()// Проверка СНИЛС
             };
 
-            if(ReportType== AccessRightEnum.AnalyticReports.RoomsFund)
+            ICollection<Status> statuses = analyticReportFilter.Statuses;
+
+            if (ReportType== AccessRightEnum.AnalyticReports.RoomsFund)
             {
                 ICollection<TypeOfRest> tor = analyticReportFilter.TypeOfRests;
-                ICollection<Status> statuses = analyticReportFilter.Statuses;
+
                 analyticReportFilter.TypeOfRests = tor.Where(t=>t.ParentId==null).ToList();
                 analyticReportFilter.Statuses = statuses.Where(s => s.Id > 0 &&
                                                                    s.Id != (long)StatusEnum.RegistrationDecline &&
@@ -80,12 +83,21 @@ namespace RestChild.Web.Controllers
                                                                    s.Id != (long)StatusEnum.Reject &&
                                                                    s.Id != (long)StatusEnum.WaitApplicantMoney &&
                                                                    s.Id != (long)StatusEnum.OperatorCheck &&
-                                                                   s.Id != (long)StatusEnum.WaitForOrganizationSelection
+                                                                   s.Id != (long)StatusEnum.WaitForOrganizationSelection&&
+                                                                   s.Id != (long)StatusEnum.RegistrationDeclineBecauseDuplicate
                                                                    ).ToList();
 
                 //analyticReportFilter.TypeOfRests = ApiRestTypeController.GetGeneralTypes().ToList();
 
             }
+
+            
+            ViewBag.Statuses = analyticReportFilter.Statuses.Select(s => new SelectListItem
+                                                                        {
+                                                                            Text = s.Name,
+                                                                            Value = s.Id.ToString(CultureInfo.InvariantCulture)
+                                                                        });
+
             FilterVisibility(analyticReportFilter);
 
             return View("Index", analyticReportFilter);
@@ -237,7 +249,7 @@ namespace RestChild.Web.Controllers
 
         [HttpPost]
         [Route("AnalyticReport/Generate")]
-        public ActionResult Generate(AnalyticReportFilter filter)
+        public ActionResult Generate(AnalyticReportFilter filter, IEnumerable<int>chosenStatuses)
         {
             if (filter.ActionName == ExportActionName)
             {

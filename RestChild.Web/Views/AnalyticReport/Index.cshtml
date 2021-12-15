@@ -15,8 +15,9 @@
         <fieldset class="form-horizontal">
             @using (Html.BeginForm("Generate", "AnalyticReport", FormMethod.Post, new { @class = "mainForm", autocomplete = "off", target = "_blank" }))
             {
-                @Html.HiddenFor(m => m.ReportType)<div class="form-group row">
-            @if (!Model.ExchangeRequestVisibility)
+            @Html.HiddenFor(m => m.ReportType)
+            <div class="form-group row">
+                @if (!Model.ExchangeRequestVisibility)
             {
                 <label class="col-md-2 control-label text-right">Год кампании</label>
                 <div class="col-md-4 form-group">
@@ -29,7 +30,7 @@
                 </div>
             }
 
-            @if (Model.TypeOfRestVisibility)
+                @if (Model.TypeOfRestVisibility)
             {
                 <label class="col-md-2 control-label text-right">Цель обращения</label>
                 <div class="col-md-4 form-group">
@@ -37,7 +38,7 @@
                 </div>
             }
 
-            @if (Model.TimeOfRestVisibility)
+                @if (Model.TimeOfRestVisibility)
             {
                 <label class="col-md-2 control-label text-right">Время отдыха</label>
                 <div class="col-md-4 form-group">
@@ -46,7 +47,7 @@
                 </div>
             }
 
-            @if (Model.VedomstvoVisibility)
+                @if (Model.VedomstvoVisibility)
             {
                 <label class="col-md-2 control-label text-right">ОИВ</label>
                 <div class="col-md-4 form-group">
@@ -54,7 +55,7 @@
                     @Html.HiddenFor(m => m.Organization, new { id = "vedomstvoName" })
                 </div>
             }
-            @if (Model.AgencyVisibility)
+                @if (Model.AgencyVisibility)
             {
 
                 <label class="col-md-2 control-label text-right">Учреждение</label>
@@ -63,7 +64,7 @@
                     @Html.HiddenFor(m => m.Agency, new { id = "agencyName" })
                 </div>
             }
-            @if (Model.SupplierVisibility)
+                @if (Model.SupplierVisibility)
             {
                 <label class="col-md-2 control-label text-right">Исполнитель</label>
                 <div class="col-md-4 form-group">
@@ -72,7 +73,7 @@
                 </div>
             }
 
-            @if (Model.PlaceOfRestVisibility)
+                @if (Model.PlaceOfRestVisibility)
             {
                 <label class="col-md-2 control-label text-right">Регион</label>
                 <div class="col-md-4 form-group">
@@ -81,7 +82,7 @@
                 </div>
             }
 
-            @if (Model.HotelVisibility)
+                @if (Model.HotelVisibility)
             {
                 <label class="col-md-2 control-label text-right">Место отдыха</label>
                 <div class="col-md-4 form-group">
@@ -90,7 +91,7 @@
                 </div>
             }
 
-            @if (Model.DateStartVisibility)
+                @if (Model.DateStartVisibility)
             {
                 <label class="col-md-2 control-label text-right">Дата начала</label>
                 <div class="form-inline col-md-4 form-group">
@@ -110,7 +111,7 @@
                     </div>
                 </div>
             }
-            @if (Model.DateFormingVisibility)
+                @if (Model.DateFormingVisibility)
             {
                 <label class="col-md-2 control-label text-right">Период</label>
                 <div class="form-inline col-md-4 form-group">
@@ -130,7 +131,7 @@
                     </div>
                 </div>
             }
-            @if (Model.YearOfBirthVisibility)
+                @if (Model.YearOfBirthVisibility)
             {
                 <label class="col-md-2 control-label text-right">Год рождения</label>
                 <div class="form-inline col-md-4 form-group">
@@ -140,7 +141,7 @@
                     @Html.TextBoxFor(r => r.YearOfBirthDateEnd, new { @class = "form-control year-inputmask width-75", autocomplete = "off", @Value = Model.YearOfBirthDateEnd })
                 </div>
             }
-            @if (Model.BenefitVisibility)
+                @if (Model.BenefitVisibility)
             {
                 <label class="col-md-2 control-label text-right">Категория льготы</label>
                 <div class="col-md-4 form-group">
@@ -148,7 +149,7 @@
                     @Html.HiddenFor(m => m.BenefitType, new { id = "benefitName" })
                 </div>
             }
-            @if (Model.DistrictVisibility)
+                @if (Model.DistrictVisibility)
             {
                 <label class="col-md-2 control-label text-right">Административный округ</label>
                 <div class="col-md-4 form-group">
@@ -156,35 +157,35 @@
                     @Html.HiddenFor(m => m.District, new { id = "districtName" })
                 </div>
             }
-            @if (Model.FlightNumberVisibility)
+                @if (Model.FlightNumberVisibility)
             {
                 <label class="col-md-2 control-label text-right">Номер рейса</label>
                 <div class="col-md-4 form-group">
                     @Html.TextBoxFor(m => m.FlightNumber, new { @class = "form-control", autocomplete = "off" })
                 </div>
             }
-            @if (Model.DepartureVisibility)
+                @if (Model.DepartureVisibility)
             {
                 <label class="col-md-2 control-label text-right">Место отбытия</label>
                 <div class="col-md-4 form-group">
                     @Html.DropDownListFor(m => m.DepartureId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
                 </div>
             }
-            @if (Model.ArrivalVisibility)
+                @if (Model.ArrivalVisibility)
             {
                 <label class="col-md-2 control-label text-right">Место прибытия</label>
                 <div class="col-md-4 form-group">
                     @Html.DropDownListFor(m => m.ArrivalId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
                 </div>
             }
-            @if (Model.TypeOfTransportVisibility)
+                @if (Model.TypeOfTransportVisibility)
             {
                 <label class="col-md-2 control-label text-right">Вид транспорта</label>
                 <div class="col-md-4 form-group">
                     @Html.DropDownListFor(m => m.TypeOfTransportId, SelectListHelper.Create(Model.TypeOfTransports, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
                 </div>
             }
-            @if (Model.NextYearsIncludedVisibility)
+                @if (Model.NextYearsIncludedVisibility)
             {
                 <div class="form-group">
                     <div class="col-md-2 col-md-push-2">
@@ -194,10 +195,11 @@
                 </div>
                 <label class="col-md-2 control-label" for="@Html.IdFor(m => m.Statuses)">Статус</label>
                 <div class="col-md-4 form-group">
-                    @Html.DropDownListFor(m => m.StatusId, SelectListHelper.Create(Model.Statuses, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
+                    @*@Html.DropDownListFor(m => m.StatusId, SelectListHelper.Create(Model.Statuses, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })*@
+                    @Html.ListBox("chosenStatuses", (IEnumerable<SelectListItem>)ViewBag.Statuses, new { @class = "multiple-select form-control" })
                 </div>
             }
-            @if (Model.ExchangeRequestVisibility)
+                @if (Model.ExchangeRequestVisibility)
             {
 
                 <label class="col-md-2 control-label text-right">Цель запроса</label>
@@ -206,12 +208,12 @@
 
                 </div>
             }
-        </div>
-                <div class="text-center">
-                    <button class="btn btn-default btn-primary" type="submit" name="actionName" value="@AnalyticReportController.ShowActionName">Сформировать</button>
-                    <button class="btn btn-default" type="submit" name="actionName" value="@AnalyticReportController.ExportActionName">Выгрузить в Excel</button>
-                    <input id='btnClearFields' type='button' class='btn btn-default' value='Очистить'/>                    
-                </div>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-default btn-primary" type="submit" name="actionName" value="@AnalyticReportController.ShowActionName">Сформировать</button>
+                <button class="btn btn-default" type="submit" name="actionName" value="@AnalyticReportController.ExportActionName">Выгрузить в Excel</button>
+                <input id='btnClearFields' type='button' class='btn btn-default' value='Очистить' />
+            </div>
             }
         </fieldset>
 
@@ -220,7 +222,7 @@
 
 @if (Model.Data != null)
 {
-    @Html.Partial("BaseReport", Model.Data, new ViewDataDictionary())
+@Html.Partial("BaseReport", Model.Data, new ViewDataDictionary())
     ;
 }
 
@@ -229,6 +231,7 @@
     @Styles.Render("~/Content/css/select2-bootstrap.css")
     @Styles.Render("~/Content/bootstrap-datetimepicker.min.css")
     @Styles.Render("~/Content/ReportStyles.css")
+    @Styles.Render("~/Content/bootstrap-multiselect.css")
     <style type="text/css">
         input.form-control.width-75 {
             width: 75px
@@ -252,6 +255,8 @@
     @Scripts.Render("~/Scripts/select2.js")
     @Scripts.Render("~/Scripts/select2_locale_ru.js")
     @Scripts.Render("~/bundles/jqueryinputmask")
+    @Scripts.Render("~/Scripts/bootstrap-multiselect.js")
+    @Scripts.Render("~/Scripts/assets/multipleSelect.js")
     <script src="~/Scripts/Selectors/TimeOfRest.js"></script>
     <script src="~/Scripts/Selectors/Agencies.js"></script>
     <script src="~/Scripts/Selectors/OrgAndVedomstvo.js"></script>
