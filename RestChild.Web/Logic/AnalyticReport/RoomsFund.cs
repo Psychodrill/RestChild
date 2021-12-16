@@ -111,7 +111,7 @@ namespace RestChild.Web.Logic.AnalyticReport
             and r.IsFirstCompany=1
             --and (r.[CountAttendants]>0 or tr.Id=14)
             and (r.TypeOfRestId in (SELECT Id FROM #typeOfRestIds) or {typeOfRestId} =0)
-            and (r.StatusId = {filter.StatusId??0} OR {filter.StatusId??0} =0)
+            and (r.StatusId IN ({filter.StatusIds??"0"}) OR 0 IN ({filter.StatusIds ?? "0"}))
             group by tr.Name,t.Month, t.[DayOfMonth], t.Name, p.Name, case when tr.Id=14 then 1 else r.CountAttendants end, r.CountPlace, rg.Name, t3.R, st.Name
             order by tr.Name, t.Month, t.[DayOfMonth], t3.R
 

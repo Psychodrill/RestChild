@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using System.Collections.Generic;
+using System.Collections;
 using OfficeOpenXml.Style;
 using RestChild.Comon.Enumeration;
 using RestChild.Comon.ToExcel;
@@ -16,7 +17,6 @@ namespace RestChild.Web.Controllers
     public class AnalyticReportController : BaseController
     {
         public AnalyticReportLogic Logic { get; set; }
-
         public WebRestTypeController ApiRestTypeController { get; set; }
 
         public static string ExportActionName => "Export";
@@ -70,7 +70,7 @@ namespace RestChild.Web.Controllers
                                                                                                         /*row.Id == 2040)*/.ToList()// Проверка СНИЛС
             };
 
-            ICollection<Status> statuses = analyticReportFilter.Statuses;
+            IEnumerable<Status> statuses = analyticReportFilter.Statuses;
 
             if (ReportType== AccessRightEnum.AnalyticReports.RoomsFund)
             {
@@ -251,13 +251,18 @@ namespace RestChild.Web.Controllers
         [Route("AnalyticReport/Generate")]
         public ActionResult Generate(AnalyticReportFilter filter, IEnumerable<int>chosenStatuses)
         {
+
+            
+            filter.StatusIds =string.Join(",", chosenStatuses??new List<int>());
+            
             if (filter.ActionName == ExportActionName)
             {
                 return ExportToExcel(filter);
             }
 
-            return RedirectToAction("GenerateReport", filter);
+            return RedirectToAction("GenerateReport",filter);
         }
+
 
         [HttpGet]
         [Route("AnalyticReport/GenerateReport")]

@@ -196,7 +196,7 @@
                 <label class="col-md-2 control-label" for="@Html.IdFor(m => m.Statuses)">Статус</label>
                 <div class="col-md-4 form-group">
                     @*@Html.DropDownListFor(m => m.StatusId, SelectListHelper.Create(Model.Statuses, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })*@
-                    @Html.ListBox("chosenStatuses", (IEnumerable<SelectListItem>)ViewBag.Statuses, new { @class = "multiple-select form-control" })
+                    @Html.ListBox("chosenStatuses", (IEnumerable<SelectListItem>)ViewBag.Statuses, new { id = "chosenStatuses" ,@class = "multiple-select form-control " })
                 </div>
             }
                 @if (Model.ExchangeRequestVisibility)

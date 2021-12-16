@@ -6,6 +6,6 @@ $('.multiple-select').multiselect({
 	enableCaseInsensitiveFiltering: true,
 	selectAllText: 'Выбрать всё',
 	buttonText: function(options, select) {
-		return "Назначить";
+        return "-- Выбрать -- ˅";
 	}
 });

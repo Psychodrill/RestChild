@@ -30,8 +30,10 @@ namespace RestChild.Extensions.Filter
         public virtual long? ExchangeBaseRegistryTypeId { get; set; }
         public DateTime? DateStartBegin { get; set; }
         public DateTime? DateStartEnd { get; set; }
-        public ICollection<Status> Statuses { get; set; }
-        public long? StatusId { get; set; }
+        public IEnumerable<Status> Statuses { get; set; }
+
+        public string StatusIds { get; set; }
+        
 
         /// <summary>
         ///     Дата начала формирования отчета
