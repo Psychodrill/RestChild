@@ -135,7 +135,7 @@ namespace RestChild.Web.Logic.AnalyticReport
                     new ExcelColumn<ReportRow> {Title = "Регион", Func = r => r.Region},
                     new ExcelColumn<ReportRow> {Title = "Сопровождение", Func = r => r.CountAttendants},
                     new ExcelColumn<ReportRow> {Title = "Дети", Func = r => r.CountPlace},
-                    new ExcelColumn<ReportRow> {Title = "Признак что коляска", Func = r => r.IsInvalid},
+                    new ExcelColumn<ReportRow> {Title = "Наличие доступной среды", Func = r => r.IsInvalid},
                     new ExcelColumn<ReportRow> {Title = "Очередь", Func = r => r.Queue},
                     new ExcelColumn<ReportRow> {Title = "Количество", Func = r => r.Quantity},
                     new ExcelColumn<ReportRow> {Title = "Вид номера", Func = r => r.CountAttendants?.ToString() +"+"+ r.CountPlace?.ToString()},

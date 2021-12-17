@@ -33,7 +33,9 @@ namespace RestChild.Extensions.Filter
         public IEnumerable<Status> Statuses { get; set; }
 
         public string StatusIds { get; set; }
-        
+
+        public List<long> SelectedStatuses { get; set; }
+
 
         /// <summary>
         ///     Дата начала формирования отчета

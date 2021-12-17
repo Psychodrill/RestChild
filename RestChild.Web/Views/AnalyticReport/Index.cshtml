@@ -15,205 +15,206 @@
         <fieldset class="form-horizontal">
             @using (Html.BeginForm("Generate", "AnalyticReport", FormMethod.Post, new { @class = "mainForm", autocomplete = "off", target = "_blank" }))
             {
-            @Html.HiddenFor(m => m.ReportType)
-            <div class="form-group row">
-                @if (!Model.ExchangeRequestVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Год кампании</label>
-                <div class="col-md-4 form-group">
-                    @{
+                @Html.HiddenFor(m => m.ReportType)
+                <div class="form-group row">
+                    @if (!Model.ExchangeRequestVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Год кампании</label>
+                        <div class="col-md-4 form-group">
+                            @{
 
-                        var selectedYear = Model.YearsOfRest.Where(d=>d.DateFirstStage!=null).Max(y => y.Year);
-                        @Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.YearsOfRest.OrderBy(i => i.Year), "Id", "Year", Model.YearsOfRest.FirstOrDefault(y => y.Year == selectedYear).Id), new { id = "yearOfRestSelect", @class = "form-control select2", autocomplete = "off" })
-                        @Html.HiddenFor(m => m.YearOfRest, new { id = "yearOfRest", Value =selectedYear })
+                                var selectedYear = Model.YearsOfRest.Where(d => d.DateFirstStage != null).Max(y => y.Year);
+                                @Html.DropDownListFor(m => m.YearOfRestId, new SelectList(Model.YearsOfRest.OrderBy(i => i.Year), "Id", "Year", Model.YearsOfRest.FirstOrDefault(y => y.Year == selectedYear).Id), new { id = "yearOfRestSelect", @class = "form-control select2", autocomplete = "off" })
+                                @Html.HiddenFor(m => m.YearOfRest, new { id = "yearOfRest", Value = selectedYear })
+                            }
+                        </div>
+                    }
+
+                    @if (Model.TypeOfRestVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Цель обращения</label>
+                        <div class="col-md-4 form-group">
+                            @Html.DropDownListFor(m => m.TypeOfRestId, SelectListHelper.Create(Model.TypeOfRests, c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
+                        </div>
+                    }
+
+                    @if (Model.TimeOfRestVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Время отдыха</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.TimeOfRestId, new { id = "timeOfRestSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.TimeOfRest, new { id = "timeOfRest" })
+                        </div>
+                    }
+
+                    @if (Model.VedomstvoVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">ОИВ</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.OrganizationId, new { id = "vedomstvoSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.Organization, new { id = "vedomstvoName" })
+                        </div>
+                    }
+                    @if (Model.AgencyVisibility)
+                    {
+
+                        <label class="col-md-2 control-label text-right">Учреждение</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.AgencyId, new { id = "agencySelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.Agency, new { id = "agencyName" })
+                        </div>
+                    }
+                    @if (Model.SupplierVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Исполнитель</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.SupplierId, new { id = "supplierSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.Supplier, new { id = "supplierName" })
+                        </div>
+                    }
+
+                    @if (Model.PlaceOfRestVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Регион</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.PlaceOfRestId, new { id = "placeOfRestSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.PlaceOfRest, new { id = "placeOfRestName" })
+                        </div>
+                    }
+
+                    @if (Model.HotelVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Место отдыха</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.HotelId, new { id = "hotelSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.HotelName, new { id = "hotelName" })
+                        </div>
+                    }
+
+                    @if (Model.DateStartVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Дата начала</label>
+                        <div class="form-inline col-md-4 form-group">
+                            <label class="control-label text-right input-label">с</label>
+                            <div class="input-group date datepicker-anytime">
+                                @Html.TextBoxFor(r => r.DateStartBegin, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.DateStartBegin).FormatEx(string.Empty, string.Empty) })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            <label class="control-label text-right input-label">по</label>
+                            <div class="input-group date datepicker-anytime">
+                                @Html.TextBoxFor(r => r.DateStartEnd, new { @class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.DateStartEnd).FormatEx(string.Empty, string.Empty) })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    }
+                    @if (Model.DateFormingVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Период</label>
+                        <div class="form-inline col-md-4 form-group">
+                            <label class="control-label text-right input-label">c</label>
+                            <div class="input-group date datepicker-anytime">
+                                @Html.TextBoxFor(r => r.DateFormingBegin, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.DateStartBegin).FormatEx(string.Empty, string.Empty) })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                            <label class="control-label text-right input-label">по</label>
+                            <div class="input-group date datepicker-anytime">
+                                @Html.TextBoxFor(r => r.DateFormingEnd, new { @class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.DateStartEnd).FormatEx(string.Empty, string.Empty) })
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                    }
+                    @if (Model.YearOfBirthVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Год рождения</label>
+                        <div class="form-inline col-md-4 form-group">
+                            <label class="control-label text-right input-label">с</label>
+                            @Html.TextBoxFor(r => r.YearOfBirthDateBegin, new { @class = "form-control year-inputmask width-75", autocomplete = "off", @Value = Model.YearOfBirthDateBegin })
+                            <label class="control-label text-right input-label">по</label>
+                            @Html.TextBoxFor(r => r.YearOfBirthDateEnd, new { @class = "form-control year-inputmask width-75", autocomplete = "off", @Value = Model.YearOfBirthDateEnd })
+                        </div>
+                    }
+                    @if (Model.BenefitVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Категория льготы</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.BenefitTypeId, new { id = "benefitSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.BenefitType, new { id = "benefitName" })
+                        </div>
+                    }
+                    @if (Model.DistrictVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Административный округ</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.DistrictId, new { id = "districtSelect", @class = "form-control select2", autocomplete = "off" })
+                            @Html.HiddenFor(m => m.District, new { id = "districtName" })
+                        </div>
+                    }
+                    @if (Model.FlightNumberVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Номер рейса</label>
+                        <div class="col-md-4 form-group">
+                            @Html.TextBoxFor(m => m.FlightNumber, new { @class = "form-control", autocomplete = "off" })
+                        </div>
+                    }
+                    @if (Model.DepartureVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Место отбытия</label>
+                        <div class="col-md-4 form-group">
+                            @Html.DropDownListFor(m => m.DepartureId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
+                        </div>
+                    }
+                    @if (Model.ArrivalVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Место прибытия</label>
+                        <div class="col-md-4 form-group">
+                            @Html.DropDownListFor(m => m.ArrivalId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
+                        </div>
+                    }
+                    @if (Model.TypeOfTransportVisibility)
+                    {
+                        <label class="col-md-2 control-label text-right">Вид транспорта</label>
+                        <div class="col-md-4 form-group">
+                            @Html.DropDownListFor(m => m.TypeOfTransportId, SelectListHelper.Create(Model.TypeOfTransports, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
+                        </div>
+                    }
+                    @if (Model.NextYearsIncludedVisibility)
+                    {
+                        <div class="form-group">
+                            <div class="col-md-2 col-md-push-2">
+                                @Html.CheckBoxFor(m => m.NextYearsIncluded)
+                                <label class="control-label" for="@Html.IdFor(m=>m.NextYearsIncluded)">и последующие годы</label>
+                            </div>
+                        </div>
+                        <label class="col-md-2 control-label" for="@Html.IdFor(m => m.Statuses)">Статус</label>
+                        <div class="col-md-4 form-group">
+                            @*@Html.DropDownListFor(m => m.StatusId, SelectListHelper.Create(Model.Statuses, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })*@
+                            @*@Html.ListBox("chosenStatuses", (IEnumerable<SelectListItem>)ViewBag.Statuses, new { id = "chosenStatuses", @class = "multiple-select form-control " })*@
+                            @Html.ListBoxFor(m => m.SelectedStatuses, new MultiSelectList(ViewBag.Statuses, "Id", "Name"), new { @class = "form-control select2" })
+                        </div>
+                    }
+                    @if (Model.ExchangeRequestVisibility)
+                    {
+
+                        <label class="col-md-2 control-label text-right">Цель запроса</label>
+                        <div class="col-md-4 form-group">
+                            @Html.DropDownListFor(m => m.ExchangeBaseRegistryTypeId, SelectListHelper.Create(Model.ExchangeBaseRegistryTypes, c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
+
+                        </div>
                     }
                 </div>
-            }
-
-                @if (Model.TypeOfRestVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Цель обращения</label>
-                <div class="col-md-4 form-group">
-                    @Html.DropDownListFor(m => m.TypeOfRestId, SelectListHelper.Create(Model.TypeOfRests, c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
+                <div class="text-center">
+                    <button class="btn btn-default btn-primary" type="submit" name="actionName" value="@AnalyticReportController.ShowActionName">Сформировать</button>
+                    <button class="btn btn-default" type="submit" name="actionName" value="@AnalyticReportController.ExportActionName">Выгрузить в Excel</button>
+                    <input id='btnClearFields' type='button' class='btn btn-default' value='Очистить' />
                 </div>
-            }
-
-                @if (Model.TimeOfRestVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Время отдыха</label>
-                <div class="col-md-4 form-group">
-                    @Html.TextBoxFor(m => m.TimeOfRestId, new { id = "timeOfRestSelect", @class = "form-control select2", autocomplete = "off" })
-                    @Html.HiddenFor(m => m.TimeOfRest, new { id = "timeOfRest" })
-                </div>
-            }
-
-                @if (Model.VedomstvoVisibility)
-            {
-                <label class="col-md-2 control-label text-right">ОИВ</label>
-                <div class="col-md-4 form-group">
-                    @Html.TextBoxFor(m => m.OrganizationId, new { id = "vedomstvoSelect", @class = "form-control select2", autocomplete = "off" })
-                    @Html.HiddenFor(m => m.Organization, new { id = "vedomstvoName" })
-                </div>
-            }
-                @if (Model.AgencyVisibility)
-            {
-
-                <label class="col-md-2 control-label text-right">Учреждение</label>
-                <div class="col-md-4 form-group">
-                    @Html.TextBoxFor(m => m.AgencyId, new { id = "agencySelect", @class = "form-control select2", autocomplete = "off" })
-                    @Html.HiddenFor(m => m.Agency, new { id = "agencyName" })
-                </div>
-            }
-                @if (Model.SupplierVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Исполнитель</label>
-                <div class="col-md-4 form-group">
-                    @Html.TextBoxFor(m => m.SupplierId, new { id = "supplierSelect", @class = "form-control select2", autocomplete = "off" })
-                    @Html.HiddenFor(m => m.Supplier, new { id = "supplierName" })
-                </div>
-            }
-
-                @if (Model.PlaceOfRestVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Регион</label>
-                <div class="col-md-4 form-group">
-                    @Html.TextBoxFor(m => m.PlaceOfRestId, new { id = "placeOfRestSelect", @class = "form-control select2", autocomplete = "off" })
-                    @Html.HiddenFor(m => m.PlaceOfRest, new { id = "placeOfRestName" })
-                </div>
-            }
-
-                @if (Model.HotelVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Место отдыха</label>
-                <div class="col-md-4 form-group">
-                    @Html.TextBoxFor(m => m.HotelId, new { id = "hotelSelect", @class = "form-control select2", autocomplete = "off" })
-                    @Html.HiddenFor(m => m.HotelName, new { id = "hotelName" })
-                </div>
-            }
-
-                @if (Model.DateStartVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Дата начала</label>
-                <div class="form-inline col-md-4 form-group">
-                    <label class="control-label text-right input-label">с</label>
-                    <div class="input-group date datepicker-anytime">
-                        @Html.TextBoxFor(r => r.DateStartBegin, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.DateStartBegin).FormatEx(string.Empty, string.Empty) })
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
-                    <label class="control-label text-right input-label">по</label>
-                    <div class="input-group date datepicker-anytime">
-                        @Html.TextBoxFor(r => r.DateStartEnd, new { @class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.DateStartEnd).FormatEx(string.Empty, string.Empty) })
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
-                </div>
-            }
-                @if (Model.DateFormingVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Период</label>
-                <div class="form-inline col-md-4 form-group">
-                    <label class="control-label text-right input-label">c</label>
-                    <div class="input-group date datepicker-anytime">
-                        @Html.TextBoxFor(r => r.DateFormingBegin, new { @class = "form-control input-mask-date-anytime request-period-start", autocomplete = "off", @Value = Model.NullSafe(m => m.DateStartBegin).FormatEx(string.Empty, string.Empty) })
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
-                    <label class="control-label text-right input-label">по</label>
-                    <div class="input-group date datepicker-anytime">
-                        @Html.TextBoxFor(r => r.DateFormingEnd, new { @class = "form-control input-mask-date-anytime request-period-end", autocomplete = "off", @Value = Model.NullSafe(m => m.DateStartEnd).FormatEx(string.Empty, string.Empty) })
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-calendar"></span>
-                        </span>
-                    </div>
-                </div>
-            }
-                @if (Model.YearOfBirthVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Год рождения</label>
-                <div class="form-inline col-md-4 form-group">
-                    <label class="control-label text-right input-label">с</label>
-                    @Html.TextBoxFor(r => r.YearOfBirthDateBegin, new { @class = "form-control year-inputmask width-75", autocomplete = "off", @Value = Model.YearOfBirthDateBegin })
-                    <label class="control-label text-right input-label">по</label>
-                    @Html.TextBoxFor(r => r.YearOfBirthDateEnd, new { @class = "form-control year-inputmask width-75", autocomplete = "off", @Value = Model.YearOfBirthDateEnd })
-                </div>
-            }
-                @if (Model.BenefitVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Категория льготы</label>
-                <div class="col-md-4 form-group">
-                    @Html.TextBoxFor(m => m.BenefitTypeId, new { id = "benefitSelect", @class = "form-control select2", autocomplete = "off" })
-                    @Html.HiddenFor(m => m.BenefitType, new { id = "benefitName" })
-                </div>
-            }
-                @if (Model.DistrictVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Административный округ</label>
-                <div class="col-md-4 form-group">
-                    @Html.TextBoxFor(m => m.DistrictId, new { id = "districtSelect", @class = "form-control select2", autocomplete = "off" })
-                    @Html.HiddenFor(m => m.District, new { id = "districtName" })
-                </div>
-            }
-                @if (Model.FlightNumberVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Номер рейса</label>
-                <div class="col-md-4 form-group">
-                    @Html.TextBoxFor(m => m.FlightNumber, new { @class = "form-control", autocomplete = "off" })
-                </div>
-            }
-                @if (Model.DepartureVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Место отбытия</label>
-                <div class="col-md-4 form-group">
-                    @Html.DropDownListFor(m => m.DepartureId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
-                </div>
-            }
-                @if (Model.ArrivalVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Место прибытия</label>
-                <div class="col-md-4 form-group">
-                    @Html.DropDownListFor(m => m.ArrivalId, SelectListHelper.Create(Model.Cities, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
-                </div>
-            }
-                @if (Model.TypeOfTransportVisibility)
-            {
-                <label class="col-md-2 control-label text-right">Вид транспорта</label>
-                <div class="col-md-4 form-group">
-                    @Html.DropDownListFor(m => m.TypeOfTransportId, SelectListHelper.Create(Model.TypeOfTransports, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
-                </div>
-            }
-                @if (Model.NextYearsIncludedVisibility)
-            {
-                <div class="form-group">
-                    <div class="col-md-2 col-md-push-2">
-                        @Html.CheckBoxFor(m => m.NextYearsIncluded)
-                        <label class="control-label" for="@Html.IdFor(m=>m.NextYearsIncluded)">и последующие годы</label>
-                    </div>
-                </div>
-                <label class="col-md-2 control-label" for="@Html.IdFor(m => m.Statuses)">Статус</label>
-                <div class="col-md-4 form-group">
-                    @*@Html.DropDownListFor(m => m.StatusId, SelectListHelper.Create(Model.Statuses, c => new SelectListItem() { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })*@
-                    @Html.ListBox("chosenStatuses", (IEnumerable<SelectListItem>)ViewBag.Statuses, new { id = "chosenStatuses" ,@class = "multiple-select form-control " })
-                </div>
-            }
-                @if (Model.ExchangeRequestVisibility)
-            {
-
-                <label class="col-md-2 control-label text-right">Цель запроса</label>
-                <div class="col-md-4 form-group">
-                    @Html.DropDownListFor(m => m.ExchangeBaseRegistryTypeId, SelectListHelper.Create(Model.ExchangeBaseRegistryTypes, c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }), new { @class = "form-control select2" })
-
-                </div>
-            }
-            </div>
-            <div class="text-center">
-                <button class="btn btn-default btn-primary" type="submit" name="actionName" value="@AnalyticReportController.ShowActionName">Сформировать</button>
-                <button class="btn btn-default" type="submit" name="actionName" value="@AnalyticReportController.ExportActionName">Выгрузить в Excel</button>
-                <input id='btnClearFields' type='button' class='btn btn-default' value='Очистить' />
-            </div>
             }
         </fieldset>
 
@@ -222,7 +223,7 @@
 
 @if (Model.Data != null)
 {
-@Html.Partial("BaseReport", Model.Data, new ViewDataDictionary())
+    @Html.Partial("BaseReport", Model.Data, new ViewDataDictionary())
     ;
 }
 
@@ -266,4 +267,8 @@
     <script src="~/Scripts/Selectors/Benefits.js"></script>
     <script src="~/Scripts/Selectors/Districts.js"></script>
     <script src="~/Scripts/Views/AnalyticReport.js"></script>
+
+    <script type="text/javascript">
+        $('#SelectedStatuses').multiselect();
+    </script>
 }

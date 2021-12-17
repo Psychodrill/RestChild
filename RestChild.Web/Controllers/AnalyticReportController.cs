@@ -91,12 +91,12 @@ namespace RestChild.Web.Controllers
 
             }
 
-            
-            ViewBag.Statuses = analyticReportFilter.Statuses.Select(s => new SelectListItem
-                                                                        {
-                                                                            Text = s.Name,
-                                                                            Value = s.Id.ToString(CultureInfo.InvariantCulture)
-                                                                        });
+
+            ViewBag.Statuses = analyticReportFilter.Statuses;//.Select(s => new SelectListItem
+            //                                                            {
+            //                                                                Text = s.Name,
+            //                                                                Value = s.Id.ToString(CultureInfo.InvariantCulture)
+            //                                                            });
 
             FilterVisibility(analyticReportFilter);
 
@@ -249,11 +249,11 @@ namespace RestChild.Web.Controllers
 
         [HttpPost]
         [Route("AnalyticReport/Generate")]
-        public ActionResult Generate(AnalyticReportFilter filter, IEnumerable<int>chosenStatuses)
+        public ActionResult Generate(AnalyticReportFilter filter/*, IEnumerable<int>chosenStatuses*/)
         {
 
-            
-            filter.StatusIds =string.Join(",", chosenStatuses??new List<int>());
+
+            filter.StatusIds =string.Join(",", filter.SelectedStatuses??new List<long>());
             
             if (filter.ActionName == ExportActionName)
             {
