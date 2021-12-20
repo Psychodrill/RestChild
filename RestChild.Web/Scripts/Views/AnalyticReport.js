@@ -89,6 +89,7 @@ $(function () {
         dropdownListIds.forEach(function (id) { return setDefaultDropDownListValue(id); });
         select2DropDownIds.forEach(function (element) { return setDefaultSelect2DropDownValue(element.nameId, element.selectId); });
         setDefaultDropDownListYearValue('#yearOfRest', '#yearOfRestSelect');
+        $("#SelectedStatuses").multiselect("clearSelection");
         //#region Helpers
         function setDefaultSelect2DropDownValue(nameId, selectId) {
             setText(nameId, { id: '', text: '' });

@@ -110,6 +110,7 @@ $(() => {
         select2DropDownIds.forEach((element) => setDefaultSelect2DropDownValue(element.nameId, element.selectId));
 
         setDefaultDropDownListYearValue('#yearOfRest', '#yearOfRestSelect');
+        $("#SelectedStatuses").multiselect("clearSelection");
 
         //#region Helpers
         function setDefaultSelect2DropDownValue(nameId, selectId) {
