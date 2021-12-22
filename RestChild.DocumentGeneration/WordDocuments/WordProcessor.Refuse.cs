@@ -1380,11 +1380,15 @@ namespace RestChild.DocumentGeneration
                     //    listTravelersRequest.Details.Any(ss => ss.Detail != "[]"))
                     //{
 
+                    //var details = listTravelersRequest?.Details.Where(ss => ss.Detail != "[]")
+                    //    .Select(ss => ss.Detail).ToList().SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>)
+                    //    .ToArray();
+
                     var details = listTravelersRequest?.SelectMany(d => d.Details)
                                                        .Where(ss => ss.Detail != "[]")
                                                        .Select(ss => ss.Detail)
                                                        .SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>).ToList();
-                     //var details = details1.SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>).ToList();
+
 
                     //IEnumerable<int> years = unitOfWork.GetSet<YearOfRest>().Where(x => yearIds.Contains(x.Id)).Select(x => x.Year).OrderBy(x=>x).ToList();
 
@@ -1392,7 +1396,13 @@ namespace RestChild.DocumentGeneration
 
                     foreach (var child in request.Child.Where(c => !c.IsDeleted).ToList())
                     {
-                        var requestIds = details?.Where(ss => ss.ChildId == child.Id).Select(ss => ss.Id).Distinct().ToList()?? new List<long>();
+                        //сравнение по снилсам потому что структура БД наркоманская
+                        var sameChilds = unitOfWork.GetSet<Child>().Where(ch => ch.Snils == child.Snils && ch.IsDeleted!=true).ToList();
+
+                        var requestIds = sameChilds?.Select(ss => ss.RequestId).Distinct().ToList();
+
+
+                        //var requestIds = details?.Where(ss => ss.ChildId == child.Id).Select(ss => ss.Id).Distinct().ToList()?? new List<long>();
 
                         requests = unitOfWork.GetSet<Request>().Where(re => requestIds.Any(req => req == re.Id)).ToList();
 
