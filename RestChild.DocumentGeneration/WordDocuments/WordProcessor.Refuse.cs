@@ -1384,10 +1384,10 @@ namespace RestChild.DocumentGeneration
                     //    .Select(ss => ss.Detail).ToList().SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>)
                     //    .ToArray();
 
-                    var details = listTravelersRequest?.SelectMany(d => d.Details)
-                                                       .Where(ss => ss.Detail != "[]")
-                                                       .Select(ss => ss.Detail)
-                                                       .SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>).ToList();
+                    //var details = listTravelersRequest?.SelectMany(d => d.Details)
+                    //                                   .Where(ss => ss.Detail != "[]")
+                    //                                   .Select(ss => ss.Detail)
+                    //                                   .SelectMany(JsonConvert.DeserializeObject<DetailInfo[]>).ToList();
 
 
                     //IEnumerable<int> years = unitOfWork.GetSet<YearOfRest>().Where(x => yearIds.Contains(x.Id)).Select(x => x.Year).OrderBy(x=>x).ToList();
@@ -1401,15 +1401,17 @@ namespace RestChild.DocumentGeneration
 
                         var requestIds = sameChilds?.Select(ss => ss.RequestId).Distinct().ToList();
 
+                        requestIds.Remove(request.Id); 
 
-                        //var requestIds = details?.Where(ss => ss.ChildId == child.Id).Select(ss => ss.Id).Distinct().ToList()?? new List<long>();
 
                         requests = unitOfWork.GetSet<Request>().Where(re => requestIds.Any(req => req == re.Id)).ToList();
 
-                        //var requests = unitOfWork.GetSet<Request>().Where(ss => requestIds.Contains(ss.Id) && years.Contains(ss.YearOfRest.Year)).ToList();
+                        var initialRequests = requests.Where(re => re.StatusId==(long)StatusEnum.Reject).ToList();
+
                         var descendantRequests = unitOfWork.GetSet<Request>().Where(ss => ss.ParentRequestId != null && requestIds.Contains((long)ss.ParentRequestId) && years.Contains(ss.YearOfRest.Year)).ToList();
 
-                        var resultRequests = requests.Join(descendantRequests, r => r.Id, dr => dr.ParentRequestId, (r, dr) => new Request { Id = r.Id, Tour = r.Tour, TourId = r.TourId, TypeOfRest = r.TypeOfRest, RequestOnMoney = r.RequestOnMoney, TypeOfRestId = r.TypeOfRestId, YearOfRest = dr.YearOfRest }).ToList();
+                        
+                        var resultRequests = initialRequests.Join(descendantRequests, r => r.Id, dr => dr.ParentRequestId, (r, dr) => new Request { Id = r.Id, Tour = dr.Tour, TourId = r.TourId, TypeOfRest = r.TypeOfRest, RequestOnMoney = r.RequestOnMoney, TypeOfRestId = r.TypeOfRestId, YearOfRest = r.YearOfRest }).ToList();
 
                         doc.AppendChild(
                             new Paragraph(new ParagraphProperties(new Justification {Val = JustificationValues.Left},
@@ -1816,10 +1818,10 @@ namespace RestChild.DocumentGeneration
         {
             var forMpguPortal = request.SourceId == (long)SourceEnum.Mpgu;
 
-            if (forMpguPortal)
-            {
-                return PdfProcessor.NotificationRefuseNotParticipate(request);
-            }
+            //if (forMpguPortal)
+            //{
+            //    return PdfProcessor.NotificationRefuseNotParticipate(request);
+            //}
 
             using (var ms = new MemoryStream())
             {
