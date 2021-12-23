@@ -272,6 +272,11 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                             isFirstString = true;
                             var attendants = request.Attendant.Where(c => !c.IsDeleted).ToList();
 
+                            if (request.Applicant.IsAccomp)
+                            {
+                                attendants.Add(request.Applicant);
+                            }
+
                             foreach (var attendant in attendants)
                             {
 
@@ -482,6 +487,10 @@ namespace RestChild.DocumentGeneration.PDFDocuments
                         row = 452;
                         isFirstString = true;
                         var attendants = request.Attendant.Where(c => !c.IsDeleted).ToList();
+                        if (request.Applicant.IsAccomp)
+                        {
+                            attendants.Add(request.Applicant);
+                        }
 
                         foreach (var attendant in attendants)
                         {
